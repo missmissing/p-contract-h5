@@ -1,8 +1,6 @@
 <template>
   <div id="app">
-    <keep-alive>
-      <router-view></router-view>
-    </keep-alive>
+    <router-view/>
   </div>
 </template>
 
@@ -45,8 +43,6 @@
     }
   }
 
-
-
   .fade-enter-active,
   .fade-leave-active {
     transition: opacity .5s
@@ -56,7 +52,6 @@
   .fade-leave-active {
     opacity: 0
   }
-
 
   body {
     /*background-color: #324057;*/

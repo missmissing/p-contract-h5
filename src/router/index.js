@@ -1,10 +1,11 @@
 import Vue from 'vue';
+import iview from 'iview';
 import Router from 'vue-router';
 import {routerNames} from '../api/const';
 
 Vue.use(Router);
 
-export default new Router({
+const router = new Router({
   routes: [
     {
       path: '/login',
@@ -224,3 +225,35 @@ export default new Router({
     }
   ]
 });
+
+router.beforeEach((to, from, next) => {
+  let title = to.name;
+  title = title ? title + ' - 采购合同管理' : '采购合同管理';
+  window.document.title = title;
+  iview.LoadingBar.start();
+
+  //Auth验证
+  // if (to.meta.auth) {
+  //   if (to.path === '/login') {
+  //     localStorage.removeItem('user');
+  //   }
+  //   let user = JSON.parse(localStorage.getItem('user'));
+  //   if (!user && to.path !== '/login') {
+  //     next({
+  //       path: '/login?fromUrl=' + to.path
+  //     });
+  //   } else {
+  //     next();
+  //   }
+  // } else {
+  //   next();
+  // }
+  next();
+});
+
+router.afterEach(() => {
+  iview.LoadingBar.finish();
+  window.scrollTo(0, 0);
+});
+
+export default router;
