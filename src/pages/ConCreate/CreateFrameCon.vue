@@ -366,8 +366,8 @@
 <script>
   import searchuser from '../../components/searchUser/SearchUser.vue'
   import api from '../../api'
-  import tagService from '../../services/template/tag.js'
-  import templateReplace from '../../common/templateReplace.js'
+  import tagService from '../../utils/tag.js'
+  import templateReplace from '../../utils/templateReplace.js'
 
   export default {
     created() {
