@@ -15,7 +15,6 @@ const router = new Router({
       name: routerNames.login,
       meta: {
         auth: false,
-        pageTitle: '登录',
         hidden: true,
       }
     },
@@ -27,7 +26,6 @@ const router = new Router({
       name: routerNames.error404,
       meta: {
         auth: false,
-        pageTitle: '404',
         hidden: true,
       }
     },
@@ -39,7 +37,6 @@ const router = new Router({
       name: routerNames.home,
       meta: {
         auth: true,
-        pageTitle: '首页',
         hidden: true,
       }
     },
@@ -49,25 +46,26 @@ const router = new Router({
         require(['../components/home.vue'], resolve);
       },
       name: routerNames.con_create,
-      children: [{
-        path: '/ConCreate/Create',
-        meta: {
-          auth: true
-        },
-        component: function (resolve) {
-          require(['../pages/create/create.vue'], resolve);
-        },
-        name: routerNames.con_create
-      },
+      children: [
         {
-          path: '/ConCreate/CreateFrameCon',
+          path: '/ConCreate/Create',
           meta: {
             auth: true
           },
           component: function (resolve) {
+            require(['../pages/create/create.vue'], resolve);
+          },
+          name: routerNames.con_createIndex
+        },
+        {
+          path: '/ConCreate/CreateFrameCon',
+          meta: {
+            auth: true,
+          },
+          component: function (resolve) {
             require(['../pages/create/createFrameCon.vue'], resolve);
           },
-          name: routerNames.con_createframecon,
+          name: routerNames.con_createFrame,
         }
       ],
       meta: {
@@ -88,7 +86,7 @@ const router = new Router({
         component: function (resolve) {
           require(['../pages/sign/createPO.vue'], resolve);
         },
-        name: routerNames.po_create,
+        name: routerNames.con_purchase_order,
       }],
       meta: {
         iconCls: 'stats-bars'
@@ -99,23 +97,24 @@ const router = new Router({
       component: function (resolve) {
         require(['../components/home.vue'], resolve);
       },
-      name: routerNames.con_pref,
-      children: [{
-        path: '/conperf/inspection',
-        component: function (resolve) {
-          require(['../pages/performance/inspection.vue'], resolve);
+      name: routerNames.con_performance,
+      children: [
+        {
+          path: '/conperf/inspection',
+          component: function (resolve) {
+            require(['../pages/performance/inspection.vue'], resolve);
+          },
+          name: routerNames.con_performance,
+          meta: {
+            auth: true
+          },
         },
-        name: routerNames.con_inspection,
-        meta: {
-          auth: true
-        },
-      },
         {
           path: '/conperf/inspectionreject',
           component: function (resolve) {
             require(['../pages/performance/inspectionReject.vue'], resolve);
           },
-          name: routerNames.con_inspection_reject,
+          name: routerNames.con_check_reject,
           meta: {
             auth: true
           },
@@ -135,7 +134,7 @@ const router = new Router({
           component: function (resolve) {
             require(['../pages/performance/conRepeal.vue'], resolve);
           },
-          name: routerNames.con_repeal,
+          name: routerNames.con_stop,
           meta: {
             auth: true
           },
@@ -160,56 +159,57 @@ const router = new Router({
       component: function (resolve) {
         require(['../components/home.vue'], resolve);
       },
-      name: routerNames.con_template,
-      children: [{
-        path: '/contemplate/create',
-        component: function (resolve) {
-          require(['../pages/template/create.vue'], resolve);
-        },
-        meta: {
-          auth: true
-        },
-        name: routerNames.template_create
-      },
+      name: routerNames.con_support,
+      children: [
         {
-          path: '/contemplate/update',
+          path: '/contemplate/create',
           component: function (resolve) {
-            require(['../pages/template/update.vue'], resolve);
+            require(['../pages/support/create.vue'], resolve);
           },
           meta: {
             auth: true
           },
-          name: routerNames.template_update
+          name: routerNames.con_textTemp_create
+        },
+        {
+          path: '/contemplate/update',
+          component: function (resolve) {
+            require(['../pages/support/update.vue'], resolve);
+          },
+          meta: {
+            auth: true
+          },
+          name: routerNames.con_textTemp_update
         },
         {
           path: '/contemplate/delete',
           component: function (resolve) {
-            require(['../pages/template/delete.vue'], resolve);
+            require(['../pages/support/delete.vue'], resolve);
           },
           meta: {
             auth: true
           },
-          name: routerNames.template_delete
+          name: routerNames.con_textTemp_del
         },
         {
           path: '/contemplate/query',
           component: function (resolve) {
-            require(['../pages/template/query.vue'], resolve);
+            require(['../pages/support/query.vue'], resolve);
           },
           meta: {
             auth: true
           },
-          name: routerNames.template_query
+          name: routerNames.con_textTemp_search
         },
         {
           path: '/contemplate/conquery',
           component: function (resolve) {
-            require(['../pages/template/conQuery.vue'], resolve);
+            require(['../pages/support/conQuery.vue'], resolve);
           },
           meta: {
             auth: true
           },
-          name: routerNames.con_query
+          name: routerNames.con_search
         }
       ],
       meta: {
@@ -230,7 +230,7 @@ const router = new Router({
 });
 
 router.beforeEach((to, from, next) => {
-  window.document.title = to.meta.pageTitle;
+  window.document.title = to.name;
   iview.LoadingBar.start();
 
   //Auth验证

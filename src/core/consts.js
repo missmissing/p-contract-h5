@@ -30,34 +30,30 @@ export default {
  *
  */
 export const routerNames = {
-  login: '登录',
-  noPower2: 'noPower2',
-  redirect: 'redirect',
+  login:'登录',
+  redirect:'重定向',
   error404: '404',
-  home: 'home',
-  main: 'main',
-  table: 'table',
-  form: 'form',
-  user: 'user',
-  nullPage: 'nullPage',
-  comingSoon: 'comingSoon',
+  home:'首页',
 
-  con_create: '合同创建',
-  con_createframecon: '创建框架合同',
-  con_sign: '合同签订',
-  con_pref: '合同履约',
-  con_template: '合同支持',
-  template_create: '合同文本创建',
-  template_update: '合同文本变更',
-  template_delete: '合同文本废除',
-  template_query: '合同文本查询',
-  con_query: '合同查询',
-  po_create: '创建采购订单',
+  con_create:'合同创建',
+  con_createIndex:'创建合同',
+  con_createFrame:'创建框架合同',
+
+  con_sign:'合同签订',
+  con_purchase_order: '创建采购订单',
+
+  con_performance:'合同履约',
   con_compensate: '违约/赔付处理',
-  con_inspection: '合同验收',
-  con_inspection_reject: '合同验收不合格处理',
-  con_repeal: '合同终止',
+  con_check_reject: '合同验收不合格处理',
+  con_stop: '合同终止',
   con_update: '合同变更',
+
+  con_support: '合同支持',
+  con_textTemp_create: '合同文本创建',
+  con_textTemp_update: '合同文本变更',
+  con_textTemp_del: '合同文本废除',
+  con_textTemp_search: '合同文本查询',
+  con_search: '合同查询'
 };
 
 /**审批按钮（新版本） */
