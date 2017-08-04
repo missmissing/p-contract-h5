@@ -32,7 +32,7 @@ const router = new Router({
     {
       path: '/',
       component: function (resolve) {
-        require(['../components/home.vue'], resolve);
+        require(['../pages/home/home.vue'], resolve);
       },
       name: routerNames.home,
       meta: {
@@ -43,7 +43,7 @@ const router = new Router({
     {
       path: '/',
       component: function (resolve) {
-        require(['../components/home.vue'], resolve);
+        require(['../pages/home/home.vue'], resolve);
       },
       name: routerNames.con_create,
       children: [
@@ -75,7 +75,7 @@ const router = new Router({
     {
       path: '/',
       component: function (resolve) {
-        require(['../components/home.vue'], resolve);
+        require(['../pages/home/home.vue'], resolve);
       },
       name: routerNames.con_sign,
       children: [{
@@ -95,7 +95,7 @@ const router = new Router({
     {
       path: '/',
       component: function (resolve) {
-        require(['../components/home.vue'], resolve);
+        require(['../pages/home/home.vue'], resolve);
       },
       name: routerNames.con_performance,
       children: [
@@ -157,7 +157,7 @@ const router = new Router({
     {
       path: '/',
       component: function (resolve) {
-        require(['../components/home.vue'], resolve);
+        require(['../pages/home/home.vue'], resolve);
       },
       name: routerNames.con_support,
       children: [

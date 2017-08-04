@@ -215,12 +215,12 @@
 </template>
 
 <script>
-  import {WebConfig} from '../api/config.js';
-  import prototype from '../utils/prototype.js';
-  import Url from '../utils/url.js';
+  import {WebConfig} from '../../api/config.js';
+  import prototype from '../../utils/prototype.js';
+  import Url from '../../utils/url.js';
 
-  const logoPath = require('../assets/img/main-logo.png');
-  const userPhotoPath = require('../assets/img/user.jpg');
+  const logoPath = require('../../assets/img/main-logo.png');
+  const userPhotoPath = require('../../assets/img/user.jpg');
 
   export default {
     created() {
