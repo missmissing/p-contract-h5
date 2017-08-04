@@ -364,7 +364,7 @@
   </div>
 </template>
 <script>
-  import searchuser from '../../components/searchUser/SearchUser.vue'
+  import searchuser from '../../components/searchUser.vue'
   import api from '../../api'
   import tagService from '../../utils/tag.js'
   import templateReplace from '../../utils/templateReplace.js'

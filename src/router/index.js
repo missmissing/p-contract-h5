@@ -11,7 +11,7 @@ const router = new Router({
       path: '/login',
       // component: Login,
       component: function (resolve) {
-        require(['../components/Login.vue'], resolve);
+        require(['../components/login.vue'], resolve);
       },
       pageTitle: '登录',
       name: routerNames.login,
@@ -36,7 +36,7 @@ const router = new Router({
     {
       path: '/',
       component: function (resolve) {
-        require(['../components/Home.vue'], resolve);
+        require(['../components/home.vue'], resolve);
       },
       pageTitle: '首页',
       name: routerNames.home,
@@ -48,7 +48,7 @@ const router = new Router({
     {
       path: '/',
       component: function (resolve) {
-        require(['../components/Home.vue'], resolve);
+        require(['../components/home.vue'], resolve);
       },
       name: routerNames.con_create,
       iconCls: 'stats-bars',
@@ -59,7 +59,7 @@ const router = new Router({
           auth: true
         },
         component: function (resolve) {
-          require(['../pages/ConCreate/create.vue'], resolve);
+          require(['../pages/create/create.vue'], resolve);
         },
         name: routerNames.con_create
       },
@@ -69,7 +69,7 @@ const router = new Router({
             auth: true
           },
           component: function (resolve) {
-            require(['../pages/ConCreate/CreateFrameCon.vue'], resolve);
+            require(['../pages/create/createFrameCon.vue'], resolve);
           },
           name: routerNames.con_createframecon,
           hidden: true
@@ -79,7 +79,7 @@ const router = new Router({
     {
       path: '/',
       component: function (resolve) {
-        require(['../components/Home.vue'], resolve);
+        require(['../components/home.vue'], resolve);
       },
       name: routerNames.con_sign,
       iconCls: 'stats-bars',
@@ -89,7 +89,7 @@ const router = new Router({
           auth: true
         },
         component: function (resolve) {
-          require(['../pages/consign/createpo.vue'], resolve);
+          require(['../pages/sign/createPO.vue'], resolve);
         },
         name: routerNames.po_create,
       }]
@@ -97,14 +97,14 @@ const router = new Router({
     {
       path: '/',
       component: function (resolve) {
-        require(['../components/Home.vue'], resolve);
+        require(['../components/home.vue'], resolve);
       },
       name: routerNames.con_pref,
       iconCls: 'stats-bars',
       children: [{
         path: '/conperf/inspection',
         component: function (resolve) {
-          require(['../pages/conperf/inspection.vue'], resolve);
+          require(['../pages/performance/inspection.vue'], resolve);
         },
         name: routerNames.con_inspection,
         meta: {
@@ -115,7 +115,7 @@ const router = new Router({
         {
           path: '/conperf/inspectionreject',
           component: function (resolve) {
-            require(['../pages/conperf/inspectionreject.vue'], resolve);
+            require(['../pages/performance/inspectionReject.vue'], resolve);
           },
           name: routerNames.con_inspection_reject,
           meta: {
@@ -125,7 +125,7 @@ const router = new Router({
         {
           path: '/conperf/conupdate',
           component: function (resolve) {
-            require(['../pages/conperf/conupdate.vue'], resolve);
+            require(['../pages/performance/conUpdate.vue'], resolve);
           },
           name: routerNames.con_update,
           meta: {
@@ -135,7 +135,7 @@ const router = new Router({
         {
           path: '/conperf/conrepeal',
           component: function (resolve) {
-            require(['../pages/conperf/conrepeal.vue'], resolve);
+            require(['../pages/performance/conRepeal.vue'], resolve);
           },
           name: routerNames.con_repeal,
           meta: {
@@ -145,7 +145,7 @@ const router = new Router({
         {
           path: '/conperf/compensate',
           component: function (resolve) {
-            require(['../pages/conperf/compensate.vue'], resolve);
+            require(['../pages/performance/compensate.vue'], resolve);
           },
           name: routerNames.con_compensate,
           meta: {
@@ -157,14 +157,14 @@ const router = new Router({
     {
       path: '/',
       component: function (resolve) {
-        require(['../components/Home.vue'], resolve);
+        require(['../components/home.vue'], resolve);
       },
       name: routerNames.con_template,
       iconCls: 'stats-bars',
       children: [{
         path: '/contemplate/create',
         component: function (resolve) {
-          require(['../pages/contemplate/create.vue'], resolve);
+          require(['../pages/template/create.vue'], resolve);
         },
         meta: {
           auth: true
@@ -174,7 +174,7 @@ const router = new Router({
         {
           path: '/contemplate/update',
           component: function (resolve) {
-            require(['../pages/contemplate/update.vue'], resolve);
+            require(['../pages/template/update.vue'], resolve);
           },
           meta: {
             auth: true
@@ -184,7 +184,7 @@ const router = new Router({
         {
           path: '/contemplate/delete',
           component: function (resolve) {
-            require(['../pages/contemplate/delete.vue'], resolve);
+            require(['../pages/template/delete.vue'], resolve);
           },
           meta: {
             auth: true
@@ -194,7 +194,7 @@ const router = new Router({
         {
           path: '/contemplate/query',
           component: function (resolve) {
-            require(['../pages/contemplate/query.vue'], resolve);
+            require(['../pages/template/query.vue'], resolve);
           },
           meta: {
             auth: true
@@ -204,7 +204,7 @@ const router = new Router({
         {
           path: '/contemplate/conquery',
           component: function (resolve) {
-            require(['../pages/ConTemplate/conquery.vue'], resolve);
+            require(['../pages/template/conQuery.vue'], resolve);
           },
           meta: {
             auth: true

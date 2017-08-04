@@ -14,7 +14,7 @@
     removeUser,
     editUser,
     addUser
-  } from '../../api/api';
+  } from '../api/api';
 
   export default {
     data() {

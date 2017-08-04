@@ -67,7 +67,7 @@
   </div>
 </template>
 <script>
-  import approveprocess from '../../components/approveProcess/ApproveProcess.vue'
+  import approveprocess from '../../components/approveProcess.vue'
 
   export default {
     created() {

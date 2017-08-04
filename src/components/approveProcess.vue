@@ -34,7 +34,7 @@
 </template>
 
 <script>
-  import searchuser from '../searchUser/SearchUser.vue'
+  import searchuser from './searchUser.vue'
 
   export default {
     data() {

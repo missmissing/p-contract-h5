@@ -1,4 +1,4 @@
-import attachment from './attachment/attachment.vue';
+import attachment from './attachment.vue';
 import VueHtml5Editor from 'vue-html5-editor';
 
 export default {

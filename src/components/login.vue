@@ -35,7 +35,7 @@
         //				              },function(res){console.info(res)} );
 
         const url = WebConfig.AppSetting.ApiUrl + "/sso/validate";
-        this.$http.post(url, {
+        axios.post(url, {
           appId: appId,
           ticket: ticket,
           redirectUrl: redirectUrl
@@ -55,19 +55,6 @@
           }
         });
 
-        //var url = WebConfig.AppSetting.ApiUrl+ "/sso/validate";
-        //				axios.post(url, {
-        //													appId:appId,
-        //									ticket:ticket,
-        //									redirectUrl:redirectUrl
-        //						}
-        //					)
-        //					.then(function(response) {
-        //						console.log(response);
-        //					})
-        //					.catch(function(response) {
-        //						console.log(response);
-        //					});
       } else {
         location.href = WebConfig.AppSetting.SSOUrl.format(WebConfig.AppSetting.AppCode, encodeURIComponent(WebConfig.AppSetting.SSOCallbackUrl.format(WebConfig.AppSetting.AppCode, encodeURIComponent(returnUrl))));
       }
