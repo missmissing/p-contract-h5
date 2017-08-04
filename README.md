@@ -1,4 +1,4 @@
-# vuetest
+# p-contract-h5
 
 > A Vue.js project
 
@@ -9,13 +9,13 @@
 npm install
 
 # serve with hot reload at localhost:8080
-npm run dev
+npm run start
 
-# build for production with minification
-npm run build
+# build
+npm run [dev uat1 stg prd]
 
 # build for production and view the bundle analyzer report
-npm run build --report
+npm run [dev uat1 stg prd] --report
 
 # run unit tests
 npm run unit

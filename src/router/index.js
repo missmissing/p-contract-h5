@@ -1,7 +1,7 @@
 import Vue from 'vue';
 import iview from 'iview';
 import Router from 'vue-router';
-import {routerNames} from '../api/const';
+import {routerNames} from '../core/consts';
 
 Vue.use(Router);
 
@@ -9,28 +9,26 @@ const router = new Router({
   routes: [
     {
       path: '/login',
-      // component: Login,
       component: function (resolve) {
         require(['../components/login.vue'], resolve);
       },
-      pageTitle: '登录',
       name: routerNames.login,
-      hidden: true,
       meta: {
-        auth: false
+        auth: false,
+        pageTitle: '登录',
+        hidden: true,
       }
     },
     {
       path: '/404',
-      // component: NotFound,
       component: function (resolve) {
         require(['../components/404.vue'], resolve);
       },
-      pageTitle: '404',
       name: routerNames.error404,
-      hidden: true,
       meta: {
-        auth: false
+        auth: false,
+        pageTitle: '404',
+        hidden: true,
       }
     },
     {
@@ -38,11 +36,11 @@ const router = new Router({
       component: function (resolve) {
         require(['../components/home.vue'], resolve);
       },
-      pageTitle: '首页',
       name: routerNames.home,
-      hidden: true,
       meta: {
-        auth: true
+        auth: true,
+        pageTitle: '首页',
+        hidden: true,
       }
     },
     {
@@ -51,8 +49,6 @@ const router = new Router({
         require(['../components/home.vue'], resolve);
       },
       name: routerNames.con_create,
-      iconCls: 'stats-bars',
-      auth: true,
       children: [{
         path: '/ConCreate/Create',
         meta: {
@@ -72,9 +68,11 @@ const router = new Router({
             require(['../pages/create/createFrameCon.vue'], resolve);
           },
           name: routerNames.con_createframecon,
-          hidden: true
         }
-      ]
+      ],
+      meta: {
+        iconCls: 'stats-bars',
+      }
     },
     {
       path: '/',
@@ -82,7 +80,6 @@ const router = new Router({
         require(['../components/home.vue'], resolve);
       },
       name: routerNames.con_sign,
-      iconCls: 'stats-bars',
       children: [{
         path: '/consign/createpo',
         meta: {
@@ -92,7 +89,10 @@ const router = new Router({
           require(['../pages/sign/createPO.vue'], resolve);
         },
         name: routerNames.po_create,
-      }]
+      }],
+      meta: {
+        iconCls: 'stats-bars'
+      }
     },
     {
       path: '/',
@@ -100,7 +100,6 @@ const router = new Router({
         require(['../components/home.vue'], resolve);
       },
       name: routerNames.con_pref,
-      iconCls: 'stats-bars',
       children: [{
         path: '/conperf/inspection',
         component: function (resolve) {
@@ -110,7 +109,6 @@ const router = new Router({
         meta: {
           auth: true
         },
-        hidden: true
       },
         {
           path: '/conperf/inspectionreject',
@@ -152,7 +150,10 @@ const router = new Router({
             auth: true
           },
         }
-      ]
+      ],
+      meta: {
+        iconCls: 'stats-bars'
+      }
     },
     {
       path: '/',
@@ -160,7 +161,6 @@ const router = new Router({
         require(['../components/home.vue'], resolve);
       },
       name: routerNames.con_template,
-      iconCls: 'stats-bars',
       children: [{
         path: '/contemplate/create',
         component: function (resolve) {
@@ -211,13 +211,16 @@ const router = new Router({
           },
           name: routerNames.con_query
         }
-      ]
+      ],
+      meta: {
+        iconCls: 'stats-bars'
+      }
     },
     {
       path: '*',
-      hidden: true,
       meta: {
-        auth: true
+        auth: true,
+        hidden: true
       },
       redirect: {
         path: '/404'
@@ -227,9 +230,7 @@ const router = new Router({
 });
 
 router.beforeEach((to, from, next) => {
-  let title = to.name;
-  title = title ? title + ' - 采购合同管理' : '采购合同管理';
-  window.document.title = title;
+  window.document.title = to.meta.pageTitle;
   iview.LoadingBar.start();
 
   //Auth验证

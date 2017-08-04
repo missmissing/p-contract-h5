@@ -141,26 +141,19 @@
               @on-select="menuSelect" accordion>
           <div class="layout-logo-left">
             <div class="layout-main-logo" v-show="logoIsDisplay">
-              <img v-bind:src="pageLogo" alt="">
+              <img v-bind:src="pageLogo" alt="" />
             </div>
-            <!--<Icon type="paper-airplane" :size="logoSize" v-show="logoIsDisplay"></Icon>-->
           </div>
-          <template v-for="(item,index) in $router.options.routes" v-if="!item.hidden">
+          <template v-for="(item,index) in $router.options.routes" v-if="!item.meta.hidden">
             <Submenu :name="item.name" v-if="!item.leaf">
               <template slot="title">
-                <Icon :type="item.iconCls" :size="iconSize"></Icon>
+                <Icon :type="item.meta.iconCls" :size="iconSize" />
                 <span class="layout-text">{{item.name}}</span>
               </template>
               <template v-for="(child,childIndex) in item.children" v-if="!child.hidden">
                 <Menu-item :name="child.path">{{child.name}}</Menu-item>
               </template>
             </Submenu>
-            <template v-if="item.leaf&&item.children.length>0">
-              <Menu-item :name="item.children[0].path">
-                <Icon :type="item.iconCls" :size="iconSize"></Icon>
-                <span class="layout-text">{{item.children[0].name}}</span>
-              </Menu-item>
-            </template>
           </template>
         </Menu>
       </div>
@@ -205,13 +198,13 @@
     <Modal v-model="modal1" title="修改密码" @on-ok.prevent="comfirmModifyPS" @on-cancel="cancel">
       <Form ref="formValidate" :model="formValidate" :rules="ruleValidate" :label-width="100">
         <Form-item label="原密码" prop="oldPassword">
-          <Input v-model="formValidate.oldPassword" placeholder="请输入原始密码"></Input>
+          <Input v-model="formValidate.oldPassword" placeholder="请输入原始密码"/>
         </Form-item>
         <Form-item label="新密码" prop="newPassword">
-          <Input v-model="formValidate.newPassword" placeholder="请输入新密码"></Input>
+          <Input v-model="formValidate.newPassword" placeholder="请输入新密码"/>
         </Form-item>
         <Form-item label="确认新密码" prop="resetPassword">
-          <Input v-model="formValidate.resetPassword" placeholder="请再次输入新密码"></Input>
+          <Input v-model="formValidate.resetPassword" placeholder="请再次输入新密码"/>
         </Form-item>
       </Form>
     </Modal>
@@ -311,8 +304,7 @@
         location.href = WebConfig.AppSetting.SSOLogoutUrl.format(WebConfig.AppSetting.AppCode, window.location.href);
       },
       comfirmModifyPS() {
-        return false;
-        this.$refs.formValidate.validate((valid) => {
+        /*this.$refs.formValidate.validate((valid) => {
           if (valid) {
             this.modal1 = false;
             // this.loading = false;
@@ -321,7 +313,7 @@
             this.$Message.error('表单验证失败!');
             return false;
           }
-        });
+        });*/
         // this.$Message.info('点击了确定');
       },
       cancel() {
