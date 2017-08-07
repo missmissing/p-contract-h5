@@ -1,330 +1,197 @@
-<style scoped>
-  .layout {
-    background: #f5f7f9;
-    position: relative;
+<style type="text/scss" lang="scss" scoped>
+  .header {
+    width: 100%;
+    height: 60px;
+    position: fixed;
+    top: 0;
+    z-index: 101;
+  }
+
+  .main {
+    width: 100%;
+    position: absolute;
+    top: 60px;
+    bottom: 0;
+  }
+
+  .left-part {
+    position: fixed;
+    top: 60px;
+    bottom: 0;
+    width: 200px;
+    background-color: #293038;
+    z-index: 102;
     overflow: hidden;
-    height: 100%;
+    overflow-y: auto;
+    &.collapse {
+      width: 0;
+    }
   }
 
-  .layout-breadcrumb {
-    padding: 10px 15px 0;
+  .right-part {
+    width: auto;
+    position: absolute;
+    left: 200px;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    overflow: hidden;
+    background-color: #eaedf1;
+    &.collapse {
+      left: 0;
+    }
+    .breadcrumb {
+      margin: 15px 0 15px 15px;
+    }
+    .content {
+      min-height: 200px;
+      height: 100%;
+      margin: 15px;
+      padding-bottom: 60px;
+      overflow: hidden;
+      overflow-y: auto;
+      background: #fff;
+      border-radius: 4px;
+    }
   }
 
-  .layout-content {
-    min-height: 200px;
-    margin: 15px;
-    overflow: auto;
-    background: #fff;
-    border-radius: 4px;
-    height: 80%;
-  }
-
-  .layout-content-main {
-    padding: 10px;
-    padding-bottom: 60px;
-  }
-
-  .layout-copy {
-    text-align: center;
-    padding: 10px 0 20px;
-    color: #9ea7b4;
-  }
-
-  .layout-menu-left {
-    background: #313540;
-  }
-
-  .layout-header {
+  .header {
     height: 60px;
-    background: #fff;
+    .logo {
+      display: inline-block;
+      width: 200px;
+      padding-top: 10px;
+      height: 60px;
+      line-height: 60px;
+      text-align: center;
+    }
+    .navicon {
+      display: inline-block;
+      margin: 15px 0 0 15px;
+      text-align: center;
+      vertical-align: top;
+      .fa:hover {
+        cursor: pointer;
+        color: #0091ea;
+      }
+    }
+    .userInfo {
+      float: right;
+      margin-right: 10px;
+      .avatar {
+        display: inline-block;
+        padding-top: 10px;
+      }
+      img {
+        border-radius: 50%;
+        width: 40px;
+        height: 40px;
+        vertical-align: middle;
+        margin-left: 5px;
+      }
+    }
   }
-
-  .layout-main-logo {
-    padding: 10px 0 0 0;
-  }
-
-  .layout-logo-left {
-    width: 100%;
-    height: 60px;
-    line-height: 60px;
-    font-size: 28px;
-    text-align: center;
-    background: #0091ea;
-    /*  background: #5b6270;
-        border-radius: 3px;
-        margin: 15px auto;*/
-  }
-
-  .layout-ceiling-main a {
-    color: #9ba7b5;
-  }
-
-  .layout-hide-left-nav .layout-text {
-    display: none;
-  }
-
-  .layout-hide-left-nav .ivu-menu {
-    display: none;
-  }
-
-  .layout-page-toggle-left {
-    display: inline-block;
-  }
-
-  .layout-page-title {
-    display: inline-block;
-    font-size: 24px;
-  }
-
-  .layout-page-title span {
-    display: inline-block;
-    vertical-align: middle;
-    margin-bottom: 0;
-    padding: 12px 0px;
-    line-height: 1;
-  }
-
-  .ivu-col {
-    transition: width .2s ease-in-out;
-  }
-
-  .ivu-row-flex {
-    height: 100%;
-  }
-
-  .userinfo {
-    display: inline-block;
-    float: right;
-  }
-
-  .userinfo .ivu-dropdown {
-    margin-top: 50px;
-  }
-
-  .ivu-dropdown {
-    margin-right: 25px;
-    margin-top: 22px;
-  }
-
-  .ivu-menu-submenu-title {
-    padding: 14px;
-  }
-
-  .head-img {
-    width: 100%;
-    height: 60px;
-    line-height: 60px;
-    float: right;
-    margin-top: -50px;
-  }
-
-  .head-img img {
-    border-radius: 20px;
-    margin: 10px 0px 10px 10px;
-    width: 40px;
-    height: 40px;
-    float: right;
-  }
-
-  .ivu-menu-dark.ivu-menu-vertical .ivu-menu-submenu .ivu-menu-item-active, .ivu-menu-dark.ivu-menu-vertical .ivu-menu-submenu .ivu-menu-item-active:hover {
-    background: #0091ea !important
-  }
-
 </style>
 
 <template>
-  <div class="layout" :class="{'layout-hide-left-nav': spanLeft < 3}">
-    <Row type="flex">
-      <Col :span="spanLeft" class="layout-menu-left">
-      <div>
-        <Menu :mode="modeType" theme="dark" width="auto" :active-name="this.$route.path" :open-names="openNames"
-              @on-select="menuSelect" accordion>
-          <div class="layout-logo-left">
-            <div class="layout-main-logo" v-show="logoIsDisplay">
-              <img v-bind:src="pageLogo" alt="" />
-            </div>
-          </div>
-          <template v-for="(item,index) in $router.options.routes" v-if="!item.meta.hidden">
-            <Submenu :name="item.name" v-if="!item.leaf">
-              <template slot="title">
-                <Icon :type="item.meta.iconCls" :size="iconSize" />
-                <span class="layout-text">{{item.name}}</span>
-              </template>
-              <template v-for="(child,childIndex) in item.children" v-if="!child.hidden">
-                <Menu-item :name="child.path">{{child.name}}</Menu-item>
-              </template>
-            </Submenu>
-          </template>
-        </Menu>
+  <div>
+    <div class="header">
+      <div class="logo">
+        <img :src="logo"/>
       </div>
-      </Col>
-      <Col :span="spanRight">
-      <div class="layout-header">
-        <div class="layout-page-toggle-left">
-          <Button type="text" @click="toggleClick">
-            <Icon type="navicon" size="32"/>
-          </Button>
-        </div>
-        <div class="layout-page-title">
-          <span>采购合同</span>
-        </div>
-        <div class="userinfo">
-          <Dropdown placement="bottom-end">
-              <span class="head-img">
-                  {{curUserName}}
-                  <img v-bind:src="userPhoto" alt="">
-              </span>
-            <Dropdown-menu slot="list">
-              <!--      <Dropdown-item @click.native="modifyPassWord()">修改密码</Dropdown-item>-->
-              <Dropdown-item @click.native="logout()" divided>退出</Dropdown-item>
-            </Dropdown-menu>
-          </Dropdown>
+      <div class="navicon">
+        <el-tooltip placement="right" :content="collpaseTip" :enterable="false">
+          <i class="fa fa-navicon fa-2x" @click="collapse"></i>
+        </el-tooltip>
+      </div>
+      <div class="userInfo">
+        <el-dropdown @command="handleCommand">
+          <span class="avatar">
+            {{username}}
+             <img :src="userPhoto" alt="">
+          </span>
+          <el-dropdown-menu slot="dropdown">
+            <el-dropdown-item command="logout" divided>退出</el-dropdown-item>
+          </el-dropdown-menu>
+        </el-dropdown>
+      </div>
+    </div>
+    <div class="main">
+      <div :class="leftClass">
+        <div>
+          <el-menu theme="dark" :unique-opened="true" :router="true">
+            <template v-for="(item,index) in $router.options.routes" v-if="!item.meta.hidden">
+              <el-submenu :index="item.name">
+                <template slot="title">
+                  <i class="el-icon-message"></i>
+                  <span slot="title">{{item.name}}</span>
+                </template>
+                <template v-for="(child,childIndex) in item.children" v-if="!child.hidden">
+                  <el-menu-item :index="child.path">{{child.name}}</el-menu-item>
+                </template>
+              </el-submenu>
+            </template>
+          </el-menu>
         </div>
       </div>
-      <div class="layout-breadcrumb">
-        <Breadcrumb>
-          <Breadcrumb-item href="#">应用中心</Breadcrumb-item>
-          <Breadcrumb-item>{{$route.name}}</Breadcrumb-item>
-        </Breadcrumb>
-      </div>
-      <div class="layout-content">
-        <div class="layout-content-main">
+      <div :class="rightClass">
+        <div class="breadcrumb">
+          <el-breadcrumb separator="/">
+            <el-breadcrumb-item :to="{ path: '/' }">应用中心</el-breadcrumb-item>
+            <el-breadcrumb-item :to="{path :$route.path}">{{$route.name}}</el-breadcrumb-item>
+          </el-breadcrumb>
+        </div>
+        <div class="content">
           <router-view></router-view>
         </div>
       </div>
-      </Col>
-    </Row>
-
-    <Modal v-model="modal1" title="修改密码" @on-ok.prevent="comfirmModifyPS" @on-cancel="cancel">
-      <Form ref="formValidate" :model="formValidate" :rules="ruleValidate" :label-width="100">
-        <Form-item label="原密码" prop="oldPassword">
-          <Input v-model="formValidate.oldPassword" placeholder="请输入原始密码"/>
-        </Form-item>
-        <Form-item label="新密码" prop="newPassword">
-          <Input v-model="formValidate.newPassword" placeholder="请输入新密码"/>
-        </Form-item>
-        <Form-item label="确认新密码" prop="resetPassword">
-          <Input v-model="formValidate.resetPassword" placeholder="请再次输入新密码"/>
-        </Form-item>
-      </Form>
-    </Modal>
+    </div>
   </div>
-  <!-- 修改密码 模态框 -->
-
-  <!-- 修改密码 模态框 -->
 </template>
 
 <script>
+  import store from 'store';
   import {WebConfig} from '../../api/config.js';
-  import prototype from '../../utils/prototype.js';
-  import Url from '../../utils/url.js';
 
-  const logoPath = require('../../assets/img/main-logo.png');
-  const userPhotoPath = require('../../assets/img/user.jpg');
+  const logo = require('../../assets/img/main-logo.png');
+  const userPhoto = require('../../assets/img/user.jpg');
 
   export default {
-    created() {
-      const user = JSON.parse(localStorage.getItem("user"));
-      this.curUserName = user.Name;
-    },
     data() {
       return {
-        userPhoto: userPhotoPath,
-        pageLogo: logoPath,
-        openNames: [this.$route.matched[0].name],
-        curUserName: "",
-        modeType: "vertical",
-        spanLeft: 4,
-        spanRight: 20,
-        iconSize: 16,
-        logoSize: 0,
-        leftNavIsDisplay: true,
-        logoIsDisplay: true,
-        loading: true,
-        modal1: false,
-        formValidate: {
-          oldPassword: '',
-          newPassword: '',
-          resetPassword: ''
-        },
-        ruleValidate: {
-          oldPassword: [
-            {required: true, message: '密码不能为空', trigger: 'blur'}
-          ],
-          newPassword: [
-            {required: true, message: '密码不能为空', trigger: 'blur'}
-          ],
-          resetPassword: [
-            {required: true, message: '密码不能为空', trigger: 'blur'}
-          ],
-        }
-      }
-    },
-    watch: {
-      spanLeft(val) {
-        // console.log(val);
-        //  if (val !== 4) {
-        //     this.logoIsDisplay = false;
-        // } else {
-        //     this.logoIsDisplay = true;
-        // }
-      }
+        logo,
+        userPhoto,
+        username: 'test',
+        isCollapse: false
+      };
     },
     computed: {
-      // iconSize() {
-      //     return this.spanLeft === 4 ? 18 : 24;
-      // },
-      // logoSize() {
-      //     if (this.spanLeft !== 4) {
-      //         //this.logoIsDisplay = true;
-      //         return 30;
-      //     } else {
-      //         //this.logoIsDisplay = false;
-      //         return 0;
-      //     }
-      // }
-    },
-    methods: {
-      toggleClick() {
-        if (this.spanLeft === 4) {
-          this.leftNavIsDisplay = true;
-          this.spanLeft = 0;
-          this.spanRight = 24;
-        } else {
-          this.leftNavIsDisplay = false;
-          this.spanLeft = 4;
-          this.spanRight = 20;
-        }
+      leftClass() {
+        return {
+          'left-part': true,
+          'collapse': this.isCollapse
+        };
       },
-      modifyPassWord() {
-        this.modal1 = true;
+      rightClass() {
+        return {
+          'right-part': true,
+          'collapse': this.isCollapse
+        };
       },
-      logout() {
-        localStorage.removeItem('user');
-        location.href = WebConfig.AppSetting.SSOLogoutUrl.format(WebConfig.AppSetting.AppCode, window.location.href);
-      },
-      comfirmModifyPS() {
-        /*this.$refs.formValidate.validate((valid) => {
-          if (valid) {
-            this.modal1 = false;
-            // this.loading = false;
-            this.$Message.success('提交成功!');
-          } else {
-            this.$Message.error('表单验证失败!');
-            return false;
-          }
-        });*/
-        // this.$Message.info('点击了确定');
-      },
-      cancel() {
-        this.modal1 = false;
-        this.$Message.info('点击了取消');
-      },
-      menuSelect(name) {
-        this.$router.push({path: name});
+      collpaseTip() {
+        return this.isCollapse ? '显示菜单' : '隐藏菜单';
       }
     },
-    mounted() {
+    methods: {
+      collapse() {
+        this.isCollapse = !this.isCollapse;
+      },
+      handleCommand(command) {
+        if (command === 'logout') {
+          store.remove('user');
+          location.href = WebConfig.AppSetting.SSOLogoutUrl.format(WebConfig.AppSetting.AppCode, window.location.href);
+        }
+      }
     }
   }
 </script>
