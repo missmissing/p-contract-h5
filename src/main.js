@@ -13,6 +13,7 @@ import components from './components';
 
 import Mock from './mock';
 import errorHanding from './core/errorHanding';
+import './assets/css/common.scss';
 
 Mock.bootstrap();
 

@@ -104,7 +104,7 @@ const router = new Router({
           component: function (resolve) {
             require(['../pages/performance/inspection.vue'], resolve);
           },
-          name: routerNames.con_performance,
+          name: routerNames.con_performanceIndex,
           meta: {
             auth: true
           },
@@ -164,7 +164,7 @@ const router = new Router({
         {
           path: '/contemplate/create',
           component: function (resolve) {
-            require(['../pages/support/create.vue'], resolve);
+            require(['../pages/support/create1.vue'], resolve);
           },
           meta: {
             auth: true

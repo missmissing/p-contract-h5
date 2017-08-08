@@ -43,15 +43,16 @@ export const routerNames = {
   con_purchase_order: '创建采购订单',
 
   con_performance:'合同履约',
+  con_performanceIndex:'履约合同',
   con_compensate: '违约/赔付处理',
   con_check_reject: '合同验收不合格处理',
   con_stop: '合同终止',
   con_update: '合同变更',
 
   con_support: '合同支持',
-  con_textTemp_create: '合同文本创建',
-  con_textTemp_update: '合同文本变更',
-  con_textTemp_del: '合同文本废除',
+  con_textTemp_create: '合同模板创建',
+  con_textTemp_update: '合同模板变更',
+  con_textTemp_del: '合同模板废除',
   con_textTemp_search: '合同文本查询',
   con_search: '合同查询'
 };
