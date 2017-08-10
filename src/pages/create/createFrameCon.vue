@@ -372,6 +372,7 @@
   export default {
     created() {
       let query = this.$route.query;
+      console.log('query',query);
       this.con.conModel = query.conModel;
       this.con.conType = query.conType;
 

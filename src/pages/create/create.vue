@@ -88,7 +88,7 @@
         <div style="text-align: center;margin-top:20px">
             <el-button type="primary" @click="handleNext">下一步</el-button>
         </div>
-        <el-dialog title="查询比价单" :visible.sync="dialogVisible" size="tiny" :before-close="handleCloseDialog">
+        <el-dialog title="查询比价单" :visible.sync="dialogVisible" size="tiny">
             <el-form ref="prForm" :model="prForm" label-width="100px">
                 <el-form-item label="PR号">
                     <el-input v-model="prForm.prCode" placeholder="请输入PR号"></el-input>
@@ -113,11 +113,10 @@
     </div>
 </template>
 <script>
-    import approveprocess from '../../components/approveProcess.vue'
+    //import approveprocess from '../../components/approveProcess.vue';
+    import Api from '../../api/create';
 
     export default {
-        created() {
-        },
         data(){
             return {
                 conForm: {
@@ -125,36 +124,10 @@
                     strPC: '',//比价单编号
                     curConModelId: '',
                     curConTypeId: '',
-                    conModel: [
-                        {id: 1, name: '框架意向合同'},
-                        {id: 2, name: '框架合同'},
-                        {id: 3, name: '单一合同'},
-                        {id: 4, name: '简易合同'},
-                    ],
-                    conType: [
-                        {id: 11, name: '服务类'},
-                        {id: 22, name: '礼品类'},
-                        {id: 33, name: '企划礼品类'},
-                    ]
+                    conModel: [],
+                    conType: []
                 },
-                arrPr: [//比价单列表
-                    {
-                        id: 111,
-                        name: 'wyy',
-                        department: '技术研发部',
-                        startTime: '2017-09-09',
-                        processStatus: '1',
-                        endTime: '2017-10-09'
-                    },
-                    {
-                        id: 222,
-                        name: 'wyy',
-                        department: '技术研发部',
-                        startTime: '2017-09-09',
-                        processStatus: '1',
-                        endTime: '2017-10-09'
-                    },
-                ],
+                arrPr: [],//比价单列表
                 currentPr: null,//当前选择的比价单
                 dialogVisible: false,
                 prForm: {
@@ -197,35 +170,53 @@
                 },
             }
         },
+        created() {
+            Api.getContractModelsAndTypes({}).then((data)=> {
+                this.conForm.conModel = data.data.dataMap.modelList;
+                this.conForm.conType = data.data.dataMap.typeList;
+            });
+        },
         methods: {
             handleQuery(){
-                console.log('handleQuery')
+                this.dialogVisible = true;
             },
             handleDetail(){
                 console.log('handleDetail');
             },
             handleNext(){
-                this.dialogVisible = true;
-                console.log('handleNext');
+                this.$router.push({
+                    path: '/ConCreate/CreateFrameContract',
+                    query: {
+                        currentPr: this.currentPr.id,
+                        curConModelId: this.conForm.curConModelId,
+                        curConTypeId: this.conForm.curConTypeId
+                    }
+                });
             },
             handleCurrentChange(currentRow){
                 this.currentPr = currentRow;
-                console.log('currentRow', currentRow);
             },
             handleCancel(row){
                 this.$refs.prTable.setCurrentRow(row);
             },
-            handleCloseDialog(done){
-                console.log('handleCloseDialog');
-                done();
-            },
             handleCloseDialog(){
                 this.dialogVisible = false;
-                console.log('handleCloseDialog');
             },
             handleOKDialog(){
                 this.dialogVisible = false;
-                console.log('handleOKDialog', this.prForm.createTime);
+                const startTime = this.prForm.createTime[0] ? this.prForm.createTime[0].toLocaleDateString() : '';
+                const endTime = this.prForm.createTime[1] ? this.prForm.createTime[1].toLocaleDateString() : '';
+                Api.getQrList({
+                    qrCode: this.conForm.strPC,
+                    prCode: this.prForm.prCode,
+                    meterialCode: this.prForm.meterialCode,
+                    createPerson: this.prForm.createPerson,
+                    startTime: startTime,
+                    endTime: endTime,
+                })
+                        .then((data)=> {
+                            this.arrPr = data.data.dataMap.list;
+                        });
             },
             nextStep() {
                 if (this.hasPR) {
@@ -245,6 +236,6 @@
                 });
 
             }
-        }
+        },
     }
 </script>
