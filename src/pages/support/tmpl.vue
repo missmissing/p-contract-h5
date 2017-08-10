@@ -82,11 +82,6 @@
   import supportModal from '../../api/support';
 
   export default {
-    props: {
-      info: {
-        default: {}
-      }
-    },
     data() {
       return {
         options: [],

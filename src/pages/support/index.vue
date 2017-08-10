@@ -28,9 +28,8 @@
             <el-form-item label="文本类型">
               <el-col :span="8">
                 <el-select
-                  v-model.number="form.type"
+                  v-model="form.type"
                   placeholder="请选择"
-                  @change="changeType"
                   class="wp100">
                   <el-option label="合同模板" value="1"></el-option>
                   <el-option label="合同文本" value="2"></el-option>
@@ -99,6 +98,7 @@
 </template>
 
 <script>
+  import * as types from '../../store/consts';
   import Tmpl from './tmpl.vue';
   import TreeModal from '../../components/treeModal.vue';
 
@@ -169,9 +169,6 @@
       }
     },
     methods: {
-      changeType(type) {
-        this.showUpload = type === 2;
-      },
       showTreeModal() {
         this.visible = true;
       },
@@ -190,8 +187,15 @@
         this.form.busiTypeText = busiTypeText.join(',');
       },
       submit() {
-        console.log('submit!: ' + JSON.stringify(this.form));
+        this.$store.commit(types.GET_INFO, {
+          info: this.form
+        });
         this.showTmpl = true;
+      }
+    },
+    watch: {
+      ['form.type']() {
+        this.showUpload = this.form.type === '2';
       }
     },
     components: {
