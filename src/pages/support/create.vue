@@ -59,7 +59,9 @@
                   v-model="form.startDate"
                   @change="formatDate"
                   class="wp100"
-                ></el-date-picker>
+                  :picker-options="pickerOptions"
+                  :editable="false">
+                </el-date-picker>
               </el-col>
               <el-col class="line" :span="2">--</el-col>
               <el-col :span="8">
@@ -103,7 +105,7 @@
       title="选择业务类型"
       :visible.sync="visible"
       :regions="regions"
-      @ok="getBusiType">
+      @ok="setBusiType">
     </TreeModal>
   </div>
 </template>
@@ -112,6 +114,7 @@
   import * as types from '../../store/consts';
   import Tmpl from './tmpl.vue';
   import TreeModal from '../../components/treeModal.vue';
+  import supportModel from '@/api/support';
 
   export default {
     data() {
@@ -127,56 +130,13 @@
           busiTypeText: '',
           files: ''
         },
-        regions: [{
-          value: 1,
-          label: '一级 1',
-          children: [{
-            value: 11,
-            label: '二级 1-1',
-            children: [{
-              value: 111,
-              label: '三级 1-1-1'
-            }]
-          }]
-        }, {
-          value: 2,
-          label: '一级 2',
-          children: [{
-            value: 21,
-            label: '二级 2-1',
-            children: [{
-              value: 211,
-              label: '三级 2-1-1'
-            }]
-          }, {
-            value: 22,
-            label: '二级 2-2',
-            children: [{
-              value: 221,
-              label: '三级 2-2-1'
-            }]
-          }]
-        }, {
-          value: 3,
-          label: '一级 3',
-          children: [{
-            value: 31,
-            label: '二级 3-1',
-            children: [{
-              value: 311,
-              label: '三级 3-1-1'
-            }]
-          }, {
-            value: 32,
-            label: '二级 3-2',
-            children: [{
-              value: 321,
-              label: '三级 3-2-1'
-            }]
-          }]
-        }],
+        regions: [],
+        pickerOptions: {
+          disabledDate(time) {
+            return time.getTime() < Date.now() - 8.64e7;
+          }
+        },
         visible: false,
-        showUpload: false,
         showTmpl: false
       }
     },
@@ -187,7 +147,7 @@
       formatDate(value) {
         this.form.startDate = value;
       },
-      getBusiType(value, tree) {
+      setBusiType(value, tree) {
         let busiType = [];
         let busiTypeText = [];
         const leafs = tree.$refs.tree.getCheckedNodes(true);
@@ -198,21 +158,39 @@
         this.form.busiType = busiType.join(',');
         this.form.busiTypeText = busiTypeText.join(',');
       },
+      getBusiType() {
+        supportModel.getBusiType({}).then((res) => {
+          this.regions = res.data.dataMap;
+        });
+      },
       next() {
         this.$store.commit(types.GET_INFO, {
           info: this.form
         });
         this.showTmpl = true;
+      },
+      getTmplData() {
+        supportModel.getTmplData({}).then((res) => {
+          console.log(res.data.dataMap);
+        });
       }
     },
-    watch: {
-      ['form.type']() {
-        this.showUpload = this.form.type === '2';
+    computed: {
+      showUpload() {
+        return this.form.type === '2';
       }
     },
     components: {
       TreeModal,
       Tmpl
+    },
+    created() {
+      const id = this.$route.params.id;
+      if (id) {
+        this.getTmplData();
+      }
+
+      this.getBusiType();
     }
   };
 </script>

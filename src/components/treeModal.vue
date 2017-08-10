@@ -7,7 +7,8 @@
     :title="title"
     :visible.sync="visible"
     size="tiny"
-    @close="close">
+    :show-close="false"
+    :close-on-click-modal="false">
     <div>
       <el-tree
         :data="regions"
@@ -15,10 +16,10 @@
         show-checkbox>
       </el-tree>
     </div>
-    <span slot="footer" class="dialog-footer">
-    <el-button @click="close">取 消</el-button>
-    <el-button type="primary" @click="ok">确 定</el-button>
-  </span>
+    <div slot="footer">
+      <el-button @click="close">取 消</el-button>
+      <el-button type="primary" @click="ok">确 定</el-button>
+    </div>
   </el-dialog>
 </template>
 
