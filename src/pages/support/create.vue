@@ -1,434 +1,218 @@
-<style scoped>
-  .title {
-    text-align: right;
-    padding-right: 10px;
+<style type="text/scss" lang="scss" scoped>
+  .form-container {
+    .wp100 {
+      width: 100%;
+    }
+    .line {
+      text-align: center;
+    }
   }
-
-  .multiple_select {
-    margin-top: 10px;
-    border: solid 1px #dddee1;
-    border-radius: 4px;
-  }
-
-  .multiple_select li {
-    margin: 0;
-    padding-left: 10px;
-    border-bottom: solid 1px #dddee1;
-  }
-
-  .template-preview {
-    border: solid 1px #dddee1;
-    padding: 10px;
-    margin-left: 20px;
-  }
-
-  #editTemplate {
-    position: relative;
-    top: 0;
-  }
-
-  .form-enter-active {
-
-    transition: transform 0.5s;
-  }
-
-  .form-enter {
-    transform: rotate(180deg)
-  }
-
-  .form-leave-active {
-    transition: opacity 0.5s
-  }
-
-  .form-leave-to {
-    opacity: 0;
-  }
-
-  .template-enter-active {
-    transition: transform 0.5s;
-    transition-delay: 0.5s;
-  }
-
-  .template-enter {
-    transform: rotate(180deg);
-  }
-
-  .template-leave-active {
-    transition: opacity 0.5s
-  }
-
-  .template-leave-to {
-    opacity: 0;
-  }
-
 </style>
+
 <template>
   <div>
-    <transition name="form">
-      <Form :label-width="80" v-show="!editTemplate.show">
-        <Form-item label="文本类型">
-          <Row>
-            <Col span="8">
-            <Select placeholder="请选择">
-              <Option value="template">合同模板</Option>
-              <Option value="text">文本</Option>
-            </Select>
-            </Col></Row>
-        </Form-item>
-        <Form-item label="文本名称">
-          <Row>
-            <Col span="8">
-            <Input placeholder="请输入" v-model="formItem.title"/>
-            </Col>
-          </Row>
-        </Form-item>
-        <Form-item label="文本编号">
-          <Row>
-            <Col span="8">
-            <Input placeholder="请输入"/>
-            </Col>
-          </Row>
-        </Form-item>
-        <Form-item label="启用时间">
-          <Row>
-            <Col span="8">
-            <Date-picker type="date" placeholder="选择日期" v-model="formItem.date"/>
-            </Col>
-            <Col span="2" style="text-align:center;padding-right:10px;">
-            至
-            </Col>
-            <Col span="8">
-            <Date-picker type="date" placeholder="选择日期" v-model="formItem.date"/>
-            </Col>
-          </Row>
-        </Form-item>
-        <Form-item label="业务类型">
-          <Row>
-            <Col span="6">
-            <Cascader :data="baseData" trigger="hover"/>
-            </Col>
-            <Col span="2">
-            <Button icon="plus-round" style="margin-left:10px">添加</Button>
-            </Col>
-          </Row>
-          <Row>
-            <Col span="8">
-            <ul class="multiple_select">
-              <li>123
-                <Button type="text" icon="close" style="float:right;"></Button>
-              </li>
-              <li>123
-                <Button type="text" icon="close" style="float:right;"></Button>
-              </li>
-              <li>123
-                <Button type="text" icon="close" style="float:right;"></Button>
-              </li>
-            </ul>
-            </Col>
-          </Row>
-        </Form-item>
-        <Form-item label="使用说明">
-          <Row>
-            <Col span="18">
-            <Input v-model="formItem.textarea" type="textarea" :autosize="{minRows: 3,maxRows: 6}"
-                   placeholder="请输入..."/>
-            </Col>
-          </Row>
-        </Form-item>
-        <Form-item>
-          <Button @click="editTemplate.show=true" type="info">添加模板</Button>
-        </Form-item>
-      </Form>
-    </transition>
-    <transition name="template">
-      <Form id="editTemplate" v-show="editTemplate.show">
-        <table>
-          <tr>
-            <td>标题1</td>
-            <td>标题2</td>
-          </tr>
-          <tr v-for="item in materialsItems">
-            <td>{{item.id}}</td>
-            <td>{{item.name}}</td>
-          </tr>
-        </table>
-        <Row>
-          <Col span="10">
-          <Form :label-width="0">
-            <Form-item>
-              <Radio-group type="button" v-model="template_module" @on-change="template_module_change">
-                <Radio label="1">自定义</Radio>
-                <Radio label="2">模板一</Radio>
-                <Radio label="3">模板二</Radio>
-                <Radio label="4">模板三</Radio>
-              </Radio-group>
-            </Form-item>
-            <Form-item>
-              <Transfer
-                :data="transferTemplate.data"
-                :target-keys="transferTemplate.targetKeys"
-                filterable
-                :filter-method="transferFilter"
-                :render-format="transferTemplateRender"
-                :titles="transferTemplate.titles"
-                @on-change="transferModuleChange"></Transfer>
-            </Form-item>
-            <Form-item>
-              <vue-html5-editor :content="editTemplate.content" :height="300"
-                                @change="updateTemplateContent"/>
-            </Form-item>
-            <Form-item style="text-align:center">
-              <Button @click="" type="primary" size="large">提交</Button>
-              <Button @click="editTemplate.show=false" type="dashed">取消</Button>
-            </Form-item>
-          </Form>
-          </Col>
-          <Col span="14">
-          <h3 style="padding-left:20px;"> 预览</h3>
-          <div class="template-preview" v-html="templatePreview">
-          </div>
-          </Col>
-        </Row>
-      </Form>
-    </transition>
+    <div v-if="!showTmpl">
+      <el-card>
+        <div slot="header">
+          <span class="common-title">基本信息</span>
+        </div>
+        <div class="form-container">
+          <el-form ref="form" :model="form" label-width="80px">
+            <el-form-item label="文本编号" v-if="form.number">
+              <el-col :span="8">
+                <el-input v-model="form.number" class="wp100" disabled></el-input>
+              </el-col>
+            </el-form-item>
+            <el-form-item label="文本名称">
+              <el-col :span="8">
+                <el-input v-model.trim="form.name" class="wp100"></el-input>
+              </el-col>
+            </el-form-item>
+            <el-form-item label="文本类型">
+              <el-col :span="8">
+                <el-select
+                  v-model="form.type"
+                  placeholder="请选择"
+                  class="wp100">
+                  <el-option label="合同模板" value="1"></el-option>
+                  <el-option label="合同文本" value="2"></el-option>
+                </el-select>
+              </el-col>
+            </el-form-item>
+            <el-form-item label="业务类型">
+              <el-col :span="8">
+                <el-input
+                  type="textarea"
+                  :value="form.busiTypeText"
+                  @focus="showTreeModal"
+                  resize="none"
+                  :autosize="{maxRows:6}"
+                  readonly>
+                </el-input>
+              </el-col>
+            </el-form-item>
+            <el-form-item label="启用时间">
+              <el-col :span="8">
+                <el-date-picker
+                  type="date"
+                  placeholder="开始日期"
+                  v-model="form.startDate"
+                  @change="formatDate"
+                  class="wp100"
+                ></el-date-picker>
+              </el-col>
+              <el-col class="line" :span="2">--</el-col>
+              <el-col :span="8">
+                <el-input
+                  v-model="form.endDate"
+                  class="wp100"
+                  disabled
+                ></el-input>
+              </el-col>
+            </el-form-item>
+            <el-form-item label="使用说明">
+              <el-input
+                type="textarea"
+                :maxlength="300"
+                :autosize="{ minRows: 2 }"
+                resize="none"
+                v-model="form.desc">
+              </el-input>
+            </el-form-item>
+            <el-form-item label="文本上传" v-show="showUpload">
+              <el-upload
+                drag
+                action=""
+                multiple>
+                <i class="el-icon-upload"></i>
+                <div class="el-upload__text">将文件拖到此处，或<em>点击上传</em></div>
+                <div class="el-upload__tip" slot="tip">文件大小不超过10M</div>
+              </el-upload>
+            </el-form-item>
+            <el-form-item>
+              <el-button type="primary" @click="next">下一步</el-button>
+            </el-form-item>
+          </el-form>
+        </div>
+      </el-card>
+    </div>
+    <div v-if="showTmpl">
+      <Tmpl></Tmpl>
+    </div>
+    <TreeModal
+      title="选择业务类型"
+      :visible.sync="visible"
+      :regions="regions"
+      @ok="getBusiType">
+    </TreeModal>
   </div>
 </template>
+
 <script>
-  import api from '../../api'
-  import tagService from '../../utils/tag.js'
-  import templateReplace from '../../utils/templateReplace.js'
+  import * as types from '../../store/consts';
+  import Tmpl from './tmpl.vue';
+  import TreeModal from '../../components/treeModal.vue';
 
   export default {
     data() {
       return {
-        materialsItems: [{id: 123, name: "1ewtewt"}, {id: 321, name: "tgreg"},],
-        templateState: {
-          categories: ['purchase_table_1', 'payment_1']
+        form: {
+          number: '',
+          name: '',
+          type: '',
+          startDate: '',
+          endDate: '9999-12-31',
+          desc: '',
+          busiType: '',
+          busiTypeText: '',
+          files: ''
         },
-        source: {
-          templateTags: []
-        },
-        template_module: '4',
-        formItem: {
-          input: '',
-          select: '',
-          radio: 'male',
-          checkbox: [],
-          switch: true,
-          date: '',
-          time: '',
-          slider: [20, 50],
-          textarea: '',
-          title: '联合扶持品牌经销商营销活动协议'
-        },
-        editTemplate: {
-          show: false,
-          header: '',
-          content: '',
-          footer: ''
-        },
-        transferTemplate: {
-          data: [],//this.getModuleList(),
-          targetKeys: [],
-          titles: ['模板组合', '已选择模板']
-        },
-        baseData: [{
-          value: 'beijing',
-          label: '一般物资类',
-          children: [
-            {
-              value: 'gugong',
-              label: '故宫'
-            },
-            {
-              value: 'tiantan',
-              label: '天坛'
-            },
-            {
-              value: 'wangfujing',
-              label: '王府井'
-            }
-          ]
+        regions: [{
+          value: 1,
+          label: '一级 1',
+          children: [{
+            value: 11,
+            label: '二级 1-1',
+            children: [{
+              value: 111,
+              label: '三级 1-1-1'
+            }]
+          }]
         }, {
-          value: 'jiangsu',
-          label: '服务类',
-          children: [
-            {
-              value: 'nanjing',
-              label: '南京',
-              children: [
-                {
-                  value: 'fuzimiao',
-                  label: '夫子庙',
-                }
-              ]
-            },
-            {
-              value: 'suzhou',
-              label: '苏州',
-              children: [
-                {
-                  value: 'zhuozhengyuan',
-                  label: '拙政园',
-                  children: [
-                    {
-                      value: 'level4',
-                      label: '4级测试',
-                    }
-                  ]
-                },
-                {
-                  value: 'shizilin',
-                  label: '狮子林',
-                }
-              ]
-            }
-          ],
-        }]
+          value: 2,
+          label: '一级 2',
+          children: [{
+            value: 21,
+            label: '二级 2-1',
+            children: [{
+              value: 211,
+              label: '三级 2-1-1'
+            }]
+          }, {
+            value: 22,
+            label: '二级 2-2',
+            children: [{
+              value: 221,
+              label: '三级 2-2-1'
+            }]
+          }]
+        }, {
+          value: 3,
+          label: '一级 3',
+          children: [{
+            value: 31,
+            label: '二级 3-1',
+            children: [{
+              value: 311,
+              label: '三级 3-1-1'
+            }]
+          }, {
+            value: 32,
+            label: '二级 3-2',
+            children: [{
+              value: 321,
+              label: '三级 3-2-1'
+            }]
+          }]
+        }],
+        visible: false,
+        showUpload: false,
+        showTmpl: false
       }
-    },
-    computed: {
-      count() {
-        console.log(this.$store.state.count);
-        return this.$store.state.count;
-      },
-      templatePreview() {
-        return tagService.template_preview('<div style="filter:alpha(Opacity=50);-moz-opacity:0.5;opacity: 0.5;"><h2 style="text-align:center;">' + this.formItem.title + '</h2><br/><br/>' + this.editTemplate.header + '</div>'
-          + this.formatTemplateContent(this.editTemplate.content)
-          + this.editTemplate.footer);
-      },
-    },
-    mounted: function () {
-      let $self = this;
-      $self.getModuleList();
-      this.refreshTemplate();
-      //console.log(this.$store.state.user.test);
-
     },
     methods: {
-      transferTemplateRender(item) {
-        return item.label;
+      showTreeModal() {
+        this.visible = true;
       },
-      transferModuleChange(newTargetKeys, direction, moveKeys) {
-        this.transferTemplate.targetKeys = newTargetKeys;
-        this.refreshTemplate();
+      formatDate(value) {
+        this.form.startDate = value;
       },
-      refreshTemplate() {
-        const newTargetItems = [];
-        this.transferTemplate.targetKeys.forEach(key => {
-          newTargetItems.push(this.transferTemplate.data.find((m) => {
-              return m.key === key
-            })
-          );
+      getBusiType(value, tree) {
+        let busiType = [];
+        let busiTypeText = [];
+        const leafs = tree.$refs.tree.getCheckedNodes(true);
+        leafs.forEach((item) => {
+          busiType.push(item.value);
+          busiTypeText.push(item.label);
         });
-        newTargetItems.sort(m => {
-          return m.sort
+        this.form.busiType = busiType.join(',');
+        this.form.busiTypeText = busiTypeText.join(',');
+      },
+      next() {
+        this.$store.commit(types.GET_INFO, {
+          info: this.form
         });
-
-        this.editTemplate.header = '';
-        this.editTemplate.footer = '';
-        const templateTags = this.source.templateTags;
-
-        newTargetItems.forEach(m => {
-          if (m.type === 'H')
-            this.editTemplate.header += m.content;
-          else if (m.type === 'F')
-            this.editTemplate.footer += m.content;
-          else if (m.type === 'S') {
-            this.templateState.categories.forEach(c => {
-              //console.log(m.key);
-              const item = templateTags.find(t => {
-                return c === t.Code && m.key === t.ModuleCode;
-              });
-              //console.log(item);
-              if (item) {
-                if (m.position === 'Top')
-                  this.editTemplate.header += item.Content;
-                else
-                  this.editTemplate.footer += item.Content;
-              }
-            });
-          }
-        });
-      },
-      updateTemplateContent(data) {
-        // sync content to component
-        console.log(data);
-        this.$store.state.count += 1;
-        this.editTemplate.content = data;
-      },
-      formatTemplateContent(content) {
-        return '<div style="border:dashed 1px gray;padding:5px;">' + content + '</div>';
-      },
-      transferFilter(data, query) {
-        return data.label.indexOf(query) > -1;
-      },
-      getModuleList() {
-        const $self = this;
-
-        api.getTemplateModuleList({}).then((res) => {
-
-          $self.transferTemplate.data = res.data.data.modules.map(function (el) {
-
-            return {
-              key: el.Code,
-              label: el.Name,
-              disabled: false,
-              content: el.Content,
-              sort: el.Sort,
-              type: el.Type,
-              position: el.Position,
-            };
-          });
-
-          $self.source.templateTags = res.data.data.templateTags;
-
-          //测试
-          const item = res.data.data.modules.find(t => {
-            return 'table' === t.Code;
-          });
-          const html = item.Content;
-          templateReplace.addData("materials", [
-            {
-              id: '00000012321321',
-              name: '笔记本',
-              description: '联想笔记本T650',
-              quantity: 2,
-              price: 1200.00,
-              tax: '6%',
-            },
-            {
-              id: '000000123228901',
-              name: '打印机',
-              description: 'HP打印机，X999',
-              quantity: 1,
-              price: 670.00,
-              tax: '17%',
-            },
-          ]);
-          this.editTemplate.content = templateReplace.getRepalceHtml(html);
-        });
-
-      },
-      template_module_change() {
-        switch (this.template_module) {
-          case '1':
-            this.transferTemplate.targetKeys = [];
-            break;
-          case '2':
-            this.transferTemplate.targetKeys = ['header1', 'footer'];
-            break;
-          case '3':
-            this.transferTemplate.targetKeys = ['payment', 'header1', 'footer'];
-            break;
-          case '4':
-          default:
-            this.transferTemplate.targetKeys = ['payment', 'purchase_table', 'header1', 'footer'];
-            break;
-        }
-        this.refreshTemplate();
-
+        this.showTmpl = true;
       }
+    },
+    watch: {
+      ['form.type']() {
+        this.showUpload = this.form.type === '2';
+      }
+    },
+    components: {
+      TreeModal,
+      Tmpl
     }
-  }
+  };
 </script>

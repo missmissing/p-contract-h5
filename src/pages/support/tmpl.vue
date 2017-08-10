@@ -22,6 +22,7 @@
       padding: 15px;
       border: 1px solid #ddd;
       min-height: 646px;
+      word-wrap: break-word;
     }
   }
 </style>
@@ -33,7 +34,7 @@
         <span class="common-title">模板信息</span>
       </div>
       <div>
-        <el-row>
+        <el-row class="row">
           <el-col :span="11">
             <div class="row">
               <el-select
@@ -65,12 +66,16 @@
           <el-col :span="12" :offset="1">
             <div class="row pre-title">预览</div>
             <div class="preview">
-              <div class="header" v-html="header"></div>
+              <div v-html="header"></div>
               <div v-html="content"></div>
-              <div class="footer" v-html="footer"></div>
+              <div v-html="footer"></div>
             </div>
           </el-col>
         </el-row>
+        <div>
+          <el-button @click="save">保 存</el-button>
+          <el-button type="primary" @click="submit">提 交</el-button>
+        </div>
       </div>
     </el-card>
   </div>
@@ -123,6 +128,18 @@
         supportModal.getModuleData({}).then((res) => {
           this.modulesData = res.data.dataMap;
         });
+      },
+      back() { //返回列表页
+        this.$router.push('/contemplate/list');
+      },
+      save() {
+        console.log('click save');
+        this.back();
+      },
+      submit() {
+        console.log('click submit');
+        this.back();
+
       }
     },
     watch: {

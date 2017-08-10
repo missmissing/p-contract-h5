@@ -53,6 +53,7 @@ export const routerNames = {
     con_update: '合同变更',
 
     con_support: '合同支持',
+    con_textTemp_list:'合同模板列表',
     con_textTemp_create: '合同文本创建',
     con_textTemp_update: '合同文本变更',
     con_textTemp_del: '合同文本废除',

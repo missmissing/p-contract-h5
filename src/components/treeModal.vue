@@ -6,7 +6,8 @@
   <el-dialog
     :title="title"
     :visible.sync="visible"
-    size="tiny">
+    size="tiny"
+    @close="close">
     <div>
       <el-tree
         :data="regions"
@@ -35,7 +36,9 @@
       regions: {
         default: []
       },
-      visible: false
+      visible: {
+        default: false
+      }
     },
     methods: {
       getCheckedNodes() {
@@ -47,7 +50,7 @@
         this.$emit('ok', this.checkNodes, this);
       },
       close() {
-        this.$emit('update:visible', false)
+        this.$emit('update:visible', false);
       }
     }
   };

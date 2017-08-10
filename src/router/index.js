@@ -195,10 +195,20 @@ const router = new Router({
             },
             name: routerNames.con_support,
             children: [
+              {
+                path: '/contemplate/list',
+                component: function (resolve) {
+                  require(['../pages/support/list.vue'], resolve);
+                },
+                meta: {
+                  auth: true
+                },
+                name: routerNames.con_textTemp_list
+              },
                 {
                     path: '/contemplate/create',
                     component: function (resolve) {
-                        require(['../pages/support/index.vue'], resolve);
+                        require(['../pages/support/create.vue'], resolve);
                     },
                     meta: {
                         auth: true
@@ -208,7 +218,7 @@ const router = new Router({
                 {
                     path: '/contemplate/update',
                     component: function (resolve) {
-                        require(['../pages/support/update.vue'], resolve);
+                        require(['../pages/support/create.vue'], resolve);
                     },
                     meta: {
                         auth: true
@@ -218,7 +228,7 @@ const router = new Router({
                 {
                     path: '/contemplate/delete',
                     component: function (resolve) {
-                        require(['../pages/support/delete.vue'], resolve);
+                        require(['../pages/support/create.vue'], resolve);
                     },
                     meta: {
                         auth: true
