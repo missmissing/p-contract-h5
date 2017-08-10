@@ -64,7 +64,7 @@ const router = new Router({
                     },
                     //hidden: true,
                     component: function (resolve) {
-                        require(['../pages/create/createContract.vue'], resolve);
+                        require(['../pages/create/createFrameCon.vue'], resolve);
                     },
                     name: routerNames.con_createFrameContract
                 },
