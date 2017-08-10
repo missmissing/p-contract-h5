@@ -9,7 +9,7 @@ api.use(compression());
 api.use('/api/', bodyParser.json({"limit": "100000kb"}));
 api.use('/api/', bodyParser.urlencoded({extended: true}));
 
-require('./mock');
+require('./mock')(api);
 
 //测试服务器地址
 const im = 'http://im.uat1.rs.com';

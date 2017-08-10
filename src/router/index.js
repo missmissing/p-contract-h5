@@ -198,7 +198,7 @@ const router = new Router({
                 {
                     path: '/contemplate/create',
                     component: function (resolve) {
-                        require(['../pages/support/create1.vue'], resolve);
+                        require(['../pages/support/index.vue'], resolve);
                     },
                     meta: {
                         auth: true

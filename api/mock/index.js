@@ -1,4 +1,4 @@
-const mocks = ['./create', './performance', './sign', './template'];
+const mocks = ['./create', './performance', './sign', './support'];
 
 module.exports = function (api) {
   mocks.forEach(function (mock) {

@@ -21,10 +21,10 @@ function checkStatus(response) {
 export default class Http {
   static send(config) {
     const configs = Object.assign({}, config);
-    return axios(configs).then(checkStatus).catch((error) => {
+    return axios(configs).then().catch((error) => {
       const {response} = error;
       if (response) {
-        const {data, status} = response;
+        const {data = {}, status} = response;
         const {message = '系统异常！'} = data;
         emitter.emit(Consts.EVENT_KEY.ERROR);
         // 触发网络异常
@@ -58,7 +58,7 @@ export default class Http {
     return Http.send(config);
   }
 
-  static get(url, params = {}) {
+  static get (url, params = {}) {
     let urlParams = [];
     Object.keys(params).forEach((key) => {
       urlParams.push(`${key}=${params[key]}`);

@@ -135,7 +135,6 @@
             </Col>
           </Row>
         </Form-item>
-
         <Form-item>
           <Button @click="editTemplate.show=true" type="info">添加模板</Button>
         </Form-item>
@@ -163,7 +162,6 @@
                 <Radio label="3">模板二</Radio>
                 <Radio label="4">模板三</Radio>
               </Radio-group>
-
             </Form-item>
             <Form-item>
               <Transfer
@@ -194,9 +192,7 @@
       </Form>
     </transition>
   </div>
-
 </template>
-
 <script>
   import api from '../../api'
   import tagService from '../../utils/tag.js'
