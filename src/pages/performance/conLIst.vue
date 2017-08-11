@@ -13,11 +13,11 @@
   <div class="list-container">
     <el-card>
       <div slot="header">
-        <span class="common-title">合同模板列表</span>
+        <span class="common-title">合同列表</span>
       </div>
       <div>
         <div class="row">
-
+          <el-button type="success" @click="add">签订新合同</el-button>
         </div>
         <el-table
           :data="tableData"
@@ -25,92 +25,65 @@
           highlight-current-row
           class="wp100">
           <el-table-column
-            fixed
-            prop="name"
-            label="姓名"
+            type="index"
+            width="50">
+          </el-table-column>
+          <el-table-column
+            prop="createDate"
+            label="日期"
             width="120">
           </el-table-column>
           <el-table-column
-            prop="date"
-            label="日期"
+            prop="owner"
+            label="创建人"
+            width="120">
+          </el-table-column>
+          <el-table-column
+            prop="conCode"
+            label="合同编号"
             width="150">
           </el-table-column>
           <el-table-column
-            prop="province"
-            label="省份"
+            prop="pr"
+            label="PR"
             width="120">
           </el-table-column>
           <el-table-column
-            prop="city"
-            label="市区"
+            prop="materialCode"
+            label="物料编码"
             width="120">
           </el-table-column>
           <el-table-column
-            prop="address"
-            label="地址"
+            prop="price"
+            label="单价"
+            width="120"
           >
           </el-table-column>
           <el-table-column
-            prop="zip"
-            label="邮编"
+            prop="counts"
+            label="数量"
             width="120">
           </el-table-column>
           <el-table-column
             fixed="right"
             label="操作"
-            width="100">
+            width="280">
             <template scope="scope">
-              <el-button type="text" size="small" @click="edit(scope.$index, scope.row)">编辑</el-button>
-              <el-button type="text" size="small" @click="stop(scope.$index, scope.row)">废除</el-button>
+              <el-button type="text" size="small" @click="edit(scope.$index, scope.row)">履约</el-button>
+              <el-button type="text" size="small" @click="stop(scope.$index, scope.row)">验收不合格</el-button>
+              <el-button type="text" size="small" @click="edit(scope.$index, scope.row)">变更</el-button>
+              <el-button type="text" size="small" @click="stop(scope.$index, scope.row)">终止</el-button>
+              <el-button type="text" size="small" @click="rej(scope.$index, scope.row)">违约处理</el-button>
             </template>
           </el-table-column>
         </el-table>
       </div>
     </el-card>
-    <el-dialog
-      title="废除模板"
-      :visible.sync="dialogVisible"
-      size="tiny"
-    >
-      <div>
-        <el-form ref="form" label-width="80px">
-          <el-form-item label="废除时间">
-            <el-col>
-              <el-date-picker
-                class="wp100"
-                v-model="stopData.endDate"
-                type="date"
-                @change="formatDate"
-                placeholder="选择日期"
-                :picker-options="stopData.pickerOptions"
-                :editable="false">
-              </el-date-picker>
-            </el-col>
-          </el-form-item>
-          <el-form-item label="废除理由" style="margin-bottom:0;">
-            <el-col>
-              <el-input
-                class="wp100"
-                v-model="stopData.reason"
-                type="textarea"
-                :rows="8"
-                :maxlength="300"
-                resize="none"
-              ></el-input>
-            </el-col>
-          </el-form-item>
-        </el-form>
-      </div>
-      <div slot="footer" class="dialog-footer">
-        <el-button @click="dialogVisible = false">取 消</el-button>
-        <el-button type="primary" @click="stopSure">确 定</el-button>
-      </div>
-    </el-dialog>
   </div>
 </template>
 
 <script>
-  import supportModel from '@/api/support';
+  import performanceModel from '@/api/performance';
 
   export default {
     data() {
@@ -138,8 +111,11 @@
       }
     },
     methods: {
+      add() {
+        this.$router.push('/ConCreate/Create');
+      },
       getList() {
-        supportModel.getList({}).then((res) => {
+        performanceModel.getConList({}).then((res) => {
           this.tableData = res.data.dataMap;
         })
       },

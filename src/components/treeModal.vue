@@ -13,6 +13,9 @@
       <el-tree
         :data="regions"
         ref="tree"
+        :node-key="nodeKey"
+        :default-checked-keys="initialKeys"
+        @check-change="getCheckedNodes"
         show-checkbox>
       </el-tree>
     </div>
@@ -31,6 +34,10 @@
       };
     },
     props: {
+      nodeKey: {
+        type: String,
+        default: ''
+      },
       title: {
         default: '提示'
       },
@@ -39,6 +46,9 @@
       },
       visible: {
         default: false
+      },
+      initialKeys: {
+        default: []
       }
     },
     methods: {
@@ -47,8 +57,7 @@
       },
       ok() {
         this.close();
-        this.getCheckedNodes();
-        this.$emit('ok', this.checkNodes, this);
+        this.$emit('ok', this.checkNodes, this.$refs.tree);
       },
       close() {
         this.$emit('update:visible', false);

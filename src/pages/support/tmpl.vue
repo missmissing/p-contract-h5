@@ -23,6 +23,17 @@
       border: 1px solid #ddd;
       min-height: 646px;
       word-wrap: break-word;
+      .header {
+        margin-bottom: 20px;
+        &:after {
+          content: '';
+          clear: both;
+          display: table;
+        }
+      }
+      .footer {
+        margin-top: 20px;
+      }
     }
   }
 </style>
@@ -38,7 +49,7 @@
           <el-col :span="11">
             <div class="row">
               <el-select
-                v-model="value"
+                v-model="form.tplType"
                 placeholder="请选择">
                 <el-option
                   v-for="item in options"
@@ -51,13 +62,13 @@
             <div class="row">
               <el-transfer
                 :titles="['可选模块', '已选模块']"
-                v-model="moduleId"
+                v-model="form.moduleId"
                 :data="modulesData">
               </el-transfer>
             </div>
             <div class="row">
               <quill-editor
-                v-model="content"
+                v-model="form.tplContent"
                 ref="myQuillEditor"
                 :options="editorOption">
               </quill-editor>
@@ -66,9 +77,9 @@
           <el-col :span="12" :offset="1">
             <div class="row pre-title">预览</div>
             <div class="preview">
-              <div v-html="header"></div>
-              <div v-html="content"></div>
-              <div v-html="footer"></div>
+              <div v-html="header" class="header"></div>
+              <div v-html="form.tplContent"></div>
+              <div v-html="footer" class="footer"></div>
             </div>
           </el-col>
         </el-row>
@@ -89,13 +100,13 @@
   export default {
     data() {
       return {
+        form: {
+          tplType: '',
+          moduleId: [],
+          tplContent: ''
+        },
         options: [],
-        value: '',
-        moduleId: [],
         modulesData: [],
-        header: '',
-        content: '',
-        footer: '',
         editorOption: {
           placeholder: "请输入内容...",
           modules: {
@@ -129,11 +140,46 @@
           this.modulesData = res.data.dataMap;
         });
       },
+      setData() {
+        const initialData = this.$store.state.support.create.initialData;
+        Object.keys(this.form).forEach((key) => {
+          if (initialData.hasOwnProperty(key)) {
+            if (key === 'moduleId') {
+              this.form[key] = initialData[key].split(',');
+              return;
+            }
+            this.form[key] = initialData[key];
+          }
+        });
+      },
+      setModulesData(type) {
+        const value = this.form.moduleId;
+        const modulesData = this.modulesData;
+        if (!value.length || !modulesData.length) {
+          return '';
+        }
+        const result = [];
+        value.forEach((key) => {
+          const module = _.find(modulesData, (o) => {
+            return o.key === key;
+          });
+          const content = module.content;
+          if (module.type === type) {
+            result.push(content);
+          }
+        });
+        return result.join('');
+      },
+      getResult() {
+        const {info} = this.$store.state.support.create;
+        return {...info, ...this.form, moduleId: this.form.moduleId.join(',')};
+      },
       back() { //返回列表页
         this.$router.push('/contemplate/list');
       },
       save() {
-        console.log('click save');
+        const result = this.getResult();
+        console.log('click save：' + JSON.stringify(result));
         this.back();
       },
       submit() {
@@ -143,34 +189,33 @@
       }
     },
     watch: {
-      value() {
-        const option = _.find(this.options, (o) => {
-          return o.value === this.value;
-        });
-        this.moduleId = option.moduleId;
-      },
-      moduleId() {
-        const value = this.moduleId;
-        if (!value.length) {
-          this.header = '';
-          this.footer = '';
+      ['form.tplType']() {
+        const options = this.options;
+        if (!options.length) {
           return;
         }
-        const header = [];
-        const footer = [];
-        value.forEach((key) => {
-          const module = _.find(this.modulesData, (o) => {
-            return o.key === key;
-          });
-          const content = module.content;
-          if (module.type === 1) {
-            header.push(content);
-          } else {
-            footer.push(content);
-          }
+        const option = _.find(options, (o) => {
+          return o.value === this.form.tplType;
         });
-        this.header = header.join('');
-        this.footer = footer.join('');
+        this.form.moduleId = option.moduleId ? option.moduleId.split(',') : [];
+      },
+      $route() {
+        const id = this.$route.params.id;
+        if (!id) {
+          Object.assign(this.form, {
+            tplType: '',
+            moduleId: [],
+            tplContent: ''
+          });
+        }
+      }
+    },
+    computed: {
+      header() {
+        return this.setModulesData('1');
+      },
+      footer() {
+        return this.setModulesData('2');
       }
     },
     components: {
@@ -179,6 +224,12 @@
     created() {
       this.getTmplTypes();
       this.getModuleData();
+    },
+    mounted() {
+      const id = this.$route.params.id;
+      if (id) {
+        this.setData();
+      }
     }
   };
 </script>
