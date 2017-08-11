@@ -30,13 +30,13 @@ module.exports = function (api) {
             code: 200,
             message: 'success',
             dataMap: {
-                modelList: [{id: 1, name: '框架意向合同'},
-                    {id: 2, name: '框架合同'},
-                    {id: 3, name: '单一合同'},
-                    {id: 4, name: '简易合同'},],
-                typeList: [{id: 11, name: '服务类'},
-                    {id: 22, name: '礼品类'},
-                    {id: 33, name: '企划礼品类'},]
+                modelList: [{id: 'con1', name: '框架意向合同'},
+                    {id: 'con2', name: '框架合同'},
+                    {id: 'con3', name: '单一合同'},
+                    {id: 'con4', name: '简易合同'},],
+                typeList: [{id: 'service1', name: '服务类'},
+                    {id: 'service2', name: '礼品类'},
+                    {id: 'service3', name: '企划礼品类'},]
             }
         });
     });

@@ -1,39 +1,42 @@
 <template>
     <div>
         <el-card>
-            <el-form ref="conForm" :model="conForm" label-width="100px">
+            <el-form ref="conForm" :model="conForm" :rules="conFormRules" label-width="100px">
                 <el-form-item label="是否有比价单">
                     <el-switch v-model="conForm.isPr"></el-switch>
                 </el-form-item>
                 <el-row>
                     <el-col :span="8">
-                        <el-form-item label="比价单" v-if="conForm.isPr">
+                        <el-form-item label="比价单" v-if="conForm.isPr" prop="strPC">
                             <el-input v-model="conForm.strPC" placeholder="请输入"></el-input>
                         </el-form-item>
                     </el-col>
                     <el-col :span="8" v-if="conForm.isPr">
-                        <el-button style="margin-left: 33px" class="btnSearch" @click="handleQuery" type="primary">查找
+                        <el-button style="margin-left: 33px" :disabled="conForm.strPC?false:true" class="btnSearch"
+                                   @click="handleQuery" type="primary">查找
                         </el-button>
-                        <el-button @click="handleDetail" type="primary">详情</el-button>
+                        <el-button @click="handleDetail" :disabled="conForm.strPC?false:true" type="primary">详情
+                        </el-button>
                     </el-col>
                 </el-row>
                 <el-row>
                     <el-col :span="8">
-                        <el-form-item label="合同模式">
-                            <el-select v-model="conForm.curConTypeId" placeholder="请选择合同类型">
+                        <el-form-item label="合同模式" prop="curConModelId">
+                            <el-select v-model="conForm.curConModelId" placeholder="请选择合同类型">
                                 <el-option
                                         v-for="item in conForm.conModel"
                                         :key="item.id"
                                         :value="item.id"
                                         :label="item.name"
                                 >
+                                    {{item.id}}-{{item.name}}
                                 </el-option>
                             </el-select>
                         </el-form-item>
                     </el-col>
                     <el-col :span="8">
-                        <el-form-item label="合同类型">
-                            <el-select v-model="conForm.curConModelId" placeholder="请选择合同模式">
+                        <el-form-item label="合同类型" prop="curConTypeId">
+                            <el-select v-model="conForm.curConTypeId" placeholder="请选择合同类型">
                                 <el-option
                                         v-for="item in conForm.conType"
                                         :key="item.id"
@@ -81,12 +84,13 @@
                 </el-table-column>
             </el-table>
             <div style="text-align: right;margin-top:20px">
-                <el-button class="btnCancelChoose" type="primary" @click="handleCancel">取消选择
+                <el-button class="btnCancelChoose" type="primary" :disabled="currentPr.id?false:true"
+                           @click="handleCancel">取消选择
                 </el-button>
             </div>
         </el-card>
         <div style="text-align: center;margin-top:20px">
-            <el-button type="primary" @click="handleNext">下一步</el-button>
+            <el-button type="primary" @click="handleNext('conForm')">下一步</el-button>
         </div>
         <el-dialog title="查询比价单" :visible.sync="dialogVisible" size="tiny">
             <el-form ref="prForm" :model="prForm" label-width="100px">
@@ -125,7 +129,18 @@
                     curConModelId: '',
                     curConTypeId: '',
                     conModel: [],
-                    conType: []
+                    conType: [],
+                },
+                conFormRules: {
+                    strPC: [
+                        {required: true, message: '请输入比加单编号', trigger: 'blur'},
+                    ],
+                    curConTypeId: [
+                        {required: true, message: '请选择合同模式', trigger: 'change'}
+                    ],
+                    curConModelId: [
+                        {required: true, message: '请选择合同类型', trigger: 'change'}
+                    ]
                 },
                 arrPr: [],//比价单列表
                 currentPr: null,//当前选择的比价单
@@ -144,8 +159,6 @@
                                     const start = new Date();
                                     start.setTime(start.getTime() - 3600 * 1000 * 24 * 7);
                                     picker.$emit('pick', [start, end]);
-                                    console.log('start', start);
-                                    console.log('end', end);
                                 }
                             }, {
                                 text: '最近一个月',
@@ -180,16 +193,38 @@
             handleQuery(){
                 this.dialogVisible = true;
             },
-            handleDetail(){
+            handleDetail(){//-------???
                 console.log('handleDetail');
             },
-            handleNext(){
-                this.$router.push({
-                    path: '/ConCreate/CreateFrameContract',
-                    query: {
-                        currentPr: this.currentPr.id,
-                        curConModelId: this.conForm.curConModelId,
-                        curConTypeId: this.conForm.curConTypeId
+            handleNext(formName){
+                this.$refs[formName].validate((valid)=> {
+                    if (valid) {
+                        let routePath = '';
+                        switch (this.conForm.curConModelId) {
+                            case 'con1':
+                                routePath = '/ConCreate/CreateIntentionContract';
+                                break;
+                            case 'con2':
+                                routePath = '/ConCreate/CreateFrameContract';
+                                break;
+                            case 'con3':
+                                routePath = '/ConCreate/CreateSingleContract';
+                                break;
+                            case 'con4':
+                                routePath = '/ConCreate/CreateSimpleContract';
+                                break;
+                        }
+                        this.$router.push({
+                            path: routePath,
+                            query: {
+                                currentPr: this.currentPr ? this.currentPr.id : '',
+                                curConModelId: this.conForm.curConModelId,
+                                curConTypeId: this.conForm.curConTypeId
+                            }
+                        });
+                    }
+                    else {
+                        return false;
                     }
                 });
             },
@@ -230,8 +265,8 @@
                     path: "/ConCreate/CreateFrameContract",
                     query: {
                         pr: this.pr,
-                        conModel: this.conModel,
-                        conType: this.conType,
+                        curConModelId: this.curConModelId,
+                        curConTypeId: this.curConTypeId,
                     }
                 });
 
