@@ -102,15 +102,18 @@
       <Tmpl></Tmpl>
     </div>
     <TreeModal
+      nodeKey="value"
       title="选择业务类型"
       :visible.sync="visible"
       :regions="regions"
+      :initialKeys="form.busiType | strToArr"
       @ok="setBusiType">
     </TreeModal>
   </div>
 </template>
 
 <script>
+  import {mapMutations} from 'vuex';
   import * as types from '../../store/consts';
   import Tmpl from './tmpl.vue';
   import TreeModal from '../../components/treeModal.vue';
@@ -138,7 +141,7 @@
         },
         visible: false,
         showTmpl: false
-      }
+      };
     },
     methods: {
       showTreeModal() {
@@ -150,7 +153,7 @@
       setBusiType(value, tree) {
         let busiType = [];
         let busiTypeText = [];
-        const leafs = tree.$refs.tree.getCheckedNodes(true);
+        const leafs = tree.getCheckedNodes(true);
         leafs.forEach((item) => {
           busiType.push(item.value);
           busiTypeText.push(item.label);
@@ -164,16 +167,28 @@
         });
       },
       next() {
-        this.$store.commit(types.GET_INFO, {
+        this[types.GET_INFO]({
           info: this.form
         });
         this.showTmpl = true;
       },
       getTmplData() {
         supportModel.getTmplData({}).then((res) => {
-          console.log(res.data.dataMap);
+          const data = res.data.dataMap;
+          this[types.GET_INTIALDATA]({
+            initialData: data
+          });
+          Object.keys(this.form).forEach((key) => {
+            if (data.hasOwnProperty(key)) {
+              this.form[key] = data[key];
+            }
+          });
         });
-      }
+      },
+      ...mapMutations([
+        types.GET_INFO,
+        types.GET_INTIALDATA
+      ])
     },
     computed: {
       showUpload() {
@@ -191,6 +206,14 @@
       }
 
       this.getBusiType();
+    },
+    filters: {
+      strToArr(value) {
+        if (!value) {
+          return [];
+        }
+        return value.split(',');
+      }
     }
   };
 </script>

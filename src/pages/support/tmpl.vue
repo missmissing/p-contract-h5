@@ -38,7 +38,7 @@
           <el-col :span="11">
             <div class="row">
               <el-select
-                v-model="value"
+                v-model="form.value"
                 placeholder="请选择">
                 <el-option
                   v-for="item in options"
@@ -51,13 +51,13 @@
             <div class="row">
               <el-transfer
                 :titles="['可选模块', '已选模块']"
-                v-model="moduleId"
+                v-model="form.moduleId"
                 :data="modulesData">
               </el-transfer>
             </div>
             <div class="row">
               <quill-editor
-                v-model="content"
+                v-model="form.content"
                 ref="myQuillEditor"
                 :options="editorOption">
               </quill-editor>
@@ -89,12 +89,14 @@
   export default {
     data() {
       return {
+        form: {
+          value: '',
+          moduleId: [],
+          content: ''
+        },
         options: [],
-        value: '',
-        moduleId: [],
         modulesData: [],
         header: '',
-        content: '',
         footer: '',
         editorOption: {
           placeholder: "请输入内容...",
@@ -147,10 +149,10 @@
         const option = _.find(this.options, (o) => {
           return o.value === this.value;
         });
-        this.moduleId = option.moduleId;
+        this.form.moduleId = option.moduleId;
       },
       moduleId() {
-        const value = this.moduleId;
+        const value = this.form.moduleId;
         if (!value.length) {
           this.header = '';
           this.footer = '';

@@ -65,55 +65,56 @@ module.exports = function (api) {
       code: 200,
       message: '成功',
       dataMap: [{
-        value: 1,
+        value: '1',
         label: '一级 1',
         children: [{
-          value: 11,
+          value: '11',
           label: '二级 1-1',
           children: [{
-            value: 111,
+            value: '111',
             label: '三级 1-1-1'
           }]
         }]
       }, {
-        value: 2,
+        value: '2',
         label: '一级 2',
         children: [{
-          value: 21,
+          value: '21',
           label: '二级 2-1',
           children: [{
-            value: 211,
+            value: '211',
             label: '三级 2-1-1'
           }]
         }, {
-          value: 22,
+          value: '22',
           label: '二级 2-2',
           children: [{
-            value: 221,
+            value: '221',
             label: '三级 2-2-1'
           }]
         }]
       }, {
-        value: 3,
+        value: '3',
         label: '一级 3',
         children: [{
-          value: 31,
+          value: '31',
           label: '二级 3-1',
           children: [{
-            value: 311,
+            value: '311',
             label: '三级 3-1-1'
           }]
         }, {
-          value: 32,
+          value: '32',
           label: '二级 3-2',
           children: [{
-            value: 321,
+            value: '321',
             label: '三级 3-2-1'
           }]
         }]
       }]
     });
   });
+
   api.use('/api/support/list', function (req, res) {
     res.status(200).json({
       code: 200,
@@ -160,15 +161,14 @@ module.exports = function (api) {
       message: '成功',
       dataMap: {
         id: 1,
-        number: '',
+        number: '213423543545',
         name: '红星合同模板1',
         type: '1',
         startDate: '2017-07-10',
         endDate: '9999-12-31',
         desc: '这只是个说明',
-        busiType: '',
-        busiTypeText: '三级业务类型',
-        //files: ''
+        busiType: '111',
+        busiTypeText: '三级 1-1-1'
       }
     });
   });
