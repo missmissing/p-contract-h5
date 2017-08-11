@@ -8,7 +8,7 @@
                 <el-row>
                     <el-col :span="8">
                         <el-form-item label="比价单" v-if="conForm.isPr" prop="strPC">
-                            <el-input v-model="conForm.strPC" placeholder="请输入"></el-input>
+                            <el-input v-model="conForm.strPC" placeholder="请输入比价单号"></el-input>
                         </el-form-item>
                     </el-col>
                     <el-col :span="8" v-if="conForm.isPr">
@@ -29,7 +29,6 @@
                                         :value="item.id"
                                         :label="item.name"
                                 >
-                                    {{item.id}}-{{item.name}}
                                 </el-option>
                             </el-select>
                         </el-form-item>
@@ -52,9 +51,6 @@
         </el-card>
         <el-card v-if="arrPr.length>0">
             <el-table ref="prTable" :data="arrPr" highlight-current-row @current-change="handleCurrentChange">
-                <!--<el-table-column label="状态" width="50">
-                    <i class="el-icon-circle-check"></i>
-                </el-table-column>-->
                 <el-table-column
                         type="index">
                 </el-table-column>
@@ -82,9 +78,16 @@
                         property="endTime"
                         label="结束时间">
                 </el-table-column>
+                <el-table-column
+                        fixed="right"
+                        label="操作">
+                    <template scope="scope">
+                        <el-button @click.stop="handleDetailPR(scope.$index,scope.row)" type="text">查看</el-button>
+                    </template>
+                </el-table-column>
             </el-table>
             <div style="text-align: right;margin-top:20px">
-                <el-button class="btnCancelChoose" type="primary" :disabled="currentPr.id?false:true"
+                <el-button class="btnCancelChoose" type="primary" :disabled="currentPr&&currentPr.id?false:true"
                            @click="handleCancel">取消选择
                 </el-button>
             </div>
@@ -193,8 +196,17 @@
             handleQuery(){
                 this.dialogVisible = true;
             },
-            handleDetail(){//-------???
-                console.log('handleDetail');
+            handleDetail(){
+                Api.getPrDetail({strPC: this.conForm.strPC})
+                        .then((data)=> {
+                            let url = data.data.dataMap ? data.data.dataMap.url : '';
+                            if (url) {
+                                window.open(url);
+                            } else {
+                                this.$message.error('您输入的比加单号错了哦');
+                            }
+                        });
+
             },
             handleNext(formName){
                 this.$refs[formName].validate((valid)=> {
@@ -253,23 +265,8 @@
                             this.arrPr = data.data.dataMap.list;
                         });
             },
-            nextStep() {
-                if (this.hasPR) {
-                    if (!this.pr) {
-                        this.$Message.error('请填写PR号!');
-                        return;
-                    }
-                }
-
-                this.$router.push({
-                    path: "/ConCreate/CreateFrameContract",
-                    query: {
-                        pr: this.pr,
-                        curConModelId: this.curConModelId,
-                        curConTypeId: this.curConTypeId,
-                    }
-                });
-
+            handleDetailPR(index, row){
+                window.open(row.url);
             }
         },
     }

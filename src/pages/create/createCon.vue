@@ -18,7 +18,111 @@
 </style>
 <template>
     <div>
-        <Card class="card">
+        <el-form ref="createConForm" :model="createConForm" label-width="100px">
+            <el-card>
+                <header slot="header">合同基本信息</header>
+                <el-row>
+                    <el-col :span="8">
+                        <el-form-item label="业务经办人">
+                            <el-input v-model="createConForm.baseInfo.businessPerson" placeholder="请输入业务经办人"></el-input>
+                        </el-form-item>
+                    </el-col>
+                    <el-col :span="8">
+                        <el-form-item label="业务部门">
+                            <el-input v-model="createConForm.baseInfo.businessDepartment"
+                                      placeholder="请输入业务部门"></el-input>
+                        </el-form-item>
+                    </el-col>
+                </el-row>
+                <el-row>
+                    <el-col :span="8">
+                        <el-form-item label="合同模式">
+                            <el-input v-model="createConForm.baseInfo.conModel" placeholder="请输入合同模式"></el-input>
+                        </el-form-item>
+                    </el-col>
+                    <el-col :span="8">
+                        <el-form-item label="合同编号">
+                            <el-input v-model="createConForm.baseInfo.conNumber" placeholder="请输入合同编号"></el-input>
+                        </el-form-item>
+                    </el-col>
+                    <el-col :span="8">
+                        <el-form-item label="合同类型">
+                            <el-input v-model="createConForm.baseInfo.conType" placeholder="请输入合同类型"></el-input>
+                        </el-form-item>
+                    </el-col>
+                </el-row>
+                <el-row>
+                    <el-col :span="8">
+                        <el-form-item label="所属项目">
+                            <el-input v-model="createConForm.baseInfo.belongProject" placeholder="请输入所属项目"></el-input>
+                        </el-form-item>
+                    </el-col>
+                    <el-col :span="8">
+                        <el-form-item label="合同版本">
+                            <el-input v-model="createConForm.baseInfo.conVersion" placeholder="请输入合同版本"></el-input>
+                        </el-form-item>
+                    </el-col>
+                </el-row>
+                <el-row>
+                    <el-col :span="8">
+                        <el-form-item label="合同文本类型">
+                            <el-input v-model="createConForm.baseInfo.conTextType" placeholder="请输入合同文本类型"></el-input>
+                        </el-form-item>
+                    </el-col>
+                    <el-col :span="8">
+                        <el-form-item label="模版名称">
+                            <el-input v-model="createConForm.baseInfo.templateName" placeholder="请输入合同模版"></el-input>
+                        </el-form-item>
+                    </el-col>
+                    <el-col :span="8">
+                        <el-button type="primary" @click="handlePreview" style="margin-left:33px">预览</el-button>
+                    </el-col>
+                </el-row>
+                <el-row>
+                    <el-col :span="16">
+                        <el-form-item label="盖章次序">
+                            <el-radio v-model="createConForm.baseInfo.radioSealOrder" label="1">对方先盖章（默认</el-radio>
+                            <el-radio v-model="createConForm.baseInfo.radioSealOrder" label="2">我方先盖章</el-radio>
+                        </el-form-item>
+                    </el-col>
+                </el-row>
+                <el-row>
+                    <el-col :span="16" style="margin-left: 100px">
+                        <el-input type="textarea" :rows="4" placeholder="请输入内容"
+                                  v-model="createConForm.baseInfo.sealReason"></el-input>
+                    </el-col>
+                </el-row>
+            </el-card>
+            <el-card>
+                <el-tabs v-model="createConForm.activeTabName" @tab-click="handleTabClick">
+                    <el-tab-pane label="合同内容信息" name="tabContInfo">
+                        合同内容信息
+                        <el-card>
+                            <header slot="header">合同供应商信息</header>
+                            <el-table :data="tableSupplierInfo">
+
+                            </el-table>
+                        </el-card>
+                    </el-tab-pane>
+                    <el-tab-pane label="合同财务信息" name="tabContFinanceInfo">
+                        合同财务信息
+                    </el-tab-pane>
+                    <el-tab-pane label="合同验收与样品信息" name="tabContCheckInfo">
+                        合同验收与样品信息
+                    </el-tab-pane>
+                    <el-tab-pane label="合同盖章信息" name="tabSealInfo">
+                        合同盖章信息
+                    </el-tab-pane>
+                    <el-tab-pane label="备注" name="tabRemark">
+                        备注
+                    </el-tab-pane>
+                    <el-tab-pane label="相关数据" name="tabRelatedData">
+                        相关数据
+                    </el-tab-pane>
+                </el-tabs>
+            </el-card>
+        </el-form>
+        <!--<Card class="card">
             <p slot="title">合同基本信息</p>
             <Form :label-width="100" inline>
                 <Form-item label="业务经办人">
@@ -89,8 +193,7 @@
                 <div class="template-preview" v-html="editTemplate.html">
                 </div>
             </Modal>
-        </Card>
-
+        </Card>-->
         <Card class="card">
             <Tabs value="name1">
                 <Tab-pane label="合同内容信息" name="name1">
@@ -397,9 +500,28 @@
 
             this.getModuleList();
         },
-
         data() {
             return {
+                createConForm: {
+                    baseInfo: {
+                        businessPerson: '',//业务经办人
+                        businessDepartment: '',
+                        conModel: '',
+                        conNumber: '',
+                        conType: '',
+                        belongProject: '',
+                        conVersion: '',
+                        conTextType: '',
+                        templateName: '',
+                        radioSealOrder: '1',//1：对方先盖章 2：我方先盖章
+                        sealReason: '',
+                    },
+                    activeTabName: 'tabContInfo',
+
+
+                },
+
+                //////////////////////////////////////
                 pr: {},
                 con: {
                     conModel: "0",
@@ -655,6 +777,14 @@
             }
         },
         methods: {
+            handlePreview(){
+                console.log('合同预览');
+            },
+            handleTabClick(tab, event){
+                console.log('handleTabClick');
+            },
+
+
             getModuleList() {
                 const $self = this;
                 api.getTemplateModuleList({}).then((res) => {

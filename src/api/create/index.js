@@ -9,4 +9,8 @@ export default {
     getQrList(params){
         return Http.get(`/api/createContract/getQrList`, params);
     },
+    //获取比价单详情
+    getPrDetail(params){
+        return Http.get(`/api/createContract/getPrDetail`, params);
+    },
 };

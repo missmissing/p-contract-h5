@@ -6,20 +6,22 @@ module.exports = function (api) {
             dataMap: {
                 list: [
                     {
-                        id: 111,
+                        id: '111',
                         name: 'wyy',
                         department: '技术研发部',
                         startTime: '2017-09-09',
                         processStatus: '1',
-                        endTime: '2017-10-09'
+                        endTime: '2017-10-09',
+                        url: 'http://www.baidu.com',
                     },
                     {
-                        id: 222,
-                        name: 'wyy',
-                        department: '技术研发部',
-                        startTime: '2017-09-09',
-                        processStatus: '1',
-                        endTime: '2017-10-09'
+                        id: '222',
+                        name: 'echo',
+                        department: '技术研发部11',
+                        startTime: '2017-11-11',
+                        processStatus: '2',
+                        endTime: '2017-11-11',
+                        url: 'http://www.baidu.com',
                     }
                 ]
             }
@@ -37,6 +39,16 @@ module.exports = function (api) {
                 typeList: [{id: 'service1', name: '服务类'},
                     {id: 'service2', name: '礼品类'},
                     {id: 'service3', name: '企划礼品类'},]
+            }
+        });
+    });
+
+    api.use('/api/createContract/getPrDetail', function (req, res) {
+        res.status(200).json({
+            code: 200,
+            message: 'success',
+            dataMap: {
+                url: 'http://www.baidu.com'
             }
         });
     });
