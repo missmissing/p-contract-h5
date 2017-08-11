@@ -134,6 +134,16 @@ const router = new Router({
       name: routerNames.con_performance,
       children: [
         {
+          path: '/conperf/conlist',
+          component: function (resolve) {
+            require(['../pages/performance/conList.vue'], resolve);
+          },
+          name: routerNames.con_list,
+          meta: {
+            auth: true
+          },
+        },
+        {
           path: '/conperf/inspection',
           component: function (resolve) {
             require(['../pages/performance/inspection.vue'], resolve);
