@@ -213,7 +213,7 @@ const router = new Router({
           meta: {
             auth: true
           },
-          name: routerNames.con_textTemp_list
+          name: routerNames.con_tpl_create
         },
         {
           path: '/contemplate/create',
@@ -223,7 +223,7 @@ const router = new Router({
           meta: {
             auth: true
           },
-          name: routerNames.con_textTemp_create
+          name: routerNames.con_tpl_create
         },
         {
           path: '/contemplate/create/:id',
@@ -234,27 +234,7 @@ const router = new Router({
             hidden: true,
             auth: true
           },
-          name: routerNames.con_textTemp_update
-        },
-        {
-          path: '/contemplate/query',
-          component: function (resolve) {
-            require(['../pages/support/query.vue'], resolve);
-          },
-          meta: {
-            auth: true
-          },
-          name: routerNames.con_textTemp_search
-        },
-        {
-          path: '/contemplate/conquery',
-          component: function (resolve) {
-            require(['../pages/support/conQuery.vue'], resolve);
-          },
-          meta: {
-            auth: true
-          },
-          name: routerNames.con_search
+          name: routerNames.con_tpl_update
         }
       ],
       meta: {

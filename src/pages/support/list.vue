@@ -17,7 +17,7 @@
       </div>
       <div>
         <div class="row">
-          <el-button type="success" @click="add">新 增</el-button>
+
         </div>
         <el-table
           :data="tableData"
@@ -138,9 +138,6 @@
       }
     },
     methods: {
-      add() {
-        this.$router.push('/contemplate/create');
-      },
       getList() {
         supportModel.getList({}).then((res) => {
           this.tableData = res.data.dataMap;

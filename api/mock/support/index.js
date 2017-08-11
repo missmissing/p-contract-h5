@@ -6,11 +6,11 @@ module.exports = function (api) {
       dataMap: [{
         value: '',
         label: '自定义',
-        moduleId: []
+        moduleId: ''
       }, {
-        value: 1,
+        value: '1',
         label: '模板一',
-        moduleId: [1, 6]
+        moduleId: '1,6'
       }]
     });
   });
@@ -21,40 +21,48 @@ module.exports = function (api) {
       message: '成功',
       dataMap: [
         {
-          key: 1,
+          key: '1',
+          label: '头部（甲方乙方）',
+          content: `<div>
+<div style="width:50%;float:left;">甲方：jiafang</div>
+<div style="width:50%;float:left;">乙方：yifang</div>
+</div>`,
+          type: '1'
+        },
+        {
+          key: '2',
           label: '测试动态表格',
           content: 'header1',
-          type: 1
+          type: '1'
         },
         {
-          key: 2,
-          label: '头部(红星甲方)',
-          content: 'header2',
-          type: 1
-        },
-        {
-          key: 3,
-          label: '头部(红星乙方)',
-          content: 'header3',
-          type: 1
-        },
-        {
-          key: 4,
+          key: '3',
           label: '标的物',
           content: 'header4',
-          type: 1
+          type: '1'
         },
         {
-          key: 5,
+          key: '4',
           label: '付款阶段',
           content: 'header5',
-          type: 1
+          type: '1'
         },
         {
-          key: 6,
+          key: '5',
           label: '尾部',
-          content: 'footer1',
-          type: 2
+          content: `<div style="margin-bottom:10px;">
+<div style="width:50%;float:left;">甲方：jiafang</div>
+<div style="width:50%;float:left;">乙方：yifang</div>
+<div style="clear:both;"></div>
+</div><div style="margin-bottom:10px;">
+<div style="width:50%;float:left;">法定代表人：xxx</div>
+<div style="width:50%;float:left;">法定代表人：xxx</div>
+<div style="clear:both;"></div>
+</div><div style="margin-bottom:10px;">
+<div style="width:50%;float:left;">日期：xxxx-xx-xx</div>
+<div style="width:50%;float:left;">日期：xxxx-xx-xx</div>
+</div>`,
+          type: '2'
         }
       ]
     });
@@ -162,13 +170,19 @@ module.exports = function (api) {
       dataMap: {
         id: 1,
         number: '213423543545',
+        creator: '某某',
+        version: 'v1',
+        updater: '某某某',
         name: '红星合同模板1',
         type: '1',
         startDate: '2017-07-10',
         endDate: '9999-12-31',
         desc: '这只是个说明',
         busiType: '111',
-        busiTypeText: '三级 1-1-1'
+        busiTypeText: '三级 1-1-1',
+        tplType: '1',
+        moduleId: '1,5',
+        tplContent: '这只是个法务文案例子'
       }
     });
   });

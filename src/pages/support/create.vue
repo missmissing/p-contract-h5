@@ -17,15 +17,19 @@
           <span class="common-title">基本信息</span>
         </div>
         <div class="form-container">
-          <el-form ref="form" :model="form" label-width="80px">
-            <el-form-item label="文本编号" v-if="form.number">
+          <el-form ref="form" :model="form" label-width="90px">
+            <el-form-item label="文本编号" v-if="disabled">
               <el-col :span="8">
                 <el-input v-model="form.number" class="wp100" disabled></el-input>
               </el-col>
             </el-form-item>
             <el-form-item label="文本名称">
               <el-col :span="8">
-                <el-input v-model.trim="form.name" class="wp100"></el-input>
+                <el-input
+                  :disabled="disabled"
+                  v-model.trim="form.name"
+                  class="wp100">
+                </el-input>
               </el-col>
             </el-form-item>
             <el-form-item label="文本类型">
@@ -33,22 +37,11 @@
                 <el-select
                   v-model="form.type"
                   placeholder="请选择"
+                  :disabled="disabled"
                   class="wp100">
                   <el-option label="合同模板" value="1"></el-option>
                   <el-option label="合同文本" value="2"></el-option>
                 </el-select>
-              </el-col>
-            </el-form-item>
-            <el-form-item label="业务类型">
-              <el-col :span="8">
-                <el-input
-                  type="textarea"
-                  :value="form.busiTypeText"
-                  @focus="showTreeModal"
-                  resize="none"
-                  :autosize="{maxRows:6}"
-                  readonly>
-                </el-input>
               </el-col>
             </el-form-item>
             <el-form-item label="启用时间">
@@ -72,14 +65,45 @@
                 ></el-input>
               </el-col>
             </el-form-item>
+            <el-row v-if="disabled">
+              <el-col :span="6">
+                <el-form-item label="创建人">
+                  <el-input
+                    :disabled="disabled"
+                    :value="form.creator"
+                    class="wp100">
+                  </el-input>
+                </el-form-item>
+              </el-col>
+              <el-col :span="6" :offset="1">
+                <el-form-item label="最新版本">
+                  <el-input
+                    :disabled="disabled"
+                    :value="form.version"
+                    class="wp100">
+                  </el-input>
+                </el-form-item>
+              </el-col>
+              <el-col :span="6" :offset="1">
+                <el-form-item label="最近更新人">
+                  <el-input
+                    :disabled="disabled"
+                    :value="form.updater"
+                    class="wp100">
+                  </el-input>
+                </el-form-item>
+              </el-col>
+            </el-row>
             <el-form-item label="使用说明">
-              <el-input
-                type="textarea"
-                :maxlength="300"
-                :autosize="{ minRows: 2 }"
-                resize="none"
-                v-model="form.desc">
-              </el-input>
+              <el-col :span="24">
+                <el-input
+                  type="textarea"
+                  :maxlength="300"
+                  :autosize="{ minRows: 2 }"
+                  resize="none"
+                  v-model="form.desc">
+                </el-input>
+              </el-col>
             </el-form-item>
             <el-form-item label="文本上传" v-show="showUpload">
               <el-upload
@@ -116,14 +140,18 @@
   import {mapMutations} from 'vuex';
   import * as types from '../../store/consts';
   import Tmpl from './tmpl.vue';
-  import TreeModal from '../../components/treeModal.vue';
+  import TreeModal from '@/components/treeModal.vue';
   import supportModel from '@/api/support';
+  import {strToArr} from '@/filters';
 
   export default {
     data() {
       return {
         form: {
           number: '',
+          creator: '',
+          version: '',
+          updater: '',
           name: '',
           type: '',
           startDate: '',
@@ -190,30 +218,49 @@
         types.GET_INTIALDATA
       ])
     },
-    computed: {
-      showUpload() {
-        return this.form.type === '2';
-      }
-    },
     components: {
       TreeModal,
       Tmpl
     },
     created() {
+      this.getBusiType();
+    },
+    mounted() {
       const id = this.$route.params.id;
       if (id) {
         this.getTmplData();
       }
-
-      this.getBusiType();
+    },
+    watch: {
+      $route() {
+        const id = this.$route.params.id;
+        if (!id) {
+          Object.assign(this.form, {
+            number: '',
+            name: '',
+            type: '',
+            startDate: '',
+            endDate: '9999-12-31',
+            desc: '',
+            busiType: '',
+            busiTypeText: '',
+            files: ''
+          });
+          this.showTmpl = false;
+        }
+        console.log(to, from);
+      }
+    },
+    computed: {
+      showUpload() {
+        return this.form.type === '2';
+      },
+      disabled() {
+        return !!this.$route.params.id;
+      }
     },
     filters: {
-      strToArr(value) {
-        if (!value) {
-          return [];
-        }
-        return value.split(',');
-      }
+      strToArr
     }
   };
 </script>

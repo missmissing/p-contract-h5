@@ -53,12 +53,11 @@ export const routerNames = {
   con_stop: '合同终止',
   con_update: '合同变更',
 
-  con_support: '合同支持',
-  con_textTemp_list: '合同模板列表',
-  con_textTemp_create: '合同文本创建',
-  con_textTemp_update: '合同文本变更',
-  con_textTemp_search: '合同文本查询',
-  con_search: '合同查询'
+    con_support: '合同支持',
+    con_tpl_list:'合同模板列表',
+    con_tpl_create: '合同模板创建',
+    con_tpl_update: '合同模板变更',
+    con_tpl_search: '合同查询'
 };
 
 /**审批按钮（新版本） */
