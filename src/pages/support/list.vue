@@ -22,6 +22,7 @@
         <el-table
           :data="tableData"
           border
+          highlight-current-row
           class="wp100">
           <el-table-column
             fixed
@@ -59,8 +60,8 @@
             label="操作"
             width="100">
             <template scope="scope">
-              <el-button type="text" size="small">编辑</el-button>
-              <el-button type="text" size="small">废除</el-button>
+              <el-button type="text" size="small" @click="edit(scope.$index, scope.row)">编辑</el-button>
+              <el-button type="text" size="small" @click="stop(scope.$index, scope.row)">废除</el-button>
             </template>
           </el-table-column>
         </el-table>
@@ -72,12 +73,38 @@
       size="tiny"
     >
       <div>
-
+        <el-form ref="form" label-width="80px">
+          <el-form-item label="废除时间">
+            <el-col>
+              <el-date-picker
+                class="wp100"
+                v-model="stopData.endDate"
+                type="date"
+                @change="formatDate"
+                placeholder="选择日期"
+                :picker-options="stopData.pickerOptions"
+                :editable="false">
+              </el-date-picker>
+            </el-col>
+          </el-form-item>
+          <el-form-item label="废除理由" style="margin-bottom:0;">
+            <el-col>
+              <el-input
+                class="wp100"
+                v-model="stopData.reason"
+                type="textarea"
+                :rows="8"
+                :maxlength="300"
+                resize="none"
+              ></el-input>
+            </el-col>
+          </el-form-item>
+        </el-form>
       </div>
-      <span slot="footer" class="dialog-footer">
+      <div slot="footer" class="dialog-footer">
         <el-button @click="dialogVisible = false">取 消</el-button>
-        <el-button type="primary" @click="stop">确 定</el-button>
-      </span>
+        <el-button type="primary" @click="stopSure">确 定</el-button>
+      </div>
     </el-dialog>
   </div>
 </template>
@@ -89,7 +116,25 @@
     data() {
       return {
         tableData: [],
-        dialogVisible: false
+        dialogVisible: false,
+        stopData: {
+          id: '',
+          endDate: '',
+          reason: '',
+          pickerOptions: {
+            disabledDate(time) {
+              return time.getTime() < Date.now() - 8.64e7;
+            }
+          }
+        }
+      }
+    },
+    watch: {
+      dialogVisible() {
+        if (!this.dialogVisible) {
+          this.stopData.endDate = '';
+          this.stopData.reason = '';
+        }
       }
     },
     methods: {
@@ -101,11 +146,25 @@
           this.tableData = res.data.dataMap;
         })
       },
-      stop() {
+      formatDate(value) {
+        this.stopData.endDate = value;
+      },
+      edit(index, row) {
+        const {id} = row;
+        this.$router.push('/contemplate/create/' + id);
+      },
+      stop(index, row) {
+        this.stopData.id = row.id;
+        this.dialogVisible = true;
+      },
+      stopSure() {
+        const {endDate, reason, id} = this.stopData;
+        console.log(JSON.stringify({endDate, reason, id}));
         this.dialogVisible = false;
+        this.getList();
       }
     },
-    mounted() {
+    created() {
       this.getList();
     }
   };

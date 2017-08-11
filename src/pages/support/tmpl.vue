@@ -176,7 +176,7 @@
     components: {
       quillEditor
     },
-    mounted() {
+    created() {
       this.getTmplTypes();
       this.getModuleData();
     }

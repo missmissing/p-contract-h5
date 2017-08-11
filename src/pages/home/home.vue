@@ -126,7 +126,7 @@
                   <i class="el-icon-message"></i>
                   <span slot="title">{{item.name}}</span>
                 </template>
-                <template v-for="(child,childIndex) in item.children" v-if="!child.hidden">
+                <template v-for="(child,childIndex) in item.children" v-if="!child.meta.hidden">
                   <el-menu-item :index="child.path">{{child.name}}</el-menu-item>
                 </template>
               </el-submenu>
