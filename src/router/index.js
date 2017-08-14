@@ -213,7 +213,7 @@ const router = new Router({
           meta: {
             auth: true
           },
-          name: routerNames.con_tpl_create
+          name: routerNames.con_tpl_list
         },
         {
           path: '/contemplate/create',

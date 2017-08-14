@@ -158,6 +158,7 @@
         if (!value.length || !modulesData.length) {
           return '';
         }
+
         const result = [];
         value.forEach((key) => {
           const module = _.find(modulesData, (o) => {

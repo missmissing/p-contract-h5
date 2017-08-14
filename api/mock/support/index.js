@@ -10,7 +10,7 @@ module.exports = function (api) {
       }, {
         value: '1',
         label: '模板一',
-        moduleId: '1,6'
+        moduleId: '1,5'
       }]
     });
   });
