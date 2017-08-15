@@ -1,65 +1,119 @@
-<style>
-  .width180 {
-    width: 180px;
+<style type="text/scss" lang="scss" scoped>
+  .form-container {
+
   }
 </style>
+
 <template>
-  <div class="">
-    <Card class="card">
-      <p slot="title">合同基本信息</p>
-      <Form :label-width="100" inline>
-        <Form-item label="合同编号">
-          <Input placeholder="请输入" class="width180"/>
-        </Form-item>
-        <Form-item :label-width="10">
-          <Button type="primary" @click="nextStep">
-            <span>查找</span>
-          </Button>
-        </Form-item>
-        </br>
-        <Form-item label="合同签署日期">
-          <Input placeholder="请输入" class="width180" disabled/>
-        </Form-item>
-        <Form-item label="合同状态">
-          <Select placeholder="请选择" class="width180" v-model="a" disabled>
-            <Option value="1">框架意向合同</Option>
-          </Select>
-        </Form-item>
-        </br>
-        <Form-item label="合同生效日期">
-          <Input placeholder="请输入" class="width180" disabled/>
-        </Form-item>
-        <Form-item label="合同截止日期">
-          <Input placeholder="请输入" class="width180" disabled/>
-        </Form-item>
-        </br>
-        <Form-item label="合同中止原因">
-          <Select placeholder="请选择" class="width180">
-            <Option value="template">框架意向合同</Option>
-          </Select>
-        </Form-item>
-        <Form-item label="实际中止日期">
-          <Date-picker type="date" placeholder="选择日期" class="width180"/>
-        </Form-item>
-        </br>
-        <Form-item label="原因说明">
-          <Input placeholder="请输入" type="textarea" :autosize="{minRows: 4,maxRows: 6}" style="width: 475px;"/>
-        </Form-item>
-      </Form>
-    </Card>
-    <div style="text-align: center;margin-top: 30px;">
-      <Button type="primary">
-        <span>提交</span>
-      </Button>
+  <div class="form-container">
+    <div>
+      <el-card>
+        <div slot="header">
+          <span class="common-title">基本信息</span>
+        </div>
+        <div class="basic-info">
+          <el-form label-width="120px">
+            <el-row>
+              <el-col :span="8">
+                <el-form-item label="合同编号">
+                  <el-input
+                    icon="search"
+                    placeholder="点击图标进行搜索"
+                    v-model="form.contractCode"
+                    :on-icon-click="search">
+                  </el-input>
+                </el-form-item>
+              </el-col>
+              <el-button type="info" class="ml20">详 情</el-button>
+            </el-row>
+            <el-row>
+              <el-col :span="8">
+                <el-form-item label="合同签署日期">
+                  <el-input disabled></el-input>
+                </el-form-item>
+              </el-col>
+              <el-col :span="8" :offset="1">
+                <el-form-item label="合同状态">
+                  <el-input disabled></el-input>
+                </el-form-item>
+              </el-col>
+              <el-col :span="8">
+                <el-form-item label="合同生效日期">
+                  <el-input disabled></el-input>
+                </el-form-item>
+              </el-col>
+              <el-col :span="8" :offset="1">
+                <el-form-item label="合同截止日期">
+                  <el-input disabled></el-input>
+                </el-form-item>
+              </el-col>
+              <el-col :span="8">
+                <el-form-item label="合同中止原因">
+                  <el-select
+                    class="wp100"
+                    v-model="form.stopReason"
+                    placeholder="请选择">
+                    <el-option
+                      v-for="item in options"
+                      :key="item.value"
+                      :label="item.label"
+                      :value="item.value">
+                    </el-option>
+                  </el-select>
+                </el-form-item>
+              </el-col>
+              <el-col :span="8" :offset="1">
+                <el-form-item label="实际中止日期">
+                  <el-date-picker
+                    style="width:100%;"
+                    v-model="form.stopDate"
+                    type="date"
+                    placeholder="选择日期">
+                  </el-date-picker>
+                </el-form-item>
+              </el-col>
+            </el-row>
+            <el-form-item label="原因说明">
+              <el-input
+                type="textarea"
+                :maxlength="300"
+                :autosize="{ minRows: 2 }"
+                resize="none"
+                v-model="form.desc">
+              </el-input>
+            </el-form-item>
+          </el-form>
+        </div>
+      </el-card>
+    </div>
+    <div class="mt20">
+      <el-button style="margin-left:10px;">保 存</el-button>
+      <el-button type="primary">提 交</el-button>
     </div>
   </div>
 </template>
+
 <script>
+
   export default {
     data() {
       return {
-        a: '1'
+        form: {
+          contractCode: '',
+          stopDate: '',
+          stopReason: '1',
+          desc: '',
+        },
+        options: [{
+          value: '1',
+          label: '合同违约中止'
+        }]
+      };
+    },
+    methods: {
+      search() {
+        console.log(this.form.prCode);
       }
     }
-  }
+  };
 </script>

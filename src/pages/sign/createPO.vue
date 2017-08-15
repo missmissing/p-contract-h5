@@ -1,11 +1,6 @@
 <style type="text/scss" lang="scss" scoped>
   .form-container {
-    .ml20 {
-      margin-left: 20px;
-    }
-    .mb20 {
-      margin-bottom: 20px;
-    }
+
   }
 </style>
 
@@ -17,20 +12,28 @@
           <span class="common-title">基本信息</span>
         </div>
         <div class="basic-info">
-          <el-form label-width="80px">
-            <el-form-item label="采购申请">
-              <el-col :span="6">
-                <el-input></el-input>
+          <el-form label-width="100px">
+            <el-row>
+              <el-col :span="8">
+                <el-form-item label="采购申请">
+                  <el-input></el-input>
+                </el-form-item>
               </el-col>
               <el-button type="primary" class="ml20">添 加</el-button>
-            </el-form-item>
-            <el-form-item label="合同编号">
-              <el-col :span="6">
-                <el-input></el-input>
+            </el-row>
+            <el-row>
+              <el-col :span="8">
+                <el-form-item label="合同编号">
+                  <el-input
+                    icon="search"
+                    placeholder="匹配前，先点击图标进行搜索"
+                    v-model="form.contractCode"
+                    :on-icon-click="search">
+                  </el-input>
+                </el-form-item>
               </el-col>
-              <el-button type="primary" class="ml20">查 询</el-button>
-              <el-button type="success" @click="match">匹 配</el-button>
-            </el-form-item>
+              <el-button type="primary" @click="match" class="ml20">匹 配</el-button>
+            </el-row>
           </el-form>
           <div v-if="form.matchData.length!==0">
             <el-table
@@ -74,42 +77,46 @@
           <span class="common-title">合同信息</span>
         </div>
         <div class="contract-info">
-          <el-form label-width="80px">
-            <el-form-item label="合同编号">
-              <el-col :span="6">
-                <el-input disabled></el-input>
-              </el-col>
-              <el-button type="primary" class="ml20">明 细</el-button>
-            </el-form-item>
-            <el-form-item label="合同版本">
-              <el-col :span="6">
-                <el-input disabled></el-input>
-              </el-col>
-            </el-form-item>
+          <el-form label-width="100px">
             <el-row>
-              <el-col :span="7">
+              <el-col :span="8">
+                <el-form-item label="合同编号">
+                  <el-input disabled></el-input>
+                </el-form-item>
+              </el-col>
+              <el-button type="primary" class="ml20">详 情</el-button>
+            </el-row>
+            <el-row>
+              <el-col :span="8">
+                <el-form-item label="合同版本">
+                  <el-input disabled></el-input>
+                </el-form-item>
+              </el-col>
+            </el-row>
+            <el-row>
+              <el-col :span="8">
                 <el-form-item label="合同模式">
                   <el-input disabled></el-input>
                 </el-form-item>
               </el-col>
-              <el-col :span="7" :offset="1">
+              <el-col :span="8">
                 <el-form-item label="合同类型">
                   <el-input disabled></el-input>
                 </el-form-item>
               </el-col>
-              <el-col :span="7" :offset="1">
+              <el-col :span="8">
                 <el-form-item label="所属项目">
                   <el-input disabled></el-input>
                 </el-form-item>
               </el-col>
             </el-row>
             <el-row>
-              <el-col :span="7">
+              <el-col :span="8">
                 <el-form-item label="生效日期">
                   <el-input disabled></el-input>
                 </el-form-item>
               </el-col>
-              <el-col :span="7" :offset="1">
+              <el-col :span="8">
                 <el-form-item label="终止日期">
                   <el-input disabled></el-input>
                 </el-form-item>
@@ -123,19 +130,19 @@
           <span class="common-title">订单信息</span>
         </div>
         <div class="order-info">
-          <el-form label-width="80px">
+          <el-form label-width="100px">
             <el-row>
-              <el-col :span="7">
+              <el-col :span="8">
                 <el-form-item label="供应商">
                   <el-input disabled></el-input>
                 </el-form-item>
               </el-col>
-              <el-col :span="7" :offset="1">
+              <el-col :span="8">
                 <el-form-item label="订单类型">
                   <el-input disabled></el-input>
                 </el-form-item>
               </el-col>
-              <el-col :span="7" :offset="1">
+              <el-col :span="8">
                 <el-form-item label="公司编码">
                   <el-input disabled></el-input>
                 </el-form-item>
@@ -253,10 +260,10 @@
         </div>
       </el-card>
     </div>
-    <el-row style="margin-top:20px;">
+    <div class="mt20">
       <el-button style="margin-left:10px;">保 存</el-button>
       <el-button type="primary">提 交</el-button>
-    </el-row>
+    </div>
     <el-dialog
       title="匹配界面"
       size="large"
@@ -336,6 +343,7 @@
     data() {
       return {
         form: {
+          contractCode: '',
           matchData: [],
           orderData: [],
           serverData: []
@@ -345,6 +353,9 @@
       };
     },
     methods: {
+      search() {
+        console.log(this.form.contractCode);
+      },
       match() {
         this.dialogVisible = true;
       },

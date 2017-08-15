@@ -15,42 +15,42 @@ module.exports = function (api) {
     });
   });
 
-  api.use('/api/support/module/data', function (req, res) {
+  api.use('/contract-web/module/findModule', function (req, res) {
     res.status(200).json({
       code: 200,
       message: '成功',
       dataMap: [
         {
-          key: '1',
-          label: '头部（甲方乙方）',
-          content: `<div>
+          id: 1,
+          moduleName: '头部（甲方乙方）',
+          moduleContent: `<div>
 <div style="width:50%;float:left;">甲方：jiafang</div>
 <div style="width:50%;float:left;">乙方：yifang</div>
 </div>`,
-          type: '1'
+          moduleType: 1
         },
         {
-          key: '2',
-          label: '测试动态表格',
-          content: 'header1',
-          type: '1'
+          id: 2,
+          moduleName: '测试动态表格',
+          moduleContent: 'header1',
+          moduleType: 1
         },
         {
-          key: '3',
-          label: '标的物',
-          content: 'header4',
-          type: '1'
+          id: 3,
+          moduleName: '标的物',
+          moduleContent: 'header4',
+          moduleType: 1
         },
         {
-          key: '4',
-          label: '付款阶段',
-          content: 'header5',
-          type: '1'
+          id: 4,
+          moduleName: '付款阶段',
+          moduleContent: 'header5',
+          moduleType: 1
         },
         {
-          key: '5',
-          label: '尾部',
-          content: `<div style="margin-bottom:10px;">
+          id: 5,
+          moduleName: '尾部',
+          moduleContent: `<div style="margin-bottom:10px;">
 <div style="width:50%;float:left;">甲方：jiafang</div>
 <div style="width:50%;float:left;">乙方：yifang</div>
 <div style="clear:both;"></div>
@@ -62,7 +62,7 @@ module.exports = function (api) {
 <div style="width:50%;float:left;">日期：xxxx-xx-xx</div>
 <div style="width:50%;float:left;">日期：xxxx-xx-xx</div>
 </div>`,
-          type: '2'
+          moduleType: 2
         }
       ]
     });

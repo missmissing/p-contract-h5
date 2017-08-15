@@ -1,14 +1,7 @@
 <style type="text/scss" lang="scss" scoped>
   .tmpl-container {
-    .row {
-      margin-bottom: 20px;
-      &:last-child {
-        margin-bottom: 0;
-      }
-    }
-
     .quill-editor {
-      height: 300px;
+      height: 280px;
     }
 
     .pre-title {
@@ -45,9 +38,9 @@
         <span class="common-title">模板信息</span>
       </div>
       <div>
-        <el-row class="row">
+        <el-row>
           <el-col :span="11">
-            <div class="row">
+            <div class="mb20">
               <el-select
                 v-model="form.tplType"
                 placeholder="请选择">
@@ -59,14 +52,15 @@
                 </el-option>
               </el-select>
             </div>
-            <div class="row">
+            <div class="mb20">
               <el-transfer
                 :titles="['可选模块', '已选模块']"
                 v-model="form.moduleId"
+                :props="{key: 'id',label: 'moduleName'}"
                 :data="modulesData">
               </el-transfer>
             </div>
-            <div class="row">
+            <div>
               <quill-editor
                 v-model="form.tplContent"
                 ref="myQuillEditor"
@@ -83,9 +77,10 @@
             </div>
           </el-col>
         </el-row>
-        <div>
+        <div class="mt20">
           <el-button @click="save">保 存</el-button>
           <el-button type="primary" @click="submit">提 交</el-button>
+          <el-button type="info" @click="backPrev" style="margin-left:30px;">上一步</el-button>
         </div>
       </div>
     </el-card>
@@ -129,6 +124,11 @@
         previewContent: ''
       };
     },
+    props: {
+      showTmpl: {
+        default: false
+      }
+    },
     methods: {
       getTmplTypes() {
         supportModal.getTmplTypes({}).then((res) => {
@@ -162,10 +162,10 @@
         const result = [];
         value.forEach((key) => {
           const module = _.find(modulesData, (o) => {
-            return o.key === key;
+            return o.id === key;
           });
-          const content = module.content;
-          if (module.type === type) {
+          const content = module.moduleContent;
+          if (module.moduleType === type) {
             result.push(content);
           }
         });
@@ -187,6 +187,9 @@
         console.log('click submit');
         this.back();
 
+      },
+      backPrev() {
+        this.$emit('update:showTmpl', false);
       }
     },
     watch: {
@@ -213,10 +216,10 @@
     },
     computed: {
       header() {
-        return this.setModulesData('1');
+        return this.setModulesData(1);
       },
       footer() {
-        return this.setModulesData('2');
+        return this.setModulesData(2);
       }
     },
     components: {
