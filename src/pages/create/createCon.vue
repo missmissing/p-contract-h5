@@ -96,19 +96,362 @@
             <el-card>
                 <el-tabs v-model="createConForm.activeTabName" @tab-click="handleTabClick">
                     <el-tab-pane label="合同内容信息" name="tabContInfo">
-                        合同内容信息
                         <el-card>
                             <header slot="header">合同供应商信息</header>
-                            <el-table :data="tableSupplierInfo">
-
+                            <el-table :data="createConForm.cardContentInfo.tableSupplierInfo">
+                                <el-table-column
+                                        type="index">
+                                </el-table-column>
+                                <el-table-column prop="id" label="供应商编号"></el-table-column>
+                                <el-table-column prop="name" label="供应商名称"></el-table-column>
+                                <el-table-column prop="bankAccount" label="银行账号"></el-table-column>
                             </el-table>
+                        </el-card>
+                        <el-card>
+                            <header slot="header">合同我方主体名称</header>
+                            <el-table :data="createConForm.cardContentInfo.conSubjctName">
+                                <el-table-column prop="id" label="公司代码"></el-table-column>
+                                <el-table-column prop="name" label="公司名称"></el-table-column>
+                                <el-table-column
+                                        fixed="right"
+                                        label="操作"
+                                        width="100px">
+                                    <template scope="scope">
+                                        <el-button type="text" size="small" @clik="handleNewSubjectName">新增</el-button>
+                                    </template>
+
+                                </el-table-column>
+                            </el-table>
+                        </el-card>
+                        <el-card>
+                            <header slot="header">第三方信息</header>
+                            <el-table :data="createConForm.cardContentInfo.thirdPartyInfo">
+                                <el-table-column prop="id" label="供应商编号"></el-table-column>
+                                <el-table-column prop="name" label="供应商名称"></el-table-column>
+                            </el-table>
+                        </el-card>
+                        <el-card>
+                            <header slot="header">合同标的</header>
+                            <el-table :data="createConForm.cardContentInfo.conStandard">
+                                <el-table-column type="index"></el-table-column>
+                                <el-table-column prop="id" label="物料编码"></el-table-column>
+                                <el-table-column prop="name" label="物料名称"></el-table-column>
+                                <el-table-column prop="number" label="数量"></el-table-column>
+                                <el-table-column prop="taxRate" label="税率"></el-table-column>
+                            </el-table>
+                            <el-row>
+                                <el-col :span="8">
+                                    <el-form-item label="合同生效日期">
+                                        <el-date-picker v-model="createConForm.cardContentInfo.effectiveDate"
+                                                        placeholder="请输入合同生效期日期"
+                                                        type="date"></el-date-picker>
+                                    </el-form-item>
+                                </el-col>
+                                <el-col :span="8">
+                                    <el-form-item label="合同终止日期">
+                                        <el-date-picker v-model="createConForm.cardContentInfo.endDate"
+                                                        placeholder="请输入合同终止日期"
+                                                        type="date"></el-date-picker>
+                                    </el-form-item>
+                                </el-col>
+                            </el-row>
                         </el-card>
                     </el-tab-pane>
                     <el-tab-pane label="合同财务信息" name="tabContFinanceInfo">
-                        合同财务信息
+                        <el-row>
+                            <el-col :span="8">
+                                <el-form-item label="是否涉及金额">
+                                    <el-radio-group v-model="createConForm.cardFinanceInfo.hasMoney">
+                                        <el-radio :label="1">是</el-radio>
+                                        <el-radio :label="0">否</el-radio>
+                                    </el-radio-group>
+                                </el-form-item>
+                            </el-col>
+                            <el-col :span="8">
+                                <el-form-item label="是否一次性付款" label-width="120px">
+                                    <el-radio-group v-model="createConForm.cardFinanceInfo.onePayment">
+                                        <el-radio :label="1">是</el-radio>
+                                        <el-radio :label="0">否</el-radio>
+                                    </el-radio-group>
+                                </el-form-item>
+                            </el-col>
+                        </el-row>
+                        <el-card>
+                            <header slot="header">付款方式</header>
+                            <el-button type="primary" @click="handleAddPaymentMethod" icon="plus">新增付款方式</el-button>
+                            <el-table :data="createConForm.cardFinanceInfo.paymentMethod">
+                                <el-table-column prop="type" label="类型"></el-table-column>
+                                <el-table-column prop="ifMultiPayment" label="是否多次付款"></el-table-column>
+                                <el-table-column prop="money" label="付款金额"></el-table-column>
+                                <el-table-column prop="time" label="付款时间"></el-table-column>
+                                <el-table-column prop="remark" label="备注"></el-table-column>
+                                <el-table-column prop="proportion" label="占比"></el-table-column>
+                            </el-table>
+                            <el-row>
+                                <el-col :span="8">
+                                    <el-form-item label="币种" prop="currency">
+                                        <el-select v-model="createConForm.cardFinanceInfo.currency" placeholder="请选择币种">
+                                            <el-option
+                                                    v-for="item in createConForm.cardFinanceInfo.currencyOptions"
+                                                    :key="item.value"
+                                                    :label="item.label"
+                                                    :value="item.value">
+                                            </el-option>
+                                        </el-select>
+                                    </el-form-item>
+                                </el-col>
+                                <el-col :span="8">
+                                    <el-form-item label="开票类型" prop="billingType">
+                                        <el-select v-model="createConForm.cardFinanceInfo.billingType"
+                                                   placeholder="请选择开票类型">
+                                            <el-option
+                                                    v-for="item in createConForm.cardFinanceInfo.billingTypeOptions"
+                                                    :key="item.value"
+                                                    :label="item.label"
+                                                    :value="item.value">
+                                            </el-option>
+                                        </el-select>
+                                    </el-form-item>
+                                </el-col>
+                                <el-col :span="8">
+                                    <el-form-item label="合同总金额" prop="totalConMoney">
+                                        <el-input v-model="createConForm.cardFinanceInfo.totalConMoney"
+                                                  placeholder="根据上表累加(含税价)"></el-input>
+                                    </el-form-item>
+                                </el-col>
+                            </el-row>
+                            <el-row>
+                                <el-col :span="8">
+                                    <el-form-item label="是否收取保证金" label-width="120px">
+                                        <el-radio-group v-model="createConForm.cardFinanceInfo.hasBond">
+                                            <el-radio :label="1">是</el-radio>
+                                            <el-radio :label="0">否</el-radio>
+                                        </el-radio-group>
+                                    </el-form-item>
+                                </el-col>
+                                <el-col :span="8">
+                                    <el-form-item label="保证金金额" prop="bondMoney">
+                                        <el-input v-model="createConForm.cardFinanceInfo.bondMoney"
+                                                  placeholder="请输入保证金金额"></el-input>
+                                    </el-form-item>
+                                </el-col>
+                                <el-col :span="8">
+                                    <el-form-item label="保证金占比" prop="bondProportion">
+                                        <el-input v-model="createConForm.cardFinanceInfo.bondProportion"
+                                                  placeholder="请输入保证金占比"></el-input>
+                                    </el-form-item>
+                                </el-col>
+                            </el-row>
+                            <el-row>
+                                <el-col :span="8">
+                                    <el-form-item label="付款时间" prop="paymentTime">
+                                        <el-date-picker v-model="createConForm.cardFinanceInfo.paymentTime"
+                                                        placeholder="请输入付款时间"
+                                                        type="date"></el-date-picker>
+                                    </el-form-item>
+                                </el-col>
+                            </el-row>
+                        </el-card>
+                        <el-card>
+                            <header slot="header">开票信息</header>
+                            <el-row>
+                                <el-col :span="12" class="billingInfo">
+                                    <h4>甲方增值税专用开票信息：</h4>
+                                    <el-row>
+                                        <el-col :span="6">
+                                            公司名称:
+                                        </el-col>
+                                        <el-col :span="16">
+                                            {{createConForm.cardFinanceInfo.jiaBillingInfo.companyName}}
+                                        </el-col>
+                                    </el-row>
+                                    <el-row>
+                                        <el-col :span="6">
+                                            统一社会信用代码:
+                                        </el-col>
+                                        <el-col :span="16">
+                                            {{createConForm.cardFinanceInfo.jiaBillingInfo.creditCode}}
+                                        </el-col>
+                                    </el-row>
+                                    <el-row>
+                                        <el-col :span="6">
+                                            注册地址:
+                                        </el-col>
+                                        <el-col :span="16">
+                                            {{createConForm.cardFinanceInfo.jiaBillingInfo.registerAddress}}
+                                        </el-col>
+                                    </el-row>
+                                    <el-row>
+                                        <el-col :span="6">
+                                            经营地址:
+                                        </el-col>
+                                        <el-col :span="16">
+                                            {{createConForm.cardFinanceInfo.jiaBillingInfo.managementAddress}}
+                                        </el-col>
+                                    </el-row>
+                                    <el-row>
+                                        <el-col :span="6">
+                                            联系电话:
+                                        </el-col>
+                                        <el-col :span="16">
+                                            {{createConForm.cardFinanceInfo.jiaBillingInfo.phone}}
+                                        </el-col>
+                                    </el-row>
+                                    <el-row>
+                                        <el-col :span="6">
+                                            联系电话:
+                                        </el-col>
+                                        <el-col :span="16">
+                                            {{createConForm.cardFinanceInfo.jiaBillingInfo.phone}}
+                                        </el-col>
+                                    </el-row>
+                                    <el-row>
+                                        <el-col :span="6">
+                                            银行账号:
+                                        </el-col>
+                                        <el-col :span="16">
+                                            {{createConForm.cardFinanceInfo.jiaBillingInfo.bankAccount}}
+                                        </el-col>
+                                    </el-row>
+                                    <el-row>
+                                        <el-col :span="6">
+                                            开 户 行:
+                                        </el-col>
+                                        <el-col :span="16">
+                                            {{createConForm.cardFinanceInfo.jiaBillingInfo.openBank}}
+                                        </el-col>
+                                    </el-row>
+                                </el-col>
+                                <el-col :span="12" class="billingInfo">
+                                    <h4>乙方指定甲方汇款的账户为：</h4>
+                                    <el-row>
+                                        <el-col :span="6">
+                                            乙方:
+                                        </el-col>
+                                        <el-col :span="16">
+                                            {{createConForm.cardFinanceInfo.yiBillingInfo.companyName}}
+                                        </el-col>
+                                    </el-row>
+                                    <el-row>
+                                        <el-col :span="6">
+                                            银行账号:
+                                        </el-col>
+                                        <el-col :span="16">
+                                            {{createConForm.cardFinanceInfo.yiBillingInfo.bankAccount}}
+                                        </el-col>
+                                    </el-row>
+                                    <el-row>
+                                        <el-col :span="6">
+                                            开 户 行:
+                                        </el-col>
+                                        <el-col :span="16">
+                                            {{createConForm.cardFinanceInfo.yiBillingInfo.openBank}}
+                                        </el-col>
+                                    </el-row>
+                                    <el-row>
+                                        <el-col :span="6">
+                                            联系人:
+                                        </el-col>
+                                        <el-col :span="16">
+                                            {{createConForm.cardFinanceInfo.yiBillingInfo.contact}}
+                                        </el-col>
+                                    </el-row>
+                                    <el-row>
+                                        <el-col :span="6">
+                                            注册地址:
+                                        </el-col>
+                                        <el-col :span="16">
+                                            {{createConForm.cardFinanceInfo.yiBillingInfo.address}}
+                                        </el-col>
+                                    </el-row>
+                                    <el-row>
+                                        <el-col :span="6">
+                                            联系电话:
+                                        </el-col>
+                                        <el-col :span="16">
+                                            {{createConForm.cardFinanceInfo.yiBillingInfo.phone}}
+                                        </el-col>
+                                    </el-row>
+                                    <el-row>
+                                        <el-col :span="6">
+                                            E-mail:
+                                        </el-col>
+                                        <el-col :span="16">
+                                            {{createConForm.cardFinanceInfo.yiBillingInfo.email}}
+                                        </el-col>
+                                    </el-row>
+                                </el-col>
+                            </el-row>
+                        </el-card>
                     </el-tab-pane>
                     <el-tab-pane label="合同验收与样品信息" name="tabContCheckInfo">
-                        合同验收与样品信息
+                        <el-row>
+                            <el-col :span="8">
+                                <el-form-item prop="checkPerson" label="验收责任人">
+                                    <el-input v-model="createConForm.cardContCheckInfo.checkPerson"
+                                              placeholder="请输入验收责任人"></el-input>
+                                </el-form-item>
+                            </el-col>
+                            <el-col :span="8">
+                                <el-form-item prop="checkPersonDepart" label="验收责任人部门" label-width="120px">
+                                    <el-input v-model="createConForm.cardContCheckInfo.checkPersonDepart"
+                                              placeholder="请输入验收责任人部门"></el-input>
+                                </el-form-item>
+                            </el-col>
+                            <el-col :span="8">
+                                <el-form-item prop="checkServiceMethod" label="服务类验收方式" label-width="120px">
+                                    <el-input v-model="createConForm.cardContCheckInfo.checkServiceMethod"
+                                              placeholder="请输入服务类验收方式"></el-input>
+                                </el-form-item>
+                            </el-col>
+                        </el-row>
+                        <el-row>
+                            <el-col :span="8">
+                                <el-form-item prop="checkSupervisor" label="验收监督人">
+                                    <el-input v-model="createConForm.cardContCheckInfo.checkSupervisor"
+                                              placeholder="请输入验收监督人"></el-input>
+                                </el-form-item>
+                            </el-col>
+                            <el-col :span="8">
+                                <el-form-item prop="checkSupervisorDepart" label="验收监督人部门" label-width="120px">
+                                    <el-input v-model="createConForm.cardContCheckInfo.checkSupervisorDepart"
+                                              placeholder="请输入验收监督人部门"></el-input>
+                                </el-form-item>
+                            </el-col>
+                        </el-row>
+                        <el-button @click="handleAddUnionCheck" icon="plus" type="primary">添加联合验收人</el-button>
+                        <el-table :data="createConForm.cardContCheckInfo.unionCheckPersons">
+                            <el-table-column prop="name" label="联合验收人"></el-table-column>
+                            <el-table-column prop="depart" label="联合验收人部门"></el-table-column>
+                            <el-table-column prop="ifMandatory" label="是否必选"></el-table-column>
+                        </el-table>
+                        <el-form-item prop="hasSample" label="是否有样品">
+                            <el-radio-group v-model="createConForm.cardContCheckInfo.hasSample">
+                                <el-radio :label="1">是</el-radio>
+                                <el-radio :label="0">否</el-radio>
+                            </el-radio-group>
+                        </el-form-item>
+                        <el-card>
+                            <header slot="header">物资验收事项</header>
+                            <el-table :data="createConForm.cardContCheckInfo.materialMatters">
+                                <el-table-column type="index" label="序号" width="100px">
+                                </el-table-column>
+                                <el-table-column prop="number" label="物料编码"></el-table-column>
+                                <el-table-column prop="description" label="物料描述"></el-table-column>
+                                <el-table-column prop="remark" label="备注"></el-table-column>
+                            </el-table>
+                        </el-card>
+                        <el-card>
+                            <header slot="header">服务验收事项</header>
+                            <el-button type="primary" @click="handleAddServiceMatter" icon="plus">添加服务验收事项</el-button>
+                            <el-table :data="createConForm.cardContCheckInfo.serviceMatters">
+                                <el-table-column type="index" label="序号" width="100px">
+                                </el-table-column>
+                                <el-table-column prop="name" label="服务名称"></el-table-column>
+                                <el-table-column prop="demand" label="验收要求"></el-table-column>
+                                <el-table-column prop="remark" label="备注"></el-table-column>
+                            </el-table>
+                        </el-card>
                     </el-tab-pane>
                     <el-tab-pane label="合同盖章信息" name="tabSealInfo">
                         合同盖章信息
@@ -122,352 +465,48 @@
                 </el-tabs>
             </el-card>
         </el-form>
-        <!--<Card class="card">
-            <p slot="title">合同基本信息</p>
-            <Form :label-width="100" inline>
-                <Form-item label="业务经办人">
-                    <Input placeholder="请输入" v-model="pr.name"></Input>
-                </Form-item>
-                <Form-item label="业务部门">
-                    <Input placeholder="请输入" v-model="pr.name"></Input>
-                </Form-item>
-                </br>
-                <Form-item label="合同模式">
-                    <Select placeholder="请选择" v-model="con.conModel">
-                        <Option value="1">框架意向合同</Option>
-                        <Option value="2">框架合同</Option>
-                        <Option value="3">单一合同</Option>
-                        <Option value="4">简易合同</Option>
-                    </Select>
-                </Form-item>
+        <el-dialog title="新增付款方式" :visible.sync="createConForm.cardFinanceInfo.dialogNewPaymentVisible" size="small">
+            <el-form :model="formNewPayment" label-width="100px" ref="formNewPayment">
+                <el-form-item label="类型" prop="type">
+                    <el-select v-model="formNewPayment.type" placeholder="请选择付款类型">
+                        <el-option v-for="item in formNewPayment.typeOptions"
+                                   :key="item.value"
+                                   :label="item.label"
+                                   :value="item.value">
+                        </el-option>
+                    </el-select>
+                </el-form-item>
+                <el-form-item label="是否多次付款" prop="ifMultiPayment">
+                    <el-radio-group v-model="formNewPayment.ifMultiPayment">
+                        <el-radio :label="0">是</el-radio>
+                        <el-radio :label="1">否</el-radio>
+                    </el-radio-group>
+                </el-form-item>
+                <el-form-item label="付款金额" prop="money">
+                    <el-input v-model="formNewPayment.money" placeholder="请输入付款金额"></el-input>
+                </el-form-item>
+                <el-form-item label="付款时间">
+                    <el-select v-model="formNewPayment.time" placeholder="请选择付款时间">
+                        <el-option v-for="item in formNewPayment.timeOptions[formNewPayment.type]"
+                                   :key="item.value"
+                                   :label="item.label"
+                                   :value="item.value">
+                        </el-option>
+                    </el-select>
+                </el-form-item>
+                <el-form-item label="备注" prop="remark">
+                    <el-input v-model="formNewPayment.remark" placeholder="请输入备注"></el-input>
+                </el-form-item>
+            </el-form>
+            <footer slot="footer">
+                <el-button type="primary" @click="handleAddNewPay('formNewPayment')">确定</el-button>
+                <el-button type="primary" @click="handleCancelAddNewPay">取消</el-button>
+            </footer>
+        </el-dialog>
+        <!--<el-dialog title="添加联合验收人" :visible.sync="createConForm.cardFinanceInfo.dialogAddUnionCheckVisible"
+                   sizi="small">
 
-                <Form-item label="合同类型">
-                    <Select placeholder="请选择" v-model="con.conType">
-                        <Option value="1">服务类</Option>
-                        <Option value="2">固定资产类</Option>
-                        <Option value="3">一般物资类</Option>
-                    </Select>
-                </Form-item>
-                </br>
-                <Form-item label="所属项目">
-                    <Input placeholder="请输入"></Input>
-                </Form-item>
-                <Form-item label="合同版本">
-                    <Input placeholder="请输入"></Input>
-                </Form-item>
-                </br>
-                <Form-item label="合同文本类型">
-                    <Select placeholder="请选择">
-                        <Option value="1">合同模板</Option>
-                        <Option value="2">文本</Option>
-                    </Select>
-                </Form-item>
-                <Form-item label="模板名称">
-                    <Select placeholder="请选择" v-model="con.templateCode">
-                        <Option value="3">普通模板</Option>
-                        <Option value="1">标的物模板</Option>
-                        <Option value="2">付款阶段模板</Option>
-                        <Option value="4">标的物和付款阶段模板</Option>
-                    </Select>
-                </Form-item>
-                <Form-item :label-width="20">
-                    <Button type="primary" @click="conPreview">
-                        <span>预览</span>
-                    </Button>
-                </Form-item>
-                </br>
-                <Form-item label="盖章次序">
-                    <Radio-group v-model="isOtherSeal">
-                        <Radio label="1"><span>对方先盖章（默认）</span></Radio>
-                        <Radio label="0"><span>我方先盖章</span></Radio>
-                    </Radio-group>
-                </Form-item>
-                </br>
-                <Form-item label="我方先盖章原因" v-show="isOtherSeal==0">
-                    <Input type="textarea" :autosize="{minRows: 3,maxRows: 6}" placeholder="请输入..."
-                           style="width:475px;"></Input>
-                </Form-item>
-            </Form>
-            <Modal v-model="showConPreviewModal" title="合同预览" ok-text="导出PDF" width="900" :styles="{top: '20px'}"
-                   @on-ok="exportPDF">
-                <div class="template-preview" v-html="editTemplate.html">
-                </div>
-            </Modal>
-        </Card>-->
-        <Card class="card">
-            <Tabs value="name1">
-                <Tab-pane label="合同内容信息" name="name1">
-                    <div class="list-title">合同供应商信息</div>
-                    <Table border :columns="conContentProviderColumns" :data="conContentProviderData"></Table>
-                    <div class="list-title">
-                        <div class="left">合同我方主体名称</div>
-                        <div class="right">
-                            <Button type="primary" size="small" icon="android-add" @click="showConOurmodal = true">
-                                新增我方主体
-                            </Button>
-                        </div>
-                        <div class="right">
-                            <Checkbox v-model="chkAllCompany">所有公司</Checkbox>
-                        </div>
-                        <div class="clear"></div>
-                    </div>
-                    <Table border :columns="conContentOurColumns" :data="conContentOurData"></Table>
-                    <Modal v-model="showConOurmodal" title="新增我方主体">
-                        <Form :label-width="100">
-                            <Form-item label="公司代码">
-                                <Input placeholder="请输入"></Input>
-                            </Form-item>
-                            <Form-item label="公司名称">
-                                <Input placeholder="请输入"></Input>
-                            </Form-item>
-                        </Form>
-                    </Modal>
-                    <div class="list-title">
-                        <div class="left">第三方信息</div>
-                        <div class="right">
-                            <Button type="primary" size="small" icon="android-add" @click="showConOurmodal = true">
-                                新增我方主体
-                            </Button>
-                        </div>
-                        <div class="clear"></div>
-                    </div>
-                    <Table border :columns="conContentProviderColumns"></Table>
-                    <div class="list-title">合同标的</div>
-                    <Table border :columns="conContentMaterielColumns"></Table>
-                    <Form :label-width="100" inline style="margin-top: 20px;">
-                        <Form-item label="合同生效日期">
-                            <Date-picker type="date" placeholder="选择日期" style="width: 200px"></Date-picker>
-                        </Form-item>
-                        <Form-item label="合同终止日期">
-                            <Date-picker type="date" placeholder="选择日期" style="width: 200px"></Date-picker>
-                        </Form-item>
-                    </Form>
-                </Tab-pane>
-
-                <Tab-pane label="合同财务信息" name="name2">
-                    <Form :label-width="100" style="margin-top: 20px;">
-                        <Form-item label="是否涉及金额">
-                            <Radio-group v-model="isAboutAmount">
-                                <Radio label="1"><span>是</span></Radio>
-                                <Radio label="0"><span>否</span></Radio>
-                            </Radio-group>
-                        </Form-item>
-                        <Form-item label="是否一次性付款">
-                            <Radio-group v-model="con.isOnePay">
-                                <Radio label="1"><span>是</span></Radio>
-                                <Radio label="0"><span>否</span></Radio>
-                            </Radio-group>
-                        </Form-item>
-                    </Form>
-                    <div class="list-title">
-                        <div class="left">付款方式</div>
-                        <div class="right">
-                            <Button type="primary" size="small" icon="android-add"
-                                    @click="showConFinancePaymodal = true">新增付款方式
-                            </Button>
-                        </div>
-                        <div class="clear"></div>
-                    </div>
-                    <Table border :columns="conFinancePayColumns"></Table>
-                    <Modal v-model="showConFinancePaymodal" title="新增付款方式" width="360">
-                        <Form :label-width="100">
-                            <Form-item label="类型">
-                                <Select placeholder="请选择" v-model="payType">
-                                    <Option value="1">预付款</Option>
-                                    <Option value="2">进度款</Option>
-                                    <Option value="3">尾款</Option>
-                                </Select>
-                            </Form-item>
-                            <Form-item label="付款金额">
-                                <Input placeholder="请输入"></Input>
-                            </Form-item>
-                            <Form-item label="付款时间" v-show="payType==1">
-                                <Select placeholder="请选择">
-                                    <Option value="template">合同签约后15天</Option>
-                                    <Option value="template">合同签约后30天</Option>
-                                    <Option value="template">合同签约后90天</Option>
-                                </Select>
-                            </Form-item>
-                            <Form-item label="付款时间" v-show="payType==2">
-                                <Select placeholder="请选择">
-                                    <Option value="template">验收后15天</Option>
-                                    <Option value="template">验收后30天</Option>
-                                </Select>
-                            </Form-item>
-                            <Form-item label="付款时间" v-show="payType==3">
-                                <Select placeholder="请选择">
-                                    <Option value="template">合同结束后15天</Option>
-                                    <Option value="template">合同结束后30天</Option>
-                                    <Option value="template">合同结束后90天</Option>
-                                    <Option value="template">合同结束后180天</Option>
-                                </Select>
-                            </Form-item>
-                            <Form-item label="备注">
-                                <Input type="textarea" :rows="3" placeholder="请输入"></Input>
-                            </Form-item>
-                        </Form>
-                    </Modal>
-                    <Form :label-width="100" inline style="margin-top: 20px;">
-                        <Form-item label="币种">
-                            <Select placeholder="请选择">
-                                <Option value="template">CNY 人民币</Option>
-                                <Option value="template">USD 美元</Option>
-                            </Select>
-                        </Form-item>
-                        <Form-item label="开票类型">
-                            <Select placeholder="请选择">
-                                <Option value="template">增值税专用发票</Option>
-                                <Option value="template">增值税普通发票</Option>
-                                <Option value="template">普通发票</Option>
-                            </Select>
-                        </Form-item>
-                        <Form-item label="税率">
-                            <Select placeholder="请选择">
-                                <Option value="template">17%</Option>
-                                <Option value="template">13%</Option>
-                                <Option value="template">7%</Option>
-                                <Option value="template">6%</Option>
-                                <Option value="template">3%</Option>
-                            </Select>
-                        </Form-item>
-                        </br>
-                        <Form-item label="是否收取保证金">
-                            <Radio-group v-model="isCollectBond">
-                                <Radio label="1"><span>是</span></Radio>
-                                <Radio label="0"><span>否</span></Radio>
-                            </Radio-group>
-                        </Form-item>
-                        </br>
-                        <Form-item label="保证金金额">
-                            <Input placeholder="请输入"></Input>
-                        </Form-item>
-                        <Form-item label="保证金占比">
-                            <Input placeholder="请输入"></Input>
-                        </Form-item>
-                        <Form-item label="付款时间">
-                            <Select placeholder="请选择">
-                                <Option value="template">框架意向合同</Option>
-                            </Select>
-                        </Form-item>
-                    </Form>
-                </Tab-pane>
-
-                <Tab-pane label="合同验收与样品信息" name="name3">
-                    <Form :label-width="100" inline style="margin-top: 20px;">
-                        <Form-item label="验收责任人">
-                            <Input placeholder="请输入"></Input>
-                        </Form-item>
-                        <Form-item label="验收责任人部门">
-                            <Input placeholder="请输入"></Input>
-                        </Form-item>
-                        <Form-item label="服务类验收方式">
-                            <Select placeholder="请选择">
-                                <Option value="template">按阶段验收</Option>
-                                <Option value="template">收货验收</Option>
-                            </Select>
-                        </Form-item>
-                        </br>
-                        <Form-item label="验收监督人">
-                            <Input placeholder="请输入"></Input>
-                        </Form-item>
-                        <Form-item label="验收监督人部门">
-                            <Input placeholder="请输入"></Input>
-                        </Form-item>
-                    </Form>
-                    <div class="list-title">
-                        <div class="left">
-                            <div>联合验收人</div>
-                        </div>
-                        <div class="right">
-                            <Button type="primary" size="small" icon="android-add"
-                                    @click="showConCheckPersonModal = true">新增联合验收人
-                            </Button>
-                            <searchuser :showSearchUserModal="showConCheckPersonModal" @on-cancel="cancel"></searchuser>
-                        </div>
-                        <div class="clear"></div>
-
-                    </div>
-                    <Table border :columns="conCheckPersonColumns"></Table>
-                    <Form :label-width="100">
-                        <Form-item label="联合验收人">
-                            <Input placeholder="请输入"></Input>
-                        </Form-item>
-                        <Form-item label="联合验收人部门">
-                            <Input placeholder="请输入"></Input>
-                        </Form-item>
-                    </Form>
-                    </Modal>
-                    <Form>
-                        <Form-item label="是否有样品">
-                            <Radio-group>
-                                <Radio label="1"><span>是</span></Radio>
-                                <Radio label="0"><span>否</span></Radio>
-                            </Radio-group>
-                        </Form-item>
-                    </Form>
-                    <div class="list-title">物资验收事项</div>
-                    <Table border :columns="conContentCheckMaterielColumns"></Table>
-                    <div class="list-title">
-                        <div class="left">
-                            <div>服务验收事项</div>
-                        </div>
-                        <div class="right">
-                            <Button type="primary" size="small" icon="android-add"
-                                    @click="showConContentCheckServiceModal = true">
-                                新增服务验收
-                            </Button>
-                        </div>
-                        <div class="clear"></div>
-                    </div>
-                    <Modal v-model="showConContentCheckServiceModal" title="新增服务验收">
-                        <Form :label-width="100">
-                            <Form-item label="服务名称">
-                                <Input placeholder="请输入"></Input>
-                            </Form-item>
-                            <Form-item label="验收要求">
-                                <Input placeholder="请输入"></Input>
-                            </Form-item>
-                            <Form-item label="备注">
-                                <Input placeholder="请输入"></Input>
-                            </Form-item>
-                        </Form>
-                    </Modal>
-                    <Table border :columns="conContentCheckServiceColumns"></Table>
-                </Tab-pane>
-
-                <Tab-pane label="合同盖章信息" name="name4">
-                    <div class="list-title">合同文件列表</div>
-                    <Table border :columns="conSealColumns"></Table>
-                </Tab-pane>
-
-                <Tab-pane label="从协议信息" name="name5">
-                    <Form inline :label-width="100">
-                        <Form-item label="从协议编号">
-                            <Input placeholder="请输入"></Input>
-                        </Form-item>
-                        <Form-item :label-width="20">
-                            <Button type="primary">
-                                <span>查找</span>
-                            </Button>
-                        </Form-item>
-                    </Form>
-                    <div class="list-title">从协议列表</div>
-                    <Table border :columns="conSealColumns"></Table>
-                </Tab-pane>
-                <Tab-pane label="备注" name="name6">
-                    <div class="list-title">其他说明</div>
-                    <Input placeholder="请输入" type="textarea" :autosize="{minRows: 4,maxRows: 8}"
-                           style="width: 400px;"></Input>
-
-                    <div class="list-title">附件信息</div>
-                    <Table border :columns="attachmentColumns"></Table>
-                </Tab-pane>
-                <Tab-pane label="相关数据" name="name7">
-                    <Table border :columns="conOtherDataColumns"></Table>
-                </Tab-pane>
-            </Tabs>
-        </Card>
-
+        </el-dialog>-->
         <div class="submit">
             <Button type="primary">
                 <span>提交</span>
@@ -489,8 +528,10 @@
              type:create*/
             let query = this.$route.query;
             console.log('query', query);
-            this.con.conModel = query.conModel;
-            this.con.conType = query.conType;
+            /*this.con.conModel = query.conModel;
+             this.con.conType = query.conType;*/
+            this.createConForm.baseInfo.conModel = '合同模式';
+            this.createConForm.baseInfo.conType = '合同类型';
 
             api.getPR(query).then((res) => {
                 this.pr = res.data.pr;
@@ -517,263 +558,146 @@
                         sealReason: '',
                     },
                     activeTabName: 'tabContInfo',
-
-
+                    cardContentInfo: {
+                        tableSupplierInfo: [],
+                        conSubjctName: [],
+                        thirdPartyInfo: [],
+                        conStandard: [],
+                        effectiveDate: '',
+                        endDate: '',
+                    },
+                    cardFinanceInfo: {
+                        hasMoney: 1,
+                        onePayment: 0,
+                        paymentMethod: [],
+                        dialogNewPaymentVisible: false,
+                        currency: '',
+                        currencyOptions: [
+                            {
+                                value: '1',
+                                label: 'CNY 人民币'
+                            },
+                            {
+                                value: '2',
+                                label: 'USD 美元'
+                            }
+                        ],
+                        billingType: '',
+                        billingTypeOptions: [
+                            {
+                                value: '1',
+                                label: '增值税专用发票'
+                            },
+                            {
+                                value: '2',
+                                label: '增值税普通发票'
+                            },
+                            {
+                                value: '3',
+                                label: '普通发票'
+                            },
+                        ],
+                        hasBond: 1,
+                        bondMoney: '',
+                        bondProportion: '',
+                        paymentTime: '',
+                        jiaBillingInfo: {
+                            companyName: '红星美凯龙家居集团股份有限公司',
+                            creditCode: '913100006624816751',
+                            registerAddress: '上海市浦东新区临御路518号6楼F801室',
+                            managementAddress: '上海市普陀区怒江北路598号10楼',
+                            phone: '021-22300563',
+                            bankAccount: '0210 0141 7000 7578',
+                            openBank: '中国民生银行上海市南支行'
+                        },
+                        yiBillingInfo: {
+                            companyName: '上海史泰博股份有限公司',
+                            contact: 'echo',
+                            bankAccount: '0210 0141 7000 7578',
+                            openBank: '中国民生银行上海市南支行',
+                            address: '上海市浦东新区临御路518号6楼F801室',
+                            phone: '021-22300563',
+                            email: '134656343@qq.com'
+                        },
+                    },
+                    cardContCheckInfo: {
+                        checkPerson: '',
+                        checkPersonDepart: '',
+                        checkServiceMethod: '',
+                        checkSupervisor: '',
+                        checkSupervisorDepart: '',
+                        unionCheckPersons: [],
+                        hasSample: 1,
+                        materialMatters: [],
+                        serviceMatters: [],
+                        dialogAddUnionCheckVisible: true,
+                    },
                 },
-
-                //////////////////////////////////////
-                pr: {},
-                con: {
-                    conModel: "0",
-                    conType: "0",
-                    templateCode: "0",
-                    conTitle: "",
-                    isOnePay: 1,
-                    payments: [
+                formNewPayment: {
+                    type: '1',
+                    typeOptions: [
                         {
-                            id: "1",
-                            type: 1,
-                            amount: 11.00,
-                            percent: 0.7,
-                            payTime: '2017-7-8',
-                            description: '付款'
+                            value: '1',
+                            label: '预付款'
                         },
                         {
-                            id: "2",
-                            type: 2,
-                            amount: 121.00,
-                            percent: 0.8,
-                            payTime: '2017-7-7',
-                            description: '付款2222'
-                        }
-                    ]
+                            value: '2',
+                            label: '进度款'
+                        },
+                        {
+                            value: '3',
+                            label: '尾款'
+                        },
+                    ],
+                    ifMultiPayment: 1,
+                    money: '',
+                    time: '1',
+                    timeOptions: {
+                        1: [//预付款
+                            {
+                                value: '1',
+                                label: '合同签约15天'
+                            },
+                            {
+                                value: '2',
+                                label: '合同签约30天'
+                            },
+                            {
+                                value: '3',
+                                label: '合同签约90天'
+                            }
+                        ],
+                        2: [
+                            {
+                                value: '1',
+                                label: '验收后15天'
+                            },
+                            {
+                                value: '2',
+                                label: '验收后30天'
+                            }
+                        ],
+                        3: [
+                            {
+                                value: '1',
+                                label: '合同结束后15天'
+                            },
+                            {
+                                value: '2',
+                                label: '合同结束后30天'
+                            },
+                            {
+                                value: '3',
+                                label: '合同结束后90天'
+                            },
+                            {
+                                value: '4',
+                                label: '合同结束后180天'
+                            },
+                        ]
+                    },
+                    remark: '',
                 },
-                isOtherSeal: 1,
-                isOnePay: 1,
-                isAboutAmount: -1,
-                isCollectBond: 1,
-                chkAllCompany: false,
-
-                showConPreviewModal: false,
-                showConOurmodal: false,
-                showConFinancePaymodal: false,
-                showConCheckPersonModal: false,
-                showConContentCheckServiceModal: false,
-                payType: -1,
-                attachmentColumns: [{
-                    title: '附件类型',
-                    key: 'EmployeeName'
-                },
-                    {
-                        title: '编号',
-                        key: 'Moible'
-                    },
-                    {
-                        title: '文件名称',
-                        key: 'Moible'
-                    },
-                    {
-                        title: '附件',
-                        key: 'Moible'
-                    }
-                ],
-                conContentProviderColumns: [{
-                    title: '供应商编号',
-                    key: 'Moible'
-                },
-                    {
-                        title: '供应商名称',
-                        key: 'Moible'
-                    },
-                    {
-                        title: '银行账号',
-                        key: 'Moible'
-                    }
-                ],
-                conContentProviderData: [{
-                    Moible: 'Moible'
-                }],
-                conContentOurColumns: [{
-                    title: '公司代码',
-                    width: 300,
-                    key: 'Moible'
-                },
-                    {
-                        title: '公司名称',
-                        key: 'Moible'
-                    }
-                ],
-                conContentOurData: [{
-                    Moible: 'Moible'
-                }],
-                conContentMaterielColumns: [{
-                    title: '序号',
-                    key: 'EmployeeName'
-                },
-                    {
-                        title: '物料编码',
-                        key: 'Moible'
-                    },
-                    {
-                        title: '物料名称',
-                        key: 'EmployeeName'
-                    },
-                    {
-                        title: '数量',
-                        key: 'Moible'
-                    },
-                    {
-                        title: '价格',
-                        key: 'EmployeeName'
-                    },
-                    {
-                        title: '税率',
-                        key: 'Moible'
-                    }
-                ],
-                conContentCheckMaterielColumns: [{
-                    title: '序号',
-                    key: 'EmployeeName'
-                },
-                    {
-                        title: '物料编码',
-                        key: 'Moible'
-                    },
-                    {
-                        title: '物料描述',
-                        key: 'EmployeeName'
-                    },
-                    {
-                        title: '备注',
-                        key: 'Moible'
-                    }
-                ],
-                conContentCheckServiceColumns: [{
-                    title: '序号',
-                    key: 'EmployeeName'
-                },
-                    {
-                        title: '服务名称',
-                        key: 'Moible'
-                    },
-                    {
-                        title: '验收要求',
-                        key: 'EmployeeName'
-                    },
-                    {
-                        title: '备注',
-                        key: 'Moible'
-                    }
-                ],
-                conFinancePayColumns: [{
-                    title: '类型',
-                    key: 'EmployeeName'
-                },
-                    {
-                        title: '是否多次付款',
-                        key: 'Moible'
-                    },
-                    {
-                        title: '付款金额',
-                        key: 'EmployeeName'
-                    },
-                    {
-                        title: '付款时间',
-                        key: 'Moible'
-                    },
-                    {
-                        title: '备注',
-                        key: 'EmployeeName'
-                    },
-                    {
-                        title: '占比',
-                        key: 'Moible'
-                    }
-                ],
-                conCheckPersonColumns: [{
-                    title: '联合验收人',
-                    key: 'EmployeeName'
-                },
-                    {
-                        title: '联合验收人部门',
-                        key: 'Moible'
-                    },
-                    {
-                        title: '是否必选',
-                        key: 'EmployeeName'
-                    }
-                ],
-                conSealColumns: [{
-                    title: '序号',
-                    key: 'EmployeeName'
-                },
-                    {
-                        title: '文本名称',
-                        key: 'Moible'
-                    },
-                    {
-                        title: '用章次数',
-                        key: 'EmployeeName'
-                    },
-                    {
-                        title: '打印份数',
-                        key: 'EmployeeName'
-                    },
-                    {
-                        title: '我方留存份数',
-                        key: 'Moible'
-                    },
-                    {
-                        title: '用章名称',
-                        key: 'EmployeeName'
-                    },
-                    {
-                        title: '备注',
-                        key: 'Moible'
-                    },
-                    {
-                        title: '无需打印',
-                        key: 'EmployeeName'
-                    }
-                ],
-                conOtherDataColumns: [{
-                    title: '序号',
-                    key: 'EmployeeName'
-                },
-                    {
-                        title: '合同号',
-                        key: 'Moible'
-                    },
-                    {
-                        title: '类型',
-                        key: 'EmployeeName'
-                    },
-                    {
-                        title: '状态',
-                        key: 'EmployeeName'
-                    },
-                    {
-                        title: '公司',
-                        key: 'Moible'
-                    },
-                    {
-                        title: '合同开始时间',
-                        key: 'EmployeeName'
-                    }
-                ],
-                source: {
-                    templateTags: [],
-                    templateModules: [],
-                    targetTagKeys: [],
-                    targetModuleKeys: [],
-                },
-                editTemplate: {
-                    show: false,
-                    header: '',
-                    content: '',
-                    footer: '',
-                    html: ' '
-                }
             }
         },
         methods: {
@@ -782,6 +706,26 @@
             },
             handleTabClick(tab, event){
                 console.log('handleTabClick');
+            },
+            handleNewSubjectName(){
+                console.log('handleNewSubjectName');
+            },
+            handleAddPaymentMethod(){
+                this.createConForm.cardFinanceInfo.dialogNewPaymentVisible = true;
+            },
+            handleAddNewPay(formName){
+                this.$refs[formName].resetFields();
+                this.createConForm.cardFinanceInfo.dialogNewPaymentVisible = false;
+            },
+            handleCancelAddNewPay(){
+                this.$refs[formName].resetFields();
+                this.createConForm.cardFinanceInfo.dialogNewPaymentVisible = false;
+            },
+            handleAddUnionCheck(){
+                console.log('联合验收');
+            },
+            handleAddServiceMatter(){
+                console.log('添加服务验收事项');
             },
 
 
