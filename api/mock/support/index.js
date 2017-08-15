@@ -10,47 +10,82 @@ module.exports = function (api) {
       }, {
         value: '1',
         label: '模板一',
-        moduleId: '1,6'
+        moduleId: '1,5'
       }]
     });
   });
 
-  api.use('/api/support/module/data', function (req, res) {
+  api.use('/contract-web/module/findModule', function (req, res) {
     res.status(200).json({
       code: 200,
       message: '成功',
       dataMap: [
         {
-          key: '1',
-          label: '头部（甲方乙方）',
-          content: `<div>
+          id: 1,
+          moduleName: '头部（甲方乙方）',
+          moduleContent: `<div>
 <div style="width:50%;float:left;">甲方：jiafang</div>
 <div style="width:50%;float:left;">乙方：yifang</div>
 </div>`,
-          type: '1'
+          moduleType: 1
         },
         {
-          key: '2',
-          label: '测试动态表格',
-          content: 'header1',
-          type: '1'
+          id: 2,
+          moduleName: '物料明细',
+          moduleContent: `<div style="clear:both;"></div><table style="width:100%;margin-top:20px;" border="1" cellspacing="0" cellpadding="0">
+<thead>
+<tr>
+<th>物料编码</th>
+<th>物料描述</th>
+<th>数量</th>
+<th>含税单价</th>
+<th>税率</th>
+<th>备注</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td align="center">物料编码</td>
+<td align="center">物料描述</td>
+<td align="center">数量</td>
+<td align="center">含税单价</td>
+<td align="center">税率</td>
+<td align="center">备注</td>
+</tr>
+</tbody>
+</table>`,
+          moduleType: 1
         },
         {
-          key: '3',
-          label: '标的物',
-          content: 'header4',
-          type: '1'
+          id: 3,
+          moduleName: '付款信息',
+          moduleContent: `<div style="clear:both;"></div>
+<table style="width:100%;margin-top:20px;" border="1" cellspacing="0" cellpadding="0">
+<thead>
+<tr>
+<th>类型</th>
+<th>金额</th>
+<th>时间</th>
+<th>占比</th>
+<th>备注</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td align="center">类型</td>
+<td align="center">金额</td>
+<td align="center">时间</td>
+<td align="center">占比</td>
+<td align="center">备注</td>
+</tr>
+</tbody>
+</table>`,
+          moduleType: 1
         },
         {
-          key: '4',
-          label: '付款阶段',
-          content: 'header5',
-          type: '1'
-        },
-        {
-          key: '5',
-          label: '尾部',
-          content: `<div style="margin-bottom:10px;">
+          id: 4,
+          moduleName: '尾部',
+          moduleContent: `<div style="margin-bottom:10px;">
 <div style="width:50%;float:left;">甲方：jiafang</div>
 <div style="width:50%;float:left;">乙方：yifang</div>
 <div style="clear:both;"></div>
@@ -62,7 +97,7 @@ module.exports = function (api) {
 <div style="width:50%;float:left;">日期：xxxx-xx-xx</div>
 <div style="width:50%;float:left;">日期：xxxx-xx-xx</div>
 </div>`,
-          type: '2'
+          moduleType: 2
         }
       ]
     });
@@ -181,7 +216,7 @@ module.exports = function (api) {
         busiType: '111',
         busiTypeText: '三级 1-1-1',
         tplType: '1',
-        moduleId: '1,5',
+        moduleId: '1,4',
         tplContent: '这只是个法务文案例子'
       }
     });

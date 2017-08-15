@@ -1,11 +1,14 @@
 import Http from '@/core/commonModel';
 
+//const contract = '/api-contract';
+const contract = '';
+
 export default {
   getTmplTypes(params) {
     return Http.get(`/api/support/tmpl/type`, params);
   },
   getModuleData(params) {
-    return Http.get(`/api/support/module/data`, params);
+    return Http.get(`${contract}/contract-web/module/findModule`, params);
   },
   getBusiType(params) {
     return Http.get(`/api/support/tmpl/busiType`, params);

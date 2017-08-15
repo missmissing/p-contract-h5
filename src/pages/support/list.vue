@@ -1,10 +1,7 @@
 <style type="text/scss" lang="scss" scoped>
   .list-container {
-    .row {
-      margin-bottom: 20px;
-    }
-    .wp100 {
-      width: 100%;
+    .line {
+      text-align: center;
     }
   }
 </style>
@@ -16,8 +13,64 @@
         <span class="common-title">合同模板列表</span>
       </div>
       <div>
-        <div class="row">
-
+        <div class="mb20">
+          <el-form ref="form" :model="form" label-width="100px">
+            <el-row>
+              <el-col :span="18">
+                <el-form-item label="查询条件">
+                  <el-input
+                    v-model="form.someText">
+                  </el-input>
+                </el-form-item>
+              </el-col>
+              <el-button type="primary" @click="search" class="ml20">搜 索</el-button>
+            </el-row>
+            <el-row>
+              <el-col :span="6">
+                <el-form-item label="模板类型">
+                  <el-select
+                    v-model="form.type"
+                    placeholder="请选择"
+                    class="wp100">
+                    <el-option label="合同模板" value="1"></el-option>
+                    <el-option label="合同文本" value="2"></el-option>
+                  </el-select>
+                </el-form-item>
+              </el-col>
+              <el-col :span="6">
+                <el-form-item label="文本编号">
+                  <el-input></el-input>
+                </el-form-item>
+              </el-col>
+              <el-col :span="6">
+                <el-form-item label="发起人">
+                  <el-input v-model="form.initiator"></el-input>
+                </el-form-item>
+              </el-col>
+            </el-row>
+            <el-row>
+              <el-col :span="6">
+                <el-form-item label="创建时间">
+                  <el-date-picker
+                    style="width:100%;"
+                    v-model="form.daterange"
+                    type="daterange"
+                    placeholder="选择日期范围"
+                    @change="formatDateRange"
+                    :picker-options="pickerOptions">
+                  </el-date-picker>
+                </el-form-item>
+              </el-col>
+              <el-col :span="6">
+                <el-form-item label="有效文本">
+                  <el-switch
+                    v-model="form.valid"
+                    on-text=""
+                    off-text=""></el-switch>
+                </el-form-item>
+              </el-col>
+            </el-row>
+          </el-form>
         </div>
         <el-table
           :data="tableData"
@@ -110,11 +163,24 @@
 </template>
 
 <script>
+  import moment from 'moment';
   import supportModel from '@/api/support';
 
   export default {
     data() {
       return {
+        form: {
+          someText: '',
+          type: '',
+          daterange: [],
+          initiator: '',
+          valid: false
+        },
+        pickerOptions: {
+          disabledDate(time) {
+            return time.getTime() > Date.now();
+          }
+        },
         tableData: [],
         dialogVisible: false,
         stopData: {
@@ -138,6 +204,10 @@
       }
     },
     methods: {
+      search() {
+        console.log('搜索');
+        console.log(JSON.stringify(this.form));
+      },
       getList() {
         supportModel.getList({}).then((res) => {
           this.tableData = res.data.dataMap;
@@ -145,6 +215,10 @@
       },
       formatDate(value) {
         this.stopData.endDate = value;
+      },
+      formatDateRange(value) {
+        const daterange = value.split(' ');
+        this.form.daterange = [daterange[0], daterange[2]];
       },
       edit(index, row) {
         const {id} = row;

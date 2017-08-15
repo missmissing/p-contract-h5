@@ -1,8 +1,5 @@
 <style type="text/scss" lang="scss" scoped>
   .form-container {
-    .wp100 {
-      width: 100%;
-    }
     .line {
       text-align: center;
     }
@@ -17,7 +14,7 @@
           <span class="common-title">基本信息</span>
         </div>
         <div class="form-container">
-          <el-form ref="form" :model="form" label-width="90px">
+          <el-form ref="form" :model="form" label-width="120px">
             <el-form-item label="文本编号" v-if="disabled">
               <el-col :span="8">
                 <el-input v-model="form.number" class="wp100" disabled></el-input>
@@ -51,7 +48,7 @@
                   placeholder="开始日期"
                   v-model="form.startDate"
                   @change="formatDate"
-                  class="wp100"
+                  style="width:100%;"
                   :picker-options="pickerOptions"
                   :editable="false">
                 </el-date-picker>
@@ -66,7 +63,7 @@
               </el-col>
             </el-form-item>
             <el-row v-if="disabled">
-              <el-col :span="6">
+              <el-col :span="7">
                 <el-form-item label="创建人">
                   <el-input
                     :disabled="disabled"
@@ -75,7 +72,7 @@
                   </el-input>
                 </el-form-item>
               </el-col>
-              <el-col :span="6" :offset="1">
+              <el-col :span="7">
                 <el-form-item label="最新版本">
                   <el-input
                     :disabled="disabled"
@@ -84,7 +81,7 @@
                   </el-input>
                 </el-form-item>
               </el-col>
-              <el-col :span="6" :offset="1">
+              <el-col :span="7">
                 <el-form-item label="最近更新人">
                   <el-input
                     :disabled="disabled"
@@ -123,7 +120,7 @@
       </el-card>
     </div>
     <div v-if="showTmpl">
-      <Tmpl></Tmpl>
+      <Tmpl :showTmpl.sync="showTmpl"></Tmpl>
     </div>
     <TreeModal
       nodeKey="value"
