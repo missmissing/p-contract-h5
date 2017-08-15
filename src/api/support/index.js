@@ -5,18 +5,18 @@ const contract = '';
 
 export default {
   getTmplTypes(params) {
-    return Http.get(`${contract}/api/support/tmpl/type`, params);
+    return Http.get(`/api/support/tmpl/type`, params);
   },
   getModuleData(params) {
     return Http.get(`${contract}/contract-web/module/findModule`, params);
   },
   getBusiType(params) {
-    return Http.get(`${contract}/api/support/tmpl/busiType`, params);
+    return Http.get(`/api/support/tmpl/busiType`, params);
   },
   getList(params) {
-    return Http.get(`${contract}/api/support/list`, params);
+    return Http.get(`/api/support/list`, params);
   },
   getTmplData(params) {
-    return Http.post(`${contract}/api/support/tmpl/data`, params);
+    return Http.post(`/api/support/tmpl/data`, params);
   }
 };

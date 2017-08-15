@@ -31,24 +31,59 @@ module.exports = function (api) {
         },
         {
           id: 2,
-          moduleName: '测试动态表格',
-          moduleContent: 'header1',
+          moduleName: '物料明细',
+          moduleContent: `<div style="clear:both;"></div><table style="width:100%;margin-top:20px;" border="1" cellspacing="0" cellpadding="0">
+<thead>
+<tr>
+<th>物料编码</th>
+<th>物料描述</th>
+<th>数量</th>
+<th>含税单价</th>
+<th>税率</th>
+<th>备注</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td align="center">物料编码</td>
+<td align="center">物料描述</td>
+<td align="center">数量</td>
+<td align="center">含税单价</td>
+<td align="center">税率</td>
+<td align="center">备注</td>
+</tr>
+</tbody>
+</table>`,
           moduleType: 1
         },
         {
           id: 3,
-          moduleName: '标的物',
-          moduleContent: 'header4',
+          moduleName: '付款信息',
+          moduleContent: `<div style="clear:both;"></div>
+<table style="width:100%;margin-top:20px;" border="1" cellspacing="0" cellpadding="0">
+<thead>
+<tr>
+<th>类型</th>
+<th>金额</th>
+<th>时间</th>
+<th>占比</th>
+<th>备注</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td align="center">类型</td>
+<td align="center">金额</td>
+<td align="center">时间</td>
+<td align="center">占比</td>
+<td align="center">备注</td>
+</tr>
+</tbody>
+</table>`,
           moduleType: 1
         },
         {
           id: 4,
-          moduleName: '付款阶段',
-          moduleContent: 'header5',
-          moduleType: 1
-        },
-        {
-          id: 5,
           moduleName: '尾部',
           moduleContent: `<div style="margin-bottom:10px;">
 <div style="width:50%;float:left;">甲方：jiafang</div>
@@ -181,7 +216,7 @@ module.exports = function (api) {
         busiType: '111',
         busiTypeText: '三级 1-1-1',
         tplType: '1',
-        moduleId: '1,5',
+        moduleId: '1,4',
         tplContent: '这只是个法务文案例子'
       }
     });
