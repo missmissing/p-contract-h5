@@ -123,14 +123,14 @@
                                 </el-table-column>
                             </el-table>
                         </el-card>
-                        <el-card>
+                        <el-card v-if="createConForm.baseInfo.conModel!='con4'">
                             <header slot="header">第三方信息</header>
                             <el-table :data="createConForm.cardContentInfo.thirdPartyInfo">
                                 <el-table-column prop="id" label="供应商编号"></el-table-column>
                                 <el-table-column prop="name" label="供应商名称"></el-table-column>
                             </el-table>
                         </el-card>
-                        <el-card>
+                        <el-card v-if="createConForm.baseInfo.conModel!='con1'">
                             <header slot="header">合同标的</header>
                             <el-table :data="createConForm.cardContentInfo.conStandard">
                                 <el-table-column type="index"></el-table-column>
@@ -252,7 +252,7 @@
                                 </el-col>
                             </el-row>
                         </el-card>
-                        <el-card>
+                        <el-card v-if="createConForm.baseInfo.conModel==='con2'">
                             <header slot="header">开票信息</header>
                             <el-row>
                                 <el-col :span="12" class="billingInfo">
@@ -384,7 +384,8 @@
                             </el-row>
                         </el-card>
                     </el-tab-pane>
-                    <el-tab-pane label="合同验收与样品信息" name="tabContCheckInfo">
+                    <el-tab-pane label="合同验收与样品信息" name="tabContCheckInfo"
+                                 v-if="createConForm.baseInfo.conModel==='con2'">
                         <el-row>
                             <el-col :span="8">
                                 <el-form-item prop="checkPerson" label="验收责任人">
@@ -453,7 +454,7 @@
                             </el-table>
                         </el-card>
                     </el-tab-pane>
-                    <el-tab-pane label="合同盖章信息" name="tabSealInfo">
+                    <el-tab-pane label="合同盖章信息" name="tabSealInfo" v-if="createConForm.baseInfo.conModel!='con4'">
                         <el-card>
                             <header slot="header">合同文件列表</header>
                             <el-button @click="handleAddContractFile" icon="plus" type="primary">添加合同文件</el-button>
@@ -516,7 +517,7 @@
                             </el-table>
                         </el-card>
                     </el-tab-pane>
-                    <el-tab-pane label="相关数据" name="tabRelatedData">
+                    <el-tab-pane label="相关数据" name="tabRelatedData" v-if="createConForm.baseInfo.conModel!='con4'">
                         <el-table :data="createConForm.cardRelatedInfo.contractList">
                             <el-table-column type="index" label="序号" width="100px"></el-table-column>
                             <el-table-column prop="contractCode" label="合同号"></el-table-column>
@@ -704,31 +705,29 @@
     </div>
 </template>
 <script>
-    import searchuser from '../../components/searchUser.vue'
-    import api from '../../api'
-    import tagService from '../../utils/tag.js'
-    import templateReplace from '../../utils/templateReplace.js'
-
+    //import searchuser from '../../components/searchUser.vue'
+    //import api from '../../api'
+    //import tagService from '../../utils/tag.js'
+    //import templateReplace from '../../utils/templateReplace.js'
     export default {
-        created() {
+        created() {//?currentPr=&curConModelId=con2&curConTypeId=service1
             /*curConModelId:"con2"
              curConTypeId:"service1"
              currentPr:"",
              type:create*/
             let query = this.$route.query;
             console.log('query', query);
-            /*this.con.conModel = query.conModel;
-             this.con.conType = query.conType;*/
-            this.createConForm.baseInfo.conModel = '合同模式';
-            this.createConForm.baseInfo.conType = '合同类型';
+            this.createConForm.baseInfo.conModel = query.curConModelId;
+            this.createConForm.baseInfo.conType = query.curConTypeId;
 
-            api.getPR(query).then((res) => {
-                this.pr = res.data.pr;
-            }, function (res) {
-                console.info(res)
-            });
+            /* api.getPR(query).then((res) => {
+             this.pr = res.data.pr;
+             }, function (res) {
+             console.info(res)
+             });
 
-            this.getModuleList();
+             this.getModuleList();
+             */
         },
         data() {
             return {
@@ -1192,8 +1191,5 @@
                 newWindow.close();
             }
         },
-        components: {
-            searchuser
-        }
     }
 </script>

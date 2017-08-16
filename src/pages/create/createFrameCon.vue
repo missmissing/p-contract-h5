@@ -397,7 +397,6 @@
 
             this.getModuleList();
         },
-
         data() {
             return {
                 pr: {},
