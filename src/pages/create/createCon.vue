@@ -454,13 +454,87 @@
                         </el-card>
                     </el-tab-pane>
                     <el-tab-pane label="合同盖章信息" name="tabSealInfo">
-                        合同盖章信息
+                        <el-card>
+                            <header slot="header">合同文件列表</header>
+                            <el-button @click="handleAddContractFile" icon="plus" type="primary">添加合同文件</el-button>
+                            <el-table :data="createConForm.cardSealInfo.sealFileList">
+                                <el-table-column type="index" label="序号" width="100px"></el-table-column>
+                                <el-table-column prop="name" label="文本名称"></el-table-column>
+                                <el-table-column prop="sealTimes" label="用章次数"></el-table-column>
+                                <el-table-column prop="printTimes" label="打印份数"></el-table-column>
+                                <el-table-column prop="retainFileNumber" label="我方留存份数"></el-table-column>
+                                <el-table-column prop="sealName" label="用章名称"></el-table-column>
+                                <el-table-column prop="remark" label="备注"></el-table-column>
+                                <el-table-column prop="ifPrint" label="无需打印"></el-table-column>
+                            </el-table>
+                        </el-card>
                     </el-tab-pane>
                     <el-tab-pane label="备注" name="tabRemark">
-                        备注
+                        <el-card>
+                            <header slot="header">其他说明</header>
+                            <el-form-item prop="otherInstruction">
+                                <el-input style="margin-left: -100px" type="textarea" placeholder="请输入内容" :rows="6"
+                                          v-model="createConForm.cardRemarkInfo.otherInstruction"></el-input>
+                            </el-form-item>
+                        </el-card>
+                        <el-row>
+                            <el-col :span="8">
+                                <el-form-item prop="fromAgreementCode" label="从协议编号">
+                                    <el-input v-model="createConForm.cardRemarkInfo.fromAgreementCode"
+                                              placeholder="请输入从协议编号"></el-input>
+                                </el-form-item>
+                            </el-col>
+                        </el-row>
+                        <el-card>
+                            <header slot="header">附件信息</header>
+                            <el-button @click="handleAttachment" icon="plus" type="primary">添加附件信息</el-button>
+                            <el-table :data="createConForm.cardRemarkInfo.attachmentList">
+                                <el-table-column prop="attachmentType" label="附件类型"></el-table-column>
+                                <el-table-column prop="code" label="编号"></el-table-column>
+                                <el-table-column prop="fileName" label="文件名称"></el-table-column>
+                                <el-table-column prop="attachmentUrl" label="附件"></el-table-column>
+                                <el-table-column
+                                        fixed="right"
+                                        label="操作"
+                                        width="100">
+                                    <template scope="scope">
+                                        <!--<el-button @click="handleUploadAttachment" type="text" size="small">上传
+                                        </el-button>-->
+                                        <!--:file-list="formAddAttachment.fileList"-->
+                                        <el-upload
+                                                ref="uploadFile"
+                                                action="https://jsonplaceholder.typicode.com/posts/"
+                                                :with-credentials="true"
+                                                :before-upload="handlebeforeFileUploadItem"
+                                                :on-success="handleFileUploadSuccessItem"
+                                                :on-error="handleFileUploadErrorItem"
+                                        >
+                                            <el-button size="small" type="primary">点击上传</el-button>
+                                        </el-upload>
+                                    </template>
+                                </el-table-column>
+                            </el-table>
+                        </el-card>
                     </el-tab-pane>
                     <el-tab-pane label="相关数据" name="tabRelatedData">
-                        相关数据
+                        <el-table :data="createConForm.cardRelatedInfo.contractList">
+                            <el-table-column type="index" label="序号" width="100px"></el-table-column>
+                            <el-table-column prop="contractCode" label="合同号"></el-table-column>
+                            <el-table-column prop="type" label="类型"></el-table-column>
+                            <el-table-column prop="status" label="状态"></el-table-column>
+                            <el-table-column prop="company" label="公司"></el-table-column>
+                            <el-table-column prop="startTime" label="开始时间"></el-table-column>
+                            <el-table-column
+                                    fixed="right"
+                                    label="操作"
+                                    width="100">
+                                <template scope="scope">
+                                    <el-button @click="handleContractDetail(scope.$index, scope.row)" type="text"
+                                               size="small">详情
+                                    </el-button>
+                                </template>
+                            </el-table-column>
+                        </el-table>
                     </el-tab-pane>
                 </el-tabs>
             </el-card>
@@ -503,15 +577,130 @@
                 <el-button type="primary" @click="handleCancelAddNewPay">取消</el-button>
             </footer>
         </el-dialog>
-        <!--<el-dialog title="添加联合验收人" :visible.sync="createConForm.cardFinanceInfo.dialogAddUnionCheckVisible"
-                   sizi="small">
-
-        </el-dialog>-->
-        <div class="submit">
-            <Button type="primary">
-                <span>提交</span>
-            </Button>
-        </div>
+        <el-dialog title="添加联合验收人" :visible.sync="createConForm.cardContCheckInfo.dialogAddUnionCheckVisible"
+                   size="small">
+            <el-form ref="formAddUnionCheck" :model="formAddUnionCheck" label-width="100px">
+                <el-form-item prop="name" label="联合验收人">
+                    <el-input v-model="formAddUnionCheck.name" placeholder="请输入联合验收人"></el-input>
+                </el-form-item>
+                <el-form-item prop="depart" label="联合验收人部门">
+                    <el-input v-model="formAddUnionCheck.depart" placeholder="请输入联合验收人部门"></el-input>
+                </el-form-item>
+                <el-form-item label="是否必选" prop="ifRequired">
+                    <el-radio-group v-model="formAddUnionCheck.ifRequired">
+                        <el-radio :label="0">是</el-radio>
+                        <el-radio :label="1">否</el-radio>
+                    </el-radio-group>
+                </el-form-item>
+            </el-form>
+            <footer slot="footer">
+                <el-button type="primary" @click="handleAddUnionCheckItem('formAddUnionCheck')">确定</el-button>
+                <el-button type="primary" @click="handleCancelAddUnionCheck('formAddUnionCheck')">取消</el-button>
+            </footer>
+        </el-dialog>
+        <el-dialog title="添加服务验收事项" :visible.sync="createConForm.cardContCheckInfo.dialogAddServiceVisible"
+                   size="small">
+            <el-form ref="formAddServiceCheck" :model="formAddServiceCheck" label-width="100px">
+                <el-form-item prop="name" label="服务名称">
+                    <el-input v-model="formAddServiceCheck.name" placeholder="请输入服务名称"></el-input>
+                </el-form-item>
+                <el-form-item prop="requirement" label="验收要求">
+                    <el-input v-model="formAddServiceCheck.requirement" placeholder="请输入验收要求"></el-input>
+                </el-form-item>
+                <el-form-item label="备注" prop="remark">
+                    <el-input v-model="formAddServiceCheck.remark" placeholder="请输入备注"></el-input>
+                </el-form-item>
+            </el-form>
+            <footer slot="footer">
+                <el-button type="primary" @click="handleAddServiceCheckItem('formAddServiceCheck')">确定</el-button>
+                <el-button type="primary" @click="handleCancelAddServiceCheck('formAddServiceCheck')">取消</el-button>
+            </footer>
+        </el-dialog>
+        <el-dialog title="添加合同文件" :visible.sync="createConForm.cardSealInfo.dialogNewContractVisible"
+                   size="small">
+            <el-form ref="formAddContract" :model="formAddContract" label-width="100px">
+                <el-form-item prop="name" label="文本名称">
+                    <el-input v-model="formAddContract.name" placeholder="请输入服务名称"></el-input>
+                </el-form-item>
+                <el-form-item prop="sealTimes" label="用章次数">
+                    <el-input v-model="formAddContract.sealTimes" placeholder="请输入用章次数"></el-input>
+                </el-form-item>
+                <el-form-item label="打印份数" prop="printTimes">
+                    <el-input v-model="formAddContract.printTimes" placeholder="请输入打印份数"></el-input>
+                </el-form-item>
+                <el-form-item label="我方留存份数" prop="retainFileNumber">
+                    <el-input v-model="formAddContract.retainFileNumber" placeholder="请输入我方留存份数"></el-input>
+                </el-form-item>
+                <el-form-item label="用章名称" prop="sealName">
+                    <el-input v-model="formAddContract.sealName" placeholder="请输入用章名称"></el-input>
+                </el-form-item>
+                <el-form-item label="备注" prop="remark">
+                    <el-input v-model="formAddContract.remark" placeholder="请输入备注"></el-input>
+                </el-form-item>
+                <el-form-item label="是否打印" prop="ifPrint">
+                    <el-radio-group v-model="formAddContract.ifPrint">
+                        <el-radio :label="0">是</el-radio>
+                        <el-radio :label="1">否</el-radio>
+                    </el-radio-group>
+                </el-form-item>
+            </el-form>
+            <footer slot="footer">
+                <el-button type="primary" @click="handleAddContractItem('formAddContract')">确定</el-button>
+                <el-button type="primary" @click="handleCancelContract('formAddContract')">取消</el-button>
+            </footer>
+        </el-dialog>
+        <el-dialog title="添加附件信息" :visible.sync="createConForm.cardRemarkInfo.dialogAddAttachmentVisible"
+                   size="small">
+            <el-form ref="formAddAttachment" :model="formAddAttachment" label-width="100px">
+                <el-form-item prop="name" label="文本名称">
+                    <el-form-item label="附件类型" prop="type">
+                        <el-select v-model="formAddAttachment.type" placeholder="请选择附件类型">
+                            <el-option v-for="item in formAddAttachment.typeOptions"
+                                       :key="item.value"
+                                       :label="item.label"
+                                       :value="item.value">
+                            </el-option>
+                        </el-select>
+                    </el-form-item>
+                </el-form-item>
+                <el-form-item prop="code" label="编号">
+                    <el-input v-model="formAddAttachment.code" placeholder="请输入编号"></el-input>
+                </el-form-item>
+                <el-form-item label="文件名称" prop="fileName">
+                    <el-input v-model="formAddAttachment.fileName" placeholder="请输入文件名称"></el-input>
+                </el-form-item>
+                <el-form-item label="附件" prop="attachmentUrl">
+                    <el-input v-model="formAddAttachment.attachmentUrl" placeholder="显示附件链接地址"></el-input>
+                </el-form-item>
+                <el-form-item label="上传" prop="uploadFile">
+                    <el-upload
+                            ref="upload"
+                            action="https://jsonplaceholder.typicode.com/posts/"
+                            :file-list="formAddAttachment.fileList"
+                            :with-credentials="true"
+                            :auto-upload="false"
+                            :before-upload="handlebeforeFileUpload"
+                            :on-success="handleFileUploadSuccess"
+                            :on-error="handleFileUploadError"
+                    >
+                        <el-button size="small" type="primary">点击上传</el-button>
+                        <div slot="tip" class="el-upload__tip">只能上传excel文件，且不超过500kb</div>
+                    </el-upload>
+                </el-form-item>
+            </el-form>
+            <footer slot="footer">
+                <el-button type="primary" @click="handleAddAttachmentItem('formAddAttachment')">确定</el-button>
+                <el-button type="primary" @click="handleCancelAttachment('formAddAttachment')">取消</el-button>
+            </footer>
+        </el-dialog>
+        <el-row>
+            <el-col :span="8" :offset="6">
+                <el-button type="primary" @click="handleSave('createConForm')">保存</el-button>
+            </el-col>
+            <el-col :span="4">
+                <el-button type="primary" @click="handleSubmit('createConForm')">提交</el-button>
+            </el-col>
+        </el-row>
     </div>
 </template>
 <script>
@@ -630,7 +819,36 @@
                         hasSample: 1,
                         materialMatters: [],
                         serviceMatters: [],
-                        dialogAddUnionCheckVisible: true,
+                        dialogAddUnionCheckVisible: false,
+                        dialogAddServiceVisible: false,
+                    },
+                    cardSealInfo: {
+                        sealFileList: [],
+                        dialogNewContractVisible: false,
+                    },
+                    cardRemarkInfo: {
+                        otherInstruction: '',
+                        fromAgreementCode: '',
+                        attachmentList: [
+                            {
+                                attachmentType: '其他',
+                                code: '1234',
+                                fileName: '文件名',
+                                attachmentUrl: ['www.baidu.com'],
+                            }
+                        ],
+                        dialogAddAttachmentVisible: false,
+                    },
+                    cardRelatedInfo: {
+                        contractList: [
+                            {
+                                contractCode: '32489328034',
+                                type: '合同类型',
+                                status: '状态',
+                                company: '公司',
+                                startTime: '2017-97-34',
+                            }
+                        ],
                     },
                 },
                 formNewPayment: {
@@ -698,6 +916,49 @@
                     },
                     remark: '',
                 },
+                formAddUnionCheck: {
+                    name: '',
+                    depart: '',
+                    ifRequired: 1,
+                },
+                formAddServiceCheck: {
+                    name: '',
+                    requirement: '',
+                    remark: '',
+                },
+                formAddContract: {
+                    name: '',
+                    sealTimes: '',
+                    printTimes: '',
+                    retainFileNumber: '',
+                    sealName: '',
+                    remark: '',
+                    ifPrint: 1,
+                },
+                formAddAttachment: {
+                    type: '1',
+                    typeOptions: [
+                        {
+                            value: '0',
+                            label: '其他'
+                        },
+                        {
+                            value: '1',
+                            label: '从协议'
+                        },
+                        {
+                            value: '2',
+                            label: '合同'
+                        },
+                    ],
+                    fileList: [{
+                        name: 'food.jpeg',
+                        url: 'https://fuss10.elemecdn.com/3/63/4e7f3a15429bfda99bce42a18cdd1jpeg.jpeg?imageMogr2/thumbnail/360x360/format/webp/quality/100'
+                    }, {
+                        name: 'food2.jpeg',
+                        url: 'https://fuss10.elemecdn.com/3/63/4e7f3a15429bfda99bce42a18cdd1jpeg.jpeg?imageMogr2/thumbnail/360x360/format/webp/quality/100'
+                    }],
+                },
             }
         },
         methods: {
@@ -722,12 +983,95 @@
                 this.createConForm.cardFinanceInfo.dialogNewPaymentVisible = false;
             },
             handleAddUnionCheck(){
-                console.log('联合验收');
+                this.createConForm.cardContCheckInfo.dialogAddUnionCheckVisible = true;
             },
             handleAddServiceMatter(){
                 console.log('添加服务验收事项');
+                this.createConForm.cardContCheckInfo.dialogAddServiceVisible = true;
             },
-
+            handleAddUnionCheckItem(formName){
+                this.$refs[formName].resetFields();
+                this.createConForm.cardContCheckInfo.dialogAddUnionCheckVisible = false;
+            },
+            handleCancelAddUnionCheck(formName){
+                this.$refs[formName].resetFields();
+                this.createConForm.cardContCheckInfo.dialogAddUnionCheckVisible = false;
+            },
+            handleAddServiceCheckItem(formName){
+                this.$refs[formName].resetFields();
+                this.createConForm.cardContCheckInfo.dialogAddServiceVisible = false;
+            },
+            handleCancelAddServiceCheck(formName){
+                this.$refs[formName].resetFields();
+                this.createConForm.cardContCheckInfo.dialogAddServiceVisible = false;
+            },
+            handleAddContractFile(){
+                console.log('添加合同文件');
+                this.createConForm.cardSealInfo.dialogNewContractVisible = true;
+            },
+            handleAddContractItem(formName){
+                this.$refs[formName].resetFields();
+                this.createConForm.cardSealInfo.dialogNewContractVisible = false;
+            },
+            handleCancelContract(formName){
+                this.$refs[formName].resetFields();
+                this.createConForm.cardSealInfo.dialogNewContractVisible = false;
+            },
+            handleAttachment(){
+                console.log('添加附件信息');
+                this.createConForm.cardRemarkInfo.dialogAddAttachmentVisible = true;
+            },
+            handleAddAttachmentItem(formName){
+                this.$refs.upload.submit();
+                this.$refs[formName].resetFields();
+                this.createConForm.cardRemarkInfo.dialogAddAttachmentVisible = false;
+            },
+            handleCancelAttachment(formName){
+                this.$refs[formName].resetFields();
+                this.createConForm.cardRemarkInfo.dialogAddAttachmentVisible = false;
+            },
+            handlebeforeFileUpload(file){
+                console.log('upload-file', file);
+                return file;
+            },
+            handleFileUploadSuccess(res, file, fileList){
+                console.log('res', res);
+                console.log('file', file);
+            },
+            handleFileUploadError(err, file, fileList){
+                console.log('error', err);
+                console.log('file', file);
+                console.log('fileList', fileList);
+            },
+            handlebeforeFileUploadItem(file){
+                console.log('upload-file', file);
+                return file;
+            },
+            handleFileUploadSuccessItem(res, file, fileList){
+                console.log('res', res);
+                console.log('file', file);
+            },
+            handleFileUploadErrorItem(err, file, fileList){
+                console.log('error', err);
+                console.log('file', file);
+                console.log('fileList', fileList);
+            },
+            handleContractDetail(index, row){
+                console.log('详情', index, row);
+            },
+            handleSave(formName){
+                console.log('save', formName);
+            },
+            handleSubmit(formName){
+                this.$refs[formName].validate((valid) => {
+                    if (valid) {
+                        alert('submit!');
+                    } else {
+                        console.log('error submit!!');
+                        return false;
+                    }
+                });
+            },
 
             getModuleList() {
                 const $self = this;
