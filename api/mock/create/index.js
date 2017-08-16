@@ -42,13 +42,25 @@ module.exports = function (api) {
             }
         });
     });
-
     api.use('/api/createContract/getPrDetail', function (req, res) {
         res.status(200).json({
             code: 200,
             message: 'success',
             dataMap: {
                 url: 'http://www.baidu.com'
+            }
+        });
+    });
+    api.use('/api/createContract/getContractBaseInfo', function (req, res) {
+        res.status(200).json({
+            code: 200,
+            message: 'success',
+            dataMap: {
+                baseInfo: {
+                    businessPerson: '研发部三毛',
+                    businessDepartment: '研发部',
+                    
+                }
             }
         });
     });

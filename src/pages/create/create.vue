@@ -3,7 +3,7 @@
         <el-card>
             <el-form ref="conForm" :model="conForm" :rules="conFormRules" label-width="100px">
                 <el-form-item label="是否有比价单">
-                    <el-switch v-model="conForm.isPr"></el-switch>
+                    <el-switch v-model="conForm.isPr" @change="handleSwitch"></el-switch>
                 </el-form-item>
                 <el-row>
                     <el-col :span="8">
@@ -22,7 +22,7 @@
                 <el-row>
                     <el-col :span="8">
                         <el-form-item label="合同模式" prop="curConModelId">
-                            <el-select v-model="conForm.curConModelId" placeholder="请选择合同类型">
+                            <el-select v-model="conForm.curConModelId" placeholder="请选择合同模式">
                                 <el-option
                                         v-for="item in conForm.conModel"
                                         :key="item.id"
@@ -49,7 +49,7 @@
                 </el-row>
             </el-form>
         </el-card>
-        <el-card v-if="arrPr.length>0">
+        <el-card v-if="conForm.isPr&&arrPr.length>0">
             <el-table ref="prTable" :data="arrPr" highlight-current-row @current-change="handleCurrentChange">
                 <el-table-column
                         type="index">
@@ -93,7 +93,8 @@
             </div>
         </el-card>
         <div style="text-align: center;margin-top:20px">
-            <el-button type="primary" @click="handleNext('conForm')">下一步</el-button>
+            <el-button type="primary" @click="handleNext('conForm')" :disabled="arrPr.length>0&&!currentPr">下一步
+            </el-button>
         </div>
         <el-dialog title="查询比价单" :visible.sync="dialogVisible" size="tiny">
             <el-form ref="prForm" :model="prForm" label-width="100px">
@@ -193,6 +194,15 @@
             });
         },
         methods: {
+            handleSwitch(newStatus){
+                console.log('handleSwitch', newStatus);
+                if (!newStatus) {
+                    this.arrPr = [];
+                    this.conForm.strPC = '';
+                    this.conForm.curConModelId = '';
+                    this.conForm.curConTypeId = '';
+                }
+            },
             handleQuery(){
                 this.dialogVisible = true;
             },
@@ -231,7 +241,8 @@
                             query: {
                                 currentPr: this.currentPr ? this.currentPr.id : '',
                                 curConModelId: this.conForm.curConModelId,
-                                curConTypeId: this.conForm.curConTypeId
+                                curConTypeId: this.conForm.curConTypeId,
+                                operateType: 'create'
                             }
                         });
                     }
@@ -245,6 +256,7 @@
             },
             handleCancel(row){
                 this.$refs.prTable.setCurrentRow(row);
+                this.currentPr = null;
             },
             handleCloseDialog(){
                 this.dialogVisible = false;

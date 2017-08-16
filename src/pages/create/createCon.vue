@@ -24,12 +24,13 @@
                 <el-row>
                     <el-col :span="8">
                         <el-form-item label="业务经办人">
-                            <el-input v-model="createConForm.baseInfo.businessPerson" placeholder="请输入业务经办人"></el-input>
+                            <el-input :disabled="true" v-model="createConForm.baseInfo.businessPerson"
+                                      placeholder="请输入业务经办人"></el-input>
                         </el-form-item>
                     </el-col>
                     <el-col :span="8">
                         <el-form-item label="业务部门">
-                            <el-input v-model="createConForm.baseInfo.businessDepartment"
+                            <el-input :disabled="true" v-model="createConForm.baseInfo.businessDepartment"
                                       placeholder="请输入业务部门"></el-input>
                         </el-form-item>
                     </el-col>
@@ -37,7 +38,7 @@
                 <el-row>
                     <el-col :span="8">
                         <el-form-item label="合同模式">
-                            <el-input v-model="createConForm.baseInfo.conModel" placeholder="请输入合同模式"></el-input>
+                            <el-input v-model="createConForm.baseInfo.conModelName" placeholder="请输入合同模式"></el-input>
                         </el-form-item>
                     </el-col>
                     <el-col :span="8">
@@ -47,7 +48,7 @@
                     </el-col>
                     <el-col :span="8">
                         <el-form-item label="合同类型">
-                            <el-input v-model="createConForm.baseInfo.conType" placeholder="请输入合同类型"></el-input>
+                            <el-input v-model="createConForm.baseInfo.conTypeName" placeholder="请输入合同类型"></el-input>
                         </el-form-item>
                     </el-col>
                 </el-row>
@@ -705,6 +706,7 @@
     </div>
 </template>
 <script>
+    import Api from '../../api/create';
     //import searchuser from '../../components/searchUser.vue'
     //import api from '../../api'
     //import tagService from '../../utils/tag.js'
@@ -716,9 +718,14 @@
              currentPr:"",
              type:create*/
             let query = this.$route.query;
-            console.log('query', query);
+            this.operateType = query.operateType;
             this.createConForm.baseInfo.conModel = query.curConModelId;
             this.createConForm.baseInfo.conType = query.curConTypeId;
+            this.setCurrentModelAndType({conModel: query.curConModelId, conType: query.curConTypeId});
+            Api.getContractBaseInfo({}).then((data)=> {
+                this.createConForm.baseInfo.businessPerson = data.data.dataMap.baseInfo.businessPerson;
+                this.createConForm.baseInfo.businessDepartment = data.data.dataMap.baseInfo.businessDepartment;
+            });
 
             /* api.getPR(query).then((res) => {
              this.pr = res.data.pr;
@@ -731,13 +738,16 @@
         },
         data() {
             return {
+                operateType: '',
                 createConForm: {
                     baseInfo: {
                         businessPerson: '',//业务经办人
                         businessDepartment: '',
                         conModel: '',
+                        conModelName: '',
                         conNumber: '',
                         conType: '',
+                        conTypeName: '',
                         belongProject: '',
                         conVersion: '',
                         conTextType: '',
@@ -1071,6 +1081,15 @@
                     }
                 });
             },
+            setCurrentModelAndType(paras = {}){
+                switch (paras.model) {
+                    case 'con1':
+                        break;
+
+                }
+
+            },
+
 
             getModuleList() {
                 const $self = this;

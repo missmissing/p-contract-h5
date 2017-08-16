@@ -13,4 +13,8 @@ export default {
     getPrDetail(params){
         return Http.get(`/api/createContract/getPrDetail`, params);
     },
+    //获取合同基本信息
+    getContractBaseInfo(params){
+        return Http.get(`/api/createContract/getContractBaseInfo`, params);
+    },
 };
