@@ -6,11 +6,11 @@ module.exports = function (api) {
       dataMap: [{
         value: '',
         label: '自定义',
-        moduleId: ''
+        contentModule: ''
       }, {
         value: '1',
         label: '模板一',
-        moduleId: '1,5'
+        contentModule: '1,5'
       }]
     });
   });
@@ -103,7 +103,7 @@ module.exports = function (api) {
     });
   });
 
-  api.use('/api/support/tmpl/busiType', function (req, res) {
+  api.use('/contract-web/contractBizType/getAllTypes', function (req, res) {
     res.status(200).json({
       code: 200,
       message: '成功',
@@ -216,9 +216,16 @@ module.exports = function (api) {
         busiType: '111',
         busiTypeText: '三级 1-1-1',
         tplType: '1',
-        moduleId: '1,4',
+        contentModule: '1,4',
         tplContent: '这只是个法务文案例子'
       }
+    });
+  });
+
+  api.use('/api/contractTemplate/addTemplate', function (req, res) {
+    res.status(200).json({
+      code: 200,
+      message: '成功'
     });
   });
 };

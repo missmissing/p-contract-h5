@@ -5,6 +5,40 @@
     position: fixed;
     top: 0;
     z-index: 101;
+    .logo {
+      display: inline-block;
+      width: 200px;
+      padding-top: 10px;
+      height: 60px;
+      line-height: 60px;
+      text-align: center;
+    }
+    .navicon {
+      display: inline-block;
+      margin: 15px 0 0 10px;
+      text-align: center;
+      vertical-align: top;
+      color: #565758;
+      .fa:hover {
+        cursor: pointer;
+        color: #0091ea;
+      }
+    }
+    .userInfo {
+      float: right;
+      margin-right: 10px;
+      .avatar {
+        display: inline-block;
+        padding-top: 10px;
+      }
+      img {
+        border-radius: 50%;
+        width: 40px;
+        height: 40px;
+        vertical-align: middle;
+        margin-left: 5px;
+      }
+    }
   }
 
   .main {
@@ -44,10 +78,11 @@
       margin: 15px 0 15px 15px;
     }
     .content {
-      min-height: 200px;
-      height: 100%;
-      margin: 15px;
-      padding-bottom: 60px;
+      position: absolute;
+      top:45px;
+      left: 15px;
+      right: 15px;
+      bottom: 0;
       overflow: hidden;
       overflow-y: auto;
       background: #fff;
@@ -55,42 +90,6 @@
     }
   }
 
-  .header {
-    height: 60px;
-    .logo {
-      display: inline-block;
-      width: 200px;
-      padding-top: 10px;
-      height: 60px;
-      line-height: 60px;
-      text-align: center;
-    }
-    .navicon {
-      display: inline-block;
-      margin: 15px 0 0 15px;
-      text-align: center;
-      vertical-align: top;
-      .fa:hover {
-        cursor: pointer;
-        color: #0091ea;
-      }
-    }
-    .userInfo {
-      float: right;
-      margin-right: 10px;
-      .avatar {
-        display: inline-block;
-        padding-top: 10px;
-      }
-      img {
-        border-radius: 50%;
-        width: 40px;
-        height: 40px;
-        vertical-align: middle;
-        margin-left: 5px;
-      }
-    }
-  }
 </style>
 
 <template>

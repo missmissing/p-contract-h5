@@ -14,17 +14,17 @@
           <span class="common-title">基本信息</span>
         </div>
         <div class="form-container">
-          <el-form ref="form" :model="form" label-width="120px">
+          <el-form ref="form" label-width="120px">
             <el-form-item label="文本编号" v-if="disabled">
               <el-col :span="8">
-                <el-input v-model="form.number" class="wp100" disabled></el-input>
+                <el-input v-model="number" class="wp100" disabled></el-input>
               </el-col>
             </el-form-item>
             <el-form-item label="文本名称">
               <el-col :span="8">
                 <el-input
                   :disabled="disabled"
-                  v-model.trim="form.name"
+                  v-model.trim="form.templateName"
                   class="wp100">
                 </el-input>
               </el-col>
@@ -32,13 +32,25 @@
             <el-form-item label="文本类型">
               <el-col :span="8">
                 <el-select
-                  v-model="form.type"
+                  v-model="form.templateType"
                   placeholder="请选择"
                   :disabled="disabled"
                   class="wp100">
-                  <el-option label="合同模板" value="1"></el-option>
-                  <el-option label="合同文本" value="2"></el-option>
+                  <el-option label="合同模板" value="TEMPLATE"></el-option>
+                  <el-option label="合同文本" value="TEXT"></el-option>
                 </el-select>
+              </el-col>
+            </el-form-item>
+            <el-form-item label="业务类型">
+              <el-col :span="8">
+                <el-input
+                  type="textarea"
+                  :value="busiTypeText"
+                  @focus="showTreeModal"
+                  resize="none"
+                  :autosize="{maxRows:6}"
+                  readonly>
+                </el-input>
               </el-col>
             </el-form-item>
             <el-form-item label="启用时间">
@@ -56,7 +68,7 @@
               <el-col class="line" :span="2">--</el-col>
               <el-col :span="8">
                 <el-input
-                  v-model="form.endDate"
+                  v-model="endDate"
                   class="wp100"
                   disabled
                 ></el-input>
@@ -67,7 +79,7 @@
                 <el-form-item label="创建人">
                   <el-input
                     :disabled="disabled"
-                    :value="form.creator"
+                    :value="creator"
                     class="wp100">
                   </el-input>
                 </el-form-item>
@@ -76,7 +88,7 @@
                 <el-form-item label="最新版本">
                   <el-input
                     :disabled="disabled"
-                    :value="form.version"
+                    :value="version"
                     class="wp100">
                   </el-input>
                 </el-form-item>
@@ -85,7 +97,7 @@
                 <el-form-item label="最近更新人">
                   <el-input
                     :disabled="disabled"
-                    :value="form.updater"
+                    :value="operatorName"
                     class="wp100">
                   </el-input>
                 </el-form-item>
@@ -98,14 +110,20 @@
                   :maxlength="300"
                   :autosize="{ minRows: 2 }"
                   resize="none"
-                  v-model="form.desc">
+                  v-model="form.description">
                 </el-input>
               </el-col>
             </el-form-item>
             <el-form-item label="文本上传" v-show="showUpload">
               <el-upload
                 drag
-                action=""
+                action="/api-contract/contract-web/file/upload/"
+                name="upFile"
+                :data="uploadData"
+                :on-change="hangdleStatus"
+                :on-remove="handleRemove"
+                :before-upload="beforeUpload"
+                :on-success="uplodeSuccess"
                 multiple>
                 <i class="el-icon-upload"></i>
                 <div class="el-upload__text">将文件拖到此处，或<em>点击上传</em></div>
@@ -123,68 +141,87 @@
       <Tmpl :showTmpl.sync="showTmpl"></Tmpl>
     </div>
     <TreeModal
-      nodeKey="value"
+      nodeKey="id"
       title="选择业务类型"
       :visible.sync="visible"
+      :defaultProps="defaultProps"
       :regions="regions"
-      :initialKeys="form.busiType | strToArr"
+      :initialKeys="form.bizTypes"
       @ok="setBusiType">
     </TreeModal>
   </div>
 </template>
 
 <script>
+  import moment from 'moment';
   import {mapMutations} from 'vuex';
   import * as types from '../../store/consts';
   import Tmpl from './tmpl.vue';
   import TreeModal from '@/components/treeModal.vue';
   import supportModel from '@/api/support';
-  import {strToArr} from '@/filters';
 
   export default {
     data() {
       return {
         form: {
-          number: '',
-          creator: '',
-          version: '',
-          updater: '',
-          name: '',
-          type: '',
+          templateName: '',
+          templateType: 'TEMPLATE',
           startDate: '',
-          endDate: '9999-12-31',
-          desc: '',
-          busiType: '',
-          busiTypeText: '',
-          files: ''
+          description: '',
+          bizTypes: [],
+          files: []
         },
+        uploadData: {userId: '12'},
+        endDate: '9999-12-31',
+        number: '',
+        busiTypeText: '',
+        operatorName: '',
+        creator: '',
+        version: '',
         regions: [],
         pickerOptions: {
           disabledDate(time) {
             return time.getTime() < Date.now() - 8.64e7;
           }
         },
+        defaultProps: {
+          children: 'children',
+          label: 'businessName'
+        },
         visible: false,
         showTmpl: false
       };
     },
     methods: {
+      hangdleStatus(file) {
+        console.log(file);
+      },
+      handleRemove(file, fileList) {
+        console.log(file, fileList);
+      },
+      beforeUpload(file) {
+        console.log(file);
+      },
+      uplodeSuccess(response, file, fileList) {
+        console.log(response);
+        this.form.files = this.form.files.push(response.dataMap.fileId);
+      },
       showTreeModal() {
         this.visible = true;
       },
       formatDate(value) {
-        this.form.startDate = value;
+        this.form.startDate = moment(value).valueOf();
       },
       setBusiType(value, tree) {
-        let busiType = [];
+        let bizTypes = [];
         let busiTypeText = [];
         const leafs = tree.getCheckedNodes(true);
         leafs.forEach((item) => {
-          busiType.push(item.value);
-          busiTypeText.push(item.label);
+          bizTypes.push(item.id);
+          busiTypeText.push(item.businessName);
         });
-        this.form.busiType = busiType.join(',');
-        this.form.busiTypeText = busiTypeText.join(',');
+        this.form.bizTypes = bizTypes;
+        this.busiTypeText = busiTypeText.join(',');
       },
       getBusiType() {
         supportModel.getBusiType({}).then((res) => {
@@ -234,14 +271,13 @@
         if (!id) {
           Object.assign(this.form, {
             number: '',
-            name: '',
-            type: '',
+            templateName: '',
+            templateType: '',
             startDate: '',
             endDate: '9999-12-31',
-            desc: '',
-            busiType: '',
-            busiTypeText: '',
-            files: ''
+            description: '',
+            bizTypes: '',
+            files: []
           });
           this.showTmpl = false;
         }
@@ -250,14 +286,11 @@
     },
     computed: {
       showUpload() {
-        return this.form.type === '2';
+        return this.form.templateType === 'TEXT';
       },
       disabled() {
         return !!this.$route.params.id;
       }
-    },
-    filters: {
-      strToArr
     }
   };
 </script>

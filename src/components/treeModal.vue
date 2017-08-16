@@ -13,6 +13,7 @@
       <el-tree
         :data="regions"
         ref="tree"
+        :props="defaultProps"
         :node-key="nodeKey"
         :default-checked-keys="initialKeys"
         @check-change="getCheckedNodes"
@@ -34,6 +35,9 @@
       };
     },
     props: {
+      defaultProps: {
+        default: ''
+      },
       nodeKey: {
         type: String,
         default: ''

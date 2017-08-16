@@ -16,8 +16,85 @@
         <span class="common-title">合同列表</span>
       </div>
       <div>
-        <div class="row">
-          <el-button type="success" @click="add">签订新合同</el-button>
+        <div class="mb20">
+          <el-form ref="form" :model="form" label-width="100px">
+            <el-row>
+              <el-col :span="8">
+                <el-form-item label="合同编号">
+                  <el-input v-model="form.contractCode"></el-input>
+                </el-form-item>
+              </el-col>
+              <el-col :span="16">
+                <el-form-item label="合同名称">
+                  <el-input v-model="form.contractName"></el-input>
+                </el-form-item>
+              </el-col>
+              <el-col :span="8">
+                <el-form-item label="合同模式">
+                  <el-select
+                    v-model="form.contractPattern"
+                    placeholder="请选择"
+                    class="wp100">
+                    <el-option label="合同模板" value="1"></el-option>
+                    <el-option label="合同文本" value="2"></el-option>
+                  </el-select>
+                </el-form-item>
+              </el-col>
+              <el-col :span="8">
+                <el-form-item label="合同类型">
+                  <el-select
+                    v-model="form.contractType"
+                    placeholder="请选择"
+                    class="wp100">
+                    <el-option label="合同模板" value="1"></el-option>
+                    <el-option label="合同文本" value="2"></el-option>
+                  </el-select>
+                </el-form-item>
+              </el-col>
+              <el-col :span="8">
+                <el-form-item label="采购订单">
+                  <el-input v-model="form.pr"></el-input>
+                </el-form-item>
+              </el-col>
+              <el-col :span="8">
+                <el-form-item label="发起人">
+                  <el-input v-model="form.initiator"></el-input>
+                </el-form-item>
+              </el-col>
+              <el-col :span="8">
+                <el-form-item label="业务经办人">
+                  <el-input v-model="form.busiController"></el-input>
+                </el-form-item>
+              </el-col>
+              <el-col :span="8">
+                <el-form-item label="业务部门">
+                  <el-input v-model="form.busiApartment"></el-input>
+                </el-form-item>
+              </el-col>
+              <el-col :span="8">
+                <el-form-item label="创建时间">
+                  <el-date-picker
+                    style="width:100%;"
+                    v-model="form.daterange"
+                    type="daterange"
+                    placeholder="选择日期范围"
+                    @change="formatDateRange"
+                    :picker-options="pickerOptions">
+                  </el-date-picker>
+                </el-form-item>
+              </el-col>
+              <el-col :span="8">
+                <el-form-item label="有效文本">
+                  <el-switch
+                    v-model="form.valid"
+                    on-text=""
+                    off-text="">
+                  </el-switch>
+                  <el-button type="primary" @click="search" style="margin-left:30px;">搜 索</el-button>
+                </el-form-item>
+              </el-col>
+            </el-row>
+          </el-form>
         </div>
         <el-table
           :data="tableData"
@@ -88,6 +165,17 @@
   export default {
     data() {
       return {
+        form: {
+          contractCode: '',
+          contractName: '',
+          contractPattern: '',
+          contractType: '',
+          pr: '',
+          initiator: '',
+          busiController: '',
+          daterange: [],
+          valid: false
+        },
         tableData: [],
         dialogVisible: false,
         stopData: {
@@ -111,8 +199,9 @@
       }
     },
     methods: {
-      add() {
-        this.$router.push('/ConCreate/Create');
+      search() {
+        console.log('搜索');
+        console.log(JSON.stringify(this.form));
       },
       getList() {
         performanceModel.getConList({}).then((res) => {
