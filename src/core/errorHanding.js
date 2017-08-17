@@ -1,4 +1,4 @@
-import iView from 'iview';
+import { Message } from 'element-ui';
 import emitter from '../core/emitter';
 import Consts from '../core/consts';
 
@@ -12,11 +12,11 @@ class Base {
   }
 
   static error500Process() {
-    iView.Message.error('系统异常!');
+    Message.error('系统异常!');
   }
 
   static errorNot200Process(msg) {
-    iView.Message.warning(msg);
+    Message.warning(msg);
   }
 
   constructor() {

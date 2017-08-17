@@ -1,7 +1,7 @@
 import Http from '@/core/commonModel';
 
-const contract = '/api-contract';
-//const contract = '';
+//const contract = '/api-contract';
+const contract = '';
 
 export default {
   getTmplTypes(params) {

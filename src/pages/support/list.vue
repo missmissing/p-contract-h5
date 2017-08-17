@@ -113,7 +113,6 @@
             label="操作"
             width="100">
             <template scope="scope">
-              <el-button type="text" size="small" @click="edit(scope.$index, scope.row)">编辑</el-button>
               <el-button type="text" size="small" @click="stop(scope.$index, scope.row)">废除</el-button>
             </template>
           </el-table-column>
@@ -219,10 +218,6 @@
       formatDateRange(value) {
         const daterange = value.split(' ');
         this.form.daterange = [daterange[0], daterange[2]];
-      },
-      edit(index, row) {
-        const {id} = row;
-        this.$router.push('/contemplate/create/' + id);
       },
       stop(index, row) {
         this.stopData.id = row.id;

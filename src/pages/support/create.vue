@@ -15,90 +15,96 @@
         </div>
         <div class="form-container">
           <el-form ref="form" label-width="120px">
-            <el-form-item label="文本编号" v-if="disabled">
-              <el-col :span="8">
-                <el-input v-model="number" class="wp100" disabled></el-input>
-              </el-col>
-            </el-form-item>
-            <el-form-item label="文本名称">
-              <el-col :span="8">
-                <el-input
-                  :disabled="disabled"
-                  v-model.trim="form.templateName"
-                  class="wp100">
-                </el-input>
-              </el-col>
-            </el-form-item>
-            <el-form-item label="文本类型">
-              <el-col :span="8">
-                <el-select
-                  v-model="form.templateType"
-                  placeholder="请选择"
-                  :disabled="disabled"
-                  class="wp100">
-                  <el-option label="合同模板" value="TEMPLATE"></el-option>
-                  <el-option label="合同文本" value="TEXT"></el-option>
-                </el-select>
-              </el-col>
-            </el-form-item>
-            <el-form-item label="业务类型">
-              <el-col :span="8">
-                <el-input
-                  type="textarea"
-                  :value="busiTypeText"
-                  @focus="showTreeModal"
-                  resize="none"
-                  :autosize="{maxRows:6}"
-                  readonly>
-                </el-input>
-              </el-col>
-            </el-form-item>
-            <el-form-item label="启用时间">
-              <el-col :span="8">
-                <el-date-picker
-                  type="date"
-                  placeholder="开始日期"
-                  v-model="form.startDate"
-                  @change="formatDate"
-                  style="width:100%;"
-                  :picker-options="pickerOptions"
-                  :editable="false">
-                </el-date-picker>
-              </el-col>
-              <el-col class="line" :span="2">--</el-col>
-              <el-col :span="8">
-                <el-input
-                  v-model="endDate"
-                  class="wp100"
-                  disabled
-                ></el-input>
-              </el-col>
-            </el-form-item>
             <el-row v-if="disabled">
-              <el-col :span="7">
+              <el-col :span="8">
+                <el-form-item label="文本编号">
+                  <el-input v-model="number" class="wp100" disabled></el-input>
+                </el-form-item>
+              </el-col>
+            </el-row>
+            <el-row>
+              <el-col :span="8">
+                <el-form-item label="文本名称">
+                  <el-input
+                    :disabled="disabled"
+                    v-model.trim="form.templateName"
+                    class="wp100">
+                  </el-input>
+                </el-form-item>
+              </el-col>
+              <el-col :span="8">
+                <el-form-item label="文本类型">
+                  <el-select
+                    v-model="form.templateType"
+                    placeholder="请选择"
+                    :disabled="disabled"
+                    class="wp100">
+                    <el-option label="合同模板" value="TEMPLATE"></el-option>
+                    <el-option label="合同文本" value="TEXT"></el-option>
+                  </el-select>
+                </el-form-item>
+              </el-col>
+            </el-row>
+            <el-row>
+              <el-col :span="8">
+                <el-form-item label="业务类型">
+                  <el-input
+                    type="textarea"
+                    :value="busiTypeText"
+                    @focus="showTreeModal"
+                    resize="none"
+                    :autosize="{maxRows:6}"
+                    readonly>
+                  </el-input>
+                </el-form-item>
+              </el-col>
+            </el-row>
+            <el-row>
+              <el-col :span="8">
+                <el-form-item label="生效时间">
+                  <el-date-picker
+                    type="date"
+                    placeholder="开始日期"
+                    v-model="form.startDate"
+                    @change="formatDate"
+                    style="width:100%;"
+                    :picker-options="pickerOptions"
+                    :editable="false">
+                  </el-date-picker>
+                </el-form-item>
+              </el-col>
+              <el-col :span="8">
+                <el-form-item label="终止时间">
+                  <el-input
+                    v-model="endDate"
+                    class="wp100"
+                    disabled
+                  ></el-input>
+                </el-form-item>
+              </el-col>
+            </el-row>
+            <el-row v-if="disabled">
+              <el-col :span="8">
                 <el-form-item label="创建人">
                   <el-input
                     :disabled="disabled"
-                    :value="creator"
-                    class="wp100">
+                    :value="creator">
                   </el-input>
                 </el-form-item>
               </el-col>
-              <el-col :span="7">
+              <el-col :span="8">
                 <el-form-item label="最新版本">
                   <el-input
                     :disabled="disabled"
-                    :value="version"
-                    class="wp100">
+                    :value="version">
                   </el-input>
                 </el-form-item>
               </el-col>
-              <el-col :span="7">
+              <el-col :span="8">
                 <el-form-item label="最近更新人">
                   <el-input
                     :disabled="disabled"
-                    :value="operatorName"
-                    class="wp100">
+                    :value="operatorName">
                   </el-input>
                 </el-form-item>
               </el-col>
@@ -131,11 +137,15 @@
               </el-upload>
             </el-form-item>
             <el-form-item>
-              <el-button type="primary" @click="next">下一步</el-button>
+              <el-button type="primary" @click="showTmpl=true">模板信息</el-button>
             </el-form-item>
           </el-form>
         </div>
       </el-card>
+      <div class="mt20">
+        <el-button @click="save" class="ml20">保 存</el-button>
+        <el-button type="primary" @click="submit">提 交</el-button>
+      </div>
     </div>
     <div v-if="showTmpl">
       <Tmpl :showTmpl.sync="showTmpl"></Tmpl>
@@ -228,12 +238,6 @@
           this.regions = res.data.dataMap;
         });
       },
-      next() {
-        this[types.GET_INFO]({
-          info: this.form
-        });
-        this.showTmpl = true;
-      },
       getTmplData() {
         supportModel.getTmplData({}).then((res) => {
           const data = res.data.dataMap;
@@ -247,8 +251,36 @@
           });
         });
       },
+      getResult() {
+        const {info} = this.$store.state.support.create;
+        const result = {...info, ...this.form, contentModule: this.form.contentModule};
+        return Object.assign(result, {
+          operatorId: 1,
+          operatorName: 'haha',
+          departmentId: 12,
+          departmentName: 'hehe'
+        });
+      },
+      back() { //返回列表页
+        this.$router.push('/contemplate/list');
+      },
+      save() {
+        const result = this.getResult();
+        console.log('click save：' + JSON.stringify(result));
+        supportModel.addTpl(result).then((res) => {
+          console.log(res);
+          this.$message({
+            message: '保存成功',
+            type: 'success',
+          });
+          //this.back();
+        });
+      },
+      submit() {
+        console.log('click submit');
+        this.back();
+      },
       ...mapMutations([
-        types.GET_INFO,
         types.GET_INTIALDATA
       ])
     },
@@ -263,25 +295,6 @@
       const id = this.$route.params.id;
       if (id) {
         this.getTmplData();
-      }
-    },
-    watch: {
-      $route() {
-        const id = this.$route.params.id;
-        if (!id) {
-          Object.assign(this.form, {
-            number: '',
-            templateName: '',
-            templateType: '',
-            startDate: '',
-            endDate: '9999-12-31',
-            description: '',
-            bizTypes: '',
-            files: []
-          });
-          this.showTmpl = false;
-        }
-        console.log(to, from);
       }
     },
     computed: {

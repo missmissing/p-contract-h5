@@ -11,7 +11,7 @@ export default {
     [types.GET_INTIALDATA](state, payload) {
       state.create.initialData = {...state.create.initialData, ...payload.initialData};
     },
-    [types.GET_INFO](state, payload) {
+    [types.SET_INFO](state, payload) {
       state.create.info = {...state.create.info, ...payload.info};
     }
   }

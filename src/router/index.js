@@ -226,15 +226,24 @@ const router = new Router({
           name: routerNames.con_tpl_create
         },
         {
-          path: '/contemplate/create/:id',
+          path: '/contemplate/modify',
           component: function (resolve) {
             require(['../pages/support/create.vue'], resolve);
           },
           meta: {
-            hidden: true,
             auth: true
           },
           name: routerNames.con_tpl_update
+        },
+        {
+          path: '/contemplate/abolish',
+          component: function (resolve) {
+            require(['../pages/support/create.vue'], resolve);
+          },
+          meta: {
+            auth: true
+          },
+          name: routerNames.con_tpl_abolish
         }
       ],
       meta: {

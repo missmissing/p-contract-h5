@@ -78,9 +78,7 @@
           </el-col>
         </el-row>
         <div class="mt20">
-          <el-button @click="save">保 存</el-button>
-          <el-button type="primary" @click="submit">提 交</el-button>
-          <el-button type="info" @click="backPrev" style="margin-left:30px;">上一步</el-button>
+          <el-button type="primary" @click="save">保 存</el-button>
         </div>
       </div>
     </el-card>
@@ -89,7 +87,9 @@
 
 <script>
   import _ from 'lodash';
+  import {mapMutations} from 'vuex';
   import {quillEditor} from 'vue-quill-editor';
+  import * as types from '../../store/consts';
   import supportModel from '../../api/support';
 
   export default {
@@ -167,39 +167,18 @@
         });
         return result.join('');
       },
-      getResult() {
-        const {info} = this.$store.state.support.create;
-        const result = {...info, ...this.form, contentModule: this.form.contentModule};
-        return Object.assign(result, {
-          operatorId: 1,
-          operatorName: 'haha',
-          departmentId: 12,
-          departmentName: 'hehe'
-        });
-      },
-      back() { //返回列表页
-        this.$router.push('/contemplate/list');
-      },
       save() {
-        const result = this.getResult();
-        console.log('click save：' + JSON.stringify(result));
-        supportModel.addTpl(result).then((res) => {
-          console.log(res);
-          this.$message({
-            message: '保存成功',
-            type: 'success',
-          });
-          this.back();
+        this[types.SET_INFO]({
+          info: this.form
         });
-      },
-      submit() {
-        console.log('click submit');
         this.back();
-
       },
-      backPrev() {
+      back() {
         this.$emit('update:showTmpl', false);
-      }
+      },
+      ...mapMutations([
+        types.SET_INFO
+      ])
     },
     watch: {
       ['tplType']() {
