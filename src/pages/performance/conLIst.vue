@@ -78,8 +78,7 @@
                     v-model="form.daterange"
                     type="daterange"
                     placeholder="选择日期范围"
-                    @change="formatDateRange"
-                    :picker-options="pickerOptions">
+                    @change="formatDateRange">
                   </el-date-picker>
                 </el-form-item>
               </el-col>
@@ -103,7 +102,8 @@
           class="wp100">
           <el-table-column
             type="index"
-            width="50">
+            label="序号"
+            width="80">
           </el-table-column>
           <el-table-column
             prop="createDate"
@@ -146,11 +146,10 @@
             label="操作"
             width="280">
             <template scope="scope">
-              <el-button type="text" size="small" @click="edit(scope.$index, scope.row)">履约</el-button>
-              <el-button type="text" size="small" @click="stop(scope.$index, scope.row)">验收不合格</el-button>
-              <el-button type="text" size="small" @click="edit(scope.$index, scope.row)">变更</el-button>
-              <el-button type="text" size="small" @click="stop(scope.$index, scope.row)">终止</el-button>
-              <el-button type="text" size="small" @click="rej(scope.$index, scope.row)">违约处理</el-button>
+              <el-button type="text" size="small">验收不合格</el-button>
+              <el-button type="text" size="small">变更</el-button>
+              <el-button type="text" size="small">中止</el-button>
+              <el-button type="text" size="small">违约处理</el-button>
             </template>
           </el-table-column>
         </el-table>
@@ -176,18 +175,7 @@
           daterange: [],
           valid: false
         },
-        tableData: [],
-        dialogVisible: false,
-        stopData: {
-          id: '',
-          endDate: '',
-          reason: '',
-          pickerOptions: {
-            disabledDate(time) {
-              return time.getTime() < Date.now() - 8.64e7;
-            }
-          }
-        }
+        tableData: []
       }
     },
     watch: {
@@ -208,23 +196,10 @@
           this.tableData = res.data.dataMap;
         })
       },
-      formatDate(value) {
-        this.stopData.endDate = value;
+      formatDateRange(value) {
+        const daterange = value.split(' ');
+        this.form.daterange = [daterange[0], daterange[2]];
       },
-      edit(index, row) {
-        const {id} = row;
-        this.$router.push('/contemplate/create/' + id);
-      },
-      stop(index, row) {
-        this.stopData.id = row.id;
-        this.dialogVisible = true;
-      },
-      stopSure() {
-        const {endDate, reason, id} = this.stopData;
-        console.log(JSON.stringify({endDate, reason, id}));
-        this.dialogVisible = false;
-        this.getList();
-      }
     },
     created() {
       this.getList();

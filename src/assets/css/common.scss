@@ -1,5 +1,31 @@
 @import '~font-awesome/css/font-awesome.min.css';
 
+html, body {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  font-size: 14px;
+}
+
+.mt10 {
+  margin-top: 10px;
+}
+
+.mr10 {
+  margin-right: 10px;
+}
+
+.mb10 {
+  margin-bottom: 10px;
+}
+
+.ml10 {
+  margin-left: 10px;
+}
+
 .mt20 {
   margin-top: 20px;
 }
@@ -21,7 +47,7 @@
 }
 
 .common-title {
-  font-size: 14px;
+  font-size: 16px;
   color: #1c2438;
   font-weight: 700;
 }

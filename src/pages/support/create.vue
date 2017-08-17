@@ -104,7 +104,7 @@
               </el-col>
             </el-row>
             <el-form-item label="使用说明">
-              <el-col :span="24">
+              <el-col>
                 <el-input
                   type="textarea"
                   :maxlength="300"
@@ -118,7 +118,7 @@
               <el-upload
                 drag
                 action="/api-contract/contract-web/file/upload/"
-                name="upFile"
+                name="files"
                 :data="uploadData"
                 :on-change="hangdleStatus"
                 :on-remove="handleRemove"
