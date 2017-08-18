@@ -42,11 +42,6 @@
                                       placeholder="请输入合同模式"></el-input>
                         </el-form-item>
                     </el-col>
-                    <el-col :span="8" v-if="operateType==='query'">
-                        <el-form-item label="合同编号">
-                            <el-input v-model="createConForm.baseInfo.conNumber" placeholder="请输入合同编号"></el-input>
-                        </el-form-item>
-                    </el-col>
                     <el-col :span="8">
                         <el-form-item label="合同类型">
                             <el-input :disabled="true" v-model="createConForm.baseInfo.conTypeName"
@@ -60,9 +55,17 @@
                             <el-input v-model="createConForm.baseInfo.belongProject" placeholder="请输入所属项目"></el-input>
                         </el-form-item>
                     </el-col>
-                    <el-col :span="8">
-                        <el-form-item label="合同版本">
-                            <el-input v-model="createConForm.baseInfo.conVersion" placeholder="请输入合同版本"></el-input>
+                    <el-col :span="16">
+                        <el-form-item label="模版名称">
+                            <el-select v-model="createConForm.baseInfo.templateName" placeholder="请选择合同模版">
+                                <el-option
+                                        v-for="item in createConForm.baseInfo.templateOptions"
+                                        :key="item.id"
+                                        :label="item.name"
+                                        :value="item.id">
+                                </el-option>
+                            </el-select>
+                            {{conVersion}}
                         </el-form-item>
                     </el-col>
                 </el-row>
@@ -79,31 +82,23 @@
                             </el-select>
                         </el-form-item>
                     </el-col>
-                    <el-col :span="8">
-                        <el-form-item label="模版名称">
-                            <el-select v-model="createConForm.baseInfo.templateName" placeholder="请选择合同模版">
-                                <el-option
-                                        v-for="item in createConForm.baseInfo.templateOptions"
-                                        :key="item.id"
-                                        :label="item.name"
-                                        :value="item.id">
-                                </el-option>
-                            </el-select>
+                    <el-col :span="8" v-if="operateType==='query'">
+                        <el-form-item label="合同编号">
+                            <el-input v-model="createConForm.baseInfo.conNumber" placeholder="请输入合同编号"></el-input>
                         </el-form-item>
-                    </el-col>
-                    <el-col :span="8">
-                        <el-button type="primary" @click="handlePreview" style="margin-left:33px">预览</el-button>
                     </el-col>
                 </el-row>
                 <el-row>
                     <el-col :span="16">
                         <el-form-item label="盖章次序">
-                            <el-radio v-model="createConForm.baseInfo.radioSealOrder" label="1">对方先盖章（默认</el-radio>
-                            <el-radio v-model="createConForm.baseInfo.radioSealOrder" label="2">我方先盖章</el-radio>
+                            <el-radio-group v-model="createConForm.baseInfo.radioSealOrder">
+                                <el-radio :label="1">对方先盖章（默认)</el-radio>
+                                <el-radio :label="0">我方先盖章</el-radio>
+                            </el-radio-group>
                         </el-form-item>
                     </el-col>
                 </el-row>
-                <el-row>
+                <el-row v-if="createConForm.baseInfo.radioSealOrder==0">
                     <el-col :span="16" style="margin-left: 100px">
                         <el-input type="textarea" :rows="4" placeholder="请输入内容"
                                   v-model="createConForm.baseInfo.sealReason"></el-input>
@@ -720,8 +715,13 @@
             </footer>
         </el-dialog>
         <el-row>
-            <el-col :span="8" :offset="6">
+            <el-col :span="4" :offset="4">
                 <el-button type="primary" @click="handleSave('createConForm')">保存</el-button>
+            </el-col>
+            <el-col :span="6">
+                <el-button type="primary" @click="handlePreview" style="margin-left:33px"
+                           v-if="createConForm.baseInfo.conTextType==1">预览
+                </el-button>
             </el-col>
             <el-col :span="4">
                 <el-button type="primary" @click="handleSubmit('createConForm')">提交</el-button>
@@ -731,6 +731,7 @@
 </template>
 <script>
     import Api from '../../api/create';
+    import _ from 'lodash';
     //import searchuser from '../../components/searchUser.vue'
     //import api from '../../api'
     //import tagService from '../../utils/tag.js'
@@ -749,12 +750,11 @@
                         conType: '',
                         conTypeName: '',
                         belongProject: '',
-                        conVersion: '',
                         conTextType: '1',
                         conTextTypeOptions: [],
                         templateName: '',
                         templateOptions: [],
-                        radioSealOrder: '1',//1：对方先盖章 2：我方先盖章
+                        radioSealOrder: 0,//0：我方先盖章 1：对方先盖章
                         sealReason: '',
                         dialogNewSubjectVisible: false,
                     },
@@ -997,6 +997,20 @@
             this.createConForm.baseInfo.conModel = query.curConModelId;
             this.createConForm.baseInfo.conType = query.curConTypeId;
 
+        },
+        computed: {
+            conVersion: function () {
+                let id = this.createConForm.baseInfo.templateName, templateOptions = this.createConForm.baseInfo.templateOptions, result = '';
+                if (templateOptions && templateOptions.length > 0) {
+                    //result=_.result(_.findWhere(templateOptions, {'id': id}), 'version');//======???
+                    for (let i = 0, len = templateOptions.length; i < len; i++) {
+                        if (id == templateOptions[i].id) {
+                            result = 'V-' + templateOptions[i].version;
+                        }
+                    }
+                }
+                return result;
+            }
         },
         mounted(){
             Api.getContractBaseInfo({}).then((data)=> {

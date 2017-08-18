@@ -74,15 +74,18 @@ module.exports = function (api) {
                     templateName: [
                         {
                             id: 'template1',
-                            name: '模版1'
+                            name: '模版1',
+                            version: '1.1'
                         },
                         {
                             id: 'template2',
-                            name: '模版2'
+                            name: '模版2',
+                            version: '1.2'
                         },
                         {
                             id: 'template3',
-                            name: '模版3'
+                            name: '模版3',
+                            version: '1.3'
                         },
                     ]
 
