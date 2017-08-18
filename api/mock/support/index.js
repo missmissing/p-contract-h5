@@ -122,7 +122,7 @@ module.exports = function (api) {
     });
   });
 
-  api.use('/api/support/list', function (req, res) {
+  api.use('/contract-web/template/getTemplate', function (req, res) {
     res.status(200).json({
       code: 200,
       message: '成功',

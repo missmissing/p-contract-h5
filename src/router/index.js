@@ -216,6 +216,17 @@ const router = new Router({
           name: routerNames.con_tpl_list
         },
         {
+          path: '/contemplate/see/:id',
+          component: function (resolve) {
+            require(['../pages/support/create.vue'], resolve);
+          },
+          meta: {
+            hidden:true,
+            auth: true
+          },
+          name: routerNames.con_tpl_see
+        },
+        {
           path: '/contemplate/create',
           component: function (resolve) {
             require(['../pages/support/create.vue'], resolve);
@@ -226,7 +237,7 @@ const router = new Router({
           name: routerNames.con_tpl_create
         },
         {
-          path: '/contemplate/modify',
+          path: '/contemplate/update',
           component: function (resolve) {
             require(['../pages/support/create.vue'], resolve);
           },

@@ -55,10 +55,10 @@ export const routerNames = {
 
   con_support: '合同支持',
   con_tpl_list: '合同模板列表',
+  con_tpl_see: '合同模板查看',
   con_tpl_create: '合同模板创建',
   con_tpl_update: '合同模板变更',
-  con_tpl_abolish: '合同模板废除',
-  con_tpl_search: '合同查询'
+  con_tpl_abolish: '合同模板废除'
 };
 
 /**审批按钮（新版本） */

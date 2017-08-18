@@ -1,8 +1,6 @@
 <style type="text/scss" lang="scss" scoped>
   .list-container {
-    .line {
-      text-align: center;
-    }
+
   }
 </style>
 
@@ -19,7 +17,8 @@
               <el-col :span="18">
                 <el-form-item label="查询条件">
                   <el-input
-                    v-model="form.someText">
+                    placeholder="请输入模板名称,支持模糊搜索"
+                    v-model="form.keywords">
                   </el-input>
                 </el-form-item>
               </el-col>
@@ -29,31 +28,31 @@
               <el-col :span="6">
                 <el-form-item label="模板类型">
                   <el-select
-                    v-model="form.type"
-                    placeholder="请选择"
+                    v-model="form.templateType"
                     class="wp100">
-                    <el-option label="合同模板" value="1"></el-option>
-                    <el-option label="合同文本" value="2"></el-option>
+                    <el-option label="请选择" :value="null"></el-option>
+                    <el-option label="合同模板" value="0"></el-option>
+                    <el-option label="合同文本" value="1"></el-option>
                   </el-select>
                 </el-form-item>
               </el-col>
               <el-col :span="6">
                 <el-form-item label="文本编号">
-                  <el-input></el-input>
+                  <el-input v-model="form.templateCode"></el-input>
                 </el-form-item>
               </el-col>
               <el-col :span="6">
                 <el-form-item label="发起人">
-                  <el-input v-model="form.initiator"></el-input>
+                  <el-input v-model="form.operatorName"></el-input>
                 </el-form-item>
               </el-col>
             </el-row>
             <el-row>
-              <el-col :span="6">
+              <el-col :span="7">
                 <el-form-item label="创建时间">
                   <el-date-picker
                     style="width:100%;"
-                    v-model="form.daterange"
+                    v-model="daterange"
                     type="daterange"
                     placeholder="选择日期范围"
                     @change="formatDateRange"
@@ -78,86 +77,62 @@
           highlight-current-row
           class="wp100">
           <el-table-column
-            fixed
-            prop="name"
-            label="姓名"
-            width="120">
+            prop="templateName"
+            min-width="150"
+            label="模板名称">
+            <template scope="scope">
+              <el-button type="text" @click.native.prevent="see(scope.$index,scope.row)">{{scope.row.templateName}}
+              </el-button>
+            </template>
           </el-table-column>
           <el-table-column
-            prop="date"
-            label="日期"
-            width="150">
+            prop="templateCode"
+            min-width="150"
+            label="模板编号">
           </el-table-column>
           <el-table-column
-            prop="province"
-            label="省份"
-            width="120">
+            prop="templateType"
+            min-width="120"
+            :formatter="formatType"
+            label="文本类型">
           </el-table-column>
           <el-table-column
-            prop="city"
-            label="市区"
-            width="120">
+            prop="creatorName"
+            min-width="100"
+            label="发起人">
           </el-table-column>
           <el-table-column
-            prop="address"
-            label="地址"
+            prop="departmentName"
+            min-width="100"
+            label="业务部门"
           >
           </el-table-column>
           <el-table-column
-            prop="zip"
-            label="邮编"
-            width="120">
+            prop="createTime"
+            :formatter="formatTime"
+            width="180"
+            label="创建日期">
           </el-table-column>
           <el-table-column
-            fixed="right"
-            label="操作"
-            width="100">
-            <template scope="scope">
-              <el-button type="text" size="small" @click="stop(scope.$index, scope.row)">废除</el-button>
-            </template>
+            prop="startDate"
+            :formatter="formatDate1"
+            width="120"
+            label="生效日期">
+          </el-table-column>
+          <el-table-column
+            prop="endDate"
+            :formatter="formatDate2"
+            width="120"
+            label="终止日期">
+          </el-table-column>
+          <el-table-column
+            prop="usedCount"
+            width="100"
+            label="使用次数">
           </el-table-column>
         </el-table>
       </div>
     </el-card>
-    <el-dialog
-      title="废除模板"
-      :visible.sync="dialogVisible"
-      size="tiny"
-    >
-      <div>
-        <el-form ref="form" label-width="80px">
-          <el-form-item label="废除时间">
-            <el-col>
-              <el-date-picker
-                class="wp100"
-                v-model="stopData.endDate"
-                type="date"
-                @change="formatDate"
-                placeholder="选择日期"
-                :picker-options="stopData.pickerOptions"
-                :editable="false">
-              </el-date-picker>
-            </el-col>
-          </el-form-item>
-          <el-form-item label="废除理由" style="margin-bottom:0;">
-            <el-col>
-              <el-input
-                class="wp100"
-                v-model="stopData.reason"
-                type="textarea"
-                :rows="8"
-                :maxlength="300"
-                resize="none"
-              ></el-input>
-            </el-col>
-          </el-form-item>
-        </el-form>
-      </div>
-      <div slot="footer" class="dialog-footer">
-        <el-button @click="dialogVisible = false">取 消</el-button>
-        <el-button type="primary" @click="stopSure">确 定</el-button>
-      </div>
-    </el-dialog>
   </div>
 </template>
 
@@ -169,65 +144,55 @@
     data() {
       return {
         form: {
-          someText: '',
-          type: '',
-          daterange: [],
-          initiator: '',
+          keywords: '',
+          templateType: '',
+          templateCode: '',
+          startTime: '',
+          endTime: '',
+          operatorName: '',
           valid: false
         },
+        daterange: [],
         pickerOptions: {
           disabledDate(time) {
             return time.getTime() > Date.now();
           }
         },
-        tableData: [],
-        dialogVisible: false,
-        stopData: {
-          id: '',
-          endDate: '',
-          reason: '',
-          pickerOptions: {
-            disabledDate(time) {
-              return time.getTime() < Date.now() - 8.64e7;
-            }
-          }
-        }
-      }
-    },
-    watch: {
-      dialogVisible() {
-        if (!this.dialogVisible) {
-          this.stopData.endDate = '';
-          this.stopData.reason = '';
-        }
+        tableData: []
       }
     },
     methods: {
       search() {
-        console.log('搜索');
         console.log(JSON.stringify(this.form));
+        this.getList(this.form);
       },
-      getList() {
-        supportModel.getList({}).then((res) => {
+      getList(params) {
+        supportModel.getList(params).then((res) => {
+          console.log(res);
           this.tableData = res.data.dataMap;
         })
       },
-      formatDate(value) {
-        this.stopData.endDate = value;
+      see(index, row) {
+        console.log(row);
+        this.$router.push(`/contemplate/see/${row.id}`);
       },
       formatDateRange(value) {
         const daterange = value.split(' ');
-        this.form.daterange = [daterange[0], daterange[2]];
+        this.daterange = [daterange[0], daterange[2]];
+        this.form.startTime = daterange[0];
+        this.form.ednTime = daterange[1];
       },
-      stop(index, row) {
-        this.stopData.id = row.id;
-        this.dialogVisible = true;
+      formatType(row) {
+        return row.templateType === 'TEXT' ? '合同文本' : '合同模板';
       },
-      stopSure() {
-        const {endDate, reason, id} = this.stopData;
-        console.log(JSON.stringify({endDate, reason, id}));
-        this.dialogVisible = false;
-        this.getList();
+      formatTime(row) {
+        return moment(row.createTime).format('YYYY-MM-DD HH:mm:ss');
+      },
+      formatDate1(row) {
+        return moment(row.startDate).format('YYYY-MM-DD');
+      },
+      formatDate2(row) {
+        return moment(row.endDate).format('YYYY-MM-DD');
       }
     },
     created() {

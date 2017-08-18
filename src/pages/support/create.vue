@@ -1,8 +1,6 @@
 <style type="text/scss" lang="scss" scoped>
   .form-container {
-    .line {
-      text-align: center;
-    }
+
   }
 </style>
 
@@ -15,10 +13,15 @@
         </div>
         <div class="form-container">
           <el-form ref="form" label-width="120px">
-            <el-row v-if="disabled">
+            <el-row v-if="!create">
               <el-col :span="8">
-                <el-form-item label="文本编号">
-                  <el-input v-model="number" class="wp100" disabled></el-input>
+                <el-form-item label="模板编号">
+                  <el-input
+                    icon="search"
+                    placeholder="点击图标进行搜索"
+                    v-model="form.templateCode"
+                    :on-icon-click="search">
+                  </el-input>
                 </el-form-item>
               </el-col>
             </el-row>
@@ -26,7 +29,7 @@
               <el-col :span="8">
                 <el-form-item label="文本名称">
                   <el-input
-                    :disabled="disabled"
+                    :disabled="update"
                     v-model.trim="form.templateName"
                     class="wp100">
                   </el-input>
@@ -37,7 +40,7 @@
                   <el-select
                     v-model="form.templateType"
                     placeholder="请选择"
-                    :disabled="disabled"
+                    :disabled="update"
                     class="wp100">
                     <el-option label="合同模板" value="TEMPLATE"></el-option>
                     <el-option label="合同文本" value="TEXT"></el-option>
@@ -59,12 +62,12 @@
                 </el-form-item>
               </el-col>
             </el-row>
-            <el-row>
+            <el-row v-if="!abolish">
               <el-col :span="8">
                 <el-form-item label="生效时间">
                   <el-date-picker
                     type="date"
-                    placeholder="开始日期"
+                    placeholder="选择日期"
                     v-model="form.startDate"
                     @change="formatDate"
                     style="width:100%;"
@@ -83,19 +86,19 @@
                 </el-form-item>
               </el-col>
             </el-row>
-            <el-row v-if="disabled">
+            <el-row v-if="!create">
               <el-col :span="8">
                 <el-form-item label="创建人">
                   <el-input
-                    :disabled="disabled"
-                    :value="creator">
+                    disabled
+                    :value="creatorName">
                   </el-input>
                 </el-form-item>
               </el-col>
               <el-col :span="8">
                 <el-form-item label="最新版本">
                   <el-input
-                    :disabled="disabled"
+                    disabled
                     :value="version">
                   </el-input>
                 </el-form-item>
@@ -103,26 +106,48 @@
               <el-col :span="8">
                 <el-form-item label="最近更新人">
                   <el-input
-                    :disabled="disabled"
+                    disabled
                     :value="operatorName">
                   </el-input>
                 </el-form-item>
               </el-col>
             </el-row>
             <el-form-item label="使用说明">
-              <el-col>
-                <el-input
-                  type="textarea"
-                  :maxlength="300"
-                  :autosize="{ minRows: 2 }"
-                  resize="none"
-                  v-model="form.description">
-                </el-input>
-              </el-col>
+              <el-input
+                type="textarea"
+                :maxlength="300"
+                :autosize="{ minRows: 2 }"
+                resize="none"
+                v-model="form.description">
+              </el-input>
             </el-form-item>
-            <el-form-item label="文本上传" v-show="showUpload">
+            <el-row v-if="abolish">
+              <el-col :span="8">
+                <el-form-item label="停用日期">
+                  <el-date-picker
+                    type="date"
+                    placeholder="选择日期"
+                    v-model="abolishForm.endDate"
+                    @change="formatDate1"
+                    style="width:100%;"
+                    :editable="false">
+                  </el-date-picker>
+                </el-form-item>
+              </el-col>
+              <el-col>
+                <el-form-item label="停用原因">
+                  <el-input
+                    type="textarea"
+                    :maxlength="300"
+                    :autosize="{ minRows: 2 }"
+                    resize="none"
+                    v-model="abolishForm.abolishReason">
+                  </el-input>
+                </el-form-item>
+              </el-col>
+            </el-row>
+            <el-form-item label="文本上传" v-show="tplTypeShow">
               <el-upload
-                drag
                 action="/api-contract/contract-web/file/upload/"
                 name="files"
                 :data="uploadData"
@@ -131,21 +156,20 @@
                 :before-upload="beforeUpload"
                 :on-success="uplodeSuccess"
                 multiple>
-                <i class="el-icon-upload"></i>
-                <div class="el-upload__text">将文件拖到此处，或<em>点击上传</em></div>
+                <el-button size="small" type="primary">点击上传</el-button>
                 <div class="el-upload__tip" slot="tip">文件大小不超过10M</div>
               </el-upload>
             </el-form-item>
-            <el-form-item>
+            <el-form-item v-show="!tplTypeShow">
               <el-button type="primary" @click="showTmpl=true">模板信息</el-button>
             </el-form-item>
           </el-form>
         </div>
       </el-card>
-      <div class="mt20">
+      <el-row class="mt20" v-if="!see">
         <el-button @click="save" class="ml20">保 存</el-button>
         <el-button type="primary" @click="submit">提 交</el-button>
-      </div>
+      </el-row>
     </div>
     <div v-if="showTmpl">
       <Tmpl :showTmpl.sync="showTmpl"></Tmpl>
@@ -163,46 +187,63 @@
 </template>
 
 <script>
+  import _ from 'lodash';
   import moment from 'moment';
   import {mapMutations} from 'vuex';
-  import * as types from '../../store/consts';
+  import * as types from '@/store/consts';
+  import {routerNames} from '@/core/consts';
   import Tmpl from './tmpl.vue';
   import TreeModal from '@/components/treeModal.vue';
   import supportModel from '@/api/support';
 
+  const defaultData = {
+    form: {
+      id: '',
+      templateCode: '',
+      templateName: '',
+      templateType: 'TEMPLATE',
+      startDate: '',
+      description: '',
+      bizTypes: [],
+      files: []
+    },
+    abolishForm: {
+      endDate: '',
+      abolishReason: ''
+    },
+    routeName: '',
+    uploadData: {userId: '12'},
+    endDate: '9999-12-31',
+    busiTypeText: '',
+    operatorName: '',
+    creatorName: '',
+    version: '',
+    regions: [],
+    pickerOptions: {
+      disabledDate(time) {
+        return time.getTime() < Date.now() - 8.64e7;
+      }
+    },
+    defaultProps: {
+      children: 'children',
+      label: 'businessName'
+    },
+    visible: false,
+    showTmpl: false
+  };
+
   export default {
     data() {
-      return {
-        form: {
-          templateName: '',
-          templateType: 'TEMPLATE',
-          startDate: '',
-          description: '',
-          bizTypes: [],
-          files: []
-        },
-        uploadData: {userId: '12'},
-        endDate: '9999-12-31',
-        number: '',
-        busiTypeText: '',
-        operatorName: '',
-        creator: '',
-        version: '',
-        regions: [],
-        pickerOptions: {
-          disabledDate(time) {
-            return time.getTime() < Date.now() - 8.64e7;
-          }
-        },
-        defaultProps: {
-          children: 'children',
-          label: 'businessName'
-        },
-        visible: false,
-        showTmpl: false
-      };
+      return _.cloneDeep(defaultData);
     },
     methods: {
+      currentRoute() {
+        Object.assign(this.$data, _.cloneDeep(defaultData));
+        this.routeName = this.$route.name;
+      },
+      search() {
+        console.log(this.form.id);
+      },
       hangdleStatus(file) {
         console.log(file);
       },
@@ -222,6 +263,9 @@
       formatDate(value) {
         this.form.startDate = moment(value).valueOf();
       },
+      formatDate1(value) {
+        this.form.stopDate = moment(value).valueOf();
+      },
       setBusiType(value, tree) {
         let bizTypes = [];
         let busiTypeText = [];
@@ -238,18 +282,29 @@
           this.regions = res.data.dataMap;
         });
       },
-      getTmplData() {
-        supportModel.getTmplData({}).then((res) => {
-          const data = res.data.dataMap;
-          this[types.GET_INTIALDATA]({
-            initialData: data
+      getTplData() {
+        if (this.see) {
+          supportModel.getTplData({
+            templateId: this.$route.params.id
+          }).then((res) => {
+            console.log(res);
+            const tplInfo = res.data.dataMap;
+            this[types.SET_TPL_INFO]({
+              tplInfo
+            });
+            this['version'] = `V${tplInfo['version']}`;
+            this['busiTypeText'] = tplInfo['bizTypes'].map(item => item.businessName).join(',');
+            Object.keys(this.form).forEach((key) => {
+              if (tplInfo.hasOwnProperty(key)) {
+                if (key === 'bizTypes') {
+                  this.form[key] = tplInfo[key].map(item => item.typeId);
+                } else {
+                  this.form[key] = tplInfo[key];
+                }
+              }
+            });
           });
-          Object.keys(this.form).forEach((key) => {
-            if (data.hasOwnProperty(key)) {
-              this.form[key] = data[key];
-            }
-          });
-        });
+        }
       },
       getResult() {
         const {info} = this.$store.state.support.create;
@@ -273,7 +328,6 @@
             message: '保存成功',
             type: 'success',
           });
-          //this.back();
         });
       },
       submit() {
@@ -281,7 +335,7 @@
         this.back();
       },
       ...mapMutations([
-        types.GET_INTIALDATA
+        types.SET_TPL_INFO
       ])
     },
     components: {
@@ -289,20 +343,30 @@
       Tmpl
     },
     created() {
+      this.currentRoute();
       this.getBusiType();
-    },
-    mounted() {
-      const id = this.$route.params.id;
-      if (id) {
-        this.getTmplData();
-      }
+      this.getTplData();
     },
     computed: {
-      showUpload() {
+      tplTypeShow() {
         return this.form.templateType === 'TEXT';
       },
-      disabled() {
-        return !!this.$route.params.id;
+      see() {
+        return this.routeName === routerNames.con_tpl_see;
+      },
+      create() {
+        return this.routeName === routerNames.con_tpl_create;
+      },
+      update() {
+        return this.routeName === routerNames.con_tpl_update;
+      },
+      abolish() {
+        return this.routeName === routerNames.con_tpl_abolish;
+      }
+    },
+    watch: {
+      $route() {
+        this.currentRoute();
       }
     }
   };

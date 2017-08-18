@@ -89,6 +89,7 @@
   import _ from 'lodash';
   import {mapMutations} from 'vuex';
   import {quillEditor} from 'vue-quill-editor';
+  import {routerNames} from '@/core/consts';
   import * as types from '../../store/consts';
   import supportModel from '../../api/support';
 
@@ -141,10 +142,14 @@
         });
       },
       setData() {
-        const initialData = this.$store.state.support.create.initialData;
+        const {tplInfo} = this.$store.state.support;
         Object.keys(this.form).forEach((key) => {
-          if (initialData.hasOwnProperty(key)) {
-            this.form[key] = initialData[key];
+          if (tplInfo.hasOwnProperty(key)) {
+            if (key === 'contentModule') {
+              this.form[key] = tplInfo[key].map(item => item.id);
+            } else {
+              this.form[key] = tplInfo[key];
+            }
           }
         });
       },
@@ -216,10 +221,7 @@
     created() {
       this.getTmplTypes();
       this.getModuleData();
-    },
-    mounted() {
-      const id = this.$route.params.id;
-      if (id) {
+      if (routerNames.con_tpl_see === this.$route.name) {
         this.setData();
       }
     }

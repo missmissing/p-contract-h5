@@ -7,8 +7,8 @@
   "scripts": {
     "api": "node api/app-server",
     "start": "node build/dev-server.js",
-    "dev": "node build/dev-server.js",
-    "uat1": "node build/dev-server.js",
+    "dev": "node build/build.js",
+    "uat1": "node build/build.js",
     "stg": "node build/build.js",
     "prd": "node build/build.js",
     "unit": "cross-env BABEL_ENV=test karma start test/unit/karma.conf.js --single-run",
