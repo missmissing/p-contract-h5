@@ -18,19 +18,19 @@
 </style>
 <template>
     <div>
-        <el-form ref="createConForm" :model="createConForm" label-width="100px">
-            <el-card>
-                <header slot="header">合同基本信息</header>
+        <el-card>
+            <header slot="header">合同基本信息</header>
+            <el-form ref="baseInfoForm" :model="baseInfoForm" label-width="100px">
                 <el-row>
                     <el-col :span="8">
                         <el-form-item label="业务经办人">
-                            <el-input :disabled="true" v-model="createConForm.baseInfo.businessPerson"
+                            <el-input :disabled="true" v-model="baseInfoForm.businessPerson"
                                       placeholder="请输入业务经办人"></el-input>
                         </el-form-item>
                     </el-col>
                     <el-col :span="8">
                         <el-form-item label="业务部门">
-                            <el-input :disabled="true" v-model="createConForm.baseInfo.businessDepartment"
+                            <el-input :disabled="true" v-model="baseInfoForm.businessDepartment"
                                       placeholder="请输入业务部门"></el-input>
                         </el-form-item>
                     </el-col>
@@ -38,13 +38,13 @@
                 <el-row>
                     <el-col :span="8">
                         <el-form-item label="合同模式">
-                            <el-input :disabled="true" v-model="createConForm.baseInfo.conModelName"
+                            <el-input :disabled="true" v-model="baseInfoForm.conModelName"
                                       placeholder="请输入合同模式"></el-input>
                         </el-form-item>
                     </el-col>
                     <el-col :span="8">
                         <el-form-item label="合同类型">
-                            <el-input :disabled="true" v-model="createConForm.baseInfo.conTypeName"
+                            <el-input :disabled="true" v-model="baseInfoForm.conTypeName"
                                       placeholder="请输入合同类型"></el-input>
                         </el-form-item>
                     </el-col>
@@ -52,14 +52,14 @@
                 <el-row>
                     <el-col :span="8">
                         <el-form-item label="所属项目">
-                            <el-input v-model="createConForm.baseInfo.belongProject" placeholder="请输入所属项目"></el-input>
+                            <el-input v-model="baseInfoForm.belongProject" placeholder="请输入所属项目"></el-input>
                         </el-form-item>
                     </el-col>
                     <el-col :span="16">
                         <el-form-item label="模版名称">
-                            <el-select v-model="createConForm.baseInfo.templateName" placeholder="请选择合同模版">
+                            <el-select v-model="baseInfoForm.templateName" placeholder="请选择合同模版">
                                 <el-option
-                                        v-for="item in createConForm.baseInfo.templateOptions"
+                                        v-for="item in baseInfoForm.templateOptions"
                                         :key="item.id"
                                         :label="item.name"
                                         :value="item.id">
@@ -72,9 +72,9 @@
                 <el-row>
                     <el-col :span="8">
                         <el-form-item label="合同文本类型">
-                            <el-select v-model="createConForm.baseInfo.conTextType" placeholder="请选择合同文本类型">
+                            <el-select v-model="baseInfoForm.conTextType" placeholder="请选择合同文本类型">
                                 <el-option
-                                        v-for="item in createConForm.baseInfo.conTextTypeOptions"
+                                        v-for="item in baseInfoForm.conTextTypeOptions"
                                         :key="item.id"
                                         :label="item.name"
                                         :value="item.id">
@@ -84,57 +84,60 @@
                     </el-col>
                     <el-col :span="8" v-if="operateType==='query'">
                         <el-form-item label="合同编号">
-                            <el-input v-model="createConForm.baseInfo.conNumber" placeholder="请输入合同编号"></el-input>
+                            <el-input v-model="baseInfoForm.conNumber" placeholder="请输入合同编号"></el-input>
                         </el-form-item>
                     </el-col>
                 </el-row>
                 <el-row>
                     <el-col :span="16">
                         <el-form-item label="盖章次序">
-                            <el-radio-group v-model="createConForm.baseInfo.radioSealOrder">
+                            <el-radio-group v-model="baseInfoForm.radioSealOrder">
                                 <el-radio :label="1">对方先盖章（默认)</el-radio>
                                 <el-radio :label="0">我方先盖章</el-radio>
                             </el-radio-group>
                         </el-form-item>
                     </el-col>
                 </el-row>
-                <el-row v-if="createConForm.baseInfo.radioSealOrder==0">
+                <el-row v-if="baseInfoForm.radioSealOrder==0">
                     <el-col :span="16" style="margin-left: 100px">
                         <el-input type="textarea" :rows="4" placeholder="请输入内容"
-                                  v-model="createConForm.baseInfo.sealReason"></el-input>
+                                  v-model="baseInfoForm.sealReason"></el-input>
                     </el-col>
                 </el-row>
-            </el-card>
-            <el-card>
-                <el-tabs v-model="createConForm.activeTabName" @tab-click="handleTabClick">
-                    <el-tab-pane label="合同内容信息" name="tabContInfo">
+            </el-form>
+        </el-card>
+        <el-card>
+            <el-tabs v-model="activeTabName" @tab-click="handleTabClick">
+                <el-tab-pane label="合同内容信息" name="tabContInfo">
+                    <el-form rel="cardContentInfoForm" :model="cardContentInfoForm" label-width="100px">
                         <el-card>
                             <header slot="header">合同供应商信息</header>
-                            <el-table :data="createConForm.cardContentInfo.tableSupplierInfo">
+                            <el-table :data="cardContentInfoForm.tableSupplierInfo">
                                 <el-table-column type="index"></el-table-column>
                                 <el-table-column prop="id" label="供应商编号"></el-table-column>
                                 <el-table-column prop="name" label="供应商名称"></el-table-column>
                                 <el-table-column prop="bankAccount" label="银行账号"></el-table-column>
                             </el-table>
+
                         </el-card>
                         <el-card>
                             <header slot="header">合同我方主体名称</header>
                             <el-button type="primary" @click="handleNewSubjectName" icon="plus">新增合同我方主体</el-button>
-                            <el-table :data="createConForm.cardContentInfo.conSubjctName">
+                            <el-table :data="cardContentInfoForm.conSubjctName">
                                 <el-table-column prop="id" label="公司代码"></el-table-column>
                                 <el-table-column prop="name" label="公司名称"></el-table-column>
                             </el-table>
                         </el-card>
-                        <el-card v-if="createConForm.baseInfo.conModel!='con4'">
+                        <el-card v-if="baseInfoForm.conModel!='con4'">
                             <header slot="header">第三方信息</header>
-                            <el-table :data="createConForm.cardContentInfo.thirdPartyInfo">
+                            <el-table :data="cardContentInfoForm.thirdPartyInfo">
                                 <el-table-column prop="id" label="供应商编号"></el-table-column>
                                 <el-table-column prop="name" label="供应商名称"></el-table-column>
                             </el-table>
                         </el-card>
-                        <el-card v-if="createConForm.baseInfo.conModel!='con1'">
+                        <el-card v-if="baseInfoForm.conModel!='con1'">
                             <header slot="header">合同标的</header>
-                            <el-table :data="createConForm.cardContentInfo.conStandard">
+                            <el-table :data="cardContentInfoForm.conStandard">
                                 <el-table-column type="index"></el-table-column>
                                 <el-table-column prop="id" label="物料编码"></el-table-column>
                                 <el-table-column prop="name" label="物料名称"></el-table-column>
@@ -144,8 +147,8 @@
                             <el-row>
                                 <el-col :span="8">
                                     <el-form-item label="合同生效日期" prop="effectiveDate"
-                                                  :rules="createConForm.cardContentInfo.effectiveDateRules">
-                                        <el-date-picker v-model="createConForm.cardContentInfo.effectiveDate"
+                                                  :rules="cardContentInfoForm.effectiveDateRules">
+                                        <el-date-picker v-model="cardContentInfoForm.effectiveDate"
                                                         placeholder="请输入合同生效期日期"
                                                         type="date"
                                                         @change="handleChangeEffectiveDate"></el-date-picker>
@@ -153,8 +156,8 @@
                                 </el-col>
                                 <el-col :span="8">
                                     <el-form-item label="合同终止日期" prop="endDate"
-                                                  :rules="createConForm.cardContentInfo.endDateRules">
-                                        <el-date-picker v-model="createConForm.cardContentInfo.endDate"
+                                                  :rules="cardContentInfoForm.endDateRules">
+                                        <el-date-picker v-model="cardContentInfoForm.endDate"
                                                         placeholder="请输入合同终止日期"
                                                         type="date"
                                                         @change="handleChangeEndDate"></el-date-picker>
@@ -162,12 +165,14 @@
                                 </el-col>
                             </el-row>
                         </el-card>
-                    </el-tab-pane>
-                    <el-tab-pane label="合同财务信息" name="tabContFinanceInfo">
+                    </el-form>
+                </el-tab-pane>
+                <el-tab-pane label="合同财务信息" name="tabContFinanceInfo">
+                    <el-form rel="cardFinanceInfoForm" :model="cardFinanceInfoForm" label-width="100px">
                         <el-row>
                             <el-col :span="8">
                                 <el-form-item label="是否涉及金额">
-                                    <el-radio-group v-model="createConForm.cardFinanceInfo.hasMoney">
+                                    <el-radio-group v-model="cardFinanceInfoForm.hasMoney">
                                         <el-radio :label="1">是</el-radio>
                                         <el-radio :label="0">否</el-radio>
                                     </el-radio-group>
@@ -175,7 +180,7 @@
                             </el-col>
                             <el-col :span="8">
                                 <el-form-item label="是否一次性付款" label-width="120px">
-                                    <el-radio-group v-model="createConForm.cardFinanceInfo.onePayment">
+                                    <el-radio-group v-model="cardFinanceInfoForm.onePayment">
                                         <el-radio :label="1">是</el-radio>
                                         <el-radio :label="0">否</el-radio>
                                     </el-radio-group>
@@ -185,7 +190,7 @@
                         <el-card>
                             <header slot="header">付款方式</header>
                             <el-button type="primary" @click="handleAddPaymentMethod" icon="plus">新增付款方式</el-button>
-                            <el-table :data="createConForm.cardFinanceInfo.paymentMethod">
+                            <el-table :data="cardFinanceInfoForm.paymentMethod">
                                 <el-table-column prop="type" label="类型"></el-table-column>
                                 <el-table-column prop="ifMultiPayment" label="是否多次付款"></el-table-column>
                                 <el-table-column prop="money" label="付款金额"></el-table-column>
@@ -196,9 +201,9 @@
                             <el-row>
                                 <el-col :span="8">
                                     <el-form-item label="币种" prop="currency">
-                                        <el-select v-model="createConForm.cardFinanceInfo.currency" placeholder="请选择币种">
+                                        <el-select v-model="cardFinanceInfoForm.currency" placeholder="请选择币种">
                                             <el-option
-                                                    v-for="item in createConForm.cardFinanceInfo.currencyOptions"
+                                                    v-for="item in cardFinanceInfoForm.currencyOptions"
                                                     :key="item.value"
                                                     :label="item.label"
                                                     :value="item.value">
@@ -208,10 +213,10 @@
                                 </el-col>
                                 <el-col :span="8">
                                     <el-form-item label="开票类型" prop="billingType">
-                                        <el-select v-model="createConForm.cardFinanceInfo.billingType"
+                                        <el-select v-model="cardFinanceInfoForm.billingType"
                                                    placeholder="请选择开票类型">
                                             <el-option
-                                                    v-for="item in createConForm.cardFinanceInfo.billingTypeOptions"
+                                                    v-for="item in cardFinanceInfoForm.billingTypeOptions"
                                                     :key="item.value"
                                                     :label="item.label"
                                                     :value="item.value">
@@ -221,7 +226,7 @@
                                 </el-col>
                                 <el-col :span="8">
                                     <el-form-item label="合同总金额" prop="totalConMoney">
-                                        <el-input v-model="createConForm.cardFinanceInfo.totalConMoney"
+                                        <el-input v-model="cardFinanceInfoForm.totalConMoney"
                                                   placeholder="根据上表累加(含税价)"></el-input>
                                     </el-form-item>
                                 </el-col>
@@ -229,7 +234,7 @@
                             <el-row>
                                 <el-col :span="8">
                                     <el-form-item label="是否收取保证金" label-width="120px">
-                                        <el-radio-group v-model="createConForm.cardFinanceInfo.hasBond">
+                                        <el-radio-group v-model="cardFinanceInfoForm.hasBond">
                                             <el-radio :label="1">是</el-radio>
                                             <el-radio :label="0">否</el-radio>
                                         </el-radio-group>
@@ -237,13 +242,13 @@
                                 </el-col>
                                 <el-col :span="8">
                                     <el-form-item label="保证金金额" prop="bondMoney">
-                                        <el-input v-model="createConForm.cardFinanceInfo.bondMoney"
+                                        <el-input v-model="cardFinanceInfoForm.bondMoney"
                                                   placeholder="请输入保证金金额"></el-input>
                                     </el-form-item>
                                 </el-col>
                                 <el-col :span="8">
                                     <el-form-item label="保证金占比" prop="bondProportion">
-                                        <el-input v-model="createConForm.cardFinanceInfo.bondProportion"
+                                        <el-input v-model="cardFinanceInfoForm.bondProportion"
                                                   placeholder="请输入保证金占比"></el-input>
                                     </el-form-item>
                                 </el-col>
@@ -251,14 +256,14 @@
                             <el-row>
                                 <el-col :span="8">
                                     <el-form-item label="付款时间" prop="paymentTime">
-                                        <el-date-picker v-model="createConForm.cardFinanceInfo.paymentTime"
+                                        <el-date-picker v-model="cardFinanceInfoForm.paymentTime"
                                                         placeholder="请输入付款时间"
                                                         type="date"></el-date-picker>
                                     </el-form-item>
                                 </el-col>
                             </el-row>
                         </el-card>
-                        <el-card v-if="createConForm.baseInfo.conModel==='con2'">
+                        <el-card v-if="baseInfoForm.conModel==='con2'">
                             <header slot="header">开票信息</header>
                             <el-row>
                                 <el-col :span="12" class="billingInfo">
@@ -268,7 +273,7 @@
                                             公司名称:
                                         </el-col>
                                         <el-col :span="16">
-                                            {{createConForm.cardFinanceInfo.jiaBillingInfo.companyName}}
+                                            {{cardFinanceInfoForm.jiaBillingInfo.companyName}}
                                         </el-col>
                                     </el-row>
                                     <el-row>
@@ -276,7 +281,7 @@
                                             统一社会信用代码:
                                         </el-col>
                                         <el-col :span="16">
-                                            {{createConForm.cardFinanceInfo.jiaBillingInfo.creditCode}}
+                                            {{cardFinanceInfoForm.jiaBillingInfo.creditCode}}
                                         </el-col>
                                     </el-row>
                                     <el-row>
@@ -284,7 +289,7 @@
                                             注册地址:
                                         </el-col>
                                         <el-col :span="16">
-                                            {{createConForm.cardFinanceInfo.jiaBillingInfo.registerAddress}}
+                                            {{cardFinanceInfoForm.jiaBillingInfo.registerAddress}}
                                         </el-col>
                                     </el-row>
                                     <el-row>
@@ -292,7 +297,7 @@
                                             经营地址:
                                         </el-col>
                                         <el-col :span="16">
-                                            {{createConForm.cardFinanceInfo.jiaBillingInfo.managementAddress}}
+                                            {{cardFinanceInfoForm.jiaBillingInfo.managementAddress}}
                                         </el-col>
                                     </el-row>
                                     <el-row>
@@ -300,7 +305,7 @@
                                             联系电话:
                                         </el-col>
                                         <el-col :span="16">
-                                            {{createConForm.cardFinanceInfo.jiaBillingInfo.phone}}
+                                            {{cardFinanceInfoForm.jiaBillingInfo.phone}}
                                         </el-col>
                                     </el-row>
                                     <el-row>
@@ -308,7 +313,7 @@
                                             联系电话:
                                         </el-col>
                                         <el-col :span="16">
-                                            {{createConForm.cardFinanceInfo.jiaBillingInfo.phone}}
+                                            {{cardFinanceInfoForm.jiaBillingInfo.phone}}
                                         </el-col>
                                     </el-row>
                                     <el-row>
@@ -316,7 +321,7 @@
                                             银行账号:
                                         </el-col>
                                         <el-col :span="16">
-                                            {{createConForm.cardFinanceInfo.jiaBillingInfo.bankAccount}}
+                                            {{cardFinanceInfoForm.jiaBillingInfo.bankAccount}}
                                         </el-col>
                                     </el-row>
                                     <el-row>
@@ -324,7 +329,7 @@
                                             开 户 行:
                                         </el-col>
                                         <el-col :span="16">
-                                            {{createConForm.cardFinanceInfo.jiaBillingInfo.openBank}}
+                                            {{cardFinanceInfoForm.jiaBillingInfo.openBank}}
                                         </el-col>
                                     </el-row>
                                 </el-col>
@@ -335,7 +340,7 @@
                                             乙方:
                                         </el-col>
                                         <el-col :span="16">
-                                            {{createConForm.cardFinanceInfo.yiBillingInfo.companyName}}
+                                            {{cardFinanceInfoForm.yiBillingInfo.companyName}}
                                         </el-col>
                                     </el-row>
                                     <el-row>
@@ -343,7 +348,7 @@
                                             银行账号:
                                         </el-col>
                                         <el-col :span="16">
-                                            {{createConForm.cardFinanceInfo.yiBillingInfo.bankAccount}}
+                                            {{cardFinanceInfoForm.yiBillingInfo.bankAccount}}
                                         </el-col>
                                     </el-row>
                                     <el-row>
@@ -351,7 +356,7 @@
                                             开 户 行:
                                         </el-col>
                                         <el-col :span="16">
-                                            {{createConForm.cardFinanceInfo.yiBillingInfo.openBank}}
+                                            {{cardFinanceInfoForm.yiBillingInfo.openBank}}
                                         </el-col>
                                     </el-row>
                                     <el-row>
@@ -359,7 +364,7 @@
                                             联系人:
                                         </el-col>
                                         <el-col :span="16">
-                                            {{createConForm.cardFinanceInfo.yiBillingInfo.contact}}
+                                            {{cardFinanceInfoForm.yiBillingInfo.contact}}
                                         </el-col>
                                     </el-row>
                                     <el-row>
@@ -367,7 +372,7 @@
                                             注册地址:
                                         </el-col>
                                         <el-col :span="16">
-                                            {{createConForm.cardFinanceInfo.yiBillingInfo.address}}
+                                            {{cardFinanceInfoForm.yiBillingInfo.address}}
                                         </el-col>
                                     </el-row>
                                     <el-row>
@@ -375,7 +380,7 @@
                                             联系电话:
                                         </el-col>
                                         <el-col :span="16">
-                                            {{createConForm.cardFinanceInfo.yiBillingInfo.phone}}
+                                            {{cardFinanceInfoForm.yiBillingInfo.phone}}
                                         </el-col>
                                     </el-row>
                                     <el-row>
@@ -383,31 +388,33 @@
                                             E-mail:
                                         </el-col>
                                         <el-col :span="16">
-                                            {{createConForm.cardFinanceInfo.yiBillingInfo.email}}
+                                            {{cardFinanceInfoForm.yiBillingInfo.email}}
                                         </el-col>
                                     </el-row>
                                 </el-col>
                             </el-row>
                         </el-card>
-                    </el-tab-pane>
-                    <el-tab-pane label="合同验收与样品信息" name="tabContCheckInfo"
-                                 v-if="createConForm.baseInfo.conModel==='con2'">
+                    </el-form>
+                </el-tab-pane>
+                <el-tab-pane label="合同验收与样品信息" name="tabContCheckInfo"
+                             v-if="baseInfoForm.conModel==='con2'">
+                    <el-form rel="cardContCheckInfoForm" :model="cardContCheckInfoForm" label-width="100px">
                         <el-row>
                             <el-col :span="8">
                                 <el-form-item prop="checkPerson" label="验收责任人">
-                                    <el-input v-model="createConForm.cardContCheckInfo.checkPerson"
+                                    <el-input v-model="cardContCheckInfoForm.checkPerson"
                                               placeholder="请输入验收责任人"></el-input>
                                 </el-form-item>
                             </el-col>
                             <el-col :span="8">
                                 <el-form-item prop="checkPersonDepart" label="验收责任人部门" label-width="120px">
-                                    <el-input v-model="createConForm.cardContCheckInfo.checkPersonDepart"
+                                    <el-input v-model="cardContCheckInfoForm.checkPersonDepart"
                                               placeholder="请输入验收责任人部门"></el-input>
                                 </el-form-item>
                             </el-col>
                             <el-col :span="8">
                                 <el-form-item prop="checkServiceMethod" label="服务类验收方式" label-width="120px">
-                                    <el-input v-model="createConForm.cardContCheckInfo.checkServiceMethod"
+                                    <el-input v-model="cardContCheckInfoForm.checkServiceMethod"
                                               placeholder="请输入服务类验收方式"></el-input>
                                 </el-form-item>
                             </el-col>
@@ -415,32 +422,32 @@
                         <el-row>
                             <el-col :span="8">
                                 <el-form-item prop="checkSupervisor" label="验收监督人">
-                                    <el-input v-model="createConForm.cardContCheckInfo.checkSupervisor"
+                                    <el-input v-model="cardContCheckInfoForm.checkSupervisor"
                                               placeholder="请输入验收监督人"></el-input>
                                 </el-form-item>
                             </el-col>
                             <el-col :span="8">
                                 <el-form-item prop="checkSupervisorDepart" label="验收监督人部门" label-width="120px">
-                                    <el-input v-model="createConForm.cardContCheckInfo.checkSupervisorDepart"
+                                    <el-input v-model="cardContCheckInfoForm.checkSupervisorDepart"
                                               placeholder="请输入验收监督人部门"></el-input>
                                 </el-form-item>
                             </el-col>
                         </el-row>
                         <el-button @click="handleAddUnionCheck" icon="plus" type="primary">添加联合验收人</el-button>
-                        <el-table :data="createConForm.cardContCheckInfo.unionCheckPersons">
+                        <el-table :data="cardContCheckInfoForm.unionCheckPersons">
                             <el-table-column prop="name" label="联合验收人"></el-table-column>
                             <el-table-column prop="depart" label="联合验收人部门"></el-table-column>
                             <el-table-column prop="ifMandatory" label="是否必选"></el-table-column>
                         </el-table>
                         <el-form-item prop="hasSample" label="是否有样品">
-                            <el-radio-group v-model="createConForm.cardContCheckInfo.hasSample">
+                            <el-radio-group v-model="cardContCheckInfoForm.hasSample">
                                 <el-radio :label="1">是</el-radio>
                                 <el-radio :label="0">否</el-radio>
                             </el-radio-group>
                         </el-form-item>
                         <el-card>
                             <header slot="header">物资验收事项</header>
-                            <el-table :data="createConForm.cardContCheckInfo.materialMatters">
+                            <el-table :data="cardContCheckInfoForm.materialMatters">
                                 <el-table-column type="index" label="序号" width="100px">
                                 </el-table-column>
                                 <el-table-column prop="number" label="物料编码"></el-table-column>
@@ -451,7 +458,7 @@
                         <el-card>
                             <header slot="header">服务验收事项</header>
                             <el-button type="primary" @click="handleAddServiceMatter" icon="plus">添加服务验收事项</el-button>
-                            <el-table :data="createConForm.cardContCheckInfo.serviceMatters">
+                            <el-table :data="cardContCheckInfoForm.serviceMatters">
                                 <el-table-column type="index" label="序号" width="100px">
                                 </el-table-column>
                                 <el-table-column prop="name" label="服务名称"></el-table-column>
@@ -459,12 +466,14 @@
                                 <el-table-column prop="remark" label="备注"></el-table-column>
                             </el-table>
                         </el-card>
-                    </el-tab-pane>
-                    <el-tab-pane label="合同盖章信息" name="tabSealInfo" v-if="createConForm.baseInfo.conModel!='con4'">
+                    </el-form>
+                </el-tab-pane>
+                <el-tab-pane label="合同盖章信息" name="tabSealInfo" v-if="baseInfoForm.conModel!='con4'">
+                    <el-form rel="cardSealInfoForm" :model="cardSealInfoForm" label-width="100px">
                         <el-card>
                             <header slot="header">合同文件列表</header>
                             <el-button @click="handleAddContractFile" icon="plus" type="primary">添加合同文件</el-button>
-                            <el-table :data="createConForm.cardSealInfo.sealFileList">
+                            <el-table :data="cardSealInfoForm.sealFileList">
                                 <el-table-column type="index" label="序号" width="100px"></el-table-column>
                                 <el-table-column prop="name" label="文本名称"></el-table-column>
                                 <el-table-column prop="sealTimes" label="用章次数"></el-table-column>
@@ -475,19 +484,21 @@
                                 <el-table-column prop="ifPrint" label="无需打印"></el-table-column>
                             </el-table>
                         </el-card>
-                    </el-tab-pane>
-                    <el-tab-pane label="备注" name="tabRemark">
+                    </el-form>
+                </el-tab-pane>
+                <el-tab-pane label="备注" name="tabRemark">
+                    <el-form rel="cardRemarkInfoForm" :model="cardRemarkInfoForm" label-width="100px">
                         <el-card>
                             <header slot="header">其他说明</header>
                             <el-form-item prop="otherInstruction">
                                 <el-input style="margin-left: -100px" type="textarea" placeholder="请输入内容" :rows="6"
-                                          v-model="createConForm.cardRemarkInfo.otherInstruction"></el-input>
+                                          v-model="cardRemarkInfoForm.otherInstruction"></el-input>
                             </el-form-item>
                         </el-card>
                         <el-row>
                             <el-col :span="8">
                                 <el-form-item prop="fromAgreementCode" label="从协议编号">
-                                    <el-input v-model="createConForm.cardRemarkInfo.fromAgreementCode"
+                                    <el-input v-model="cardRemarkInfoForm.fromAgreementCode"
                                               placeholder="请输入从协议编号"></el-input>
                                 </el-form-item>
                             </el-col>
@@ -495,7 +506,7 @@
                         <el-card>
                             <header slot="header">附件信息</header>
                             <el-button @click="handleAttachment" icon="plus" type="primary">添加附件信息</el-button>
-                            <el-table :data="createConForm.cardRemarkInfo.attachmentList">
+                            <el-table :data="cardRemarkInfoForm.attachmentList">
                                 <el-table-column prop="attachmentType" label="附件类型"></el-table-column>
                                 <el-table-column prop="code" label="编号"></el-table-column>
                                 <el-table-column prop="fileName" label="文件名称"></el-table-column>
@@ -522,9 +533,11 @@
                                 </el-table-column>
                             </el-table>
                         </el-card>
-                    </el-tab-pane>
-                    <el-tab-pane label="相关数据" name="tabRelatedData" v-if="createConForm.baseInfo.conModel!='con4'">
-                        <el-table :data="createConForm.cardRelatedInfo.contractList">
+                    </el-form>
+                </el-tab-pane>
+                <el-tab-pane label="相关数据" name="tabRelatedData" v-if="baseInfoForm.conModel!='con4'">
+                    <el-form rel="cardRelatedInfoForm" :model="cardRelatedInfoForm" label-width="100px">
+                        <el-table :data="cardRelatedInfoForm.contractList">
                             <el-table-column type="index" label="序号" width="100px"></el-table-column>
                             <el-table-column prop="contractCode" label="合同号"></el-table-column>
                             <el-table-column prop="type" label="类型"></el-table-column>
@@ -542,11 +555,11 @@
                                 </template>
                             </el-table-column>
                         </el-table>
-                    </el-tab-pane>
-                </el-tabs>
-            </el-card>
-        </el-form>
-        <el-dialog title="新增合同我方主体" :visible.sync="createConForm.baseInfo.dialogNewSubjectVisible" size="small">
+                    </el-form>
+                </el-tab-pane>
+            </el-tabs>
+        </el-card>
+        <!--<el-dialog title="新增合同我方主体" :visible.sync="baseInfoForm.dialogNewSubjectVisible" size="small">
             <el-form :model="formNewSubject" label-width="100px" ref="formNewSubject" :rules="formNewSubject.rules">
                 <el-form-item label="公司代码" prop="id">
                     <el-input v-model="formNewSubject.id" placeholder="请输入公司代码"></el-input>
@@ -560,7 +573,7 @@
                 <el-button type="primary" @click="handleCancelAddNewSubject('formNewSubject')">取消</el-button>
             </footer>
         </el-dialog>
-        <el-dialog title="新增付款方式" :visible.sync="createConForm.cardFinanceInfo.dialogNewPaymentVisible" size="small">
+        <el-dialog title="新增付款方式" :visible.sync="cardFinanceInfoForm.dialogNewPaymentVisible" size="small">
             <el-form :model="formNewPayment" label-width="100px" ref="formNewPayment">
                 <el-form-item label="类型" prop="type">
                     <el-select v-model="formNewPayment.type" placeholder="请选择付款类型">
@@ -598,7 +611,7 @@
                 <el-button type="primary" @click="handleCancelAddNewPay">取消</el-button>
             </footer>
         </el-dialog>
-        <el-dialog title="添加联合验收人" :visible.sync="createConForm.cardContCheckInfo.dialogAddUnionCheckVisible"
+        <el-dialog title="添加联合验收人" :visible.sync="cardContCheckInfoForm.dialogAddUnionCheckVisible"
                    size="small">
             <el-form ref="formAddUnionCheck" :model="formAddUnionCheck" label-width="100px">
                 <el-form-item prop="name" label="联合验收人">
@@ -619,7 +632,7 @@
                 <el-button type="primary" @click="handleCancelAddUnionCheck('formAddUnionCheck')">取消</el-button>
             </footer>
         </el-dialog>
-        <el-dialog title="添加服务验收事项" :visible.sync="createConForm.cardContCheckInfo.dialogAddServiceVisible"
+        <el-dialog title="添加服务验收事项" :visible.sync="cardContCheckInfoForm.dialogAddServiceVisible"
                    size="small">
             <el-form ref="formAddServiceCheck" :model="formAddServiceCheck" label-width="100px">
                 <el-form-item prop="name" label="服务名称">
@@ -637,7 +650,7 @@
                 <el-button type="primary" @click="handleCancelAddServiceCheck('formAddServiceCheck')">取消</el-button>
             </footer>
         </el-dialog>
-        <el-dialog title="添加合同文件" :visible.sync="createConForm.cardSealInfo.dialogNewContractVisible"
+        <el-dialog title="添加合同文件" :visible.sync="cardSealInfoForm.dialogNewContractVisible"
                    size="small">
             <el-form ref="formAddContract" :model="formAddContract" label-width="100px">
                 <el-form-item prop="name" label="文本名称">
@@ -670,7 +683,7 @@
                 <el-button type="primary" @click="handleCancelContract('formAddContract')">取消</el-button>
             </footer>
         </el-dialog>
-        <el-dialog title="添加附件信息" :visible.sync="createConForm.cardRemarkInfo.dialogAddAttachmentVisible"
+        <el-dialog title="添加附件信息" :visible.sync="cardRemarkInfoForm.dialogAddAttachmentVisible"
                    size="small">
             <el-form ref="formAddAttachment" :model="formAddAttachment" label-width="100px">
                 <el-form-item prop="name" label="文本名称">
@@ -713,18 +726,18 @@
                 <el-button type="primary" @click="handleAddAttachmentItem('formAddAttachment')">确定</el-button>
                 <el-button type="primary" @click="handleCancelAttachment('formAddAttachment')">取消</el-button>
             </footer>
-        </el-dialog>
+        </el-dialog>-->
         <el-row>
             <el-col :span="4" :offset="4">
-                <el-button type="primary" @click="handleSave('createConForm')">保存</el-button>
+                <el-button type="primary" @click="handleSave('')">保存</el-button>
             </el-col>
             <el-col :span="6">
                 <el-button type="primary" @click="handlePreview" style="margin-left:33px"
-                           v-if="createConForm.baseInfo.conTextType==1">预览
+                           v-if="baseInfoForm.conTextType==1">预览
                 </el-button>
             </el-col>
             <el-col :span="4">
-                <el-button type="primary" @click="handleSubmit('createConForm')">提交</el-button>
+                <el-button type="primary" @click="handleSubmit('')">提交</el-button>
             </el-col>
         </el-row>
     </div>
@@ -740,130 +753,128 @@
         data() {
             return {
                 operateType: '',
-                createConForm: {
-                    baseInfo: {
-                        businessPerson: '',//业务经办人
-                        businessDepartment: '',
-                        conModel: '',
-                        conModelName: '',
-                        conNumber: '',
-                        conType: '',
-                        conTypeName: '',
-                        belongProject: '',
-                        conTextType: '1',
-                        conTextTypeOptions: [],
-                        templateName: '',
-                        templateOptions: [],
-                        radioSealOrder: 0,//0：我方先盖章 1：对方先盖章
-                        sealReason: '',
-                        dialogNewSubjectVisible: false,
-                    },
-                    activeTabName: 'tabContInfo',
-                    cardContentInfo: {
-                        tableSupplierInfo: [],
-                        conSubjctName: [],
-                        thirdPartyInfo: [],
-                        conStandard: [],
-                        effectiveDate: '',
-                        effectiveDateRules: [],
-                        endDate: '',
-                        endDateRules: [],
-                    },
-                    cardFinanceInfo: {
-                        hasMoney: 1,
-                        onePayment: 0,
-                        paymentMethod: [],
-                        dialogNewPaymentVisible: false,
-                        currency: '',
-                        currencyOptions: [
-                            {
-                                value: '1',
-                                label: 'CNY 人民币'
-                            },
-                            {
-                                value: '2',
-                                label: 'USD 美元'
-                            }
-                        ],
-                        billingType: '',
-                        billingTypeOptions: [
-                            {
-                                value: '1',
-                                label: '增值税专用发票'
-                            },
-                            {
-                                value: '2',
-                                label: '增值税普通发票'
-                            },
-                            {
-                                value: '3',
-                                label: '普通发票'
-                            },
-                        ],
-                        hasBond: 1,
-                        bondMoney: '',
-                        bondProportion: '',
-                        paymentTime: '',
-                        jiaBillingInfo: {
-                            companyName: '红星美凯龙家居集团股份有限公司',
-                            creditCode: '913100006624816751',
-                            registerAddress: '上海市浦东新区临御路518号6楼F801室',
-                            managementAddress: '上海市普陀区怒江北路598号10楼',
-                            phone: '021-22300563',
-                            bankAccount: '0210 0141 7000 7578',
-                            openBank: '中国民生银行上海市南支行'
+                baseInfoForm: {
+                    businessPerson: '',//业务经办人
+                    businessDepartment: '',
+                    conModel: '',
+                    conModelName: '',
+                    conNumber: '',
+                    conType: '',
+                    conTypeName: '',
+                    belongProject: '',
+                    conTextType: '1',
+                    conTextTypeOptions: [],
+                    templateName: '',
+                    templateOptions: [],
+                    radioSealOrder: 0,//0：我方先盖章 1：对方先盖章
+                    sealReason: '',
+                    dialogNewSubjectVisible: false,
+                },
+                activeTabName: 'tabContInfo',
+                cardContentInfoForm: {
+                    tableSupplierInfo: [],
+                    conSubjctName: [],
+                    thirdPartyInfo: [],
+                    conStandard: [],
+                    effectiveDate: '',
+                    effectiveDateRules: [],
+                    endDate: '',
+                    endDateRules: [],
+                },
+                cardFinanceInfoForm: {
+                    hasMoney: 1,
+                    onePayment: 0,
+                    paymentMethod: [],
+                    dialogNewPaymentVisible: false,
+                    currency: '',
+                    currencyOptions: [
+                        {
+                            value: '1',
+                            label: 'CNY 人民币'
                         },
-                        yiBillingInfo: {
-                            companyName: '上海史泰博股份有限公司',
-                            contact: 'echo',
-                            bankAccount: '0210 0141 7000 7578',
-                            openBank: '中国民生银行上海市南支行',
-                            address: '上海市浦东新区临御路518号6楼F801室',
-                            phone: '021-22300563',
-                            email: '134656343@qq.com'
+                        {
+                            value: '2',
+                            label: 'USD 美元'
+                        }
+                    ],
+                    billingType: '',
+                    billingTypeOptions: [
+                        {
+                            value: '1',
+                            label: '增值税专用发票'
                         },
+                        {
+                            value: '2',
+                            label: '增值税普通发票'
+                        },
+                        {
+                            value: '3',
+                            label: '普通发票'
+                        },
+                    ],
+                    hasBond: 1,
+                    bondMoney: '',
+                    bondProportion: '',
+                    paymentTime: '',
+                    jiaBillingInfo: {
+                        companyName: '红星美凯龙家居集团股份有限公司',
+                        creditCode: '913100006624816751',
+                        registerAddress: '上海市浦东新区临御路518号6楼F801室',
+                        managementAddress: '上海市普陀区怒江北路598号10楼',
+                        phone: '021-22300563',
+                        bankAccount: '0210 0141 7000 7578',
+                        openBank: '中国民生银行上海市南支行'
                     },
-                    cardContCheckInfo: {
-                        checkPerson: '',
-                        checkPersonDepart: '',
-                        checkServiceMethod: '',
-                        checkSupervisor: '',
-                        checkSupervisorDepart: '',
-                        unionCheckPersons: [],
-                        hasSample: 1,
-                        materialMatters: [],
-                        serviceMatters: [],
-                        dialogAddUnionCheckVisible: false,
-                        dialogAddServiceVisible: false,
+                    yiBillingInfo: {
+                        companyName: '上海史泰博股份有限公司',
+                        contact: 'echo',
+                        bankAccount: '0210 0141 7000 7578',
+                        openBank: '中国民生银行上海市南支行',
+                        address: '上海市浦东新区临御路518号6楼F801室',
+                        phone: '021-22300563',
+                        email: '134656343@qq.com'
                     },
-                    cardSealInfo: {
-                        sealFileList: [],
-                        dialogNewContractVisible: false,
-                    },
-                    cardRemarkInfo: {
-                        otherInstruction: '',
-                        fromAgreementCode: '',
-                        attachmentList: [
-                            {
-                                attachmentType: '其他',
-                                code: '1234',
-                                fileName: '文件名',
-                                attachmentUrl: ['www.baidu.com'],
-                            }
-                        ],
-                        dialogAddAttachmentVisible: false,
-                    },
-                    cardRelatedInfo: {
-                        contractList: [
-                            {
-                                contractCode: '32489328034',
-                                type: '合同类型',
-                                status: '状态',
-                                company: '公司',
-                                startTime: '2017-97-34',
-                            }
-                        ],
-                    },
+                },
+                cardContCheckInfoForm: {
+                    checkPerson: '',
+                    checkPersonDepart: '',
+                    checkServiceMethod: '',
+                    checkSupervisor: '',
+                    checkSupervisorDepart: '',
+                    unionCheckPersons: [],
+                    hasSample: 1,
+                    materialMatters: [],
+                    serviceMatters: [],
+                    dialogAddUnionCheckVisible: false,
+                    dialogAddServiceVisible: false,
+                },
+                cardSealInfoForm: {
+                    sealFileList: [],
+                    dialogNewContractVisible: false,
+                },
+                cardRemarkInfoForm: {
+                    otherInstruction: '',
+                    fromAgreementCode: '',
+                    attachmentList: [
+                        {
+                            attachmentType: '其他',
+                            code: '1234',
+                            fileName: '文件名',
+                            attachmentUrl: ['www.baidu.com'],
+                        }
+                    ],
+                    dialogAddAttachmentVisible: false,
+                },
+                cardRelatedInfoForm: {
+                    contractList: [
+                        {
+                            contractCode: '32489328034',
+                            type: '合同类型',
+                            status: '状态',
+                            company: '公司',
+                            startTime: '2017-97-34',
+                        }
+                    ],
                 },
                 formNewSubject: {
                     rules: {
@@ -994,13 +1005,13 @@
              type:create*/
             let query = this.$route.query;
             this.operateType = query.operateType;
-            this.createConForm.baseInfo.conModel = query.curConModelId;
-            this.createConForm.baseInfo.conType = query.curConTypeId;
+            this.baseInfoForm.conModel = query.curConModelId;
+            this.baseInfoForm.conType = query.curConTypeId;
 
         },
         computed: {
             conVersion: function () {
-                let id = this.createConForm.baseInfo.templateName, templateOptions = this.createConForm.baseInfo.templateOptions, result = '';
+                let id = this.baseInfoForm.templateName, templateOptions = this.baseInfoForm.templateOptions, result = '';
                 if (templateOptions && templateOptions.length > 0) {
                     //result=_.result(_.findWhere(templateOptions, {'id': id}), 'version');//======???
                     for (let i = 0, len = templateOptions.length; i < len; i++) {
@@ -1014,16 +1025,16 @@
         },
         mounted(){
             Api.getContractBaseInfo({}).then((data)=> {
-                this.createConForm.baseInfo.businessPerson = data.data.dataMap.baseInfo.businessPerson;
-                this.createConForm.baseInfo.businessDepartment = data.data.dataMap.baseInfo.businessDepartment;
-                this.createConForm.baseInfo.conModelName = data.data.dataMap.baseInfo.conModelName;
-                this.createConForm.baseInfo.conTypeName = data.data.dataMap.baseInfo.conTypeName;
-                this.createConForm.baseInfo.conTextTypeOptions = data.data.dataMap.baseInfo.conTextType;
-                this.createConForm.baseInfo.templateOptions = data.data.dataMap.baseInfo.templateName;
-                this.createConForm.cardContentInfo.tableSupplierInfo = data.data.dataMap.contentInfo.tableSupplierInfo;
-                this.createConForm.cardContentInfo.conSubjctName = data.data.dataMap.contentInfo.conSubjctName;
-                this.createConForm.cardContentInfo.thirdPartyInfo = data.data.dataMap.contentInfo.thirdPartyInfo;
-                this.createConForm.cardContentInfo.conStandard = data.data.dataMap.contentInfo.conStandard;
+                this.baseInfoForm.businessPerson = data.data.dataMap.baseInfoForm.businessPerson;
+                this.baseInfoForm.businessDepartment = data.data.dataMap.baseInfoForm.businessDepartment;
+                this.baseInfoForm.conModelName = data.data.dataMap.baseInfoForm.conModelName;
+                this.baseInfoForm.conTypeName = data.data.dataMap.baseInfoForm.conTypeName;
+                this.baseInfoForm.conTextTypeOptions = data.data.dataMap.baseInfoForm.conTextType;
+                this.baseInfoForm.templateOptions = data.data.dataMap.baseInfoForm.templateName;
+                this.cardContentInfoForm.tableSupplierInfo = data.data.dataMap.contentInfo.tableSupplierInfo;
+                this.cardContentInfoForm.conSubjctName = data.data.dataMap.contentInfo.conSubjctName;
+                this.cardContentInfoForm.thirdPartyInfo = data.data.dataMap.contentInfo.thirdPartyInfo;
+                this.cardContentInfoForm.conStandard = data.data.dataMap.contentInfo.conStandard;
             });
         },
         methods: {
@@ -1034,66 +1045,66 @@
                 console.log('handleTabClick');
             },
             handleNewSubjectName(){
-                this.createConForm.baseInfo.dialogNewSubjectVisible = true;
+                this.baseInfoForm.dialogNewSubjectVisible = true;
             },
             handleAddPaymentMethod(){
-                this.createConForm.cardFinanceInfo.dialogNewPaymentVisible = true;
+                this.cardFinanceInfoForm.dialogNewPaymentVisible = true;
             },
             handleAddNewPay(formName){
                 this.$refs[formName].resetFields();
-                this.createConForm.cardFinanceInfo.dialogNewPaymentVisible = false;
+                this.cardFinanceInfoForm.dialogNewPaymentVisible = false;
             },
             handleCancelAddNewPay(){
                 this.$refs[formName].resetFields();
-                this.createConForm.cardFinanceInfo.dialogNewPaymentVisible = false;
+                this.cardFinanceInfoForm.dialogNewPaymentVisible = false;
             },
             handleAddUnionCheck(){
-                this.createConForm.cardContCheckInfo.dialogAddUnionCheckVisible = true;
+                this.cardContCheckInfoForm.dialogAddUnionCheckVisible = true;
             },
             handleAddServiceMatter(){
                 console.log('添加服务验收事项');
-                this.createConForm.cardContCheckInfo.dialogAddServiceVisible = true;
+                this.cardContCheckInfoForm.dialogAddServiceVisible = true;
             },
             handleAddUnionCheckItem(formName){
                 this.$refs[formName].resetFields();
-                this.createConForm.cardContCheckInfo.dialogAddUnionCheckVisible = false;
+                this.cardContCheckInfoForm.dialogAddUnionCheckVisible = false;
             },
             handleCancelAddUnionCheck(formName){
                 this.$refs[formName].resetFields();
-                this.createConForm.cardContCheckInfo.dialogAddUnionCheckVisible = false;
+                this.cardContCheckInfoForm.dialogAddUnionCheckVisible = false;
             },
             handleAddServiceCheckItem(formName){
                 this.$refs[formName].resetFields();
-                this.createConForm.cardContCheckInfo.dialogAddServiceVisible = false;
+                this.cardContCheckInfoForm.dialogAddServiceVisible = false;
             },
             handleCancelAddServiceCheck(formName){
                 this.$refs[formName].resetFields();
-                this.createConForm.cardContCheckInfo.dialogAddServiceVisible = false;
+                this.cardContCheckInfoForm.dialogAddServiceVisible = false;
             },
             handleAddContractFile(){
                 console.log('添加合同文件');
-                this.createConForm.cardSealInfo.dialogNewContractVisible = true;
+                this.cardSealInfoForm.dialogNewContractVisible = true;
             },
             handleAddContractItem(formName){
                 this.$refs[formName].resetFields();
-                this.createConForm.cardSealInfo.dialogNewContractVisible = false;
+                this.cardSealInfoForm.dialogNewContractVisible = false;
             },
             handleCancelContract(formName){
                 this.$refs[formName].resetFields();
-                this.createConForm.cardSealInfo.dialogNewContractVisible = false;
+                this.cardSealInfoForm.dialogNewContractVisible = false;
             },
             handleAttachment(){
                 console.log('添加附件信息');
-                this.createConForm.cardRemarkInfo.dialogAddAttachmentVisible = true;
+                this.cardRemarkInfoForm.dialogAddAttachmentVisible = true;
             },
             handleAddAttachmentItem(formName){
                 this.$refs.upload.submit();
                 this.$refs[formName].resetFields();
-                this.createConForm.cardRemarkInfo.dialogAddAttachmentVisible = false;
+                this.cardRemarkInfoForm.dialogAddAttachmentVisible = false;
             },
             handleCancelAttachment(formName){
                 this.$refs[formName].resetFields();
-                this.createConForm.cardRemarkInfo.dialogAddAttachmentVisible = false;
+                this.cardRemarkInfoForm.dialogAddAttachmentVisible = false;
             },
             handlebeforeFileUpload(file){
                 console.log('upload-file', file);
@@ -1141,12 +1152,12 @@
                 let curForm = this.$refs[formName];
                 curForm.validate((valid) => {
                     if (valid) {
-                        this.createConForm.cardContentInfo.conSubjctName.push({
+                        this.cardContentInfoForm.conSubjctName.push({
                             id: curForm.model.id,
                             name: curForm.model.name
                         });
                         curForm.resetFields();
-                        this.createConForm.baseInfo.dialogNewSubjectVisible = false;
+                        this.baseInfoForm.dialogNewSubjectVisible = false;
                     } else {
                         console.log('error submit!!');
                         return false;
@@ -1155,20 +1166,20 @@
             },
             handleCancelAddNewSubject(formName){
                 this.$refs[formName].resetFields();
-                this.createConForm.baseInfo.dialogNewSubjectVisible = false;
+                this.baseInfoForm.dialogNewSubjectVisible = false;
             },
             handleChangeEffectiveDate(date){
-                this.createConForm.cardContentInfo.effectiveDate = date;
-                let endDate = 'this.createConForm.cardContentInfo.endDate';
+                this.cardContentInfoForm.effectiveDate = date;
+                let endDate = 'this.cardContentInfoForm.endDate';
                 if (endDate) {
 
                     console.log(' has endDate');
                     console.log('new Date(date)', new Date(date));
-                    console.log('this.createConForm.cardContentInfo.endDate', this.createConForm.cardContentInfo.endDate);
-                    console.log('new Date(this.createConForm.cardContentInfo.endDate)', new Date(this.createConForm.cardContentInfo.endDate));
-                    if (new Date(date) > new Date(this.createConForm.cardContentInfo.endDate)) {
+                    console.log('this.cardContentInfoForm.endDate', this.cardContentInfoForm.endDate);
+                    console.log('new Date(this.cardContentInfoForm.endDate)', new Date(this.cardContentInfoForm.endDate));
+                    if (new Date(date) > new Date(this.cardContentInfoForm.endDate)) {
                         console.log('add rules');
-                        this.createConForm.cardContentInfo.effectiveDateRules = `[
+                        this.cardContentInfoForm.effectiveDateRules = `[
       { required: true, message: '请输入邮箱地址', trigger: 'blur' },
       {  message: '合同终止日期必须大于合同生效日期', trigger: 'change' }
     ]`;
@@ -1177,7 +1188,7 @@
 
             },
             handleChangeEndDate(date){
-                this.createConForm.cardContentInfo.endDate = date;
+                this.cardContentInfoForm.endDate = date;
                 console.log('end time', date);
             },
 
