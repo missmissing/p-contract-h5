@@ -38,17 +38,19 @@
                 <el-row>
                     <el-col :span="8">
                         <el-form-item label="合同模式">
-                            <el-input v-model="createConForm.baseInfo.conModelName" placeholder="请输入合同模式"></el-input>
+                            <el-input :disabled="true" v-model="createConForm.baseInfo.conModelName"
+                                      placeholder="请输入合同模式"></el-input>
                         </el-form-item>
                     </el-col>
-                    <el-col :span="8">
+                    <el-col :span="8" v-if="operateType==='query'">
                         <el-form-item label="合同编号">
                             <el-input v-model="createConForm.baseInfo.conNumber" placeholder="请输入合同编号"></el-input>
                         </el-form-item>
                     </el-col>
                     <el-col :span="8">
                         <el-form-item label="合同类型">
-                            <el-input v-model="createConForm.baseInfo.conTypeName" placeholder="请输入合同类型"></el-input>
+                            <el-input :disabled="true" v-model="createConForm.baseInfo.conTypeName"
+                                      placeholder="请输入合同类型"></el-input>
                         </el-form-item>
                     </el-col>
                 </el-row>
@@ -67,12 +69,26 @@
                 <el-row>
                     <el-col :span="8">
                         <el-form-item label="合同文本类型">
-                            <el-input v-model="createConForm.baseInfo.conTextType" placeholder="请输入合同文本类型"></el-input>
+                            <el-select v-model="createConForm.baseInfo.conTextType" placeholder="请选择合同文本类型">
+                                <el-option
+                                        v-for="item in createConForm.baseInfo.conTextTypeOptions"
+                                        :key="item.id"
+                                        :label="item.name"
+                                        :value="item.id">
+                                </el-option>
+                            </el-select>
                         </el-form-item>
                     </el-col>
                     <el-col :span="8">
                         <el-form-item label="模版名称">
-                            <el-input v-model="createConForm.baseInfo.templateName" placeholder="请输入合同模版"></el-input>
+                            <el-select v-model="createConForm.baseInfo.templateName" placeholder="请选择合同模版">
+                                <el-option
+                                        v-for="item in createConForm.baseInfo.templateOptions"
+                                        :key="item.id"
+                                        :label="item.name"
+                                        :value="item.id">
+                                </el-option>
+                            </el-select>
                         </el-form-item>
                     </el-col>
                     <el-col :span="8">
@@ -100,9 +116,7 @@
                         <el-card>
                             <header slot="header">合同供应商信息</header>
                             <el-table :data="createConForm.cardContentInfo.tableSupplierInfo">
-                                <el-table-column
-                                        type="index">
-                                </el-table-column>
+                                <el-table-column type="index"></el-table-column>
                                 <el-table-column prop="id" label="供应商编号"></el-table-column>
                                 <el-table-column prop="name" label="供应商名称"></el-table-column>
                                 <el-table-column prop="bankAccount" label="银行账号"></el-table-column>
@@ -110,18 +124,10 @@
                         </el-card>
                         <el-card>
                             <header slot="header">合同我方主体名称</header>
+                            <el-button type="primary" @click="handleNewSubjectName" icon="plus">新增合同我方主体</el-button>
                             <el-table :data="createConForm.cardContentInfo.conSubjctName">
                                 <el-table-column prop="id" label="公司代码"></el-table-column>
                                 <el-table-column prop="name" label="公司名称"></el-table-column>
-                                <el-table-column
-                                        fixed="right"
-                                        label="操作"
-                                        width="100px">
-                                    <template scope="scope">
-                                        <el-button type="text" size="small" @clik="handleNewSubjectName">新增</el-button>
-                                    </template>
-
-                                </el-table-column>
                             </el-table>
                         </el-card>
                         <el-card v-if="createConForm.baseInfo.conModel!='con4'">
@@ -142,17 +148,21 @@
                             </el-table>
                             <el-row>
                                 <el-col :span="8">
-                                    <el-form-item label="合同生效日期">
+                                    <el-form-item label="合同生效日期" prop="effectiveDate"
+                                                  :rules="createConForm.cardContentInfo.effectiveDateRules">
                                         <el-date-picker v-model="createConForm.cardContentInfo.effectiveDate"
                                                         placeholder="请输入合同生效期日期"
-                                                        type="date"></el-date-picker>
+                                                        type="date"
+                                                        @change="handleChangeEffectiveDate"></el-date-picker>
                                     </el-form-item>
                                 </el-col>
                                 <el-col :span="8">
-                                    <el-form-item label="合同终止日期">
+                                    <el-form-item label="合同终止日期" prop="endDate"
+                                                  :rules="createConForm.cardContentInfo.endDateRules">
                                         <el-date-picker v-model="createConForm.cardContentInfo.endDate"
                                                         placeholder="请输入合同终止日期"
-                                                        type="date"></el-date-picker>
+                                                        type="date"
+                                                        @change="handleChangeEndDate"></el-date-picker>
                                     </el-form-item>
                                 </el-col>
                             </el-row>
@@ -541,6 +551,20 @@
                 </el-tabs>
             </el-card>
         </el-form>
+        <el-dialog title="新增合同我方主体" :visible.sync="createConForm.baseInfo.dialogNewSubjectVisible" size="small">
+            <el-form :model="formNewSubject" label-width="100px" ref="formNewSubject" :rules="formNewSubject.rules">
+                <el-form-item label="公司代码" prop="id">
+                    <el-input v-model="formNewSubject.id" placeholder="请输入公司代码"></el-input>
+                </el-form-item>
+                <el-form-item label="公司名称" prop="name">
+                    <el-input v-model="formNewSubject.name" placeholder="请输入公司名称"></el-input>
+                </el-form-item>
+            </el-form>
+            <footer slot="footer">
+                <el-button type="primary" @click="handleAddNewSubject('formNewSubject')">确定</el-button>
+                <el-button type="primary" @click="handleCancelAddNewSubject('formNewSubject')">取消</el-button>
+            </footer>
+        </el-dialog>
         <el-dialog title="新增付款方式" :visible.sync="createConForm.cardFinanceInfo.dialogNewPaymentVisible" size="small">
             <el-form :model="formNewPayment" label-width="100px" ref="formNewPayment">
                 <el-form-item label="类型" prop="type">
@@ -712,30 +736,6 @@
     //import tagService from '../../utils/tag.js'
     //import templateReplace from '../../utils/templateReplace.js'
     export default {
-        created() {//?currentPr=&curConModelId=con2&curConTypeId=service1
-            /*curConModelId:"con2"
-             curConTypeId:"service1"
-             currentPr:"",
-             type:create*/
-            let query = this.$route.query;
-            this.operateType = query.operateType;
-            this.createConForm.baseInfo.conModel = query.curConModelId;
-            this.createConForm.baseInfo.conType = query.curConTypeId;
-            this.setCurrentModelAndType({conModel: query.curConModelId, conType: query.curConTypeId});
-            Api.getContractBaseInfo({}).then((data)=> {
-                this.createConForm.baseInfo.businessPerson = data.data.dataMap.baseInfo.businessPerson;
-                this.createConForm.baseInfo.businessDepartment = data.data.dataMap.baseInfo.businessDepartment;
-            });
-
-            /* api.getPR(query).then((res) => {
-             this.pr = res.data.pr;
-             }, function (res) {
-             console.info(res)
-             });
-
-             this.getModuleList();
-             */
-        },
         data() {
             return {
                 operateType: '',
@@ -750,10 +750,13 @@
                         conTypeName: '',
                         belongProject: '',
                         conVersion: '',
-                        conTextType: '',
+                        conTextType: '1',
+                        conTextTypeOptions: [],
                         templateName: '',
+                        templateOptions: [],
                         radioSealOrder: '1',//1：对方先盖章 2：我方先盖章
                         sealReason: '',
+                        dialogNewSubjectVisible: false,
                     },
                     activeTabName: 'tabContInfo',
                     cardContentInfo: {
@@ -762,7 +765,9 @@
                         thirdPartyInfo: [],
                         conStandard: [],
                         effectiveDate: '',
+                        effectiveDateRules: [],
                         endDate: '',
+                        endDateRules: [],
                     },
                     cardFinanceInfo: {
                         hasMoney: 1,
@@ -859,6 +864,18 @@
                             }
                         ],
                     },
+                },
+                formNewSubject: {
+                    rules: {
+                        id: [
+                            {required: true, message: '请输入公司代码', trigger: 'blur'},
+                        ],
+                        name: [
+                            {required: true, message: '请输入公司名称', trigger: 'blur'},
+                        ],
+                    },
+                    id: '',
+                    name: ''
                 },
                 formNewPayment: {
                     type: '1',
@@ -970,6 +987,31 @@
                 },
             }
         },
+        created() {//?currentPr=&curConModelId=con2&curConTypeId=service1
+            /*curConModelId:"con2"
+             curConTypeId:"service1"
+             currentPr:"",
+             type:create*/
+            let query = this.$route.query;
+            this.operateType = query.operateType;
+            this.createConForm.baseInfo.conModel = query.curConModelId;
+            this.createConForm.baseInfo.conType = query.curConTypeId;
+
+        },
+        mounted(){
+            Api.getContractBaseInfo({}).then((data)=> {
+                this.createConForm.baseInfo.businessPerson = data.data.dataMap.baseInfo.businessPerson;
+                this.createConForm.baseInfo.businessDepartment = data.data.dataMap.baseInfo.businessDepartment;
+                this.createConForm.baseInfo.conModelName = data.data.dataMap.baseInfo.conModelName;
+                this.createConForm.baseInfo.conTypeName = data.data.dataMap.baseInfo.conTypeName;
+                this.createConForm.baseInfo.conTextTypeOptions = data.data.dataMap.baseInfo.conTextType;
+                this.createConForm.baseInfo.templateOptions = data.data.dataMap.baseInfo.templateName;
+                this.createConForm.cardContentInfo.tableSupplierInfo = data.data.dataMap.contentInfo.tableSupplierInfo;
+                this.createConForm.cardContentInfo.conSubjctName = data.data.dataMap.contentInfo.conSubjctName;
+                this.createConForm.cardContentInfo.thirdPartyInfo = data.data.dataMap.contentInfo.thirdPartyInfo;
+                this.createConForm.cardContentInfo.conStandard = data.data.dataMap.contentInfo.conStandard;
+            });
+        },
         methods: {
             handlePreview(){
                 console.log('合同预览');
@@ -978,7 +1020,7 @@
                 console.log('handleTabClick');
             },
             handleNewSubjectName(){
-                console.log('handleNewSubjectName');
+                this.createConForm.baseInfo.dialogNewSubjectVisible = true;
             },
             handleAddPaymentMethod(){
                 this.createConForm.cardFinanceInfo.dialogNewPaymentVisible = true;
@@ -1081,13 +1123,48 @@
                     }
                 });
             },
-            setCurrentModelAndType(paras = {}){
-                switch (paras.model) {
-                    case 'con1':
-                        break;
+            handleAddNewSubject(formName){
+                let curForm = this.$refs[formName];
+                curForm.validate((valid) => {
+                    if (valid) {
+                        this.createConForm.cardContentInfo.conSubjctName.push({
+                            id: curForm.model.id,
+                            name: curForm.model.name
+                        });
+                        curForm.resetFields();
+                        this.createConForm.baseInfo.dialogNewSubjectVisible = false;
+                    } else {
+                        console.log('error submit!!');
+                        return false;
+                    }
+                });
+            },
+            handleCancelAddNewSubject(formName){
+                this.$refs[formName].resetFields();
+                this.createConForm.baseInfo.dialogNewSubjectVisible = false;
+            },
+            handleChangeEffectiveDate(date){
+                this.createConForm.cardContentInfo.effectiveDate = date;
+                let endDate = 'this.createConForm.cardContentInfo.endDate';
+                if (endDate) {
 
+                    console.log(' has endDate');
+                    console.log('new Date(date)', new Date(date));
+                    console.log('this.createConForm.cardContentInfo.endDate', this.createConForm.cardContentInfo.endDate);
+                    console.log('new Date(this.createConForm.cardContentInfo.endDate)', new Date(this.createConForm.cardContentInfo.endDate));
+                    if (new Date(date) > new Date(this.createConForm.cardContentInfo.endDate)) {
+                        console.log('add rules');
+                        this.createConForm.cardContentInfo.effectiveDateRules = `[
+      { required: true, message: '请输入邮箱地址', trigger: 'blur' },
+      {  message: '合同终止日期必须大于合同生效日期', trigger: 'change' }
+    ]`;
+                    }
                 }
 
+            },
+            handleChangeEndDate(date){
+                this.createConForm.cardContentInfo.endDate = date;
+                console.log('end time', date);
             },
 
 

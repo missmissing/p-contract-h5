@@ -24,7 +24,7 @@
                         <el-form-item label="合同模式" prop="curConModelId">
                             <el-select v-model="conForm.curConModelId" placeholder="请选择合同模式">
                                 <el-option
-                                        v-for="item in conForm.conModel"
+                                        v-for="item in conModels"
                                         :key="item.id"
                                         :value="item.id"
                                         :label="item.name"
@@ -187,15 +187,20 @@
                 },
             }
         },
-        created() {
+        mounted(){
             Api.getContractModelsAndTypes({}).then((data)=> {
                 this.conForm.conModel = data.data.dataMap.modelList;
                 this.conForm.conType = data.data.dataMap.typeList;
             });
         },
+        computed: {
+            conModels: function () {
+                const conForm = this.conForm;
+                return conForm.isPr ? conForm.conModel : [conForm.conModel[0], conForm.conModel[1]];
+            }
+        },
         methods: {
             handleSwitch(newStatus){
-                console.log('handleSwitch', newStatus);
                 if (!newStatus) {
                     this.arrPr = [];
                     this.conForm.strPC = '';
