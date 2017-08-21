@@ -32,7 +32,7 @@
               <el-col :span="8">
                 <el-form-item label="文本名称">
                   <el-input
-                    :disabled="update"
+                    :disabled="update||abolish"
                     v-model.trim="form.templateName"
                     class="wp100">
                   </el-input>
@@ -43,7 +43,7 @@
                   <el-select
                     v-model="form.templateType"
                     placeholder="请选择"
-                    :disabled="update"
+                    :disabled="update||abolish"
                     class="wp100">
                     <el-option label="合同模板" value="TEMPLATE"></el-option>
                     <el-option label="合同文本" value="TEXT"></el-option>
@@ -55,6 +55,7 @@
               <el-col :span="8">
                 <el-form-item label="业务类型">
                   <el-input
+                    :disabled="abolish"
                     type="textarea"
                     :value="busiTypeText"
                     @focus="showTreeModal"
@@ -117,6 +118,7 @@
             </el-row>
             <el-form-item label="使用说明">
               <el-input
+                :disabled="abolish"
                 type="textarea"
                 :maxlength="300"
                 :autosize="{ minRows: 2 }"
@@ -171,12 +173,14 @@
           </el-form>
         </div>
       </el-card>
-      <el-row v-if="create||update">
-        <el-button @click="save(0)" class="ml20">保 存</el-button>
-        <el-button type="primary" @click="save(1)">提 交</el-button>
-      </el-row>
-      <el-row v-if="abolish">
-        <el-button type="primary" @click="abolishFn">提交</el-button>
+      <el-row class="ml20 mb20">
+        <el-row v-if="create||update">
+          <el-button @click="save(0)">保 存</el-button>
+          <el-button type="primary" @click="save(1)">提 交</el-button>
+        </el-row>
+        <el-row v-if="abolish">
+          <el-button type="primary" @click="abolishFn">提交</el-button>
+        </el-row>
       </el-row>
     </div>
     <div v-if="showTmpl">
@@ -254,9 +258,9 @@
       search() {
         supportModel.getCurrentTemplateByCode({
           templateCode: this.form.templateCode,
-          hasDraft: this.update || false
         }).then((res) => {
           console.log(res);
+          Object.assign(this.$data, _.cloneDeep(defaultData), {routeName: this.$data.routeName});
           const tplInfo = res.data.dataMap;
           this.setData(tplInfo);
         });
@@ -281,7 +285,7 @@
         this.form.startDate = moment(value).valueOf();
       },
       formatDate1(value) {
-        this.form.stopDate = moment(value).valueOf();
+        this.abolishForm.endDate = value ? moment(value).valueOf() : '';
       },
       setBusiType(value, tree) {
         let bizTypes = [];
@@ -344,7 +348,8 @@
           return cb([]);
         }
         supportModel.selectTemplateCode({
-          templateCode: queryString
+          templateCode: queryString,
+          hasDraft: this.update || false
         }).then((res) => {
           const result = res.data.dataMap;
           cb(this.createFilter(result));
@@ -383,6 +388,10 @@
           abolishReason: this.abolishForm.abolishReason
         }).then((res) => {
           console.log(res);
+          this.$message({
+            message: '废除提交成功',
+            type: 'success',
+          });
         });
       },
       ...mapMutations([
