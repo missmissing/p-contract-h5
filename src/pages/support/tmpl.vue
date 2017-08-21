@@ -42,6 +42,7 @@
           <el-col :span="11">
             <div class="mb20">
               <el-select
+                :disabled="disabled"
                 v-model="tplType"
                 placeholder="请选择">
                 <el-option
@@ -62,6 +63,7 @@
             </div>
             <div>
               <quill-editor
+                :disabled="disabled"
                 v-model="form.content"
                 ref="myQuillEditor"
                 :options="editorOption">
@@ -87,7 +89,7 @@
 
 <script>
   import _ from 'lodash';
-  import {mapMutations} from 'vuex';
+  import {mapMutations, mapGetters} from 'vuex';
   import {quillEditor} from 'vue-quill-editor';
   import {routerNames} from '@/core/consts';
   import * as types from '../../store/consts';
@@ -126,15 +128,23 @@
       };
     },
     props: {
+      routeName: {
+        default: ''
+      },
       showTmpl: {
         default: false
       }
     },
     methods: {
       getTmplTypes() {
-        supportModel.getTmplTypes({}).then((res) => {
-          this.options = res.data.dataMap;
-        });
+//        supportModel.getTmplTypes({}).then((res) => {
+//          this.options = res.data.dataMap;
+//        });
+        this.options = [{
+          value: '',
+          label: '自定义',
+          contentModule: ''
+        }];
       },
       getModuleData() {
         supportModel.getModuleData({}).then((res) => {
@@ -183,6 +193,9 @@
       },
       ...mapMutations([
         types.SET_INFO
+      ]),
+      ...mapGetters([
+        'getRouteName'
       ])
     },
     watch: {
@@ -213,6 +226,9 @@
       },
       footer() {
         return this.setModulesData(2);
+      },
+      disabled() {
+        return [routerNames.con_tpl_see, routerNames.con_tpl_abolish].indexOf(this.routeName) > -1;
       }
     },
     components: {
@@ -221,7 +237,7 @@
     created() {
       this.getTmplTypes();
       this.getModuleData();
-      if (routerNames.con_tpl_see === this.$route.name) {
+      if ([routerNames.con_tpl_see, routerNames.con_tpl_update].indexOf(this.$route.name) > -1) {
         this.setData();
       }
     }

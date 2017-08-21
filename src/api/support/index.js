@@ -20,6 +20,18 @@ export default {
     return Http.get(`${contract}/contract-web/template/getTemplateById`, params);
   },
   addTpl(params) {
-    return Http.post(`${contract}/contract-web/contractTemplate/addTemplate`, params);
+    return Http.post(`${contract}/contract-web/template/addTemplate`, params);
+  },
+  getCurrentTemplateByCode(params) {
+    return Http.get(`${contract}/contract-web/template/getCurrentTemplateByCode`, params);
+  },
+  updateTemplate(params) {
+    return Http.post(`${contract}/contract-web/template/updateTemplate`, params);
+  },
+  selectTemplateCode(params) {
+    return Http.get(`${contract}/contract-web/template/selectTemplateCode`, params);
+  },
+  setTemplateAbolish(params) {
+    return Http.get(`${contract}/contract-web/template/setTemplateAbolish`, params);
   }
 };

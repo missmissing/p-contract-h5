@@ -21,7 +21,7 @@ function checkStatus(response) {
 export default class Http {
   static send(config) {
     const configs = Object.assign({}, config);
-    return axios(configs).then().catch((error) => {
+    return axios(configs).then(checkStatus).catch((error) => {
       const {response} = error;
       if (response) {
         const {data = {}, status} = response;

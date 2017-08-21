@@ -7,7 +7,7 @@
 <template>
   <div>
     <div v-if="!showTmpl">
-      <el-card>
+      <el-card class="mb20">
         <div slot="header">
           <span class="common-title">基本信息</span>
         </div>
@@ -16,12 +16,15 @@
             <el-row v-if="!create">
               <el-col :span="8">
                 <el-form-item label="模板编号">
-                  <el-input
+                  <el-autocomplete
+                    class="wp100"
                     icon="search"
+                    :fetch-suggestions="querySearch"
+                    @select="search"
                     placeholder="点击图标进行搜索"
                     v-model="form.templateCode"
                     :on-icon-click="search">
-                  </el-input>
+                  </el-autocomplete>
                 </el-form-item>
               </el-col>
             </el-row>
@@ -148,8 +151,10 @@
             </el-row>
             <el-form-item label="文本上传" v-show="tplTypeShow">
               <el-upload
+                :disabled="see||abolish"
                 action="/api-contract/contract-web/file/upload/"
-                name="files"
+                name="file"
+                :fileList="fileList"
                 :data="uploadData"
                 :on-change="hangdleStatus"
                 :on-remove="handleRemove"
@@ -166,13 +171,16 @@
           </el-form>
         </div>
       </el-card>
-      <el-row class="mt20" v-if="!see">
-        <el-button @click="save" class="ml20">保 存</el-button>
-        <el-button type="primary" @click="submit">提 交</el-button>
+      <el-row v-if="create||update">
+        <el-button @click="save(0)" class="ml20">保 存</el-button>
+        <el-button type="primary" @click="save(1)">提 交</el-button>
+      </el-row>
+      <el-row v-if="abolish">
+        <el-button type="primary" @click="abolishFn">提交</el-button>
       </el-row>
     </div>
     <div v-if="showTmpl">
-      <Tmpl :showTmpl.sync="showTmpl"></Tmpl>
+      <Tmpl :routeName="routeName" :showTmpl.sync="showTmpl"></Tmpl>
     </div>
     <TreeModal
       nodeKey="id"
@@ -207,6 +215,7 @@
       bizTypes: [],
       files: []
     },
+    fileList: [],
     abolishForm: {
       endDate: '',
       abolishReason: ''
@@ -218,7 +227,6 @@
     operatorName: '',
     creatorName: '',
     version: '',
-    regions: [],
     pickerOptions: {
       disabledDate(time) {
         return time.getTime() < Date.now() - 8.64e7;
@@ -234,7 +242,9 @@
 
   export default {
     data() {
-      return _.cloneDeep(defaultData);
+      return Object.assign({
+        regions: []
+      }, _.cloneDeep(defaultData));
     },
     methods: {
       currentRoute() {
@@ -242,7 +252,14 @@
         this.routeName = this.$route.name;
       },
       search() {
-        console.log(this.form.id);
+        supportModel.getCurrentTemplateByCode({
+          templateCode: this.form.templateCode,
+          hasDraft: this.update || false
+        }).then((res) => {
+          console.log(res);
+          const tplInfo = res.data.dataMap;
+          this.setData(tplInfo);
+        });
       },
       hangdleStatus(file) {
         console.log(file);
@@ -255,7 +272,7 @@
       },
       uplodeSuccess(response, file, fileList) {
         console.log(response);
-        this.form.files = this.form.files.push(response.dataMap.fileId);
+        this.form.files.push(response.dataMap.fileId);
       },
       showTreeModal() {
         this.visible = true;
@@ -282,6 +299,22 @@
           this.regions = res.data.dataMap;
         });
       },
+      setData(tplInfo) {
+        this[types.SET_TPL_INFO]({
+          tplInfo
+        });
+        this['version'] = `V${tplInfo['version']}`;
+        this['busiTypeText'] = tplInfo['bizTypes'].map(item => item.businessName).join(',');
+        Object.keys(this.form).forEach((key) => {
+          if (tplInfo.hasOwnProperty(key)) {
+            if (key === 'bizTypes') {
+              this.form[key] = tplInfo[key].map(item => item.typeId);
+            } else {
+              this.form[key] = tplInfo[key];
+            }
+          }
+        });
+      },
       getTplData() {
         if (this.see) {
           supportModel.getTplData({
@@ -289,26 +322,13 @@
           }).then((res) => {
             console.log(res);
             const tplInfo = res.data.dataMap;
-            this[types.SET_TPL_INFO]({
-              tplInfo
-            });
-            this['version'] = `V${tplInfo['version']}`;
-            this['busiTypeText'] = tplInfo['bizTypes'].map(item => item.businessName).join(',');
-            Object.keys(this.form).forEach((key) => {
-              if (tplInfo.hasOwnProperty(key)) {
-                if (key === 'bizTypes') {
-                  this.form[key] = tplInfo[key].map(item => item.typeId);
-                } else {
-                  this.form[key] = tplInfo[key];
-                }
-              }
-            });
+            this.setData(tplInfo);
           });
         }
       },
       getResult() {
         const {info} = this.$store.state.support.create;
-        const result = {...info, ...this.form, contentModule: this.form.contentModule};
+        const result = {...this.form, ...info};
         return Object.assign(result, {
           operatorId: 1,
           operatorName: 'haha',
@@ -319,20 +339,51 @@
       back() { //返回列表页
         this.$router.push('/contemplate/list');
       },
-      save() {
+      querySearch(queryString, cb) {
+        if (!queryString) {
+          return cb([]);
+        }
+        supportModel.selectTemplateCode({
+          templateCode: queryString
+        }).then((res) => {
+          const result = res.data.dataMap;
+          cb(this.createFilter(result));
+        });
+      },
+      createFilter(result) {
+        return result.map((item) => {
+          return {value: item, label: item};
+        });
+      },
+      save(templateStatus) {
         const result = this.getResult();
+        result.templateStatus = templateStatus;
         console.log('click save：' + JSON.stringify(result));
-        supportModel.addTpl(result).then((res) => {
+        let request = '';
+        if (this.create) {
+          request = supportModel.addTpl(result);
+        } else if (this.update) {
+          request = supportModel.updateTemplate(result);
+        }
+        request.then((res) => {
           console.log(res);
           this.$message({
             message: '保存成功',
             type: 'success',
           });
+          if (templateStatus === 1) {
+            this.back();
+          }
         });
       },
-      submit() {
-        console.log('click submit');
-        this.back();
+      abolishFn() {
+        supportModel.setTemplateAbolish({
+          templateId: this.form.id,
+          endDate: this.abolishForm.endDate,
+          abolishReason: this.abolishForm.abolishReason
+        }).then((res) => {
+          console.log(res);
+        });
       },
       ...mapMutations([
         types.SET_TPL_INFO

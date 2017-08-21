@@ -1,6 +1,9 @@
 import Vue from 'vue';
-import iview from 'iview';
 import Router from 'vue-router';
+import nprogress from 'nprogress';
+import 'nprogress/nprogress.css';
+import store from '../store';
+import * as types from '../store/consts';
 import {routerNames} from '../core/consts';
 
 Vue.use(Router);
@@ -221,7 +224,7 @@ const router = new Router({
             require(['../pages/support/create.vue'], resolve);
           },
           meta: {
-            hidden:true,
+            hidden: true,
             auth: true
           },
           name: routerNames.con_tpl_see
@@ -276,31 +279,34 @@ const router = new Router({
 
 
 router.beforeEach((to, from, next) => {
-    window.document.title = to.name;
-    iview.LoadingBar.start();
+  nprogress.start();
+  window.document.title = to.name;
 
-    //Auth验证
-    // if (to.meta.auth) {
-    //   if (to.path === '/login') {
-    //     localStorage.removeItem('user');
-    //   }
-    //   let user = JSON.parse(localStorage.getItem('user'));
-    //   if (!user && to.path !== '/login') {
-    //     next({
-    //       path: '/login?fromUrl=' + to.path
-    //     });
-    //   } else {
-    //     next();
-    //   }
-    // } else {
-    //   next();
-    // }
-    next();
+  //Auth验证
+  // if (to.meta.auth) {
+  //   if (to.path === '/login') {
+  //     localStorage.removeItem('user');
+  //   }
+  //   let user = JSON.parse(localStorage.getItem('user'));
+  //   if (!user && to.path !== '/login') {
+  //     next({
+  //       path: '/login?fromUrl=' + to.path
+  //     });
+  //   } else {
+  //     next();
+  //   }
+  // } else {
+  //   next();
+  // }
+  next();
+  store.commit(types.ROUTE, {
+    data: {to, from}
+  });
 });
 
-router.afterEach(() => {
-    iview.LoadingBar.finish();
-    window.scrollTo(0, 0);
+router.afterEach((route) => {
+  nprogress.done();
+  window.scrollTo(0, 0);
 });
 
 export default router;
