@@ -1233,6 +1233,13 @@
                 curForm.validate((valid) => {
                     if (valid) {
                         let arr = this.formNewSubject.subjects, key = this.formNewSubject.search;
+                        let index = _.findIndex(this.cardContentInfoForm.conSubjctName, function (chr) {
+                            return chr.id == key;
+                        });
+                        if (index > -1) {
+                            this.$message.error('这条数据已存在咯！');
+                            return false;
+                        }
                         for (let i = 0, len = arr.length; i < len; i++) {
                             if (arr[i].id === key) {
                                 this.cardContentInfoForm.conSubjctName.push({
