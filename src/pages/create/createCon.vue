@@ -120,6 +120,18 @@
                                 <el-table-column type="index"></el-table-column>
                                 <el-table-column prop="id" label="供应商编号"></el-table-column>
                                 <el-table-column prop="name" label="供应商名称"></el-table-column>
+                                <el-table-column
+                                        fixed="right"
+                                        label="操作"
+                                        width="100">
+                                    <template scope="scope">
+                                        <el-button
+                                                v-if="cardContentInfoForm.tableSupplierInfo[scope.$index].type"
+                                                @click="handleRemoveSupplier(scope.$index, cardContentInfoForm.tableSupplierInfo)"
+                                                type="text" size="small">移除
+                                        </el-button>
+                                    </template>
+                                </el-table-column>
                             </el-table>
                         </el-card>
                         <el-card>
@@ -1258,7 +1270,11 @@
                         let arr = this.formContractSupplier.suppliers, key = this.formContractSupplier.search;
                         for (let i = 0, len = arr.length; i < len; i++) {
                             if (arr[i].id === key) {
-                                this.cardContentInfoForm.tableSupplierInfo = [{id: arr[i].id, name: arr[i].name}];
+                                this.cardContentInfoForm.tableSupplierInfo = [{
+                                    id: arr[i].id,
+                                    name: arr[i].name,
+                                    type: 'add'
+                                }];
                             }
                         }
                         curForm.resetFields();
@@ -1272,6 +1288,9 @@
             handleNewContractSupplierCancel(formName){
                 this.$refs[formName].resetFields();
                 this.cardContentInfoForm.dialogAddContractSupplier = false;
+            },
+            handleRemoveSupplier(index, rows){
+                rows.splice(index, 1);
             },
 
 
