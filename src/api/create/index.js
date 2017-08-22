@@ -17,4 +17,8 @@ export default {
     getContractBaseInfo(params){
         return Http.get(`/api/createContract/getContractBaseInfo`, params);
     },
+    //获取供应商列表根据关键字
+    getRemoteSuppliersByKeyWord(params){
+        return Http.get(`/api/createContract/getRemoteSuppliersByKeyWord`, params);
+    },
 };

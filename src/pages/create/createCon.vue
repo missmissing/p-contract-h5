@@ -112,13 +112,15 @@
                     <el-form rel="cardContentInfoForm" :model="cardContentInfoForm" label-width="100px">
                         <el-card>
                             <header slot="header">合同供应商信息</header>
+                            <el-button v-if="cardContentInfoForm.tableSupplierInfo.length<=0"
+                                       @click="handleAddContractSupplier" icon="plus"
+                                       type="primary">添加合同供应商信息
+                            </el-button>
                             <el-table :data="cardContentInfoForm.tableSupplierInfo">
                                 <el-table-column type="index"></el-table-column>
                                 <el-table-column prop="id" label="供应商编号"></el-table-column>
                                 <el-table-column prop="name" label="供应商名称"></el-table-column>
-                                <el-table-column prop="bankAccount" label="银行账号"></el-table-column>
                             </el-table>
-
                         </el-card>
                         <el-card>
                             <header slot="header">合同我方主体名称</header>
@@ -472,7 +474,9 @@
                     <el-form rel="cardSealInfoForm" :model="cardSealInfoForm" label-width="100px">
                         <el-card>
                             <header slot="header">合同文件列表</header>
-                            <el-button @click="handleAddContractFile" icon="plus" type="primary">添加合同文件</el-button>
+                            <el-button @click="handleAddContractFile" icon="plus"
+                                       type="primary">添加合同文件
+                            </el-button>
                             <el-table :data="cardSealInfoForm.sealFileList">
                                 <el-table-column type="index" label="序号" width="100px"></el-table-column>
                                 <el-table-column prop="name" label="文本名称"></el-table-column>
@@ -559,7 +563,35 @@
                 </el-tab-pane>
             </el-tabs>
         </el-card>
-        <!--<el-dialog title="新增合同我方主体" :visible.sync="baseInfoForm.dialogNewSubjectVisible" size="small">
+        <el-dialog title="新增合同供应商信息" :visible.sync="cardContentInfoForm.dialogAddContractSupplier" size="small">
+            <el-form :model="formContractSupplier" label-width="100px" ref="formContractSupplier"
+                     :rules="formContractSupplier.rules">
+                <el-form-item label="供应商名称／编号" prop="search" label-width="150px">
+                    <el-select
+                            style="width:300px"
+                            size="small"
+                            v-model="formContractSupplier.search"
+                            filterable
+                            remote
+                            placeholder="请输入关键词搜索"
+                            :remote-method="getRemoteSuppliersByKeyWord"
+                            :loading="formContractSupplier.loading">
+                        <el-option
+                                v-for="item in formContractSupplier.suppliers"
+                                :key="item.id"
+                                :label="item.name"
+                                :value="item.id">
+                        </el-option>
+                    </el-select>
+                </el-form-item>
+            </el-form>
+            <footer slot="footer">
+                <el-button type="primary" @click="handleNewContractSupplier('formContractSupplier')">确定</el-button>
+                <el-button type="primary" @click="handleNewContractSupplierCancel('formContractSupplier')">取消
+                </el-button>
+            </footer>
+        </el-dialog>
+        <el-dialog title="新增合同我方主体" :visible.sync="baseInfoForm.dialogNewSubjectVisible" size="small">
             <el-form :model="formNewSubject" label-width="100px" ref="formNewSubject" :rules="formNewSubject.rules">
                 <el-form-item label="公司代码" prop="id">
                     <el-input v-model="formNewSubject.id" placeholder="请输入公司代码"></el-input>
@@ -726,7 +758,7 @@
                 <el-button type="primary" @click="handleAddAttachmentItem('formAddAttachment')">确定</el-button>
                 <el-button type="primary" @click="handleCancelAttachment('formAddAttachment')">取消</el-button>
             </footer>
-        </el-dialog>-->
+        </el-dialog>
         <el-row>
             <el-col :span="4" :offset="4">
                 <el-button type="primary" @click="handleSave('')">保存</el-button>
@@ -753,6 +785,7 @@
         data() {
             return {
                 operateType: '',
+                currentPr: '',
                 baseInfoForm: {
                     businessPerson: '',//业务经办人
                     businessDepartment: '',
@@ -780,6 +813,7 @@
                     effectiveDateRules: [],
                     endDate: '',
                     endDateRules: [],
+                    dialogAddContractSupplier: false,
                 },
                 cardFinanceInfoForm: {
                     hasMoney: 1,
@@ -996,6 +1030,16 @@
                         url: 'https://fuss10.elemecdn.com/3/63/4e7f3a15429bfda99bce42a18cdd1jpeg.jpeg?imageMogr2/thumbnail/360x360/format/webp/quality/100'
                     }],
                 },
+                formContractSupplier: {
+                    rules: {
+                        search: [
+                            {required: true, message: '请输入供应商编号', trigger: 'blur'},
+                        ],
+                    },
+                    search: '',
+                    suppliers: [],
+                    loading: false
+                },
             }
         },
         created() {//?currentPr=&curConModelId=con2&curConTypeId=service1
@@ -1005,9 +1049,10 @@
              type:create*/
             let query = this.$route.query;
             this.operateType = query.operateType;
+            this.currentPr = query.currentPr;
             this.baseInfoForm.conModel = query.curConModelId;
             this.baseInfoForm.conType = query.curConTypeId;
-
+            console.log('currentPr', query.currentPr);
         },
         computed: {
             conVersion: function () {
@@ -1191,13 +1236,49 @@
                 this.cardContentInfoForm.endDate = date;
                 console.log('end time', date);
             },
+            handleAddContractSupplier(){
+                this.cardContentInfoForm.dialogAddContractSupplier = true;
+            },
+            getRemoteSuppliersByKeyWord(query){
+                if (query !== '') {
+                    this.formContractSupplier.loading = true;
+                    Api.getRemoteSuppliersByKeyWord({key: query})
+                            .then((data)=> {
+                                this.formContractSupplier.loading = false;
+                                this.formContractSupplier.suppliers = data.data.dataMap.list;
+                            });
+                } else {
+                    this.formContractSupplier.suppliers = [];
+                }
+            },
+            handleNewContractSupplier(formName){
+                let curForm = this.$refs[formName];
+                curForm.validate((valid) => {
+                    if (valid) {
+                        let arr = this.formContractSupplier.suppliers, key = this.formContractSupplier.search;
+                        for (let i = 0, len = arr.length; i < len; i++) {
+                            if (arr[i].id === key) {
+                                this.cardContentInfoForm.tableSupplierInfo = [{id: arr[i].id, name: arr[i].name}];
+                            }
+                        }
+                        curForm.resetFields();
+                        this.cardContentInfoForm.dialogAddContractSupplier = false;
+                    } else {
+                        console.log('error submit!!');
+                        return false;
+                    }
+                });
+            },
+            handleNewContractSupplierCancel(formName){
+                this.$refs[formName].resetFields();
+                this.cardContentInfoForm.dialogAddContractSupplier = false;
+            },
 
 
             getModuleList() {
                 const $self = this;
                 api.getTemplateModuleList({}).then((res) => {
                     $self.source.templateModules = res.data.data.modules.map(function (el) {
-
                         return {
                             key: el.Code,
                             label: el.Name,
