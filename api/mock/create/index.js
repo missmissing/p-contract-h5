@@ -176,4 +176,26 @@ module.exports = function (api) {
             }
         });
     });
+    api.use('/api/createContract/getRemoteThirdPartiesByKeyWord', function (req, res) {
+        res.status(200).json({
+            code: 200,
+            message: 'success',
+            dataMap: {
+                list: [
+                    {
+                        id: 'supplier001',
+                        name: '供应商1'
+                    },
+                    {
+                        id: 'supplier002',
+                        name: '供应商2'
+                    },
+                    {
+                        id: 'supplier003',
+                        name: '供应商3'
+                    },
+                ]
+            }
+        });
+    });
 };

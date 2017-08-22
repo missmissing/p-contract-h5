@@ -156,9 +156,22 @@
                         </el-card>
                         <el-card v-if="baseInfoForm.conModel!='con4'">
                             <header slot="header">第三方信息</header>
+                            <el-button type="primary" @click="handleNewthirdPartyInfo" icon="plus">新增第三方信息</el-button>
                             <el-table :data="cardContentInfoForm.thirdPartyInfo">
                                 <el-table-column prop="id" label="供应商编号"></el-table-column>
                                 <el-table-column prop="name" label="供应商名称"></el-table-column>
+                                <el-table-column
+                                        fixed="right"
+                                        label="操作"
+                                        width="100">
+                                    <template scope="scope">
+                                        <el-button
+                                                v-if="cardContentInfoForm.thirdPartyInfo[scope.$index].type"
+                                                @click="handleRemoveThirdPartyInfo(scope.$index, cardContentInfoForm.thirdPartyInfo)"
+                                                type="text" size="small">移除
+                                        </el-button>
+                                    </template>
+                                </el-table-column>
                             </el-table>
                         </el-card>
                         <el-card v-if="baseInfoForm.conModel!='con1'">
@@ -642,6 +655,33 @@
                 <el-button type="primary" @click="handleCancelAddNewSubject('formNewSubject')">取消</el-button>
             </footer>
         </el-dialog>
+        <el-dialog title="第三方信息" :visible.sync="cardContentInfoForm.dialogNewThirdPartyVisible" size="small">
+            <el-form :model="formNewThirdParty" label-width="100px" ref="formNewThirdParty"
+                     :rules="formNewThirdParty.rules">
+                <el-form-item label="供应商名称／编号" prop="search" label-width="150px">
+                    <el-select
+                            style="width:300px"
+                            size="small"
+                            v-model="formNewThirdParty.search"
+                            filterable
+                            remote
+                            placeholder="请输入关键词搜索"
+                            :remote-method="getRemoteThirdPartiesByKeyWord"
+                            :loading="formNewThirdParty.loading">
+                        <el-option
+                                v-for="item in formNewThirdParty.thirdParties"
+                                :key="item.id"
+                                :label="item.name"
+                                :value="item.id">
+                        </el-option>
+                    </el-select>
+                </el-form-item>
+            </el-form>
+            <footer slot="footer">
+                <el-button type="primary" @click="handleAddNewThirdParty('formNewThirdParty')">确定</el-button>
+                <el-button type="primary" @click="handleCancelAddNewThirdParty('formNewThirdParty')">取消</el-button>
+            </footer>
+        </el-dialog>
         <el-dialog title="新增付款方式" :visible.sync="cardFinanceInfoForm.dialogNewPaymentVisible" size="small">
             <el-form :model="formNewPayment" label-width="100px" ref="formNewPayment">
                 <el-form-item label="类型" prop="type">
@@ -851,6 +891,7 @@
                     endDate: '',
                     endDateRules: [],
                     dialogAddContractSupplier: false,
+                    dialogNewThirdPartyVisible: false,
                 },
                 cardFinanceInfoForm: {
                     hasMoney: 1,
@@ -1073,6 +1114,16 @@
                     },
                     search: '',
                     suppliers: [],
+                    loading: false
+                },
+                formNewThirdParty: {
+                    rules: {
+                        search: [
+                            {required: true, message: '请输入搜索关键字', trigger: 'blur'},
+                        ],
+                    },
+                    search: '',
+                    thirdParties: [],
                     loading: false
                 },
             }
@@ -1342,6 +1393,60 @@
             },
             handleRemoveSubect(index, rows){
                 rows.splice(index, 1);
+            },
+            handleNewthirdPartyInfo(){
+                this.cardContentInfoForm.dialogNewThirdPartyVisible = true;
+            },
+            handleRemoveSubect(index, rows){
+                console.log('handleRemoveSubect');
+            },
+            handleRemoveThirdPartyInfo(index, rows){
+                rows.splice(index, 1);
+            },
+            getRemoteThirdPartiesByKeyWord(query){
+                if (query !== '') {
+                    this.formNewThirdParty.loading = true;
+                    Api.getRemoteThirdPartiesByKeyWord({key: query})
+                            .then((data)=> {
+                                this.formNewThirdParty.loading = false;
+                                this.formNewThirdParty.thirdParties = data.data.dataMap.list;
+                            });
+                } else {
+                    this.formNewThirdParty.thirdParties = [];
+                }
+            },
+            handleAddNewThirdParty(formName){
+                let curForm = this.$refs[formName];
+                curForm.validate((valid) => {
+                    if (valid) {
+                        let arr = this.formNewThirdParty.thirdParties, key = this.formNewThirdParty.search;
+                        let index = _.findIndex(this.cardContentInfoForm.thirdPartyInfo, function (chr) {
+                            return chr.id == key;
+                        });
+                        if (index > -1) {
+                            this.$message.error('这条数据已存在咯！');
+                            return false;
+                        }
+                        for (let i = 0, len = arr.length; i < len; i++) {
+                            if (arr[i].id === key) {
+                                this.cardContentInfoForm.thirdPartyInfo.push({
+                                    id: arr[i].id,
+                                    name: arr[i].name,
+                                    type: 'add'
+                                });
+                            }
+                        }
+                        curForm.resetFields();
+                        this.cardContentInfoForm.dialogNewThirdPartyVisible = false;
+                    } else {
+                        console.log('error submit!!');
+                        return false;
+                    }
+                });
+            },
+            handleCancelAddNewThirdParty(formName){
+                this.$refs[formName].resetFields();
+                this.cardContentInfoForm.dialogNewThirdPartyVisible = false;
             },
 
 

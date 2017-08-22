@@ -25,4 +25,8 @@ export default {
     getRemoteSubjectsByKeyWord(params){
         return Http.get(`/api/createContract/getRemoteSubjectsByKeyWord`, params);
     },
+    //获取第三方信息列表根据关键字
+    getRemoteThirdPartiesByKeyWord(params){
+        return Http.get(`/api/createContract/getRemoteThirdPartiesByKeyWord`, params);
+    },
 };
