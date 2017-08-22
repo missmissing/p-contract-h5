@@ -93,10 +93,10 @@ module.exports = function (api) {
                 contentInfo: {
                     tableSupplierInfo: [
                         /*{
-                            id: 'supplier1',
-                            name: '供应商1',
-                            bankAccount: '渣打银行'
-                        },*/
+                         id: 'supplier1',
+                         name: '供应商1',
+                         bankAccount: '渣打银行'
+                         },*/
                     ],
                     conSubjctName: [
                         {
@@ -149,6 +149,28 @@ module.exports = function (api) {
                     {
                         id: 'supplier003',
                         name: '供应商3'
+                    },
+                ]
+            }
+        });
+    });
+    api.use('/api/createContract/getRemoteSubjectsByKeyWord', function (req, res) {
+        res.status(200).json({
+            code: 200,
+            message: 'success',
+            dataMap: {
+                list: [
+                    {
+                        id: 'company001',
+                        name: '公司1'
+                    },
+                    {
+                        id: 'company002',
+                        name: '公司2'
+                    },
+                    {
+                        id: 'company003',
+                        name: '公司3'
                     },
                 ]
             }

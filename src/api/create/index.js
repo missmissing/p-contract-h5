@@ -21,4 +21,8 @@ export default {
     getRemoteSuppliersByKeyWord(params){
         return Http.get(`/api/createContract/getRemoteSuppliersByKeyWord`, params);
     },
+    //获取合同我方主体列表根据关键字
+    getRemoteSubjectsByKeyWord(params){
+        return Http.get(`/api/createContract/getRemoteSubjectsByKeyWord`, params);
+    },
 };

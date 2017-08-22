@@ -140,6 +140,18 @@
                             <el-table :data="cardContentInfoForm.conSubjctName">
                                 <el-table-column prop="id" label="公司代码"></el-table-column>
                                 <el-table-column prop="name" label="公司名称"></el-table-column>
+                                <el-table-column
+                                        fixed="right"
+                                        label="操作"
+                                        width="100">
+                                    <template scope="scope">
+                                        <el-button
+                                                v-if="cardContentInfoForm.conSubjctName[scope.$index].type"
+                                                @click="handleRemoveSubect(scope.$index, cardContentInfoForm.conSubjctName)"
+                                                type="text" size="small">移除
+                                        </el-button>
+                                    </template>
+                                </el-table-column>
                             </el-table>
                         </el-card>
                         <el-card v-if="baseInfoForm.conModel!='con4'">
@@ -604,12 +616,25 @@
             </footer>
         </el-dialog>
         <el-dialog title="新增合同我方主体" :visible.sync="baseInfoForm.dialogNewSubjectVisible" size="small">
-            <el-form :model="formNewSubject" label-width="100px" ref="formNewSubject" :rules="formNewSubject.rules">
-                <el-form-item label="公司代码" prop="id">
-                    <el-input v-model="formNewSubject.id" placeholder="请输入公司代码"></el-input>
-                </el-form-item>
-                <el-form-item label="公司名称" prop="name">
-                    <el-input v-model="formNewSubject.name" placeholder="请输入公司名称"></el-input>
+            <el-form :model="formNewSubject" label-width="100px" ref="formNewSubject"
+                     :rules="formNewSubject.rules">
+                <el-form-item label="公司名称／编号" prop="search" label-width="150px">
+                    <el-select
+                            style="width:300px"
+                            size="small"
+                            v-model="formNewSubject.search"
+                            filterable
+                            remote
+                            placeholder="请输入关键词搜索"
+                            :remote-method="getRemoteSubjectsByKeyWord"
+                            :loading="formNewSubject.loading">
+                        <el-option
+                                v-for="item in formNewSubject.subjects"
+                                :key="item.id"
+                                :label="item.name"
+                                :value="item.id">
+                        </el-option>
+                    </el-select>
                 </el-form-item>
             </el-form>
             <footer slot="footer">
@@ -924,15 +949,13 @@
                 },
                 formNewSubject: {
                     rules: {
-                        id: [
-                            {required: true, message: '请输入公司代码', trigger: 'blur'},
-                        ],
-                        name: [
-                            {required: true, message: '请输入公司名称', trigger: 'blur'},
+                        search: [
+                            {required: true, message: '请输入搜索关键字', trigger: 'blur'},
                         ],
                     },
-                    id: '',
-                    name: ''
+                    search: '',
+                    subjects: [],
+                    loading: false
                 },
                 formNewPayment: {
                     type: '1',
@@ -1045,7 +1068,7 @@
                 formContractSupplier: {
                     rules: {
                         search: [
-                            {required: true, message: '请输入供应商编号', trigger: 'blur'},
+                            {required: true, message: '请输入搜索关键字', trigger: 'blur'},
                         ],
                     },
                     search: '',
@@ -1209,10 +1232,16 @@
                 let curForm = this.$refs[formName];
                 curForm.validate((valid) => {
                     if (valid) {
-                        this.cardContentInfoForm.conSubjctName.push({
-                            id: curForm.model.id,
-                            name: curForm.model.name
-                        });
+                        let arr = this.formNewSubject.subjects, key = this.formNewSubject.search;
+                        for (let i = 0, len = arr.length; i < len; i++) {
+                            if (arr[i].id === key) {
+                                this.cardContentInfoForm.conSubjctName.push({
+                                    id: arr[i].id,
+                                    name: arr[i].name,
+                                    type: 'add'
+                                });
+                            }
+                        }
                         curForm.resetFields();
                         this.baseInfoForm.dialogNewSubjectVisible = false;
                     } else {
@@ -1290,6 +1319,21 @@
                 this.cardContentInfoForm.dialogAddContractSupplier = false;
             },
             handleRemoveSupplier(index, rows){
+                rows.splice(index, 1);
+            },
+            getRemoteSubjectsByKeyWord(query){
+                if (query !== '') {
+                    this.formNewSubject.loading = true;
+                    Api.getRemoteSubjectsByKeyWord({key: query})
+                            .then((data)=> {
+                                this.formNewSubject.loading = false;
+                                this.formNewSubject.subjects = data.data.dataMap.list;
+                            });
+                } else {
+                    this.formNewSubject.subjects = [];
+                }
+            },
+            handleRemoveSubect(index, rows){
                 rows.splice(index, 1);
             },
 
