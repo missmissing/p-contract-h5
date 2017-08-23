@@ -221,7 +221,7 @@ const router = new Router({
         {
           path: '/contemplate/see/:id',
           component: function (resolve) {
-            require(['../pages/support/create.vue'], resolve);
+            require(['../pages/support/see.vue'], resolve);
           },
           meta: {
             hidden: true,
@@ -242,7 +242,7 @@ const router = new Router({
         {
           path: '/contemplate/update',
           component: function (resolve) {
-            require(['../pages/support/create.vue'], resolve);
+            require(['../pages/support/update.vue'], resolve);
           },
           meta: {
             auth: true
@@ -252,7 +252,7 @@ const router = new Router({
         {
           path: '/contemplate/abolish',
           component: function (resolve) {
-            require(['../pages/support/create.vue'], resolve);
+            require(['../pages/support/abolish.vue'], resolve);
           },
           meta: {
             auth: true

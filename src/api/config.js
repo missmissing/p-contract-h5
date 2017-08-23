@@ -27,3 +27,4 @@ export const WebConfig = {
     ExecuteSAPDepartmentCode: "10000001,O0000001,T0000001,A0000001,V0000001,Y0000001,J0000001,70000001"
   }
 };
+
