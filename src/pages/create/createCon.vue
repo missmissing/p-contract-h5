@@ -217,7 +217,7 @@
                                     </el-radio-group>
                                 </el-form-item>
                             </el-col>
-                            <el-col :span="8">
+                            <el-col :span="8" v-if="cardFinanceInfoForm.hasMoney==1">
                                 <el-form-item label="是否一次性付款" label-width="120px">
                                     <el-radio-group v-model="cardFinanceInfoForm.onePayment">
                                         <el-radio :label="1">是</el-radio>
@@ -226,16 +226,113 @@
                                 </el-form-item>
                             </el-col>
                         </el-row>
-                        <el-card>
+                        <el-card v-if="cardFinanceInfoForm.hasMoney==1">
                             <header slot="header">付款方式</header>
-                            <el-button type="primary" @click="handleAddPaymentMethod" icon="plus">新增付款方式</el-button>
-                            <el-table :data="cardFinanceInfoForm.paymentMethod">
+                            <el-table :data="cardFinanceInfoForm.paymentMethod" v-if="cardFinanceInfoForm.onePayment">
+                                <el-table-column type="expand">
+                                    <template scope="props">
+                                        <el-button icon="plus" type="primary"
+                                                   @click="handleAddAdvanceItem(props.row.type)">
+                                            添加{{props.row.type}}
+                                        </el-button>
+                                        <el-table :data="props.row.subItem">
+                                            <el-table-column prop="name" label="名称">
+                                                <template scope="scope">{{props.row.type}}{{scope.$index+1}}</template>
+                                            </el-table-column>
+                                            <el-table-column
+                                                    prop="money"
+                                                    label="付款金额">
+                                                <template scope="scope">
+                                                    <el-input
+                                                            v-model="props.row.subItem[scope.$index].money"></el-input>
+                                                </template>
+                                            </el-table-column>
+                                            <el-table-column
+                                                    prop="curTime"
+                                                    label="付款时间">
+                                                <template scope="scope">
+                                                    <el-select
+                                                            v-model="props.row.subItem[scope.$index].curTime">
+                                                        <el-option
+                                                                v-for="item in props.row.subItem[scope.$index].times"
+                                                                :key="item.value"
+                                                                :label="item.label"
+                                                                :value="item.value">
+                                                        </el-option>
+                                                    </el-select>
+                                                </template>
+                                            </el-table-column>
+                                            <el-table-column
+                                                    prop="remark"
+                                                    label="备注">
+                                                <template scope="scope">
+                                                    <el-input
+                                                            v-model="props.row.subItem[scope.$index].remark"></el-input>
+                                                </template>
+                                            </el-table-column>
+                                            <el-table-column prop="proportion" label="占比">
+                                                <template scope="scope">
+                                                    {{getProportion(props.row.subItem[scope.$index].money)}}
+                                                </template>
+                                            </el-table-column>
+                                            <el-table-column
+                                                    fixed="right"
+                                                    label="操作"
+                                                    width="100">
+                                                <template scope="scope">
+                                                    <el-button
+                                                            @click="handleRemoveAdvanceItem(scope.$index, props.row.subItem)"
+                                                            type="text" size="small">移除
+                                                    </el-button>
+                                                </template>
+                                            </el-table-column>
+                                        </el-table>
+                                    </template>
+                                </el-table-column>
                                 <el-table-column prop="type" label="类型"></el-table-column>
-                                <el-table-column prop="ifMultiPayment" label="是否多次付款"></el-table-column>
-                                <el-table-column prop="money" label="付款金额"></el-table-column>
-                                <el-table-column prop="time" label="付款时间"></el-table-column>
-                                <el-table-column prop="remark" label="备注"></el-table-column>
-                                <el-table-column prop="proportion" label="占比"></el-table-column>
+                                <el-table-column
+                                        prop="ifMultiPayment"
+                                        label="是否多次付款">
+                                    <template scope="scope">
+                                        <el-checkbox
+                                                v-model="cardFinanceInfoForm.paymentMethod[scope.$index].ifMultiPayment"></el-checkbox>
+                                    </template>
+                                </el-table-column>
+                                <el-table-column
+                                        prop="money"
+                                        label="付款金额">
+                                    <template scope="scope">
+                                        <el-input
+                                                v-model="cardFinanceInfoForm.paymentMethod[scope.$index].money"></el-input>
+                                    </template>
+                                </el-table-column>
+                                <el-table-column
+                                        prop="curTime"
+                                        label="付款时间">
+                                    <template scope="scope">
+                                        <el-select v-model="cardFinanceInfoForm.paymentMethod[scope.$index].curTime">
+                                            <el-option
+                                                    v-for="item in cardFinanceInfoForm.paymentMethod[scope.$index].times"
+                                                    :key="item.value"
+                                                    :label="item.label"
+                                                    :value="item.value">
+                                            </el-option>
+                                        </el-select>
+                                    </template>
+                                </el-table-column>
+                                <el-table-column
+                                        prop="remark"
+                                        label="备注">
+                                    <template scope="scope">
+                                        <el-input
+                                                v-model="cardFinanceInfoForm.paymentMethod[scope.$index].remark"></el-input>
+                                    </template>
+                                </el-table-column>
+                                <el-table-column prop="proportion" label="占比">
+                                    <template scope="scope">
+                                        {{getProportion(cardFinanceInfoForm.paymentMethod[scope.$index].money)}}
+                                    </template>
+                                </el-table-column>
                             </el-table>
                             <el-row>
                                 <el-col :span="8">
@@ -265,7 +362,7 @@
                                 </el-col>
                                 <el-col :span="8">
                                     <el-form-item label="合同总金额" prop="totalConMoney">
-                                        <el-input v-model="cardFinanceInfoForm.totalConMoney"
+                                        <el-input :disabled="true" v-model="totalConMoney"
                                                   placeholder="根据上表累加(含税价)"></el-input>
                                     </el-form-item>
                                 </el-col>
@@ -279,6 +376,8 @@
                                         </el-radio-group>
                                     </el-form-item>
                                 </el-col>
+                            </el-row>
+                            <el-row v-if="cardFinanceInfoForm.hasBond">
                                 <el-col :span="8">
                                     <el-form-item label="保证金金额" prop="bondMoney">
                                         <el-input v-model="cardFinanceInfoForm.bondMoney"
@@ -286,18 +385,15 @@
                                     </el-form-item>
                                 </el-col>
                                 <el-col :span="8">
-                                    <el-form-item label="保证金占比" prop="bondProportion">
-                                        <el-input v-model="cardFinanceInfoForm.bondProportion"
-                                                  placeholder="请输入保证金占比"></el-input>
-                                    </el-form-item>
-                                </el-col>
-                            </el-row>
-                            <el-row>
-                                <el-col :span="8">
                                     <el-form-item label="付款时间" prop="paymentTime">
                                         <el-date-picker v-model="cardFinanceInfoForm.paymentTime"
                                                         placeholder="请输入付款时间"
                                                         type="date"></el-date-picker>
+                                    </el-form-item>
+                                </el-col>
+                                <el-col :span="8">
+                                    <el-form-item label="保证金占比" prop="bondProportion">
+                                        {{getProportion(cardFinanceInfoForm.bondMoney)}}
                                     </el-form-item>
                                 </el-col>
                             </el-row>
@@ -441,33 +537,42 @@
                         <el-row>
                             <el-col :span="8">
                                 <el-form-item prop="checkPerson" label="验收责任人">
-                                    <el-input v-model="cardContCheckInfoForm.checkPerson"
+                                    <el-input v-model="cardContCheckInfoForm.checkPerson" :disabled="true"
                                               placeholder="请输入验收责任人"></el-input>
                                 </el-form-item>
                             </el-col>
                             <el-col :span="8">
                                 <el-form-item prop="checkPersonDepart" label="验收责任人部门" label-width="120px">
-                                    <el-input v-model="cardContCheckInfoForm.checkPersonDepart"
+                                    <el-input :disabled="true" v-model="cardContCheckInfoForm.checkPersonDepart"
                                               placeholder="请输入验收责任人部门"></el-input>
                                 </el-form-item>
                             </el-col>
-                            <el-col :span="8">
+                            <el-col :span="8" v-if="!showMaterialItems">
                                 <el-form-item prop="checkServiceMethod" label="服务类验收方式" label-width="120px">
-                                    <el-input v-model="cardContCheckInfoForm.checkServiceMethod"
-                                              placeholder="请输入服务类验收方式"></el-input>
+                                    <el-select
+                                            size="small"
+                                            v-model="cardContCheckInfoForm.checkServiceMethod"
+                                            placeholder="请选择服务类验收方式">
+                                        <el-option
+                                                v-for="item in cardContCheckInfoForm.checkServiceMethods"
+                                                :key="item.id"
+                                                :label="item.name"
+                                                :value="item.id">
+                                        </el-option>
+                                    </el-select>
                                 </el-form-item>
                             </el-col>
                         </el-row>
                         <el-row>
                             <el-col :span="8">
                                 <el-form-item prop="checkSupervisor" label="验收监督人">
-                                    <el-input v-model="cardContCheckInfoForm.checkSupervisor"
+                                    <el-input :disabled="true" v-model="cardContCheckInfoForm.checkSupervisor"
                                               placeholder="请输入验收监督人"></el-input>
                                 </el-form-item>
                             </el-col>
                             <el-col :span="8">
                                 <el-form-item prop="checkSupervisorDepart" label="验收监督人部门" label-width="120px">
-                                    <el-input v-model="cardContCheckInfoForm.checkSupervisorDepart"
+                                    <el-input :disabled="true" v-model="cardContCheckInfoForm.checkSupervisorDepart"
                                               placeholder="请输入验收监督人部门"></el-input>
                                 </el-form-item>
                             </el-col>
@@ -476,7 +581,11 @@
                         <el-table :data="cardContCheckInfoForm.unionCheckPersons">
                             <el-table-column prop="name" label="联合验收人"></el-table-column>
                             <el-table-column prop="depart" label="联合验收人部门"></el-table-column>
-                            <el-table-column prop="ifMandatory" label="是否必选"></el-table-column>
+                            <el-table-column prop="ifMandatory" label="是否必选">
+                                <template scope="scope">
+                                    {{cardContCheckInfoForm.unionCheckPersons[scope.$index].ifRequired=='1'?'是':'否'}}
+                                </template>
+                            </el-table-column>
                         </el-table>
                         <el-form-item prop="hasSample" label="是否有样品">
                             <el-radio-group v-model="cardContCheckInfoForm.hasSample">
@@ -484,25 +593,35 @@
                                 <el-radio :label="0">否</el-radio>
                             </el-radio-group>
                         </el-form-item>
-                        <el-card>
+                        <el-card v-if="showMaterialItems">
                             <header slot="header">物资验收事项</header>
                             <el-table :data="cardContCheckInfoForm.materialMatters">
-                                <el-table-column type="index" label="序号" width="100px">
-                                </el-table-column>
+                                <el-table-column type="index" label="序号" width="100px"></el-table-column>
                                 <el-table-column prop="number" label="物料编码"></el-table-column>
                                 <el-table-column prop="description" label="物料描述"></el-table-column>
                                 <el-table-column prop="remark" label="备注"></el-table-column>
                             </el-table>
                         </el-card>
-                        <el-card>
+                        <el-card v-if="!showMaterialItems">
                             <header slot="header">服务验收事项</header>
                             <el-button type="primary" @click="handleAddServiceMatter" icon="plus">添加服务验收事项</el-button>
                             <el-table :data="cardContCheckInfoForm.serviceMatters">
-                                <el-table-column type="index" label="序号" width="100px">
-                                </el-table-column>
+                                <el-table-column type="index" label="序号" width="100px"></el-table-column>
                                 <el-table-column prop="name" label="服务名称"></el-table-column>
-                                <el-table-column prop="demand" label="验收要求"></el-table-column>
+                                <el-table-column prop="requirement" label="验收要求"></el-table-column>
                                 <el-table-column prop="remark" label="备注"></el-table-column>
+                                <el-table-column
+                                        fixed="right"
+                                        label="操作"
+                                        width="100">
+                                    <template scope="scope">
+                                        <el-button
+                                                v-if="cardContCheckInfoForm.serviceMatters[scope.$index].type"
+                                                @click="handleRemoveServiceMatter(scope.$index, cardContCheckInfoForm.serviceMatters)"
+                                                type="text" size="small">移除
+                                        </el-button>
+                                    </template>
+                                </el-table-column>
                             </el-table>
                         </el-card>
                     </el-form>
@@ -511,18 +630,115 @@
                     <el-form rel="cardSealInfoForm" :model="cardSealInfoForm" label-width="100px">
                         <el-card>
                             <header slot="header">合同文件列表</header>
-                            <el-button @click="handleAddContractFile" icon="plus"
-                                       type="primary">添加合同文件
-                            </el-button>
                             <el-table :data="cardSealInfoForm.sealFileList">
+                                <el-table-column type="expand">
+                                    <template scope="props">
+                                        <el-row>
+                                            <el-col :span="6">
+                                                <el-form-item label="用章次数" prop="sealTimes">
+                                                    <el-input :disabled="true" v-model="props.row.sealTimes"></el-input>
+                                                </el-form-item>
+                                            </el-col>
+                                            <el-col :span="6">
+                                                <el-form-item label="打印份数" prop="printTimes">
+                                                    <el-input :disabled="true"
+                                                              v-model="props.row.printTimes"></el-input>
+                                                </el-form-item>
+                                            </el-col>
+                                            <el-col :span="6">
+                                                <el-form-item label="我方留存份数" prop="retainFileNumber">
+                                                    <el-input :disabled="true"
+                                                              v-model="props.row.retainFileNumber"></el-input>
+                                                </el-form-item>
+                                            </el-col>
+                                            <el-col :span="6">
+                                                <el-form-item label="用印后上传">
+                                                    <el-upload
+                                                            ref="uploadFileAfterSeal"
+                                                            action="https://jsonplaceholder.typicode.com/posts/"
+                                                            :with-credentials="true"
+                                                            :on-success="handleUploadFileAfterSealSuccess"
+                                                            :on-error="handleUploadFileAfterSealError"
+                                                    >
+                                                        <el-button :disabled="true" size="small" type="primary">上传
+                                                        </el-button>
+                                                        </el-button>
+                                                    </el-upload>
+                                                </el-form-item>
+                                            </el-col>
+                                        </el-row>
+                                        <el-row>
+                                            <el-col :span="12">
+                                                <el-form-item prop="useSeal">
+                                                    <el-checkbox-group v-model="props.row.useSeal">
+                                                        <el-checkbox
+                                                                disabled
+                                                                v-for="item in props.row.useSeals"
+                                                                :label="item.id"
+                                                                :key="item.id">
+                                                            {{item.name}}
+                                                        </el-checkbox>
+                                                    </el-checkbox-group>
+                                                </el-form-item>
+                                            </el-col>
+                                        </el-row>
+                                    </template>
+                                </el-table-column>
                                 <el-table-column type="index" label="序号" width="100px"></el-table-column>
-                                <el-table-column prop="name" label="文本名称"></el-table-column>
-                                <el-table-column prop="sealTimes" label="用章次数"></el-table-column>
-                                <el-table-column prop="printTimes" label="打印份数"></el-table-column>
-                                <el-table-column prop="retainFileNumber" label="我方留存份数"></el-table-column>
-                                <el-table-column prop="sealName" label="用章名称"></el-table-column>
-                                <el-table-column prop="remark" label="备注"></el-table-column>
-                                <el-table-column prop="ifPrint" label="无需打印"></el-table-column>
+                                <el-table-column prop="type" label="附件类型">
+                                    <template scope="scope">
+                                        <el-select
+                                                size="small"
+                                                v-model="cardSealInfoForm.sealFileList[scope.$index].type">
+                                            <el-option
+                                                    v-for="item in cardSealInfoForm.sealFileList[scope.$index].types"
+                                                    :key="item.id"
+                                                    :label="item.name"
+                                                    :value="item.id">
+                                            </el-option>
+                                        </el-select>
+                                    </template>
+                                </el-table-column>
+                                <el-table-column prop="code" label="从协议编号">
+                                    <template scope="scope">
+                                        <el-input :disabled="true"
+                                                  v-model="cardSealInfoForm.sealFileList[scope.$index].code"></el-input>
+                                    </template>
+                                </el-table-column>
+                                <el-table-column prop="name" label="文件名称">
+                                    <template scope="scope">
+                                        <el-input :disabled="true"
+                                                  v-model="cardSealInfoForm.sealFileList[scope.$index].name"></el-input>
+                                    </template>
+                                </el-table-column>
+                                <el-table-column prop="upload" label="上传">
+                                    <template scope="scope">
+                                        <el-upload
+                                                ref="uploadSealFile"
+                                                action="https://jsonplaceholder.typicode.com/posts/"
+                                                :with-credentials="true"
+                                                :on-success="handleUploadSealFileSuccess"
+                                                :on-error="handleUploadSealFileError"
+                                        >
+                                            <el-button :disabled="true" size="small" type="primary">上传</el-button>
+                                        </el-upload>
+                                    </template>
+                                </el-table-column>
+                                <el-table-column prop="isSeal" label="是否盖章">
+                                    <template scope="scope">
+                                        <el-checkbox
+                                                v-model="cardSealInfoForm.sealFileList[scope.$index].isSeal"></el-checkbox>
+                                    </template>
+                                </el-table-column>
+                                <el-table-column
+                                        prop="remark"
+                                        label="备注">
+                                    <template scope="scope">
+                                        <el-input
+                                                :disabled="true"
+                                                v-model="cardSealInfoForm.sealFileList[scope.$index].remark"></el-input>
+                                    </template>
+                                </el-table-column>
                             </el-table>
                         </el-card>
                     </el-form>
@@ -682,57 +898,20 @@
                 <el-button type="primary" @click="handleCancelAddNewThirdParty('formNewThirdParty')">取消</el-button>
             </footer>
         </el-dialog>
-        <el-dialog title="新增付款方式" :visible.sync="cardFinanceInfoForm.dialogNewPaymentVisible" size="small">
-            <el-form :model="formNewPayment" label-width="100px" ref="formNewPayment">
-                <el-form-item label="类型" prop="type">
-                    <el-select v-model="formNewPayment.type" placeholder="请选择付款类型">
-                        <el-option v-for="item in formNewPayment.typeOptions"
-                                   :key="item.value"
-                                   :label="item.label"
-                                   :value="item.value">
-                        </el-option>
-                    </el-select>
-                </el-form-item>
-                <el-form-item label="是否多次付款" prop="ifMultiPayment">
-                    <el-radio-group v-model="formNewPayment.ifMultiPayment">
-                        <el-radio :label="0">是</el-radio>
-                        <el-radio :label="1">否</el-radio>
-                    </el-radio-group>
-                </el-form-item>
-                <el-form-item label="付款金额" prop="money">
-                    <el-input v-model="formNewPayment.money" placeholder="请输入付款金额"></el-input>
-                </el-form-item>
-                <el-form-item label="付款时间">
-                    <el-select v-model="formNewPayment.time" placeholder="请选择付款时间">
-                        <el-option v-for="item in formNewPayment.timeOptions[formNewPayment.type]"
-                                   :key="item.value"
-                                   :label="item.label"
-                                   :value="item.value">
-                        </el-option>
-                    </el-select>
-                </el-form-item>
-                <el-form-item label="备注" prop="remark">
-                    <el-input v-model="formNewPayment.remark" placeholder="请输入备注"></el-input>
-                </el-form-item>
-            </el-form>
-            <footer slot="footer">
-                <el-button type="primary" @click="handleAddNewPay('formNewPayment')">确定</el-button>
-                <el-button type="primary" @click="handleCancelAddNewPay">取消</el-button>
-            </footer>
-        </el-dialog>
         <el-dialog title="添加联合验收人" :visible.sync="cardContCheckInfoForm.dialogAddUnionCheckVisible"
                    size="small">
-            <el-form ref="formAddUnionCheck" :model="formAddUnionCheck" label-width="100px">
+            <el-form ref="formAddUnionCheck" :model="formAddUnionCheck" label-width="120px"
+                     :rules="formAddUnionCheck.rules">
                 <el-form-item prop="name" label="联合验收人">
                     <el-input v-model="formAddUnionCheck.name" placeholder="请输入联合验收人"></el-input>
                 </el-form-item>
                 <el-form-item prop="depart" label="联合验收人部门">
-                    <el-input v-model="formAddUnionCheck.depart" placeholder="请输入联合验收人部门"></el-input>
+                    <el-input :disabled="true" v-model="formAddUnionCheck.depart" placeholder="请输入联合验收人部门"></el-input>
                 </el-form-item>
                 <el-form-item label="是否必选" prop="ifRequired">
                     <el-radio-group v-model="formAddUnionCheck.ifRequired">
-                        <el-radio :label="0">是</el-radio>
-                        <el-radio :label="1">否</el-radio>
+                        <el-radio :label="1">是</el-radio>
+                        <el-radio :label="0">否</el-radio>
                     </el-radio-group>
                 </el-form-item>
             </el-form>
@@ -757,39 +936,6 @@
             <footer slot="footer">
                 <el-button type="primary" @click="handleAddServiceCheckItem('formAddServiceCheck')">确定</el-button>
                 <el-button type="primary" @click="handleCancelAddServiceCheck('formAddServiceCheck')">取消</el-button>
-            </footer>
-        </el-dialog>
-        <el-dialog title="添加合同文件" :visible.sync="cardSealInfoForm.dialogNewContractVisible"
-                   size="small">
-            <el-form ref="formAddContract" :model="formAddContract" label-width="100px">
-                <el-form-item prop="name" label="文本名称">
-                    <el-input v-model="formAddContract.name" placeholder="请输入服务名称"></el-input>
-                </el-form-item>
-                <el-form-item prop="sealTimes" label="用章次数">
-                    <el-input v-model="formAddContract.sealTimes" placeholder="请输入用章次数"></el-input>
-                </el-form-item>
-                <el-form-item label="打印份数" prop="printTimes">
-                    <el-input v-model="formAddContract.printTimes" placeholder="请输入打印份数"></el-input>
-                </el-form-item>
-                <el-form-item label="我方留存份数" prop="retainFileNumber">
-                    <el-input v-model="formAddContract.retainFileNumber" placeholder="请输入我方留存份数"></el-input>
-                </el-form-item>
-                <el-form-item label="用章名称" prop="sealName">
-                    <el-input v-model="formAddContract.sealName" placeholder="请输入用章名称"></el-input>
-                </el-form-item>
-                <el-form-item label="备注" prop="remark">
-                    <el-input v-model="formAddContract.remark" placeholder="请输入备注"></el-input>
-                </el-form-item>
-                <el-form-item label="是否打印" prop="ifPrint">
-                    <el-radio-group v-model="formAddContract.ifPrint">
-                        <el-radio :label="0">是</el-radio>
-                        <el-radio :label="1">否</el-radio>
-                    </el-radio-group>
-                </el-form-item>
-            </el-form>
-            <footer slot="footer">
-                <el-button type="primary" @click="handleAddContractItem('formAddContract')">确定</el-button>
-                <el-button type="primary" @click="handleCancelContract('formAddContract')">取消</el-button>
             </footer>
         </el-dialog>
         <el-dialog title="添加附件信息" :visible.sync="cardRemarkInfoForm.dialogAddAttachmentVisible"
@@ -895,9 +1041,99 @@
                 },
                 cardFinanceInfoForm: {
                     hasMoney: 1,
-                    onePayment: 0,
-                    paymentMethod: [],
-                    dialogNewPaymentVisible: false,
+                    onePayment: 1,
+                    paymentMethod: [
+                        {
+                            type: '预付款',
+                            ifMultiPayment: false,
+                            money: 0,
+                            curTime: '',
+                            times: [
+                                {
+                                    value: '1',
+                                    label: '合同签约15天'
+                                },
+                                {
+                                    value: '2',
+                                    label: '合同签约30天'
+                                },
+                                {
+                                    value: '3',
+                                    label: '合同签约90天'
+                                }
+                            ],
+                            remark: '',
+                            proportion: '',
+                            subItem: [
+                                {
+                                    money: 0,
+                                    curTime: '',
+                                    times: [
+                                        {
+                                            value: 'subItem1',
+                                            label: '合同签约15天'
+                                        },
+                                        {
+                                            value: 'subItem2',
+                                            label: '合同签约30天'
+                                        },
+                                        {
+                                            value: 'subItem3',
+                                            label: '合同签约90天'
+                                        }
+                                    ],
+                                    remark: '',
+                                    proportion: '',
+                                },
+                            ],
+                        },
+                        {
+                            type: '进度款',
+                            ifMultiPayment: false,
+                            money: 0,
+                            curTime: '',
+                            times: [
+                                {
+                                    value: '1',
+                                    label: '验收后15天'
+                                },
+                                {
+                                    value: '2',
+                                    label: '验收后30天'
+                                }
+                            ],
+                            remark: '',
+                            proportion: '',
+                            subItem: []
+                        },
+                        {
+                            type: '尾款',
+                            ifMultiPayment: true,
+                            money: 0,
+                            curTime: '',
+                            times: [
+                                {
+                                    value: '1',
+                                    label: '合同结束后15天'
+                                },
+                                {
+                                    value: '2',
+                                    label: '合同结束后30天'
+                                },
+                                {
+                                    value: '3',
+                                    label: '合同结束后90天'
+                                },
+                                {
+                                    value: '4',
+                                    label: '合同结束后180天'
+                                },
+                            ],
+                            remark: '',
+                            proportion: '',
+                            subItem: []
+                        },
+                    ],
                     currency: '',
                     currencyOptions: [
                         {
@@ -925,7 +1161,7 @@
                         },
                     ],
                     hasBond: 1,
-                    bondMoney: '',
+                    bondMoney: 0,
                     bondProportion: '',
                     paymentTime: '',
                     jiaBillingInfo: {
@@ -951,6 +1187,20 @@
                     checkPerson: '',
                     checkPersonDepart: '',
                     checkServiceMethod: '',
+                    checkServiceMethods: [
+                        {
+                            id: 'check1',
+                            name: '验收方式1'
+                        },
+                        {
+                            id: 'check2',
+                            name: '验收方式2'
+                        },
+                        {
+                            id: 'check3',
+                            name: '验收方式3'
+                        },
+                    ],
                     checkSupervisor: '',
                     checkSupervisorDepart: '',
                     unionCheckPersons: [],
@@ -961,8 +1211,51 @@
                     dialogAddServiceVisible: false,
                 },
                 cardSealInfoForm: {
-                    sealFileList: [],
-                    dialogNewContractVisible: false,
+                    sealFileList: [
+                        {
+                            id: '',
+                            name: '文件名',
+                            type: '1',
+                            code: '0011001',
+                            types: [
+                                {
+                                    id: '1',
+                                    name: '其他'
+                                },
+                                {
+                                    id: '2',
+                                    name: '从协议'
+                                },
+                                {
+                                    id: '3',
+                                    name: '合同'
+                                },
+                            ],
+                            isSeal: true,
+                            remark: '',
+                            sealTimes: '',
+                            printTimes: '',
+                            retainFileNumber: '',
+                            sealName: '',
+                            ifPrint: '',
+                            useSeal: ['seal1', 'seal2'],
+                            useSeals: [
+                                {
+                                    id: 'seal1',
+                                    name: '公章'
+                                },
+                                {
+                                    id: 'seal2',
+                                    name: '法人章'
+                                },
+                                {
+                                    id: 'seal3',
+                                    name: '人事章'
+                                },
+                            ],
+
+                        }
+                    ],
                 },
                 cardRemarkInfoForm: {
                     otherInstruction: '',
@@ -1067,6 +1360,11 @@
                     name: '',
                     depart: '',
                     ifRequired: 1,
+                    rules: {
+                        name: [
+                            {required: true, message: '请输入验收人', trigger: 'blur'},
+                        ],
+                    },
                 },
                 formAddServiceCheck: {
                     name: '',
@@ -1144,7 +1442,6 @@
             conVersion: function () {
                 let id = this.baseInfoForm.templateName, templateOptions = this.baseInfoForm.templateOptions, result = '';
                 if (templateOptions && templateOptions.length > 0) {
-                    //result=_.result(_.findWhere(templateOptions, {'id': id}), 'version');//======???
                     for (let i = 0, len = templateOptions.length; i < len; i++) {
                         if (id == templateOptions[i].id) {
                             result = 'V-' + templateOptions[i].version;
@@ -1152,7 +1449,25 @@
                     }
                 }
                 return result;
-            }
+            },
+            totalConMoney: function () {
+                let paymentMethods = this.cardFinanceInfoForm.paymentMethod, result = 0;
+                for (let i = 0, len = paymentMethods.length; i < len; i++) {
+                    result += parseFloat(paymentMethods[i].money);
+                }
+                return result;
+            },
+            showMaterialItems: function () {
+                let result = false, arrConStandard = this.cardContentInfoForm.conStandard;
+                if (arrConStandard && arrConStandard.length > 0) {
+                    for (let i = 0, len = arrConStandard.length; i < len; i++) {
+                        if (arrConStandard[i].id) {
+                            result = true;
+                        }
+                    }
+                }
+                return result;
+            },
         },
         mounted(){
             Api.getContractBaseInfo({}).then((data)=> {
@@ -1178,51 +1493,62 @@
             handleNewSubjectName(){
                 this.baseInfoForm.dialogNewSubjectVisible = true;
             },
-            handleAddPaymentMethod(){
-                this.cardFinanceInfoForm.dialogNewPaymentVisible = true;
-            },
-            handleAddNewPay(formName){
-                this.$refs[formName].resetFields();
-                this.cardFinanceInfoForm.dialogNewPaymentVisible = false;
-            },
-            handleCancelAddNewPay(){
-                this.$refs[formName].resetFields();
-                this.cardFinanceInfoForm.dialogNewPaymentVisible = false;
-            },
             handleAddUnionCheck(){
                 this.cardContCheckInfoForm.dialogAddUnionCheckVisible = true;
             },
-            handleAddServiceMatter(){
-                console.log('添加服务验收事项');
+            handleAddServiceMatter(formName){
                 this.cardContCheckInfoForm.dialogAddServiceVisible = true;
             },
             handleAddUnionCheckItem(formName){
-                this.$refs[formName].resetFields();
-                this.cardContCheckInfoForm.dialogAddUnionCheckVisible = false;
+                this.$refs[formName].validate((valid) => {
+                    if (valid) {
+                        this.cardContCheckInfoForm.unionCheckPersons.push({
+                            name: this.formAddUnionCheck.name,
+                            ifRequired: this.formAddUnionCheck.ifRequired,
+                            depart: this.formAddUnionCheck.depart
+                        });
+                        this.$refs[formName].resetFields();
+                        this.cardContCheckInfoForm.dialogAddUnionCheckVisible = false;
+                    } else {
+                        console.log('error submit!!');
+                        return false;
+                    }
+                });
+
             },
             handleCancelAddUnionCheck(formName){
                 this.$refs[formName].resetFields();
                 this.cardContCheckInfoForm.dialogAddUnionCheckVisible = false;
             },
             handleAddServiceCheckItem(formName){
-                this.$refs[formName].resetFields();
-                this.cardContCheckInfoForm.dialogAddServiceVisible = false;
+                let curForm = this.$refs[formName];
+                curForm.validate((valid) => {
+                    if (valid) {
+                        let index = _.findIndex(this.cardContCheckInfoForm.serviceMatters, function (chr) {
+                            return chr.name == curForm.model.name;
+                        });
+                        if (index > -1) {
+                            this.$message.error('这条数据已存在咯！');
+                            return false;
+                        }
+                        this.cardContCheckInfoForm.serviceMatters.push({
+                            requirement: curForm.model.requirement,
+                            name: curForm.model.name,
+                            remark: curForm.model.remark,
+                            type: 'add',
+                        });
+                        curForm.resetFields();
+                        this.cardContCheckInfoForm.dialogAddServiceVisible = false;
+                    } else {
+                        console.log('error submit!!');
+                        return false;
+                    }
+                });
+
             },
             handleCancelAddServiceCheck(formName){
                 this.$refs[formName].resetFields();
                 this.cardContCheckInfoForm.dialogAddServiceVisible = false;
-            },
-            handleAddContractFile(){
-                console.log('添加合同文件');
-                this.cardSealInfoForm.dialogNewContractVisible = true;
-            },
-            handleAddContractItem(formName){
-                this.$refs[formName].resetFields();
-                this.cardSealInfoForm.dialogNewContractVisible = false;
-            },
-            handleCancelContract(formName){
-                this.$refs[formName].resetFields();
-                this.cardSealInfoForm.dialogNewContractVisible = false;
             },
             handleAttachment(){
                 console.log('添加附件信息');
@@ -1448,125 +1774,67 @@
                 this.$refs[formName].resetFields();
                 this.cardContentInfoForm.dialogNewThirdPartyVisible = false;
             },
-
-
-            getModuleList() {
-                const $self = this;
-                api.getTemplateModuleList({}).then((res) => {
-                    $self.source.templateModules = res.data.data.modules.map(function (el) {
-                        return {
-                            key: el.Code,
-                            label: el.Name,
-                            disabled: false,
-                            content: el.Content,
-                            sort: el.Sort,
-                            type: el.Type,
-                            position: el.Position,
-                        };
-
-                    });
-
-                    $self.source.templateTags = res.data.data.templateTags;
-                });
-            },
-            refreshTemplate() {
-                const newTargetItems = [];
-                this.source.targetModuleKeys.forEach(key => {
-                    newTargetItems.push(this.source.templateModules.find((m) => {
-                        return m.key === key
-                    }));
-                });
-//				newTargetItems.sort(m => {
-//					return m.sort
-//				});
-
-                this.editTemplate.header = '';
-                this.editTemplate.footer = '';
-                const templateTags = this.source.templateTags;
-
-                newTargetItems.forEach(m => {
-                    if (m.type === 'H')
-                        this.editTemplate.header += m.content;
-                    else if (m.type === 'F')
-                        this.editTemplate.footer += m.content;
-                    else if (m.type === 'S') {
-                        this.source.targetTagKeys.forEach(c => {
-                            const item = templateTags.find(t => {
-                                return c === t.Code && m.key === t.ModuleCode;
-                            });
-                            if (item) {
-                                if (m.position === 'Top')
-                                    this.editTemplate.header += item.Content;
-                                else
-                                    this.editTemplate.footer += item.Content;
-                            }
-                        });
+            handleAddAdvanceItem(type){
+                let paymentMethods = this.cardFinanceInfoForm.paymentMethod, item = {
+                    money: 0,
+                    curTime: '',
+                    times: [
+                        {
+                            value: 'subItem1',
+                            label: '合同签约15天'
+                        },
+                        {
+                            value: 'subItem2',
+                            label: '合同签约30天'
+                        },
+                        {
+                            value: 'subItem3',
+                            label: '合同签约90天'
+                        }
+                    ],
+                    remark: '',
+                    proportion: '',
+                };
+                for (let i = 0, len = paymentMethods.length; i < len; i++) {
+                    if (type == paymentMethods[i].type) {
+                        paymentMethods[i].subItem.push(item);
                     }
-                });
-                this.editTemplate.header = tagService.template_preview('<h2 style="text-align:center;">' + "联合扶持品牌经销商营销活动协议" + '</h2><br/><br/>' + this.editTemplate.header);
-                this.editTemplate.footer = tagService.template_preview(this.editTemplate.footer);
-            },
-            formatTemplateContent(content) {
-                if (content) {
-                    return content;
-                } else {
-                    return '';
                 }
             },
-            conPreview() {
-                let templateCode = this.con.templateCode;
-                if (templateCode === "0") {
-                    this.$Message.error('请选择模板名称!');
-                    return;
-                }
-
-                const conContent = '<span>依照《中华人民共和国合同法》，《中华人民共和国建筑法》，《中华人民共和国消防法》，及其他有关法律，行政法规，遵循平等，自愿，公平和诚实信用的原则，甲方将红星美凯龙北京西四环商场防火门改造安装工程承包给乙方施工，为确保施工进度和质量，经甲、乙双方协商一致，订立本合同。</span>';
-                this.showConPreviewModal = true;
-                const conTemplates = [
-                    {concode: "1", moduleKeys: ['header2', 'purchase_table', 'footer'], content: conContent},
-                    {concode: "2", moduleKeys: ['header2', 'payment', 'footer'], content: conContent},
-                    {concode: "3", moduleKeys: ['header2', 'footer'], content: conContent},
-                    {concode: "4", moduleKeys: ['header2', 'purchase_table', 'payment', 'footer'], content: conContent}
-                ];
-
-                let conTemplate = conTemplates.find(t => {
-                    return templateCode === t.concode;
-                });
-
-                this.source.targetModuleKeys = conTemplate.moduleKeys;
-                this.editTemplate.content = conTemplate.content;
-                this.source.targetTagKeys = [];
-                if (this.pr.type === 1) {
-                    this.source.targetTagKeys.push("purchase_table_1");
-                } else {
-                    this.source.targetTagKeys.push("purchase_table_2");
-                }
-                if (this.con.isOnePay === 1) {
-                    this.source.targetTagKeys.push("payment_2");
-                } else {
-                    this.source.targetTagKeys.push("payment_1");
-                }
-                this.refreshTemplate();
-
-                this.editTemplate.html = this.editTemplate.header + this.formatTemplateContent(this.editTemplate.content) + this.editTemplate.footer;
-                templateReplace.addData("materials", this.pr.materials);
-                templateReplace.addData("payments", this.con.payments);
-                this.editTemplate.html = templateReplace.getRepalceHtml(this.editTemplate.html);
+            handleRemoveAdvanceItem(index, rows){
+                rows.splice(index, 1);
             },
-            cancel() {
-                this.showConCheckPersonModal = false;
+            getProportion(money){
+                let result = 0;
+                if (money) {
+                    result = parseFloat(money) / parseFloat(this.totalConMoney);
+                }
+                return result.toFixed(2) * 100 + '%';
             },
-            exportPDF() {
-                const newWindow = window.open("打印窗口", "_blank");
-                //打印内容写入newWindow文档
-                newWindow.document.write(this.editTemplate.html);
-                //关闭文档
-                newWindow.document.close();
-                //调用打印机
-                newWindow.print();
-                //关闭newWindow页面
-                newWindow.close();
-            }
+            handleRemoveServiceMatter(index, rows){
+                rows.splice(index, 1);
+            },
+            handleUploadSealFileSuccess(res, file, fileList){
+                console.log('res', res);
+                console.log('file', file);
+                console.log('fileList', fileList);
+            },
+            handleUploadSealFileError(err, file, fileList){
+                console.log('error', err);
+                console.log('file', file);
+                console.log('fileList', fileList);
+            },
+            handleUploadFileAfterSealSuccess(res, file, fileList){
+                console.log('res', res);
+                console.log('file', file);
+                console.log('fileList', fileList);
+            },
+            handleUploadFileAfterSealError(err, file, fileList){
+                console.log('error', err);
+                console.log('file', file);
+                console.log('fileList', fileList);
+            },
+
         },
     }
 </script>

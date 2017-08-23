@@ -115,7 +115,7 @@ module.exports = function (api) {
                         },
                     ],
                     conStandard: [
-                        {
+                        /*{
                             id: 'material-4584358',
                             name: '红星美凯龙',
                             number: 80,
@@ -126,7 +126,7 @@ module.exports = function (api) {
                             name: '悦家',
                             number: 809,
                             taxRate: 0.18
-                        },
+                        },*/
                     ],
                 },
             }
