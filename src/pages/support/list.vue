@@ -145,7 +145,7 @@
       return {
         form: {
           keywords: '',
-          templateType: '',
+          templateType: null,
           templateCode: '',
           startTime: '',
           endTime: '',

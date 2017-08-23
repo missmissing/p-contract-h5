@@ -14,7 +14,7 @@
     .preview {
       padding: 15px;
       border: 1px solid #ddd;
-      min-height: 646px;
+      min-height: 630px;
       word-wrap: break-word;
       .header {
         margin-bottom: 20px;
@@ -71,7 +71,7 @@
             </div>
           </el-col>
           <el-col :span="12" :offset="1">
-            <div class="row pre-title">预览</div>
+            <div class="mb20 pre-title">预览</div>
             <div class="preview">
               <div v-html="header" class="header"></div>
               <div v-html="form.content"></div>
@@ -94,14 +94,18 @@
   import {routerNames} from '@/core/consts';
   import * as types from '../../store/consts';
   import supportModel from '../../api/support';
+  import getModules from '@/mixins/getModules';
 
   export default {
+    mixins: [getModules],
     data() {
       return {
         form: {
           contentModule: [],
           content: ''
         },
+        header: '',
+        footer: '',
         tplType: '',
         options: [],
         modulesData: [],
@@ -128,12 +132,10 @@
       };
     },
     props: {
-      routeName: {
-        default: ''
-      },
       showTmpl: {
         default: false
-      }
+      },
+      tplInfo: Object
     },
     methods: {
       getTmplTypes() {
@@ -146,42 +148,6 @@
           contentModule: ''
         }];
       },
-      getModuleData() {
-        supportModel.getModuleData({}).then((res) => {
-          this.modulesData = res.data.dataMap;
-        });
-      },
-      setData() {
-        const {tplInfo} = this.$store.state.support;
-        Object.keys(this.form).forEach((key) => {
-          if (tplInfo.hasOwnProperty(key)) {
-            if (key === 'contentModule') {
-              this.form[key] = tplInfo[key].map(item => item.id);
-            } else {
-              this.form[key] = tplInfo[key];
-            }
-          }
-        });
-      },
-      setModulesData(type) {
-        const value = this.form.contentModule;
-        const modulesData = this.modulesData;
-        if (!value.length || !modulesData.length) {
-          return '';
-        }
-
-        const result = [];
-        value.forEach((key) => {
-          const module = _.find(modulesData, (o) => {
-            return o.id === key;
-          });
-          const content = module.moduleContent;
-          if (module.moduleType === type) {
-            result.push(content);
-          }
-        });
-        return result.join('');
-      },
       save() {
         this[types.SET_INFO]({
           info: this.form
@@ -193,13 +159,10 @@
       },
       ...mapMutations([
         types.SET_INFO
-      ]),
-      ...mapGetters([
-        'getRouteName'
       ])
     },
     watch: {
-      ['tplType']() {
+      tplType() {
         const options = this.options;
         if (!options.length) {
           return;
@@ -209,26 +172,56 @@
         });
         this.form.contentModule = option.contentModule;
       },
-      $route() {
-        const id = this.$route.params.id;
-        if (!id) {
-          Object.assign(this.form, {
-            tplType: '',
-            contentModule: [],
-            content: ''
+      modulesData() {
+        if (this.disabled) {
+          return this.modulesData.map((item) => {
+            item.disabled = true;
+            return item;
           });
         }
+      },
+      tplInfo() {
+        const tplInfo = this.tplInfo;
+        if (!tplInfo) {
+          return;
+        }
+        Object.keys(this.form).forEach((key) => {
+          if (tplInfo.hasOwnProperty(key)) {
+            if (key === 'contentModule') {
+              this.form[key] = tplInfo[key].map(item => item.id);
+            } else {
+              this.form[key] = tplInfo[key];
+            }
+          }
+        });
+      },
+      ['form.contentModule']() {
+        const value = this.form.contentModule;
+        const modulesData = this.modulesData;
+        if (!value.length || !modulesData.length) {
+          return [];
+        }
+
+        const header = [];
+        const footer = [];
+        value.forEach((key) => {
+          const module = _.find(modulesData, (o) => {
+            return o.id === key;
+          });
+          const content = module.moduleContent;
+          if (module.moduleType === 1) {
+            header.push(content);
+          } else if (module.moduleType === 2) {
+            footer.push(content);
+          }
+        });
+        this.header = header.join('');
+        this.footer = footer.join('');
       }
     },
     computed: {
-      header() {
-        return this.setModulesData(1);
-      },
-      footer() {
-        return this.setModulesData(2);
-      },
       disabled() {
-        return [routerNames.con_tpl_see, routerNames.con_tpl_abolish].indexOf(this.routeName) > -1;
+        return [routerNames.con_tpl_see, routerNames.con_tpl_abolish].indexOf(this.$route.name) > -1;
       }
     },
     components: {
@@ -236,10 +229,6 @@
     },
     created() {
       this.getTmplTypes();
-      this.getModuleData();
-      if ([routerNames.con_tpl_see, routerNames.con_tpl_update].indexOf(this.$route.name) > -1) {
-        this.setData();
-      }
     }
   };
 </script>
