@@ -8,7 +8,7 @@ export default {
     return Http.get(`/api/support/tmpl/type`, params);
   },
   getModuleData(params) {
-    return Http.get(`${contract}/contract-web/module/findModule`, params);
+    return Http.get(`${contract}/contract-web/module/findDemoModule`, params);
   },
   getBusiType(params) {
     return Http.get(`${contract}/contract-web/contractBizType/getAllTypes`, params);

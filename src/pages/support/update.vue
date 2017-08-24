@@ -6,7 +6,9 @@
 
 <template>
   <div>
-    <div v-if="!showTmpl">
+    <div v-if="!showTmpl"
+         v-loading="loading"
+         element-loading-text="拼命加载中">
       <el-card class="mb20">
         <div slot="header">
           <span class="common-title">基本信息</span>
@@ -202,7 +204,8 @@
       label: 'businessName'
     },
     visible: false,
-    showTmpl: false
+    showTmpl: false,
+    loading: false
   };
 
   export default {
@@ -214,13 +217,15 @@
     },
     methods: {
       search() {
+        this.loading = true;
         supportModel.getCurrentTemplateByCode({
           templateCode: this.form.templateCode,
         }).then((res) => {
           console.log(res);
-          Object.assign(this.$data, _.cloneDeep(defaultData), {routeName: this.$data.routeName});
+          Object.assign(this.$data, _.cloneDeep(defaultData));
           const tplInfo = res.data.dataMap;
           this.setData(tplInfo);
+          this.loading = false;
         });
       },
       showTreeModal() {
@@ -293,7 +298,7 @@
         supportModel.selectTemplateCode({
           templateCode: queryString
         }).then((res) => {
-          const result = res.data.dataMap;
+          const result = res.data.dataMap || [];
           cb(this.createFilter(result));
         });
       },

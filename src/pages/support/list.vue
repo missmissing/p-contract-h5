@@ -5,7 +5,9 @@
 </style>
 
 <template>
-  <div class="list-container">
+  <div class="list-container"
+       v-loading="loading"
+       element-loading-text="拼命加载中">
     <el-card>
       <div slot="header">
         <span class="common-title">合同模板列表</span>
@@ -167,9 +169,11 @@
         this.getList(this.form);
       },
       getList(params) {
+        this.loading = true;
         supportModel.getList(params).then((res) => {
           console.log(res);
           this.tableData = res.data.dataMap;
+          this.loading = false;
         })
       },
       see(index, row) {

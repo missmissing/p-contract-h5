@@ -12,7 +12,11 @@
           <span class="common-title">基本信息</span>
         </div>
         <div class="form-container">
-          <el-form ref="form" label-width="120px">
+          <el-form
+            v-loading="loading"
+            element-loading-text="拼命加载中"
+            ref="form"
+            label-width="120px">
             <el-row>
               <el-col :span="8">
                 <el-form-item label="模板编号">
@@ -120,7 +124,8 @@
     operatorName: '',
     creatorName: '',
     version: '',
-    showTmpl: false
+    showTmpl: false,
+    loading: false
   };
 
   export default {
@@ -151,12 +156,14 @@
         });
       },
       getTplData() {
+        this.loading = true;
         supportModel.getTplData({
           templateId: this.$route.params.id
         }).then((res) => {
           console.log(res);
           const tplInfo = res.data.dataMap;
           this.setData(tplInfo);
+          this.loading = false;
         });
       }
     },
