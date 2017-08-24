@@ -29,4 +29,8 @@ export default {
     getRemoteThirdPartiesByKeyWord(params){
         return Http.get(`/api/createContract/getRemoteThirdPartiesByKeyWord`, params);
     },
+    //获取其他信息
+    getRelatedInfo(params){
+        return Http.get(`/api/createContract/getRelatedInfo`, params);
+    },
 };

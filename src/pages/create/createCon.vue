@@ -20,7 +20,7 @@
     <div>
         <el-card>
             <header slot="header">合同基本信息</header>
-            <el-form ref="baseInfoForm" :model="baseInfoForm" label-width="100px">
+            <el-form ref="baseInfoForm" :model="baseInfoForm" label-width="100px" :rules="baseInfoForm.rules">
                 <el-row>
                     <el-col :span="8">
                         <el-form-item label="业务经办人">
@@ -55,8 +55,8 @@
                             <el-input v-model="baseInfoForm.belongProject" placeholder="请输入所属项目"></el-input>
                         </el-form-item>
                     </el-col>
-                    <el-col :span="16">
-                        <el-form-item label="模版名称">
+                    <el-col :span="16" v-if="baseInfoForm.conTextType==1">
+                        <el-form-item label="模版名称" prop="templateName">
                             <el-select v-model="baseInfoForm.templateName" placeholder="请选择合同模版">
                                 <el-option
                                         v-for="item in baseInfoForm.templateOptions"
@@ -688,6 +688,7 @@
                                 <el-table-column prop="type" label="附件类型">
                                     <template scope="scope">
                                         <el-select
+                                                :disabled="true"
                                                 size="small"
                                                 v-model="cardSealInfoForm.sealFileList[scope.$index].type">
                                             <el-option
@@ -727,6 +728,7 @@
                                 <el-table-column prop="isSeal" label="是否盖章">
                                     <template scope="scope">
                                         <el-checkbox
+                                                :disabled="true"
                                                 v-model="cardSealInfoForm.sealFileList[scope.$index].isSeal"></el-checkbox>
                                     </template>
                                 </el-table-column>
@@ -752,14 +754,6 @@
                                           v-model="cardRemarkInfoForm.otherInstruction"></el-input>
                             </el-form-item>
                         </el-card>
-                        <el-row>
-                            <el-col :span="8">
-                                <el-form-item prop="fromAgreementCode" label="从协议编号">
-                                    <el-input v-model="cardRemarkInfoForm.fromAgreementCode"
-                                              placeholder="请输入从协议编号"></el-input>
-                                </el-form-item>
-                            </el-col>
-                        </el-row>
                         <el-card>
                             <header slot="header">附件信息</header>
                             <el-button @click="handleAttachment" icon="plus" type="primary">添加附件信息</el-button>
@@ -992,7 +986,7 @@
                 </el-button>
             </el-col>
             <el-col :span="4">
-                <el-button type="primary" @click="handleSubmit('')">提交</el-button>
+                <el-button type="primary" @click="handleSubmit">提交</el-button>
             </el-col>
         </el-row>
     </div>
@@ -1000,10 +994,7 @@
 <script>
     import Api from '../../api/create';
     import _ from 'lodash';
-    //import searchuser from '../../components/searchUser.vue'
-    //import api from '../../api'
-    //import tagService from '../../utils/tag.js'
-    //import templateReplace from '../../utils/templateReplace.js'
+
     export default {
         data() {
             return {
@@ -1025,6 +1016,11 @@
                     radioSealOrder: 0,//0：我方先盖章 1：对方先盖章
                     sealReason: '',
                     dialogNewSubjectVisible: false,
+                    rules: {
+                        templateName: [
+                            {required: true, message: '请选择合同模版', trigger: 'blur'},
+                        ],
+                    },
                 },
                 activeTabName: 'tabContInfo',
                 cardContentInfoForm: {
@@ -1259,7 +1255,6 @@
                 },
                 cardRemarkInfoForm: {
                     otherInstruction: '',
-                    fromAgreementCode: '',
                     attachmentList: [
                         {
                             attachmentType: '其他',
@@ -1271,15 +1266,7 @@
                     dialogAddAttachmentVisible: false,
                 },
                 cardRelatedInfoForm: {
-                    contractList: [
-                        {
-                            contractCode: '32489328034',
-                            type: '合同类型',
-                            status: '状态',
-                            company: '公司',
-                            startTime: '2017-97-34',
-                        }
-                    ],
+                    contractList: [],
                 },
                 formNewSubject: {
                     rules: {
@@ -1595,15 +1582,19 @@
             handleSave(formName){
                 console.log('save', formName);
             },
-            handleSubmit(formName){
-                this.$refs[formName].validate((valid) => {
-                    if (valid) {
-                        alert('submit!');
-                    } else {
-                        console.log('error submit!!');
-                        return false;
-                    }
+            handleSubmit(){
+                console.log('submit');
+                Api.getRelatedInfo({}).then((data)=> {
+                    this.cardRelatedInfoForm.contractList = data.data.dataMap.contractList;
                 });
+                /*this.$refs[formName].validate((valid) => {
+                 if (valid) {
+                 alert('submit!');
+                 } else {
+                 console.log('error submit!!');
+                 return false;
+                 }
+                 });*/
             },
             handleAddNewSubject(formName){
                 let curForm = this.$refs[formName];

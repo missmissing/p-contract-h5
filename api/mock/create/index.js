@@ -116,17 +116,17 @@ module.exports = function (api) {
                     ],
                     conStandard: [
                         /*{
-                            id: 'material-4584358',
-                            name: '红星美凯龙',
-                            number: 80,
-                            taxRate: 0.8
-                        },
-                        {
-                            id: 'material-8495843085',
-                            name: '悦家',
-                            number: 809,
-                            taxRate: 0.18
-                        },*/
+                         id: 'material-4584358',
+                         name: '红星美凯龙',
+                         number: 80,
+                         taxRate: 0.8
+                         },
+                         {
+                         id: 'material-8495843085',
+                         name: '悦家',
+                         number: 809,
+                         taxRate: 0.18
+                         },*/
                     ],
                 },
             }
@@ -194,6 +194,23 @@ module.exports = function (api) {
                         id: 'supplier003',
                         name: '供应商3'
                     },
+                ]
+            }
+        });
+    });
+    api.use('/api/createContract/getRelatedInfo', function (req, res) {
+        res.status(200).json({
+            code: 200,
+            message: 'success',
+            dataMap: {
+                contractList: [
+                    {
+                        contractCode: '32489328034',
+                        type: '合同类型',
+                        status: '状态',
+                        company: '公司',
+                        startTime: '2017-97-34',
+                    }
                 ]
             }
         });
