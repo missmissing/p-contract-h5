@@ -118,6 +118,7 @@
                 <el-button type="primary" @click="handleOKDialog">确定</el-button>
             </template>
         </el-dialog>
+
     </div>
 </template>
 <script>
@@ -267,6 +268,15 @@
                 this.dialogVisible = false;
             },
             handleOKDialog(){
+                this.$refs['prForm'].validate((valid)=> {
+                    console.log('validate');
+                    if (valid) {
+                        console.log('success');
+                    } else {
+                        console.log('error');
+                        return false;
+                    }
+                });
                 this.dialogVisible = false;
                 const startTime = this.prForm.createTime[0] ? this.prForm.createTime[0].toLocaleDateString() : '';
                 const endTime = this.prForm.createTime[1] ? this.prForm.createTime[1].toLocaleDateString() : '';

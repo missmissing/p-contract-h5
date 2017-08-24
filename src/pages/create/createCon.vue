@@ -51,7 +51,7 @@
                 </el-row>
                 <el-row>
                     <el-col :span="8">
-                        <el-form-item label="所属项目">
+                        <el-form-item label="所属项目" prop="belongProject">
                             <el-input v-model="baseInfoForm.belongProject" placeholder="请输入所属项目"></el-input>
                         </el-form-item>
                     </el-col>
@@ -109,12 +109,13 @@
         <el-card>
             <el-tabs v-model="activeTabName" @tab-click="handleTabClick">
                 <el-tab-pane label="合同内容信息" name="tabContInfo">
-                    <el-form rel="cardContentInfoForm" :model="cardContentInfoForm" label-width="100px">
+                    <el-form ref="cardContentInfoForm" :model="cardContentInfoForm" label-width="120px"
+                             :rules="cardContentInfoForm.rules">
                         <el-card>
                             <header slot="header">合同供应商信息</header>
                             <el-button v-if="cardContentInfoForm.tableSupplierInfo.length<=0"
                                        @click="handleAddContractSupplier" icon="plus"
-                                       type="primary">添加合同供应商信息
+                                       type="primary">新增
                             </el-button>
                             <el-table :data="cardContentInfoForm.tableSupplierInfo">
                                 <el-table-column type="index"></el-table-column>
@@ -136,7 +137,7 @@
                         </el-card>
                         <el-card>
                             <header slot="header">合同我方主体名称</header>
-                            <el-button type="primary" @click="handleNewSubjectName" icon="plus">新增合同我方主体</el-button>
+                            <el-button type="primary" @click="handleNewSubjectName" icon="plus">新增</el-button>
                             <el-table :data="cardContentInfoForm.conSubjctName">
                                 <el-table-column prop="id" label="公司代码"></el-table-column>
                                 <el-table-column prop="name" label="公司名称"></el-table-column>
@@ -156,7 +157,7 @@
                         </el-card>
                         <el-card v-if="baseInfoForm.conModel!='con4'">
                             <header slot="header">第三方信息</header>
-                            <el-button type="primary" @click="handleNewthirdPartyInfo" icon="plus">新增第三方信息</el-button>
+                            <el-button type="primary" @click="handleNewthirdPartyInfo" icon="plus">新增</el-button>
                             <el-table :data="cardContentInfoForm.thirdPartyInfo">
                                 <el-table-column prop="id" label="供应商编号"></el-table-column>
                                 <el-table-column prop="name" label="供应商名称"></el-table-column>
@@ -185,21 +186,19 @@
                             </el-table>
                             <el-row>
                                 <el-col :span="8">
-                                    <el-form-item label="合同生效日期" prop="effectiveDate"
-                                                  :rules="cardContentInfoForm.effectiveDateRules">
+                                    <el-form-item label="合同生效日期"
+                                                  prop="effectiveDate">
                                         <el-date-picker v-model="cardContentInfoForm.effectiveDate"
                                                         placeholder="请输入合同生效期日期"
-                                                        type="date"
-                                                        @change="handleChangeEffectiveDate"></el-date-picker>
+                                                        type="date"></el-date-picker>
                                     </el-form-item>
                                 </el-col>
                                 <el-col :span="8">
-                                    <el-form-item label="合同终止日期" prop="endDate"
-                                                  :rules="cardContentInfoForm.endDateRules">
+                                    <el-form-item label="合同终止日期"
+                                                  prop="endDate">
                                         <el-date-picker v-model="cardContentInfoForm.endDate"
                                                         placeholder="请输入合同终止日期"
-                                                        type="date"
-                                                        @change="handleChangeEndDate"></el-date-picker>
+                                                        type="date"></el-date-picker>
                                     </el-form-item>
                                 </el-col>
                             </el-row>
@@ -398,7 +397,7 @@
                                 </el-col>
                             </el-row>
                         </el-card>
-                        <el-card v-if="baseInfoForm.conModel==='con2'">
+                        <el-card v-if="baseInfoForm.conModel==='con2'&&cardFinanceInfoForm.hasMoney==1">
                             <header slot="header">开票信息</header>
                             <el-row>
                                 <el-col :span="12" class="billingInfo">
@@ -997,6 +996,24 @@
 
     export default {
         data() {
+            let validateEffectiveDateRules = (rule, value, callback)=> {
+                let endDate = this.cardContentInfoForm.endDate;
+                if (endDate) {
+                    if (new Date(value) > new Date(endDate)) {
+                        callback(new Error('合同终止日期必须大于合同生效日期'));
+                    }
+                }
+                callback();
+            };
+            let validateEndDate = (rule, value, callback)=> {
+                let effectiveDate = this.cardContentInfoForm.effectiveDate;
+                if (effectiveDate) {
+                    if (new Date(value) < new Date(effectiveDate)) {
+                        callback(new Error('合同终止日期必须大于合同生效日期'));
+                    }
+                }
+                callback();
+            };
             return {
                 operateType: '',
                 currentPr: '',
@@ -1017,6 +1034,7 @@
                     sealReason: '',
                     dialogNewSubjectVisible: false,
                     rules: {
+                        belongProject: [{required: true, message: '请输入所属项目', trigger: 'blur'}],
                         templateName: [
                             {required: true, message: '请选择合同模版', trigger: 'blur'},
                         ],
@@ -1024,16 +1042,31 @@
                 },
                 activeTabName: 'tabContInfo',
                 cardContentInfoForm: {
+                    errCount: 0,
                     tableSupplierInfo: [],
                     conSubjctName: [],
                     thirdPartyInfo: [],
                     conStandard: [],
                     effectiveDate: '',
-                    effectiveDateRules: [],
                     endDate: '',
-                    endDateRules: [],
                     dialogAddContractSupplier: false,
                     dialogNewThirdPartyVisible: false,
+                    rules: {
+                        effectiveDate: [{
+                            validator: validateEffectiveDateRules,
+                            trigger: 'change'
+                        }, {
+                            required: true,
+                            message: '请输入合同生效日期'
+                        }],
+                        endDate: [{
+                            validator: validateEndDate,
+                            trigger: 'change'
+                        }, {
+                            required: true,
+                            message: '请输入合同截止日期'
+                        }]
+                    }
                 },
                 cardFinanceInfoForm: {
                     hasMoney: 1,
@@ -1423,7 +1456,6 @@
             this.currentPr = query.currentPr;
             this.baseInfoForm.conModel = query.curConModelId;
             this.baseInfoForm.conType = query.curConTypeId;
-            console.log('currentPr', query.currentPr);
         },
         computed: {
             conVersion: function () {
@@ -1454,6 +1486,15 @@
                     }
                 }
                 return result;
+            },
+            contentErrorLen: function () {//合同内容信息错误数量
+                const supplier = this.cardContentInfoForm.tableSupplierInfo;
+                if (supplier.length > 0) {
+                    console.log('success');
+                } else {
+                    this.cardContentInfoForm.errCount = supplier;
+                }
+                return 0;
             },
         },
         mounted(){
@@ -1579,23 +1620,7 @@
             handleContractDetail(index, row){
                 console.log('详情', index, row);
             },
-            handleSave(formName){
-                console.log('save', formName);
-            },
-            handleSubmit(){
-                console.log('submit');
-                Api.getRelatedInfo({}).then((data)=> {
-                    this.cardRelatedInfoForm.contractList = data.data.dataMap.contractList;
-                });
-                /*this.$refs[formName].validate((valid) => {
-                 if (valid) {
-                 alert('submit!');
-                 } else {
-                 console.log('error submit!!');
-                 return false;
-                 }
-                 });*/
-            },
+
             handleAddNewSubject(formName){
                 let curForm = this.$refs[formName];
                 curForm.validate((valid) => {
@@ -1628,29 +1653,6 @@
             handleCancelAddNewSubject(formName){
                 this.$refs[formName].resetFields();
                 this.baseInfoForm.dialogNewSubjectVisible = false;
-            },
-            handleChangeEffectiveDate(date){
-                this.cardContentInfoForm.effectiveDate = date;
-                let endDate = 'this.cardContentInfoForm.endDate';
-                if (endDate) {
-
-                    console.log(' has endDate');
-                    console.log('new Date(date)', new Date(date));
-                    console.log('this.cardContentInfoForm.endDate', this.cardContentInfoForm.endDate);
-                    console.log('new Date(this.cardContentInfoForm.endDate)', new Date(this.cardContentInfoForm.endDate));
-                    if (new Date(date) > new Date(this.cardContentInfoForm.endDate)) {
-                        console.log('add rules');
-                        this.cardContentInfoForm.effectiveDateRules = `[
-      { required: true, message: '请输入邮箱地址', trigger: 'blur' },
-      {  message: '合同终止日期必须大于合同生效日期', trigger: 'change' }
-    ]`;
-                    }
-                }
-
-            },
-            handleChangeEndDate(date){
-                this.cardContentInfoForm.endDate = date;
-                console.log('end time', date);
             },
             handleAddContractSupplier(){
                 this.cardContentInfoForm.dialogAddContractSupplier = true;
@@ -1824,6 +1826,29 @@
                 console.log('error', err);
                 console.log('file', file);
                 console.log('fileList', fileList);
+            },
+            handleSave(formName){
+                console.log('save', formName);
+            },
+            handleSubmit(){
+                /*Api.getRelatedInfo({}).then((data)=> {
+                 this.cardRelatedInfoForm.contractList = data.data.dataMap.contractList;
+                 });*/
+                this.$refs.cardContentInfoForm.validate((valid)=> {
+                    console.log('validate');
+                    if (valid) {
+                        const supplier = this.cardContentInfoForm.tableSupplierInfo;
+                        if (supplier.length > 0) {
+                            console.log('success');
+                        } else {
+                            this.cardContentInfoForm.errCount = supplier;
+                        }
+
+                    } else {
+                        this.$message.error('请填写完整信息再提交！');
+                        return false;
+                    }
+                });
             },
 
         },
