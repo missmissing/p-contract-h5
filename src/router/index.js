@@ -54,6 +54,16 @@ const router = new Router({
       },
       children: [
         {
+          path: '/conperf/conlist',
+          component: function (resolve) {
+            require(['../pages/create/conLIst.vue'], resolve);
+          },
+          name: routerNames.con_list,
+          meta: {
+            auth: true
+          },
+        },
+        {
           path: '/ConCreate/Create',
           meta: {
             auth: true
@@ -64,11 +74,11 @@ const router = new Router({
           name: routerNames.con_createIndex
         },
         {
-          path: '/conperf/conlist',
+          path: '/conperf/conupdate',
           component: function (resolve) {
-            require(['../pages/create/conLIst.vue'], resolve);
+            require(['../pages/create/create.vue'], resolve);
           },
-          name: routerNames.con_list,
+          name: routerNames.con_update,
           meta: {
             auth: true
           },
@@ -172,16 +182,6 @@ const router = new Router({
             require(['../pages/performance/inspectionReject.vue'], resolve);
           },
           name: routerNames.con_check_reject,
-          meta: {
-            auth: true
-          },
-        },
-        {
-          path: '/conperf/conupdate',
-          component: function (resolve) {
-            require(['../pages/performance/conUpdate.vue'], resolve);
-          },
-          name: routerNames.con_update,
           meta: {
             auth: true
           },

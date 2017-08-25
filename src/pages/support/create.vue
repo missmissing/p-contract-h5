@@ -1,7 +1,5 @@
 <style type="text/scss" lang="scss" scoped>
-  .form-container {
 
-  }
 </style>
 
 <template>
@@ -11,7 +9,7 @@
         <div slot="header">
           <span class="common-title">基本信息</span>
         </div>
-        <div class="form-container">
+        <div>
           <el-form ref="form" label-width="120px">
             <el-row>
               <el-col :span="8">
@@ -99,10 +97,8 @@
         </div>
       </el-card>
       <el-row class="ml20 mb20">
-        <el-row>
-          <el-button @click="save(0)">保 存</el-button>
-          <el-button type="primary" @click="save(1)">提 交</el-button>
-        </el-row>
+        <!--<el-button @click="save(0)">保 存</el-button>-->
+        <el-button type="primary" @click="save(1)">提 交</el-button>
       </el-row>
     </div>
     <Tmpl v-show="showTmpl" :showTmpl.sync="showTmpl"></Tmpl>

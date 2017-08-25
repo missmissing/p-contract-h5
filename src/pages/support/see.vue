@@ -1,7 +1,5 @@
 <style type="text/scss" lang="scss" scoped>
-  .form-container {
 
-  }
 </style>
 
 <template>
@@ -11,7 +9,7 @@
         <div slot="header">
           <span class="common-title">基本信息</span>
         </div>
-        <div class="form-container">
+        <div>
           <el-form
             v-loading="loading"
             element-loading-text="拼命加载中"
