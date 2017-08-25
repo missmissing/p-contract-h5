@@ -189,7 +189,7 @@ const router = new Router({
                 {
                     path: '/conperf/conupdate',
                     component: function (resolve) {
-                        require(['../pages/performance/conUpdate.vue'], resolve);
+                        require(['../pages/create/create.vue'], resolve);
                     },
                     name: routerNames.con_update,
                     meta: {
