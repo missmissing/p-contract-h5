@@ -9,314 +9,324 @@ import {routerNames} from '../core/consts';
 Vue.use(Router);
 
 const router = new Router({
-  routes: [
-    {
-      path: '/login',
-      component: function (resolve) {
-        require(['../components/login.vue'], resolve);
-      },
-      name: routerNames.login,
-      meta: {
-        auth: false,
-        hidden: true,
-      }
-    },
-    {
-      path: '/404',
-      component: function (resolve) {
-        require(['../components/404.vue'], resolve);
-      },
-      name: routerNames.error404,
-      meta: {
-        auth: false,
-        hidden: true,
-      }
-    },
-    {
-      path: '/',
-      component: function (resolve) {
-        require(['../pages/home/home.vue'], resolve);
-      },
-      name: routerNames.home,
-      meta: {
-        auth: true,
-        hidden: true,
-      }
-    },
-    {
-      path: '/',
-      component: function (resolve) {
-        require(['../pages/home/home.vue'], resolve);
-      },
-      name: routerNames.con_create,
-      meta: {
-        iconCls: 'stats-bars',
-      },
-      children: [
+    routes: [
         {
-          path: '/ConCreate/Create',
-          meta: {
-            auth: true
-          },
-          component: function (resolve) {
-            require(['../pages/create/create.vue'], resolve);
-          },
-          name: routerNames.con_createIndex
+            path: '/login',
+            component: function (resolve) {
+                require(['../components/login.vue'], resolve);
+            },
+            name: routerNames.login,
+            meta: {
+                auth: false,
+                hidden: true,
+            }
         },
         {
-          path: '/conperf/conlist',
-          component: function (resolve) {
-            require(['../pages/create/conLIst.vue'], resolve);
-          },
-          name: routerNames.con_list,
-          meta: {
-            auth: true
-          },
+            path: '/404',
+            component: function (resolve) {
+                require(['../components/404.vue'], resolve);
+            },
+            name: routerNames.error404,
+            meta: {
+                auth: false,
+                hidden: true,
+            }
         },
         {
-          path: '/ConCreate/CreateFrameContract',//创建框架合同
-          meta: {
-            auth: true,
-            hidden: true
-          },
-          component: function (resolve) {
-            require(['../pages/create/createCon.vue'], resolve);
-          },
-          name: routerNames.con_createFrameContract
+            path: '/',
+            component: function (resolve) {
+                require(['../pages/home/home.vue'], resolve);
+            },
+            name: routerNames.home,
+            meta: {
+                auth: true,
+                hidden: true,
+            }
         },
         {
-          path: '/ConCreate/CreateIntentionContract',//创建意向合同
-          meta: {
-            auth: true,
-            hidden: true
-          },
-          component: function (resolve) {
-            require(['../pages/create/createCon.vue'], resolve);
-          },
-          name: routerNames.con_createIntentionContract
+            path: '/',
+            component: function (resolve) {
+                require(['../pages/home/home.vue'], resolve);
+            },
+            name: routerNames.con_create,
+            meta: {
+                iconCls: 'stats-bars',
+            },
+            children: [
+                {
+                    path: '/ConCreate/Create',
+                    meta: {
+                        auth: true
+                    },
+                    component: function (resolve) {
+                        require(['../pages/create/create.vue'], resolve);
+                    },
+                    name: routerNames.con_createIndex
+                },
+                {
+                    path: '/conperf/conlist',
+                    component: function (resolve) {
+                        require(['../pages/create/conLIst.vue'], resolve);
+                    },
+                    name: routerNames.con_list,
+                    meta: {
+                        auth: true
+                    },
+                },
+                {
+                    path: '/ConCreate/createSlaveProtocol',
+                    meta: {
+                        auth: true
+                    },
+                    component: function (resolve) {
+                        require(['../pages/create/createSlaveProtocol.vue'], resolve);
+                    },
+                    name: routerNames.con_createSlaveProtocol
+                },
+                {
+                    path: '/ConCreate/CreateFrameContract',//创建框架合同
+                    meta: {
+                        auth: true,
+                        hidden: true
+                    },
+                    component: function (resolve) {
+                        require(['../pages/create/createCon.vue'], resolve);
+                    },
+                    name: routerNames.con_createFrameContract
+                },
+                {
+                    path: '/ConCreate/CreateIntentionContract',//创建意向合同
+                    meta: {
+                        auth: true,
+                        hidden: true
+                    },
+                    component: function (resolve) {
+                        require(['../pages/create/createCon.vue'], resolve);
+                    },
+                    name: routerNames.con_createIntentionContract
+                },
+                {
+                    path: '/ConCreate/CreateSingleContract',//创建单一合同
+                    meta: {
+                        auth: true,
+                        hidden: true
+                    },
+                    component: function (resolve) {
+                        require(['../pages/create/createCon.vue'], resolve);
+                    },
+                    name: routerNames.con_createSingleContract
+                },
+                {
+                    path: '/ConCreate/CreateSimpleContract',//创建简易合同
+                    meta: {
+                        auth: true,
+                        hidden: true
+                    },
+                    component: function (resolve) {
+                        require(['../pages/create/createCon.vue'], resolve);
+                    },
+                    name: routerNames.con_createSimpleContract
+                },
+                {
+                    path: '/ConCreate/tabPage',//标签页
+                    meta: {
+                        auth: true
+                    },
+                    component: function (resolve) {
+                        require(['../pages/create/tabPage.vue'], resolve);
+                    },
+                    name: routerNames.con_tabPage
+                }
+            ]
         },
         {
-          path: '/ConCreate/CreateSingleContract',//创建单一合同
-          meta: {
-            auth: true,
-            hidden: true
-          },
-          component: function (resolve) {
-            require(['../pages/create/createCon.vue'], resolve);
-          },
-          name: routerNames.con_createSingleContract
+            path: '/',
+            component: function (resolve) {
+                require(['../pages/home/home.vue'], resolve);
+            },
+            name: routerNames.con_sign,
+            children: [{
+                path: '/consign/createpo',
+                meta: {
+                    auth: true
+                },
+                component: function (resolve) {
+                    require(['../pages/sign/createPO.vue'], resolve);
+                },
+                name: routerNames.con_purchase_order,
+            }],
+            meta: {
+                iconCls: 'stats-bars'
+            }
         },
         {
-          path: '/ConCreate/CreateSimpleContract',//创建简易合同
-          meta: {
-            auth: true,
-            hidden: true
-          },
-          component: function (resolve) {
-            require(['../pages/create/createCon.vue'], resolve);
-          },
-          name: routerNames.con_createSimpleContract
+            path: '/',
+            component: function (resolve) {
+                require(['../pages/home/home.vue'], resolve);
+            },
+            name: routerNames.con_performance,
+            children: [
+                //{
+                //  path: '/conperf/inspection',
+                //  component: function (resolve) {
+                //    require(['../pages/performance/inspection.vue'], resolve);
+                //  },
+                //  name: routerNames.con_performanceIndex,
+                //  meta: {
+                //    auth: true
+                //  },
+                //},
+                {
+                    path: '/conperf/inspectionreject',
+                    component: function (resolve) {
+                        require(['../pages/performance/inspectionReject.vue'], resolve);
+                    },
+                    name: routerNames.con_check_reject,
+                    meta: {
+                        auth: true
+                    },
+                },
+                {
+                    path: '/conperf/conupdate',
+                    component: function (resolve) {
+                        require(['../pages/performance/conUpdate.vue'], resolve);
+                    },
+                    name: routerNames.con_update,
+                    meta: {
+                        auth: true
+                    },
+                },
+                {
+                    path: '/conperf/conrepeal',
+                    component: function (resolve) {
+                        require(['../pages/performance/conRepeal.vue'], resolve);
+                    },
+                    name: routerNames.con_stop,
+                    meta: {
+                        auth: true
+                    },
+                },
+                {
+                    path: '/conperf/compensate',
+                    component: function (resolve) {
+                        require(['../pages/performance/compensate.vue'], resolve);
+                    },
+                    name: routerNames.con_compensate,
+                    meta: {
+                        auth: true
+                    },
+                }
+            ],
+            meta: {
+                iconCls: 'stats-bars'
+            }
         },
         {
-          path: '/ConCreate/tabPage',//标签页
-          meta: {
-            auth: true
-          },
-          component: function (resolve) {
-            require(['../pages/create/tabPage.vue'], resolve);
-          },
-          name: routerNames.con_tabPage
+            path: '/',
+            component: function (resolve) {
+                require(['../pages/home/home.vue'], resolve);
+            },
+            name: routerNames.con_support,
+            children: [
+                {
+                    path: '/contemplate/list',
+                    component: function (resolve) {
+                        require(['../pages/support/list.vue'], resolve);
+                    },
+                    meta: {
+                        auth: true
+                    },
+                    name: routerNames.con_tpl_list
+                },
+                {
+                    path: '/contemplate/see/:id',
+                    component: function (resolve) {
+                        require(['../pages/support/see.vue'], resolve);
+                    },
+                    meta: {
+                        hidden: true,
+                        auth: true
+                    },
+                    name: routerNames.con_tpl_see
+                },
+                {
+                    path: '/contemplate/create',
+                    component: function (resolve) {
+                        require(['../pages/support/create.vue'], resolve);
+                    },
+                    meta: {
+                        auth: true
+                    },
+                    name: routerNames.con_tpl_create
+                },
+                {
+                    path: '/contemplate/update',
+                    component: function (resolve) {
+                        require(['../pages/support/update.vue'], resolve);
+                    },
+                    meta: {
+                        auth: true
+                    },
+                    name: routerNames.con_tpl_update
+                },
+                {
+                    path: '/contemplate/abolish',
+                    component: function (resolve) {
+                        require(['../pages/support/abolish.vue'], resolve);
+                    },
+                    meta: {
+                        auth: true
+                    },
+                    name: routerNames.con_tpl_abolish
+                }
+            ],
+            meta: {
+                iconCls: 'stats-bars'
+            }
+        },
+        {
+            path: '*',
+            meta: {
+                auth: true,
+                hidden: true
+            },
+            redirect: {
+                path: '/404'
+            }
         }
-      ]
-    },
-    {
-      path: '/',
-      component: function (resolve) {
-        require(['../pages/home/home.vue'], resolve);
-      },
-      name: routerNames.con_sign,
-      children: [{
-        path: '/consign/createpo',
-        meta: {
-          auth: true
-        },
-        component: function (resolve) {
-          require(['../pages/sign/createPO.vue'], resolve);
-        },
-        name: routerNames.con_purchase_order,
-      }],
-      meta: {
-        iconCls: 'stats-bars'
-      }
-    },
-    {
-      path: '/',
-      component: function (resolve) {
-        require(['../pages/home/home.vue'], resolve);
-      },
-      name: routerNames.con_performance,
-      children: [
-        //{
-        //  path: '/conperf/inspection',
-        //  component: function (resolve) {
-        //    require(['../pages/performance/inspection.vue'], resolve);
-        //  },
-        //  name: routerNames.con_performanceIndex,
-        //  meta: {
-        //    auth: true
-        //  },
-        //},
-        {
-          path: '/conperf/inspectionreject',
-          component: function (resolve) {
-            require(['../pages/performance/inspectionReject.vue'], resolve);
-          },
-          name: routerNames.con_check_reject,
-          meta: {
-            auth: true
-          },
-        },
-        {
-          path: '/conperf/conupdate',
-          component: function (resolve) {
-            require(['../pages/performance/conUpdate.vue'], resolve);
-          },
-          name: routerNames.con_update,
-          meta: {
-            auth: true
-          },
-        },
-        {
-          path: '/conperf/conrepeal',
-          component: function (resolve) {
-            require(['../pages/performance/conRepeal.vue'], resolve);
-          },
-          name: routerNames.con_stop,
-          meta: {
-            auth: true
-          },
-        },
-        {
-          path: '/conperf/compensate',
-          component: function (resolve) {
-            require(['../pages/performance/compensate.vue'], resolve);
-          },
-          name: routerNames.con_compensate,
-          meta: {
-            auth: true
-          },
-        }
-      ],
-      meta: {
-        iconCls: 'stats-bars'
-      }
-    },
-    {
-      path: '/',
-      component: function (resolve) {
-        require(['../pages/home/home.vue'], resolve);
-      },
-      name: routerNames.con_support,
-      children: [
-        {
-          path: '/contemplate/list',
-          component: function (resolve) {
-            require(['../pages/support/list.vue'], resolve);
-          },
-          meta: {
-            auth: true
-          },
-          name: routerNames.con_tpl_list
-        },
-        {
-          path: '/contemplate/see/:id',
-          component: function (resolve) {
-            require(['../pages/support/see.vue'], resolve);
-          },
-          meta: {
-            hidden: true,
-            auth: true
-          },
-          name: routerNames.con_tpl_see
-        },
-        {
-          path: '/contemplate/create',
-          component: function (resolve) {
-            require(['../pages/support/create.vue'], resolve);
-          },
-          meta: {
-            auth: true
-          },
-          name: routerNames.con_tpl_create
-        },
-        {
-          path: '/contemplate/update',
-          component: function (resolve) {
-            require(['../pages/support/update.vue'], resolve);
-          },
-          meta: {
-            auth: true
-          },
-          name: routerNames.con_tpl_update
-        },
-        {
-          path: '/contemplate/abolish',
-          component: function (resolve) {
-            require(['../pages/support/abolish.vue'], resolve);
-          },
-          meta: {
-            auth: true
-          },
-          name: routerNames.con_tpl_abolish
-        }
-      ],
-      meta: {
-        iconCls: 'stats-bars'
-      }
-    },
-    {
-      path: '*',
-      meta: {
-        auth: true,
-        hidden: true
-      },
-      redirect: {
-        path: '/404'
-      }
-    }
-  ]
+    ]
 });
 
 
 router.beforeEach((to, from, next) => {
-  nprogress.start();
-  window.document.title = to.name;
+    nprogress.start();
+    window.document.title = to.name;
 
-  //Auth验证
-  // if (to.meta.auth) {
-  //   if (to.path === '/login') {
-  //     localStorage.removeItem('user');
-  //   }
-  //   let user = JSON.parse(localStorage.getItem('user'));
-  //   if (!user && to.path !== '/login') {
-  //     next({
-  //       path: '/login?fromUrl=' + to.path
-  //     });
-  //   } else {
-  //     next();
-  //   }
-  // } else {
-  //   next();
-  // }
-  next();
-  store.commit(types.ROUTE, {
-    data: {to, from}
-  });
+    //Auth验证
+    // if (to.meta.auth) {
+    //   if (to.path === '/login') {
+    //     localStorage.removeItem('user');
+    //   }
+    //   let user = JSON.parse(localStorage.getItem('user'));
+    //   if (!user && to.path !== '/login') {
+    //     next({
+    //       path: '/login?fromUrl=' + to.path
+    //     });
+    //   } else {
+    //     next();
+    //   }
+    // } else {
+    //   next();
+    // }
+    next();
+    store.commit(types.ROUTE, {
+        data: {to, from}
+    });
 });
 
 router.afterEach((route) => {
-  nprogress.done();
-  window.scrollTo(0, 0);
+    nprogress.done();
+    window.scrollTo(0, 0);
 });
 
 export default router;

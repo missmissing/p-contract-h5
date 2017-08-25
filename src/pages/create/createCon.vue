@@ -236,7 +236,7 @@
                                             添加{{props.row.type}}
                                         </el-button>
                                         <el-table :data="props.row.subItem">
-                                            <el-table-column prop="name" label="名称">
+                                            <el-table-column width="100px" prop="name" label="名称">
                                                 <template scope="scope">{{props.row.type}}{{scope.$index+1}}</template>
                                             </el-table-column>
                                             <el-table-column
@@ -251,15 +251,40 @@
                                                     prop="curTime"
                                                     label="付款时间">
                                                 <template scope="scope">
-                                                    <el-select
-                                                            v-model="props.row.subItem[scope.$index].curTime">
-                                                        <el-option
-                                                                v-for="item in props.row.subItem[scope.$index].times"
-                                                                :key="item.value"
-                                                                :label="item.label"
-                                                                :value="item.value">
-                                                        </el-option>
-                                                    </el-select>
+
+                                                    <el-row>
+                                                        <el-col>
+                                                            <!--<el-select
+                                                                    v-model="cardFinanceInfoForm.paymentMethod[scope.$index].curTime"
+                                                                    placeholder="请选择付款时间"
+                                                                    @change="handleCurTimeChange(cardFinanceInfoForm.paymentMethod[scope.$index].curTime,cardFinanceInfoForm.paymentMethod[scope.$index])">
+                                                                <el-option
+                                                                        v-for="item in cardFinanceInfoForm.paymentMethod[scope.$index].times"
+                                                                        :key="item.value"
+                                                                        :label="item.label"
+                                                                        :value="item.value">
+                                                                </el-option>
+                                                            </el-select>-->
+                                                            <el-select
+                                                                    @change="handleItemCurTimeChange(props.row.subItem[scope.$index].curTime,props.row.subItem[scope.$index])"
+                                                                    placeholder="请选择付款时间"
+                                                                    v-model="props.row.subItem[scope.$index].curTime">
+                                                                <el-option
+                                                                        v-for="item in props.row.subItem[scope.$index].times"
+                                                                        :key="item.value"
+                                                                        :label="item.label"
+                                                                        :value="item.value">
+                                                                </el-option>
+                                                            </el-select>
+                                                        </el-col>
+                                                        <el-col>
+                                                            <el-date-picker
+                                                                    @change="handleItemExactDateChange(props.row.subItem[scope.$index].exactDate,props.row.subItem[scope.$index])"
+                                                                    v-model="props.row.subItem[scope.$index].exactDate"
+                                                                    placeholder="请输入具体付款日期"
+                                                                    type="date"></el-date-picker>
+                                                        </el-col>
+                                                    </el-row>
                                                 </template>
                                             </el-table-column>
                                             <el-table-column
@@ -641,126 +666,123 @@
                         </el-card>
                     </el-form>
                 </el-tab-pane>
-                <el-tab-pane label="合同盖章信息" name="tabSealInfo" v-if="baseInfoForm.conModel!='con4'">
+                <el-tab-pane label="合同附件及盖章信息" name="tabSealInfo" v-if="baseInfoForm.conModel!='con4'">
                     <el-form rel="cardSealInfoForm" :model="cardSealInfoForm" label-width="100px">
-                        <el-card>
-                            <header slot="header">合同文件列表</header>
-                            <el-button type="primary" @click="handleNewSealFile" icon="plus">新增</el-button>
-                            <el-table :data="cardSealInfoForm.sealFileList">
-                                <el-table-column type="expand">
-                                    <template scope="props">
-                                        <el-row>
-                                            <el-col :span="6">
-                                                <el-form-item label="用章次数" prop="sealTimes">
-                                                    <el-input :disabled="true" v-model="props.row.sealTimes"></el-input>
-                                                </el-form-item>
-                                            </el-col>
-                                            <el-col :span="6">
-                                                <el-form-item label="打印份数" prop="printTimes">
-                                                    <el-input :disabled="true"
-                                                              v-model="props.row.printTimes"></el-input>
-                                                </el-form-item>
-                                            </el-col>
-                                            <el-col :span="6">
-                                                <el-form-item label="我方留存份数" prop="retainFileNumber">
-                                                    <el-input :disabled="true"
-                                                              v-model="props.row.retainFileNumber"></el-input>
-                                                </el-form-item>
-                                            </el-col>
-                                            <el-col :span="6">
-                                                <el-form-item label="用印后上传">
-                                                    <el-upload
-                                                            ref="uploadFileAfterSeal"
-                                                            action="https://jsonplaceholder.typicode.com/posts/"
-                                                            :with-credentials="true"
-                                                            :on-success="handleUploadFileAfterSealSuccess"
-                                                            :on-error="handleUploadFileAfterSealError"
-                                                    >
-                                                        <el-button :disabled="true" size="small" type="primary">上传
-                                                        </el-button>
-                                                        </el-button>
-                                                    </el-upload>
-                                                </el-form-item>
-                                            </el-col>
-                                        </el-row>
-                                        <el-row>
-                                            <el-col :span="12">
-                                                <el-form-item prop="useSeal">
-                                                    <el-checkbox-group v-model="props.row.useSeal">
-                                                        <el-checkbox
-                                                                disabled
-                                                                v-for="item in props.row.useSeals"
-                                                                :label="item.id"
-                                                                :key="item.id">
-                                                            {{item.name}}
-                                                        </el-checkbox>
-                                                    </el-checkbox-group>
-                                                </el-form-item>
-                                            </el-col>
-                                        </el-row>
-                                    </template>
-                                </el-table-column>
-                                <el-table-column type="index" label="序号" width="100px"></el-table-column>
-                                <el-table-column prop="type" label="附件类型">
-                                    <template scope="scope">
-                                        <el-select
-                                                :disabled="cardSealInfoForm.sealFileList[scope.$index].type==3"
-                                                size="small"
-                                                v-model="cardSealInfoForm.sealFileList[scope.$index].type">
-                                            <el-option
-                                                    v-for="item in cardSealInfoForm.sealFileList[scope.$index].types"
-                                                    :key="item.id"
-                                                    :label="item.name"
-                                                    :value="item.id">
-                                            </el-option>
-                                        </el-select>
-                                    </template>
-                                </el-table-column>
-                                <el-table-column prop="code" label="从协议编号">
-                                    <template scope="scope">
-                                        <el-input :disabled="cardSealInfoForm.sealFileList[scope.$index].type==3"
-                                                  v-model="cardSealInfoForm.sealFileList[scope.$index].code"></el-input>
-                                    </template>
-                                </el-table-column>
-                                <el-table-column prop="name" label="文件名称">
-                                    <template scope="scope">
-                                        <el-input :disabled="cardSealInfoForm.sealFileList[scope.$index].type==3"
-                                                  v-model="cardSealInfoForm.sealFileList[scope.$index].name"></el-input>
-                                    </template>
-                                </el-table-column>
-                                <el-table-column prop="upload" label="上传">
-                                    <template scope="scope">
-                                        <el-upload
-                                                ref="uploadSealFile"
-                                                action="https://jsonplaceholder.typicode.com/posts/"
-                                                :with-credentials="true"
-                                                :on-success="handleUploadSealFileSuccess"
-                                                :on-error="handleUploadSealFileError"
-                                        >
-                                            <el-button :disabled="cardSealInfoForm.sealFileList[scope.$index].type==3"
-                                                       size="small" type="primary">上传
-                                            </el-button>
-                                        </el-upload>
-                                    </template>
-                                </el-table-column>
-                                <el-table-column prop="isSeal" label="是否盖章">
-                                    <template scope="scope">
-                                        <el-checkbox
-                                                :disabled="cardSealInfoForm.sealFileList[scope.$index].type==3||cardSealInfoForm.sealFileList[scope.$index].type==2"
-                                                v-model="cardSealInfoForm.sealFileList[scope.$index].isSeal"></el-checkbox>
-                                    </template>
-                                </el-table-column>
-                                <el-table-column
-                                        prop="remark"
-                                        label="备注">
-                                    <template scope="scope">
-                                        <el-input
-                                                :disabled="cardSealInfoForm.sealFileList[scope.$index].type==3"
-                                                v-model="cardSealInfoForm.sealFileList[scope.$index].remark"></el-input>
-                                    </template>
-                                </el-table-column>
-                            </el-table>
-                        </el-card>
+                        <el-button type="primary" @click="handleNewSealFile" icon="plus">新增</el-button>
+                        <el-table :data="cardSealInfoForm.sealFileList">
+                            <el-table-column type="expand">
+                                <template scope="props">
+                                    <el-row>
+                                        <el-col :span="6">
+                                            <el-form-item label="用章次数" prop="sealTimes">
+                                                <el-input :disabled="true" v-model="props.row.sealTimes"></el-input>
+                                            </el-form-item>
+                                        </el-col>
+                                        <el-col :span="6">
+                                            <el-form-item label="打印份数" prop="printTimes">
+                                                <el-input :disabled="true"
+                                                          v-model="props.row.printTimes"></el-input>
+                                            </el-form-item>
+                                        </el-col>
+                                        <el-col :span="6">
+                                            <el-form-item label="我方留存份数" prop="retainFileNumber">
+                                                <el-input :disabled="true"
+                                                          v-model="props.row.retainFileNumber"></el-input>
+                                            </el-form-item>
+                                        </el-col>
+                                        <el-col :span="6">
+                                            <el-form-item label="用印后上传">
+                                                <el-upload
+                                                        ref="uploadFileAfterSeal"
+                                                        action="https://jsonplaceholder.typicode.com/posts/"
+                                                        :with-credentials="true"
+                                                        :on-success="handleUploadFileAfterSealSuccess"
+                                                        :on-error="handleUploadFileAfterSealError"
+                                                >
+                                                    <el-button :disabled="true" size="small" type="primary">上传
+                                                    </el-button>
+                                                    </el-button>
+                                                </el-upload>
+                                            </el-form-item>
+                                        </el-col>
+                                    </el-row>
+                                    <el-row>
+                                        <el-col :span="12">
+                                            <el-form-item prop="useSeal">
+                                                <el-checkbox-group v-model="props.row.useSeal">
+                                                    <el-checkbox
+                                                            disabled
+                                                            v-for="item in props.row.useSeals"
+                                                            :label="item.id"
+                                                            :key="item.id">
+                                                        {{item.name}}
+                                                    </el-checkbox>
+                                                </el-checkbox-group>
+                                            </el-form-item>
+                                        </el-col>
+                                    </el-row>
+                                </template>
+                            </el-table-column>
+                            <el-table-column type="index" label="序号" width="100px"></el-table-column>
+                            <el-table-column prop="type" label="附件类型">
+                                <template scope="scope">
+                                    <el-select
+                                            :disabled="cardSealInfoForm.sealFileList[scope.$index].type==3"
+                                            size="small"
+                                            v-model="cardSealInfoForm.sealFileList[scope.$index].type">
+                                        <el-option
+                                                v-for="item in cardSealInfoForm.sealFileList[scope.$index].types"
+                                                :key="item.id"
+                                                :label="item.name"
+                                                :value="item.id">
+                                        </el-option>
+                                    </el-select>
+                                </template>
+                            </el-table-column>
+                            <el-table-column prop="code" label="从协议编号">
+                                <template scope="scope">
+                                    <el-input :disabled="cardSealInfoForm.sealFileList[scope.$index].type==3"
+                                              v-model="cardSealInfoForm.sealFileList[scope.$index].code"></el-input>
+                                </template>
+                            </el-table-column>
+                            <el-table-column prop="name" label="文件名称">
+                                <template scope="scope">
+                                    <el-input :disabled="cardSealInfoForm.sealFileList[scope.$index].type==3"
+                                              v-model="cardSealInfoForm.sealFileList[scope.$index].name"></el-input>
+                                </template>
+                            </el-table-column>
+                            <el-table-column prop="upload" label="上传">
+                                <template scope="scope">
+                                    <el-upload
+                                            ref="uploadSealFile"
+                                            action="https://jsonplaceholder.typicode.com/posts/"
+                                            :with-credentials="true"
+                                            :on-success="handleUploadSealFileSuccess"
+                                            :on-error="handleUploadSealFileError"
+                                    >
+                                        <el-button :disabled="cardSealInfoForm.sealFileList[scope.$index].type==3"
+                                                   size="small" type="primary">上传
+                                        </el-button>
+                                    </el-upload>
+                                </template>
+                            </el-table-column>
+                            <el-table-column prop="isSeal" label="是否盖章">
+                                <template scope="scope">
+                                    <el-checkbox
+                                            :disabled="cardSealInfoForm.sealFileList[scope.$index].type==3||cardSealInfoForm.sealFileList[scope.$index].type==2"
+                                            v-model="cardSealInfoForm.sealFileList[scope.$index].isSeal"></el-checkbox>
+                                </template>
+                            </el-table-column>
+                            <el-table-column
+                                    prop="remark"
+                                    label="备注">
+                                <template scope="scope">
+                                    <el-input
+                                            :disabled="cardSealInfoForm.sealFileList[scope.$index].type==3"
+                                            v-model="cardSealInfoForm.sealFileList[scope.$index].remark"></el-input>
+                                </template>
+                            </el-table-column>
+                        </el-table>
                     </el-form>
                 </el-tab-pane>
                 <el-tab-pane label="备注" name="tabRemark">
@@ -775,7 +797,7 @@
                     </el-form>
                 </el-tab-pane>
                 <el-tab-pane label="相关数据" name="tabRelatedData"
-                             v-if="baseInfoForm.conModel!='con4'&&operateType!='create'">
+                             v-if="baseInfoForm.conModel!='con4'&&operateType=='create'">
                     <el-form rel="cardRelatedInfoForm" :model="cardRelatedInfoForm" label-width="100px">
                         <el-table :data="cardRelatedInfoForm.contractList">
                             <el-table-column type="index" label="序号" width="100px"></el-table-column>
@@ -1088,6 +1110,7 @@
                                 {
                                     money: 0,
                                     curTime: '',
+                                    exactDate: '',
                                     times: [
                                         {
                                             value: 'subItem1',
@@ -1281,18 +1304,17 @@
                 },
                 cardRemarkInfoForm: {
                     otherInstruction: '',
-                    attachmentList: [
-                        {
-                            attachmentType: '其他',
-                            code: '1234',
-                            fileName: '文件名',
-                            attachmentUrl: ['www.baidu.com'],
-                        }
-                    ],
-                    dialogAddAttachmentVisible: false,
                 },
                 cardRelatedInfoForm: {
-                    contractList: [],
+                    contractList: [
+                        {
+                            contractCode: '0001001',
+                            type: '类型',
+                            status: '状态',
+                            company: '公司',
+                            startTime: '2018-09-11'
+                        }
+                    ],
                 },
                 formNewSubject: {
                     rules: {
@@ -1711,6 +1733,7 @@
             },
             handleRemoveSubect(index, rows){
                 console.log('handleRemoveSubect');
+                rows.splice(index, 1);
             },
             handleRemoveThirdPartyInfo(index, rows){
                 rows.splice(index, 1);
@@ -1764,6 +1787,7 @@
                 let paymentMethods = this.cardFinanceInfoForm.paymentMethod, item = {
                     money: 0,
                     curTime: '',
+                    exactDate: '',
                     times: [
                         {
                             value: 'subItem1',
@@ -1853,8 +1877,17 @@
                     row.curTime = '';
                 }
             },
+            handleItemCurTimeChange(value, row){
+                if (value) {
+                    row.exactDate = '';
+                }
+            },
+            handleItemExactDateChange(value, row){
+                if (value) {
+                    row.curTime = '';
+                }
+            },
             handleNewSealFile(){
-                console.log('handleNewSealFile');
                 let item = {
                     name: '',
                     type: '1',
