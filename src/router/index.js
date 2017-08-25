@@ -64,8 +64,8 @@ const router = new Router({
           path: '/ConCreate/CreateFrameContract',//创建框架合同
           meta: {
             auth: true,
+            hidden: true
           },
-          hidden: true,
           component: function (resolve) {
             require(['../pages/create/createCon.vue'], resolve);
           },
@@ -75,8 +75,8 @@ const router = new Router({
           path: '/ConCreate/CreateIntentionContract',//创建意向合同
           meta: {
             auth: true,
+            hidden: true
           },
-          hidden: true,
           component: function (resolve) {
             require(['../pages/create/createCon.vue'], resolve);
           },
@@ -86,8 +86,8 @@ const router = new Router({
           path: '/ConCreate/CreateSingleContract',//创建单一合同
           meta: {
             auth: true,
+            hidden: true
           },
-          hidden: true,
           component: function (resolve) {
             require(['../pages/create/createCon.vue'], resolve);
           },
@@ -97,8 +97,8 @@ const router = new Router({
           path: '/ConCreate/CreateSimpleContract',//创建简易合同
           meta: {
             auth: true,
+            hidden: true
           },
-          hidden: true,
           component: function (resolve) {
             require(['../pages/create/createCon.vue'], resolve);
           },

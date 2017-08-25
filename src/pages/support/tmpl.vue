@@ -58,7 +58,7 @@
                 :titles="['可选模块', '已选模块']"
                 v-model="form.contentModule"
                 :props="{key: 'id',label: 'moduleName'}"
-                :data="modulesData">
+                :data="modulesData | setItemDisabled(this)">
               </el-transfer>
             </div>
             <div>
@@ -172,14 +172,6 @@
         });
         this.form.contentModule = option.contentModule;
       },
-      modulesData() {
-        if (this.disabled) {
-          return this.modulesData.map((item) => {
-            item.disabled = true;
-            return item;
-          });
-        }
-      },
       tplInfo() {
         const tplInfo = this.tplInfo;
         if (!tplInfo) {
@@ -229,6 +221,18 @@
     },
     created() {
       this.getTmplTypes();
+    },
+    filters: {
+      setItemDisabled(items, self) {
+        if (self.disabled) {
+          return items.map((item) => {
+            const newItem = Object.assign({}, item);
+            newItem.disabled = true;
+            return newItem;
+          });
+        }
+        return items;
+      }
     }
   };
 </script>
