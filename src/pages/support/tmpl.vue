@@ -1,5 +1,11 @@
 <style type="text/scss" lang="scss" scoped>
   .tmpl-container {
+    .back {
+      float: right;
+      line-height: 0;
+      font-size: 16px;
+    }
+
     .quill-editor {
       height: 280px;
     }
@@ -36,6 +42,7 @@
     <el-card>
       <div slot="header">
         <span class="common-title">模板信息</span>
+        <el-button class="back" type="text" @click="back">返 回</el-button>
       </div>
       <div>
         <el-row>

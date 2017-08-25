@@ -79,7 +79,7 @@
     }
     .content {
       position: absolute;
-      top:45px;
+      top: 45px;
       left: 15px;
       right: 15px;
       bottom: 0;
@@ -89,7 +89,6 @@
       border-radius: 4px;
     }
   }
-
 </style>
 
 <template>
@@ -107,7 +106,7 @@
         <el-dropdown @command="handleCommand">
           <span class="avatar">
             {{username}}
-             <img :src="userPhoto" alt="">
+             <img :src="userPhoto" alt=""/>
           </span>
           <el-dropdown-menu slot="dropdown">
             <el-dropdown-item command="logout" divided>退出</el-dropdown-item>
@@ -118,12 +117,12 @@
     <div class="main">
       <div :class="leftClass">
         <div>
-          <el-menu theme="dark" :unique-opened="true" :router="true">
+          <el-menu theme="dark" :default-active="$route.path" unique-opened router>
             <template v-for="(item,index) in $router.options.routes" v-if="!item.meta.hidden">
               <el-submenu :index="item.name">
                 <template slot="title">
                   <i class="el-icon-message"></i>
-                  <span slot="title">{{item.name}}</span>
+                  <span>{{item.name}}</span>
                 </template>
                 <template v-for="(child,childIndex) in item.children" v-if="!child.meta.hidden">
                   <el-menu-item :index="child.path">{{child.name}}</el-menu-item>
@@ -191,6 +190,9 @@
           location.href = WebConfig.AppSetting.SSOLogoutUrl.format(WebConfig.AppSetting.AppCode, window.location.href);
         }
       }
+    },
+    mounted() {
+      console.log(this.$router, this.$route);
     }
   }
 </script>
