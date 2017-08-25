@@ -149,7 +149,7 @@
 
 <script>
   import store from 'store';
-  import {WebConfig} from '../../api/config.js';
+  import {WebConfig} from '@/api/consts';
 
   const logo = require('../../assets/img/main-logo.png');
   const userPhoto = require('../../assets/img/user.jpg');

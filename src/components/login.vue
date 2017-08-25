@@ -3,9 +3,9 @@
 </template>
 
 <script>
-  import {WebConfig} from '../api/config.js';
-  import prototype from '../utils/prototype.js';
-  import Url from '../utils/url.js';
+  import {WebConfig} from '@/api/consts';
+  import prototype from '@/utils/prototype';
+  import Url from '@/utils/url';
   import axios from 'axios';
 
   export default {
