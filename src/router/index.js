@@ -64,16 +64,6 @@ const router = new Router({
                     name: routerNames.con_createIndex
                 },
                 {
-                    path: '/conperf/conlist',
-                    component: function (resolve) {
-                        require(['../pages/create/conLIst.vue'], resolve);
-                    },
-                    name: routerNames.con_list,
-                    meta: {
-                        auth: true
-                    },
-                },
-                {
                     path: '/ConCreate/createSlaveProtocol',
                     meta: {
                         auth: true
@@ -83,6 +73,17 @@ const router = new Router({
                     },
                     name: routerNames.con_createSlaveProtocol
                 },
+                {
+                    path: '/conperf/conlist',
+                    component: function (resolve) {
+                        require(['../pages/create/conLIst.vue'], resolve);
+                    },
+                    name: routerNames.con_list,
+                    meta: {
+                        auth: true
+                    },
+                },
+
                 {
                     path: '/ConCreate/CreateFrameContract',//创建框架合同
                     meta: {
@@ -189,7 +190,7 @@ const router = new Router({
                 {
                     path: '/conperf/conupdate',
                     component: function (resolve) {
-                        require(['../pages/create/create.vue'], resolve);
+                        require(['../pages/create/createCon.vue'], resolve);
                     },
                     name: routerNames.con_update,
                     meta: {
