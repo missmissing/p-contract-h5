@@ -64,6 +64,16 @@ const router = new Router({
           name: routerNames.con_createIndex
         },
         {
+          path: '/ConCreate/createSlaveProtocol',
+          meta: {
+            auth: true
+          },
+          component: function (resolve) {
+            require(['../pages/create/createSlaveProtocol.vue'], resolve);
+          },
+          name: routerNames.con_createSlaveProtocol
+        },
+        {
           path: '/conperf/conlist',
           component: function (resolve) {
             require(['../pages/create/conLIst.vue'], resolve);
@@ -74,14 +84,14 @@ const router = new Router({
           },
         },
         {
-          path: '/ConCreate/createSlaveProtocol',
+          path: '/conperf/conupdate',
+          component: function (resolve) {
+            require(['../pages/create/createCon.vue'], resolve);
+          },
+          name: routerNames.con_update,
           meta: {
             auth: true
           },
-          component: function (resolve) {
-            require(['../pages/create/createSlaveProtocol.vue'], resolve);
-          },
-          name: routerNames.con_createSlaveProtocol
         },
         {
           path: '/ConCreate/CreateFrameContract',//创建框架合同
@@ -165,6 +175,9 @@ const router = new Router({
         require(['../pages/home/home.vue'], resolve);
       },
       name: routerNames.con_performance,
+      meta: {
+        iconCls: 'stats-bars'
+      },
       children: [
         //{
         //  path: '/conperf/inspection',
@@ -182,16 +195,6 @@ const router = new Router({
             require(['../pages/performance/inspectionReject.vue'], resolve);
           },
           name: routerNames.con_check_reject,
-          meta: {
-            auth: true
-          },
-        },
-        {
-          path: '/conperf/conupdate',
-          component: function (resolve) {
-            require(['../pages/create/create.vue'], resolve);
-          },
-          name: routerNames.con_update,
           meta: {
             auth: true
           },
@@ -217,9 +220,6 @@ const router = new Router({
           },
         }
       ],
-      meta: {
-        iconCls: 'stats-bars'
-      }
     },
     {
       path: '/',
