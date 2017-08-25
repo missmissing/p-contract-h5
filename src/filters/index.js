@@ -13,5 +13,13 @@ export const formatDate = (value) => {
   if (m.isValid()) {
     return m.format('YYYY-MM-DD');
   }
-  return '';
+  return value;
+};
+
+export const formatTimeStamp = (value) => {
+  const m = moment(value);
+  if (m.isValid()) {
+    return m.valueOf();
+  }
+  return value;
 };

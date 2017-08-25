@@ -136,7 +136,6 @@
 </template>
 
 <script>
-    //import approveprocess from '../../components/approveProcess.vue';
     import Api from '../../api/create';
 
     export default {

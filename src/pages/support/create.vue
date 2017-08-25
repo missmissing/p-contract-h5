@@ -103,7 +103,7 @@
         </el-row>
       </div>
     </transition>
-    <transition name="component-fade" mode="out-in">
+    <transition name="component-fade" mode="in-out">
       <Tmpl v-show="showTmpl" :showTmpl.sync="showTmpl"></Tmpl>
     </transition>
     <TreeModal
@@ -127,6 +127,7 @@
   import supportModel from '@/api/support';
   import getBusiType from '@/mixins/getBusiType';
   import {uploadUrl, downloadUrl} from '@/api/consts';
+  import {formatTimeStamp} from '@/filters';
 
   const defaultData = {
     form: {
@@ -168,7 +169,7 @@
         this.visible = true;
       },
       formatDate(value) {
-        this.form.startDate = moment(value).valueOf();
+        this.form.startDate = formatTimeStamp(value);
       },
       setBusiType(value, tree) {
         let bizTypes = [];
