@@ -1,20 +1,12 @@
 <style type="text/scss" lang="scss" scoped>
   .list-container {
-    .row {
-      margin-bottom: 20px;
-    }
-    .wp100 {
-      width: 100%;
-    }
+
   }
 </style>
 
 <template>
   <div class="list-container">
     <el-card>
-      <div slot="header">
-        <span class="common-title">合同列表</span>
-      </div>
       <div>
         <div class="mb20">
           <el-form ref="form" :model="form" label-width="100px">

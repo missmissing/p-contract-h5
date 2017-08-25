@@ -49,6 +49,9 @@ const router = new Router({
         require(['../pages/home/home.vue'], resolve);
       },
       name: routerNames.con_create,
+      meta: {
+        iconCls: 'stats-bars',
+      },
       children: [
         {
           path: '/ConCreate/Create',
@@ -59,6 +62,16 @@ const router = new Router({
             require(['../pages/create/create.vue'], resolve);
           },
           name: routerNames.con_createIndex
+        },
+        {
+          path: '/conperf/conlist',
+          component: function (resolve) {
+            require(['../pages/create/conLIst.vue'], resolve);
+          },
+          name: routerNames.con_list,
+          meta: {
+            auth: true
+          },
         },
         {
           path: '/ConCreate/CreateFrameContract',//创建框架合同
@@ -103,11 +116,18 @@ const router = new Router({
             require(['../pages/create/createCon.vue'], resolve);
           },
           name: routerNames.con_createSimpleContract
+        },
+        {
+          path: '/ConCreate/tabPage',//标签页
+          meta: {
+            auth: true
+          },
+          component: function (resolve) {
+            require(['../pages/create/tabPage.vue'], resolve);
+          },
+          name: routerNames.con_tabPage
         }
-      ],
-      meta: {
-        iconCls: 'stats-bars',
-      }
+      ]
     },
     {
       path: '/',
@@ -136,16 +156,6 @@ const router = new Router({
       },
       name: routerNames.con_performance,
       children: [
-        {
-          path: '/conperf/conlist',
-          component: function (resolve) {
-            require(['../pages/performance/conList.vue'], resolve);
-          },
-          name: routerNames.con_list,
-          meta: {
-            auth: true
-          },
-        },
         //{
         //  path: '/conperf/inspection',
         //  component: function (resolve) {

@@ -33,4 +33,9 @@ export default {
     getRelatedInfo(params){
         return Http.get(`/api/createContract/getRelatedInfo`, params);
     },
+    /*****标签页****/
+    getPrTableData(params){
+      return Http.get(`/api/createContract/getPrTableData`, params);
+    }
+
 };
