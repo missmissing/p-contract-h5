@@ -1,11 +1,5 @@
 <style type="text/scss" lang="scss" scoped>
-  .component-fade-enter-active, .component-fade-leave-active {
-    transition: opacity .3s ease;
-  }
 
-  .component-fade-enter, .component-fade-leave-to {
-    opacity: 0;
-  }
 </style>
 
 <template>
@@ -49,10 +43,6 @@
           },
           {
             value: 4,
-            label: '从协议'
-          },
-          {
-            value: 5,
             label: '订单信息'
           }
         ],
@@ -69,8 +59,6 @@
           case 3:
             return 'ContractTable';
           case 4:
-            return 'AgreeTable';
-          case 5:
             return 'OrderTable';
         }
       }
@@ -84,9 +72,6 @@
       },
       ContractTable: (resolve) => {
         require(['./components/tables/contractTable'], resolve)
-      },
-      AgreeTable: (resolve) => {
-        require(['./components/tables/agreeTable'], resolve)
       },
       OrderTable: (resolve) => {
         require(['./components/tables/orderTable'], resolve)

@@ -40,9 +40,6 @@ export default {
   getPriceTableData(params) {
     return Http.get(`/api/createContract/getPriceTableData`, params);
   },
-  getAgreeTableData(params) {
-    return Http.get(`/api/createContract/getAgreeTableData`, params);
-  },
   getContractTableData(params) {
     return Http.get(`/api/createContract/getContractTableData`, params);
   },
