@@ -227,7 +227,8 @@
                         </el-row>
                         <el-card v-if="cardFinanceInfoForm.hasMoney==1">
                             <header slot="header">付款方式</header>
-                            <el-table :data="cardFinanceInfoForm.paymentMethod" v-if="cardFinanceInfoForm.onePayment">
+                            <el-table style="width: 100%" :data="cardFinanceInfoForm.paymentMethod"
+                                      v-if="cardFinanceInfoForm.onePayment">
                                 <el-table-column type="expand">
                                     <template scope="props">
                                         <el-button icon="plus" type="primary"
@@ -307,16 +308,31 @@
                                 </el-table-column>
                                 <el-table-column
                                         prop="curTime"
-                                        label="付款时间">
+                                        label="付款时间"
+                                        width="250px">
                                     <template scope="scope">
-                                        <el-select v-model="cardFinanceInfoForm.paymentMethod[scope.$index].curTime">
-                                            <el-option
-                                                    v-for="item in cardFinanceInfoForm.paymentMethod[scope.$index].times"
-                                                    :key="item.value"
-                                                    :label="item.label"
-                                                    :value="item.value">
-                                            </el-option>
-                                        </el-select>
+                                        <el-row>
+                                            <el-col>
+                                                <el-select
+                                                        v-model="cardFinanceInfoForm.paymentMethod[scope.$index].curTime"
+                                                        placeholder="请选择付款时间"
+                                                        @change="handleCurTimeChange(cardFinanceInfoForm.paymentMethod[scope.$index].curTime,cardFinanceInfoForm.paymentMethod[scope.$index])">
+                                                    <el-option
+                                                            v-for="item in cardFinanceInfoForm.paymentMethod[scope.$index].times"
+                                                            :key="item.value"
+                                                            :label="item.label"
+                                                            :value="item.value">
+                                                    </el-option>
+                                                </el-select>
+                                            </el-col>
+                                            <el-col>
+                                                <el-date-picker
+                                                        @change="handleExactDateChange(cardFinanceInfoForm.paymentMethod[scope.$index].exactDate,cardFinanceInfoForm.paymentMethod[scope.$index])"
+                                                        v-model="cardFinanceInfoForm.paymentMethod[scope.$index].exactDate"
+                                                        placeholder="请输入具体付款日期"
+                                                        type="date"></el-date-picker>
+                                            </el-col>
+                                        </el-row>
                                     </template>
                                 </el-table-column>
                                 <el-table-column
@@ -629,6 +645,7 @@
                     <el-form rel="cardSealInfoForm" :model="cardSealInfoForm" label-width="100px">
                         <el-card>
                             <header slot="header">合同文件列表</header>
+                            <el-button type="primary" @click="handleNewSealFile" icon="plus">新增</el-button>
                             <el-table :data="cardSealInfoForm.sealFileList">
                                 <el-table-column type="expand">
                                     <template scope="props">
@@ -687,7 +704,7 @@
                                 <el-table-column prop="type" label="附件类型">
                                     <template scope="scope">
                                         <el-select
-                                                :disabled="true"
+                                                :disabled="cardSealInfoForm.sealFileList[scope.$index].type==3"
                                                 size="small"
                                                 v-model="cardSealInfoForm.sealFileList[scope.$index].type">
                                             <el-option
@@ -701,13 +718,13 @@
                                 </el-table-column>
                                 <el-table-column prop="code" label="从协议编号">
                                     <template scope="scope">
-                                        <el-input :disabled="true"
+                                        <el-input :disabled="cardSealInfoForm.sealFileList[scope.$index].type==3"
                                                   v-model="cardSealInfoForm.sealFileList[scope.$index].code"></el-input>
                                     </template>
                                 </el-table-column>
                                 <el-table-column prop="name" label="文件名称">
                                     <template scope="scope">
-                                        <el-input :disabled="true"
+                                        <el-input :disabled="cardSealInfoForm.sealFileList[scope.$index].type==3"
                                                   v-model="cardSealInfoForm.sealFileList[scope.$index].name"></el-input>
                                     </template>
                                 </el-table-column>
@@ -720,14 +737,16 @@
                                                 :on-success="handleUploadSealFileSuccess"
                                                 :on-error="handleUploadSealFileError"
                                         >
-                                            <el-button :disabled="true" size="small" type="primary">上传</el-button>
+                                            <el-button :disabled="cardSealInfoForm.sealFileList[scope.$index].type==3"
+                                                       size="small" type="primary">上传
+                                            </el-button>
                                         </el-upload>
                                     </template>
                                 </el-table-column>
                                 <el-table-column prop="isSeal" label="是否盖章">
                                     <template scope="scope">
                                         <el-checkbox
-                                                :disabled="true"
+                                                :disabled="cardSealInfoForm.sealFileList[scope.$index].type==3||cardSealInfoForm.sealFileList[scope.$index].type==2"
                                                 v-model="cardSealInfoForm.sealFileList[scope.$index].isSeal"></el-checkbox>
                                     </template>
                                 </el-table-column>
@@ -736,7 +755,7 @@
                                         label="备注">
                                     <template scope="scope">
                                         <el-input
-                                                :disabled="true"
+                                                :disabled="cardSealInfoForm.sealFileList[scope.$index].type==3"
                                                 v-model="cardSealInfoForm.sealFileList[scope.$index].remark"></el-input>
                                     </template>
                                 </el-table-column>
@@ -753,39 +772,10 @@
                                           v-model="cardRemarkInfoForm.otherInstruction"></el-input>
                             </el-form-item>
                         </el-card>
-                        <el-card>
-                            <header slot="header">附件信息</header>
-                            <el-button @click="handleAttachment" icon="plus" type="primary">添加附件信息</el-button>
-                            <el-table :data="cardRemarkInfoForm.attachmentList">
-                                <el-table-column prop="attachmentType" label="附件类型"></el-table-column>
-                                <el-table-column prop="code" label="编号"></el-table-column>
-                                <el-table-column prop="fileName" label="文件名称"></el-table-column>
-                                <el-table-column prop="attachmentUrl" label="附件"></el-table-column>
-                                <el-table-column
-                                        fixed="right"
-                                        label="操作"
-                                        width="100">
-                                    <template scope="scope">
-                                        <!--<el-button @click="handleUploadAttachment" type="text" size="small">上传
-                                        </el-button>-->
-                                        <!--:file-list="formAddAttachment.fileList"-->
-                                        <el-upload
-                                                ref="uploadFile"
-                                                action="https://jsonplaceholder.typicode.com/posts/"
-                                                :with-credentials="true"
-                                                :before-upload="handlebeforeFileUploadItem"
-                                                :on-success="handleFileUploadSuccessItem"
-                                                :on-error="handleFileUploadErrorItem"
-                                        >
-                                            <el-button size="small" type="primary">点击上传</el-button>
-                                        </el-upload>
-                                    </template>
-                                </el-table-column>
-                            </el-table>
-                        </el-card>
                     </el-form>
                 </el-tab-pane>
-                <el-tab-pane label="相关数据" name="tabRelatedData" v-if="baseInfoForm.conModel!='con4'">
+                <el-tab-pane label="相关数据" name="tabRelatedData"
+                             v-if="baseInfoForm.conModel!='con4'&&operateType!='create'">
                     <el-form rel="cardRelatedInfoForm" :model="cardRelatedInfoForm" label-width="100px">
                         <el-table :data="cardRelatedInfoForm.contractList">
                             <el-table-column type="index" label="序号" width="100px"></el-table-column>
@@ -994,7 +984,7 @@
     import Api from '../../api/create';
     import _ from 'lodash';
 
-    export default {
+    export default {//cardFinanceInfoForm.paymentMethod[scope.$index].curTime
         data() {
             let validateEffectiveDateRules = (rule, value, callback)=> {
                 let endDate = this.cardContentInfoForm.endDate;
@@ -1015,7 +1005,7 @@
                 callback();
             };
             return {
-                operateType: '',
+                operateType: 'query',
                 currentPr: '',
                 baseInfoForm: {
                     businessPerson: '',//业务经办人
@@ -1077,6 +1067,7 @@
                             ifMultiPayment: false,
                             money: 0,
                             curTime: '',
+                            exactDate: '',
                             times: [
                                 {
                                     value: '1',
@@ -1121,6 +1112,7 @@
                             ifMultiPayment: false,
                             money: 0,
                             curTime: '',
+                            exactDate: '',
                             times: [
                                 {
                                     value: '1',
@@ -1140,6 +1132,7 @@
                             ifMultiPayment: true,
                             money: 0,
                             curTime: '',
+                            exactDate: '',
                             times: [
                                 {
                                     value: '1',
@@ -1244,7 +1237,7 @@
                         {
                             id: '',
                             name: '文件名',
-                            type: '1',
+                            type: '3',
                             code: '0011001',
                             types: [
                                 {
@@ -1849,6 +1842,58 @@
                         return false;
                     }
                 });
+            },
+            handleCurTimeChange(value, row){
+                if (value) {
+                    row.exactDate = '';
+                }
+            },
+            handleExactDateChange(value, row){
+                if (value) {
+                    row.curTime = '';
+                }
+            },
+            handleNewSealFile(){
+                console.log('handleNewSealFile');
+                let item = {
+                    name: '',
+                    type: '1',
+                    code: '',
+                    types: [
+                        {
+                            id: '1',
+                            name: '其他'
+                        },
+                        {
+                            id: '2',
+                            name: '从协议'
+                        }
+                    ],
+                    isSeal: false,
+                    remark: '',
+                    /* sealTimes: '',
+                     printTimes: '',
+                     retainFileNumber: '',
+                     sealName: '',
+                     ifPrint: '',
+                     useSeal: ['seal1', 'seal2'],
+                     useSeals: [
+                     {
+                     id: 'seal1',
+                     name: '公章'
+                     },
+                     {
+                     id: 'seal2',
+                     name: '法人章'
+                     },
+                     {
+                     id: 'seal3',
+                     name: '人事章'
+                     },
+                     ],*/
+
+                };
+                this.cardSealInfoForm.sealFileList.push(item);
             },
 
         },
