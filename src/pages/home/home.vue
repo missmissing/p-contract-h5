@@ -190,9 +190,6 @@
           location.href = WebConfig.AppSetting.SSOLogoutUrl.format(WebConfig.AppSetting.AppCode, window.location.href);
         }
       }
-    },
-    mounted() {
-      console.log(this.$router, this.$route);
     }
   }
 </script>
