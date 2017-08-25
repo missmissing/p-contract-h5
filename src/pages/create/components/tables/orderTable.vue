@@ -7,31 +7,28 @@
       border
       class="wp100">
       <el-table-column
-        prop="companyCode"
-        label="公司编码">
+        prop="contractCode"
+        label="合同号">
       </el-table-column>
       <el-table-column
-        prop="companyName"
-        label="公司名称">
+        prop="prOrder"
+        label="采购订单">
       </el-table-column>
       <el-table-column
-        prop="prNum"
-        label="采购申请号">
-      </el-table-column>
-      <el-table-column
-        prop="creator"
-        label="发起人"
-        width="150">
-      </el-table-column>
-      <el-table-column
-        prop="createDepart"
-        label="发起部门">
+        prop="totalWithTax"
+        label="含税总金额">
       </el-table-column>
       <el-table-column
         prop="createTime"
         :formatter="formatDate"
         label="发起时间"
         width="120">
+      </el-table-column>
+      <el-table-column
+        prop="orderTime"
+        label="下单时间"
+        :formatter="formatDate"
+        width="150">
       </el-table-column>
     </el-table>
     <el-pagination
@@ -64,7 +61,7 @@
     methods: {
       getData() {
         this.loading = true;
-        Api.getPrTableData({}).then((res) => {
+        Api.getOrderTableData({}).then((res) => {
           const {list, total, pageSize} = res.data.dataMap;
           this.tableData = list;
           this.total = total;

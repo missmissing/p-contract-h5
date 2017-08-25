@@ -7,16 +7,16 @@
       border
       class="wp100">
       <el-table-column
-        prop="companyCode"
-        label="公司编码">
+        prop="contractCode"
+        label="合同号">
       </el-table-column>
       <el-table-column
-        prop="companyName"
-        label="公司名称">
+        prop="agreeCode"
+        label="从协议编码">
       </el-table-column>
       <el-table-column
-        prop="prNum"
-        label="采购申请号">
+        prop="agreeName"
+        label="协议名称">
       </el-table-column>
       <el-table-column
         prop="creator"
@@ -64,7 +64,7 @@
     methods: {
       getData() {
         this.loading = true;
-        Api.getPrTableData({}).then((res) => {
+        Api.getAgreeTableData({}).then((res) => {
           const {list, total, pageSize} = res.data.dataMap;
           this.tableData = list;
           this.total = total;

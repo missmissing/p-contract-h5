@@ -7,16 +7,8 @@
       border
       class="wp100">
       <el-table-column
-        prop="companyCode"
-        label="公司编码">
-      </el-table-column>
-      <el-table-column
-        prop="companyName"
-        label="公司名称">
-      </el-table-column>
-      <el-table-column
-        prop="prNum"
-        label="采购申请号">
+        prop="priceCode"
+        label="比价单编码">
       </el-table-column>
       <el-table-column
         prop="creator"
@@ -31,6 +23,16 @@
         prop="createTime"
         :formatter="formatDate"
         label="发起时间"
+        width="120">
+      </el-table-column>
+      <el-table-column
+        prop="processStatus"
+        label="流程状态">
+      </el-table-column>
+      <el-table-column
+        prop="endTime"
+        :formatter="formatDate"
+        label="结束时间"
         width="120">
       </el-table-column>
     </el-table>
@@ -64,7 +66,7 @@
     methods: {
       getData() {
         this.loading = true;
-        Api.getPrTableData({}).then((res) => {
+        Api.getPriceTableData({}).then((res) => {
           const {list, total, pageSize} = res.data.dataMap;
           this.tableData = list;
           this.total = total;

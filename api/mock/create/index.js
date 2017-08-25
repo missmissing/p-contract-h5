@@ -234,4 +234,78 @@ module.exports = function (api) {
       }
     });
   });
+  api.use('/api/createContract/getPriceTableData', function (req, res) {
+    res.status(200).json({
+      code: 200,
+      message: 'success',
+      dataMap: {
+        total: 300,
+        list: [
+          {
+            priceCode: '32489328034',
+            creator: '张三',
+            createDepart: 'XX部门',
+            createTime: '1503629338328',
+            processStatus:'已审批',
+            endTime: '1503629338328',
+          }
+        ]
+      }
+    });
+  });
+  api.use('/api/createContract/getContractTableData', function (req, res) {
+    res.status(200).json({
+      code: 200,
+      message: 'success',
+      dataMap: {
+        total: 300,
+        list: [
+          {
+            contractCode: '32489328034',
+            creator: '张三',
+            createDepart: 'XX部门',
+            createTime: '1503629338328',
+            sealTime: '1503629338328',
+          }
+        ]
+      }
+    });
+  });
+  api.use('/api/createContract/getAgreeTableData', function (req, res) {
+    res.status(200).json({
+      code: 200,
+      message: 'success',
+      dataMap: {
+        total: 300,
+        list: [
+          {
+            contractCode: '32489328034',
+            agreeCode: 'ABCDEFG',
+            agreeName: 'XX协议',
+            creator: '张三',
+            createDepart: 'XX部门',
+            createTime: '1503629338328',
+          }
+        ]
+      }
+    });
+  });
+  api.use('/api/createContract/getOrderTableData', function (req, res) {
+    res.status(200).json({
+      code: 200,
+      message: 'success',
+      dataMap: {
+        total: 300,
+        list: [
+          {
+            contractCode: '32489328034',
+            prOrder: 'ABCDEFG',
+            totalWithTax: 10000,
+            createTime: '1503629338328',
+            orderTime: '1503629338328',
+          }
+        ]
+      }
+    });
+  });
 };

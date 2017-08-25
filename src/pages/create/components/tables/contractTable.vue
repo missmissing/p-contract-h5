@@ -7,16 +7,8 @@
       border
       class="wp100">
       <el-table-column
-        prop="companyCode"
-        label="公司编码">
-      </el-table-column>
-      <el-table-column
-        prop="companyName"
-        label="公司名称">
-      </el-table-column>
-      <el-table-column
-        prop="prNum"
-        label="采购申请号">
+        prop="contractCode"
+        label="合同号">
       </el-table-column>
       <el-table-column
         prop="creator"
@@ -31,6 +23,12 @@
         prop="createTime"
         :formatter="formatDate"
         label="发起时间"
+        width="120">
+      </el-table-column>
+      <el-table-column
+        prop="sealTime"
+        :formatter="formatDate"
+        label="盖章时间"
         width="120">
       </el-table-column>
     </el-table>
@@ -64,7 +62,7 @@
     methods: {
       getData() {
         this.loading = true;
-        Api.getPrTableData({}).then((res) => {
+        Api.getContractTableData({}).then((res) => {
           const {list, total, pageSize} = res.data.dataMap;
           this.tableData = list;
           this.total = total;

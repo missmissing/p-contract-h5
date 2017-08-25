@@ -1,4 +1,4 @@
-<style>
+<style type="text/scss" lang="scss" scoped>
   .component-fade-enter-active, .component-fade-leave-active {
     transition: opacity .3s ease;
   }
@@ -9,26 +9,24 @@
 </style>
 
 <template>
-  <div>
-    <el-card>
-      <el-select
-        v-model="value"
-        placeholder="请选择"
-        class="mb20"
-      >
-        <el-option
-          v-for="item in options"
-          :key="item.value"
-          :label="item.label"
-          :value="item.value">
-        </el-option>
-      </el-select>
-      <keep-alive>
-        <transition name="component-fade" mode="out-in">
-          <component :is="view"></component>
-        </transition>
-      </keep-alive>
-    </el-card>
+  <div class="pd20">
+    <el-select
+      v-model="value"
+      placeholder="请选择"
+      class="mb20"
+    >
+      <el-option
+        v-for="item in options"
+        :key="item.value"
+        :label="item.label"
+        :value="item.value">
+      </el-option>
+    </el-select>
+    <keep-alive>
+      <transition name="component-fade" mode="out-in">
+        <component :is="view"></component>
+      </transition>
+    </keep-alive>
   </div>
 </template>
 

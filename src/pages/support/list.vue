@@ -5,136 +5,130 @@
 </style>
 
 <template>
-  <div class="list-container"
+  <div class="pd20 list-container"
        v-loading="loading"
-       element-loading-text="拼命加载中">
-    <el-card>
-      <div slot="header">
-        <span class="common-title">合同模板列表</span>
-      </div>
-      <div>
-        <div class="mb20">
-          <el-form ref="form" :model="form" label-width="100px">
-            <el-row>
-              <el-col :span="18">
-                <el-form-item label="查询条件">
-                  <el-input
-                    placeholder="请输入模板名称,支持模糊搜索"
-                    v-model="form.keywords">
-                  </el-input>
-                </el-form-item>
-              </el-col>
-              <el-button type="primary" @click="search" class="ml20">搜 索</el-button>
-            </el-row>
-            <el-row>
-              <el-col :span="6">
-                <el-form-item label="模板类型">
-                  <el-select
-                    v-model="form.templateType"
-                    class="wp100">
-                    <el-option label="请选择" :value="null"></el-option>
-                    <el-option label="合同模板" value="0"></el-option>
-                    <el-option label="合同文本" value="1"></el-option>
-                  </el-select>
-                </el-form-item>
-              </el-col>
-              <el-col :span="6">
-                <el-form-item label="文本编号">
-                  <el-input v-model="form.templateCode"></el-input>
-                </el-form-item>
-              </el-col>
-              <el-col :span="6">
-                <el-form-item label="发起人">
-                  <el-input v-model="form.operatorName"></el-input>
-                </el-form-item>
-              </el-col>
-            </el-row>
-            <el-row>
-              <el-col :span="7">
-                <el-form-item label="创建时间">
-                  <el-date-picker
-                    style="width:100%;"
-                    v-model="daterange"
-                    type="daterange"
-                    placeholder="选择日期范围"
-                    @change="formatDateRange"
-                    :picker-options="pickerOptions">
-                  </el-date-picker>
-                </el-form-item>
-              </el-col>
-              <el-col :span="6">
-                <el-form-item label="有效文本">
-                  <el-switch
-                    v-model="form.valid"
-                    on-text=""
-                    off-text=""></el-switch>
-                </el-form-item>
-              </el-col>
-            </el-row>
-          </el-form>
-        </div>
-        <el-table
-          :data="tableData"
-          border
-          highlight-current-row
-          class="wp100">
-          <el-table-column
-            prop="templateName"
-            min-width="150"
-            label="模板名称">
-            <template scope="scope">
-              <el-button type="text" @click.native.prevent="see(scope.$index,scope.row)">{{scope.row.templateName}}
-              </el-button>
-            </template>
-          </el-table-column>
-          <el-table-column
-            prop="templateCode"
-            min-width="150"
-            label="模板编号">
-          </el-table-column>
-          <el-table-column
-            prop="templateType"
-            min-width="120"
-            :formatter="formatType"
-            label="文本类型">
-          </el-table-column>
-          <el-table-column
-            prop="creatorName"
-            min-width="100"
-            label="发起人">
-          </el-table-column>
-          <el-table-column
-            prop="departmentName"
-            min-width="100"
-            label="业务部门"
-          >
-          </el-table-column>
-          <el-table-column
-            prop="createTime"
-            :formatter="formatTime"
-            width="180"
-            label="创建日期">
-          </el-table-column>
-          <el-table-column
-            prop="startDate"
-            :formatter="formatDate1"
-            width="120"
-            label="生效日期">
-          </el-table-column>
-          <el-table-column
-            prop="endDate"
-            :formatter="formatDate2"
-            width="120"
-            label="终止日期">
-          </el-table-column>
-          <el-table-column
-            prop="usedCount"
-            width="100"
-            label="使用次数">
-          </el-table-column>
-        </el-table>
-      </div>
-    </el-card>
+       element-loading-text="拼命加载中"
+  >
+    <div class="mb20">
+      <el-form ref="form" :model="form" label-width="100px">
+        <el-row>
+          <el-col :span="18">
+            <el-form-item label="查询条件">
+              <el-input
+                placeholder="请输入模板名称,支持模糊搜索"
+                v-model="form.keywords">
+              </el-input>
+            </el-form-item>
+          </el-col>
+          <el-button type="primary" @click="search" class="ml20">搜 索</el-button>
+        </el-row>
+        <el-row>
+          <el-col :span="6">
+            <el-form-item label="模板类型">
+              <el-select
+                v-model="form.templateType"
+                class="wp100">
+                <el-option label="请选择" :value="null"></el-option>
+                <el-option label="合同模板" value="0"></el-option>
+                <el-option label="合同文本" value="1"></el-option>
+              </el-select>
+            </el-form-item>
+          </el-col>
+          <el-col :span="6">
+            <el-form-item label="文本编号">
+              <el-input v-model="form.templateCode"></el-input>
+            </el-form-item>
+          </el-col>
+          <el-col :span="6">
+            <el-form-item label="发起人">
+              <el-input v-model="form.operatorName"></el-input>
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row>
+          <el-col :span="7">
+            <el-form-item label="创建时间">
+              <el-date-picker
+                style="width:100%;"
+                v-model="daterange"
+                type="daterange"
+                placeholder="选择日期范围"
+                @change="formatDateRange"
+                :picker-options="pickerOptions">
+              </el-date-picker>
+            </el-form-item>
+          </el-col>
+          <el-col :span="6">
+            <el-form-item label="有效文本">
+              <el-switch
+                v-model="form.valid"
+                on-text=""
+                off-text=""></el-switch>
+            </el-form-item>
+          </el-col>
+        </el-row>
+      </el-form>
+    </div>
+    <el-table
+      :data="tableData"
+      border
+      highlight-current-row
+      class="wp100">
+      <el-table-column
+        prop="templateName"
+        min-width="150"
+        label="模板名称">
+        <template scope="scope">
+          <el-button type="text" @click.native.prevent="see(scope.$index,scope.row)">{{scope.row.templateName}}
+          </el-button>
+        </template>
+      </el-table-column>
+      <el-table-column
+        prop="templateCode"
+        min-width="150"
+        label="模板编号">
+      </el-table-column>
+      <el-table-column
+        prop="templateType"
+        min-width="120"
+        :formatter="formatType"
+        label="文本类型">
+      </el-table-column>
+      <el-table-column
+        prop="creatorName"
+        min-width="100"
+        label="发起人">
+      </el-table-column>
+      <el-table-column
+        prop="departmentName"
+        min-width="100"
+        label="业务部门"
+      >
+      </el-table-column>
+      <el-table-column
+        prop="createTime"
+        :formatter="formatTime"
+        width="180"
+        label="创建日期">
+      </el-table-column>
+      <el-table-column
+        prop="startDate"
+        :formatter="formatDate1"
+        width="120"
+        label="生效日期">
+      </el-table-column>
+      <el-table-column
+        prop="endDate"
+        :formatter="formatDate2"
+        width="120"
+        label="终止日期">
+      </el-table-column>
+      <el-table-column
+        prop="usedCount"
+        width="100"
+        label="使用次数">
+      </el-table-column>
+    </el-table>
   </div>
 </template>
 

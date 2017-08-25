@@ -12,7 +12,7 @@ api.use('/api/', bodyParser.urlencoded({extended: true}));
 require('./mock')(api);
 
 //测试服务器地址
-const contract = '10.11.29.83:8080';
+const contract = '10.11.33.29:8080';
 
 api.use('/api-contract/**', proxyWeb(contract, {
   proxyReqPathResolver: function (req, res) {
