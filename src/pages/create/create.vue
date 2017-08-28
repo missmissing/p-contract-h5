@@ -105,6 +105,17 @@
             <el-button type="primary" @click="handleNext('conForm')" :disabled="!!(arrPr.length&&!currentPr)">下一步
             </el-button>
         </div>
+        <el-row>
+            <el-col :span="8">
+                <el-button type="primary" @click="handleTestCreate">创建</el-button>
+            </el-col>
+            <el-col :span="8">
+                <el-button type="primary" @click="handleTestUpdate">更新</el-button>
+            </el-col>
+            <el-col :span="8">
+                <el-button type="primary" @click="handleTestQuery">查看</el-button>
+            </el-col>
+        </el-row>
         <el-dialog title="查询比价单" :visible.sync="dialogVisible" size="tiny">
             <el-form ref="prForm" :model="prForm" label-width="100px">
                 <el-form-item label="PR号">
@@ -136,7 +147,7 @@
 </template>
 
 <script>
-    import Api from '../../api/create';
+    import Api from '../../api/manageContract';
 
     export default {
         data() {
@@ -227,7 +238,7 @@
             },
             handleDetail() {
                 Api.getPrDetail({strPC: this.conForm.strPC})
-                        .then((data) => {
+                        .then((data)=> {
                             let url = data.data.dataMap ? data.data.dataMap.url : '';
                             if (url) {
                                 window.open(url);
@@ -291,13 +302,53 @@
                     createPerson: this.prForm.createPerson,
                     startTime: startTime,
                     endTime: endTime,
-                }).then((data) => {
-                    this.arrPr = data.data.dataMap.list;
+                }).then((data)=> {
+                    this.arrPr = data.data.dataMap ? data.data.dataMap.list : [];
                 });
             },
             handleDetailPR(index, row) {
                 window.open(row.url);
-            }
+            },
+            handleTestCreate(){
+                console.log('create');
+                let routePath = '/ConCreate/CreateFrameContract';
+                this.$router.push({
+                    path: routePath,
+                    query: {
+                        currentPr: this.currentPr ? this.currentPr.id : '',
+                        curConModelId: this.conForm.curConModelId,
+                        curConTypeId: this.conForm.curConTypeId,
+                        operateType: 'create'
+                    }
+                });
+            },
+            handleTestUpdate(){
+                console.log('update');
+                let routePath = '/ConCreate/CreateFrameContract';
+                this.$router.push({
+                    path: routePath,
+                    query: {
+                        currentPr: this.currentPr ? this.currentPr.id : '',
+                        curConModelId: this.conForm.curConModelId,
+                        curConTypeId: this.conForm.curConTypeId,
+                        operateType: 'update'
+                    }
+                });
+            },
+            handleTestQuery(){
+                console.log('query');
+                //http://localhost:8080/#/ConCreate/CreateFrameContract?currentPr=&curConModelId=&curConTypeId=&operateType=update
+                let routePath = '/ConCreate/CreateFrameContract';
+                this.$router.push({
+                    path: routePath,
+                    query: {
+                        currentPr: this.currentPr ? this.currentPr.id : '',
+                        curConModelId: this.conForm.curConModelId,
+                        curConTypeId: this.conForm.curConTypeId,
+                        operateType: 'query'
+                    }
+                });
+            },
         },
     }
 </script>

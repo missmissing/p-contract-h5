@@ -28,10 +28,13 @@
                         </el-form-item>
                     </el-col>
                     <el-col :span="4" :offset="2">
-                        <el-button type="primary" @click="handleQuery('updateForm.code')">查找</el-button>
+                        <el-button :disabled="!updateForm.code" type="primary" @click="handleQuery(updateForm.code)">
+                            查找
+                        </el-button>
                     </el-col>
                     <el-col :span="2">
-                        <el-button type="primary" @click="handleDetail('updateForm.code')" style="margin-left:33px">详情
+                        <el-button :disabled="!updateForm.code" type="primary" @click="handleDetail(updateForm.code)"
+                                   style="margin-left:33px">详情
                         </el-button>
                     </el-col>
                 </el-row>
@@ -99,7 +102,8 @@
                     </el-col>
                     <el-col :span="16" v-if="baseInfoForm.conTextType==1">
                         <el-form-item label="模版名称" prop="templateName">
-                            <el-select v-model="baseInfoForm.templateName" placeholder="请选择合同模版">
+                            <el-select :disabled="operateType!=='create'" v-model="baseInfoForm.templateName"
+                                       placeholder="请选择合同模版">
                                 <el-option
                                         v-for="item in baseInfoForm.templateOptions"
                                         :key="item.id"
@@ -135,7 +139,7 @@
                 <el-row>
                     <el-col :span="16">
                         <el-form-item label="盖章次序">
-                            <el-radio-group v-model="baseInfoForm.radioSealOrder">
+                            <el-radio-group v-model="baseInfoForm.radioSealOrder" :disabled="operateType!=='create'">
                                 <el-radio :label="1">对方先盖章（默认)</el-radio>
                                 <el-radio :label="0">我方先盖章</el-radio>
                             </el-radio-group>
@@ -144,12 +148,9 @@
                 </el-row>
                 <el-row v-if="baseInfoForm.radioSealOrder==0">
                     <el-col :span="16" style="margin-left: 100px">
-                        <el-input type="textarea" :rows="4" placeholder="请输入内容"
+                        <el-input :disabled="operateType!=='create'" type="textarea" :rows="4" placeholder="请输入内容"
                                   v-model="baseInfoForm.sealReason"></el-input>
                     </el-col>
-                </el-row>
-                <el-row>
-                    <el-col>{{this.operateType}}</el-col>
                 </el-row>
             </el-form>
         </el-card>
@@ -184,7 +185,9 @@
                         </el-card>
                         <el-card>
                             <header slot="header">合同我方主体名称</header>
-                            <el-button type="primary" @click="handleNewSubjectName" icon="plus">新增</el-button>
+                            <el-button v-if="operateType!='query'" type="primary" @click="handleNewSubjectName"
+                                       icon="plus">新增
+                            </el-button>
                             <el-table :data="cardContentInfoForm.conSubjctName">
                                 <el-table-column prop="id" label="公司代码"></el-table-column>
                                 <el-table-column prop="name" label="公司名称"></el-table-column>
@@ -204,7 +207,9 @@
                         </el-card>
                         <el-card v-if="baseInfoForm.conModel!='con4'">
                             <header slot="header">第三方信息</header>
-                            <el-button type="primary" @click="handleNewthirdPartyInfo" icon="plus">新增</el-button>
+                            <el-button v-if="operateType=='create'" type="primary" @click="handleNewthirdPartyInfo"
+                                       icon="plus">新增
+                            </el-button>
                             <el-table :data="cardContentInfoForm.thirdPartyInfo">
                                 <el-table-column prop="id" label="供应商编号"></el-table-column>
                                 <el-table-column prop="name" label="供应商名称"></el-table-column>
@@ -231,6 +236,16 @@
                                 <el-table-column prop="number" label="数量"></el-table-column>
                                 <el-table-column prop="taxRate" label="税率"></el-table-column>
                             </el-table>
+                            <el-row v-if="operateType=='update'">
+                                <el-col :span="8">
+                                    <el-form-item label="是否固定期限">
+                                        <el-radio-group v-model="cardContentInfoForm.ifFixedTerm">
+                                            <el-radio :label="1">是</el-radio>
+                                            <el-radio :label="0">否</el-radio>
+                                        </el-radio-group>
+                                    </el-form-item>
+                                </el-col>
+                            </el-row>
                             <el-row>
                                 <el-col :span="8">
                                     <el-form-item label="合同生效日期"
@@ -1061,7 +1076,7 @@
     </div>
 </template>
 <script>
-    import Api from '../../api/create';
+    import Api from '../../api/manageContract';
     import _ from 'lodash';
 
     export default {
@@ -1102,7 +1117,10 @@
                     ],
                     newCode: '',
                     remark: '',
-                    rules: {},
+                    rules: {
+                        code: [{required: true, message: '请输入合同编号', trigger: 'blur'}],
+                        remark: [{required: true, message: '请输入合同编号', trigger: 'blur'}],
+                    },
                 },
                 currentPr: '',
                 baseInfoForm: {
@@ -1124,7 +1142,7 @@
                     rules: {
                         belongProject: [{required: true, message: '请输入所属项目', trigger: 'blur'}],
                         templateName: [
-                            {required: true, message: '请选择合同模版', trigger: 'blur'},
+                            {required: true, message: '请输入备注', trigger: 'blur'},
                         ],
                     },
                 },
@@ -1135,6 +1153,7 @@
                     conSubjctName: [],
                     thirdPartyInfo: [],
                     conStandard: [],
+                    ifFixedTerm: 1,
                     effectiveDate: '',
                     endDate: '',
                     dialogAddContractSupplier: false,
@@ -1634,7 +1653,7 @@
             }
         },
         created() {
-            console.log('created-this.operateType', this.operateType);
+            //console.log('created-this.operateType', this.operateType);
             //?currentPr=&curConModelId=con2&curConTypeId=service1
             /*curConModelId:"con2"
              curConTypeId:"service1"
@@ -1696,7 +1715,7 @@
             },
         },
         mounted(){
-            console.log('mounted-this.operateType', this.operateType);
+            //console.log('mounted-this.operateType', this.operateType);
             Api.getContractBaseInfo({}).then((data)=> {
                 this.baseInfoForm.businessPerson = data.data.dataMap.baseInfoForm.businessPerson;
                 this.baseInfoForm.businessDepartment = data.data.dataMap.baseInfoForm.businessDepartment;
@@ -2113,7 +2132,9 @@
                 this.cardSealInfoForm.sealFileList.push(item);
             },
             handleQuery(id){
+                console.log('handleQuery', id);
                 this.updateForm.visible = true;
+                //Api.getUpdateInfo()
             },
             handleDetail(id){
                 console.log('id', id);
