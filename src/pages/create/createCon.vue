@@ -18,7 +18,7 @@
 </style>
 <template>
     <div>
-        <el-card>
+        <el-card v-if="operateType=='update'">
             <header slot="header">变更原因</header>
             <el-form ref="updateForm" :model="updateForm" label-width="100px" :rules="updateForm.rules">
                 <el-row>
@@ -50,7 +50,7 @@
                     </el-col>
                     <el-col :span="8" v-if="updateForm.updateMode">
                         <el-form-item label="新合同编号" prop="newCode">
-                            <el-input v-model="updateForm.newCode" placeholder="新合同编号"></el-input>
+                            <el-input :disabled="true" v-model="updateForm.newCode" placeholder="新合同编号"></el-input>
                         </el-form-item>
                     </el-col>
                 </el-row>
@@ -59,7 +59,7 @@
                 </el-form-item>
             </el-form>
         </el-card>
-        <el-card>
+        <el-card v-if="contentVisible">
             <header slot="header">合同基本信息</header>
             <el-form ref="baseInfoForm" :model="baseInfoForm" label-width="100px" :rules="baseInfoForm.rules">
                 <el-row>
@@ -153,7 +153,7 @@
                 </el-row>
             </el-form>
         </el-card>
-        <el-card>
+        <el-card v-if="contentVisible">
             <el-tabs v-model="activeTabName" @tab-click="handleTabClick">
                 <el-tab-pane label="合同内容信息" name="tabContInfo">
                     <el-form ref="cardContentInfoForm" :model="cardContentInfoForm" label-width="120px"
@@ -1045,7 +1045,7 @@
                 <el-button type="primary" @click="handleCancelAttachment('formAddAttachment')">取消</el-button>
             </footer>
         </el-dialog>
-        <el-row>
+        <el-row v-if="operateType=='update'&&updateForm.visible">
             <el-col :span="4" :offset="4">
                 <el-button type="primary" @click="handleSave('')">保存</el-button>
             </el-col>
@@ -1087,6 +1087,7 @@
             return {
                 operateType: 'create',//create:创建，update:变更，query:查询
                 updateForm: {
+                    visible: false,
                     code: '',
                     updateMode: 1,
                     updateModes: [
@@ -1684,6 +1685,15 @@
                 }
                 return 0;
             },
+            contentVisible: function () {
+                let visible = false;
+                if (this.operateType != 'update') {
+                    visible = true;
+                } else if (this.updateForm.visible) {
+                    visible = true;
+                }
+                return visible;
+            },
         },
         mounted(){
             console.log('mounted-this.operateType', this.operateType);
@@ -2103,7 +2113,7 @@
                 this.cardSealInfoForm.sealFileList.push(item);
             },
             handleQuery(id){
-                console.log('id', id);
+                this.updateForm.visible = true;
             },
             handleDetail(id){
                 console.log('id', id);
