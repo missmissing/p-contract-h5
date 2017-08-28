@@ -19,6 +19,47 @@
 <template>
     <div>
         <el-card>
+            <header slot="header">变更原因</header>
+            <el-form ref="updateForm" :model="updateForm" label-width="100px" :rules="updateForm.rules">
+                <el-row>
+                    <el-col :span="8">
+                        <el-form-item label="合同编号" prop="code">
+                            <el-input v-model="updateForm.code" placeholder="请输入合同编号"></el-input>
+                        </el-form-item>
+                    </el-col>
+                    <el-col :span="4" :offset="2">
+                        <el-button type="primary" @click="handleQuery('updateForm.code')">查找</el-button>
+                    </el-col>
+                    <el-col :span="2">
+                        <el-button type="primary" @click="handleDetail('updateForm.code')" style="margin-left:33px">详情
+                        </el-button>
+                    </el-col>
+                </el-row>
+                <el-row>
+                    <el-col :span="8">
+                        <el-form-item label="变更方式" prop="updateMode">
+                            <el-select v-model="updateForm.updateMode" placeholder="请选择变更方式">
+                                <el-option
+                                        v-for="item in updateForm.updateModes"
+                                        :key="item.id"
+                                        :label="item.name"
+                                        :value="item.id">
+                                </el-option>
+                            </el-select>
+                        </el-form-item>
+                    </el-col>
+                    <el-col :span="8" v-if="updateForm.updateMode">
+                        <el-form-item label="新合同编号" prop="newCode">
+                            <el-input v-model="updateForm.newCode" placeholder="新合同编号"></el-input>
+                        </el-form-item>
+                    </el-col>
+                </el-row>
+                <el-form-item label="备注" prop="remark">
+                    <el-input v-model="updateForm.remark" placeholder="请输入备注" type="textarea" :rows="4"></el-input>
+                </el-form-item>
+            </el-form>
+        </el-card>
+        <el-card>
             <header slot="header">合同基本信息</header>
             <el-form ref="baseInfoForm" :model="baseInfoForm" label-width="100px" :rules="baseInfoForm.rules">
                 <el-row>
@@ -52,7 +93,8 @@
                 <el-row>
                     <el-col :span="8">
                         <el-form-item label="所属项目" prop="belongProject">
-                            <el-input v-model="baseInfoForm.belongProject" placeholder="请输入所属项目"></el-input>
+                            <el-input :disabled="operateType==='query'" v-model="baseInfoForm.belongProject"
+                                      placeholder="请输入所属项目"></el-input>
                         </el-form-item>
                     </el-col>
                     <el-col :span="16" v-if="baseInfoForm.conTextType==1">
@@ -72,7 +114,8 @@
                 <el-row>
                     <el-col :span="8">
                         <el-form-item label="合同文本类型">
-                            <el-select v-model="baseInfoForm.conTextType" placeholder="请选择合同文本类型">
+                            <el-select :disabled="operateType!=='create'" v-model="baseInfoForm.conTextType"
+                                       placeholder="请选择合同文本类型">
                                 <el-option
                                         v-for="item in baseInfoForm.conTextTypeOptions"
                                         :key="item.id"
@@ -82,9 +125,10 @@
                             </el-select>
                         </el-form-item>
                     </el-col>
-                    <el-col :span="8" v-if="operateType==='query'">
+                    <el-col :span="8" v-if="operateType!=='create'">
                         <el-form-item label="合同编号">
-                            <el-input v-model="baseInfoForm.conNumber" placeholder="请输入合同编号"></el-input>
+                            <el-input v-model="baseInfoForm.conNumber" placeholder="请输入合同编号"
+                                      :disabled="true"></el-input>
                         </el-form-item>
                     </el-col>
                 </el-row>
@@ -103,6 +147,9 @@
                         <el-input type="textarea" :rows="4" placeholder="请输入内容"
                                   v-model="baseInfoForm.sealReason"></el-input>
                     </el-col>
+                </el-row>
+                <el-row>
+                    <el-col>{{this.operateType}}</el-col>
                 </el-row>
             </el-form>
         </el-card>
@@ -1017,7 +1064,7 @@
     import Api from '../../api/create';
     import _ from 'lodash';
 
-    export default {//cardFinanceInfoForm.paymentMethod[scope.$index].curTime
+    export default {
         data() {
             let validateEffectiveDateRules = (rule, value, callback)=> {
                 let endDate = this.cardContentInfoForm.endDate;
@@ -1038,7 +1085,24 @@
                 callback();
             };
             return {
-                operateType: 'query',
+                operateType: 'create',//create:创建，update:变更，query:查询
+                updateForm: {
+                    code: '',
+                    updateMode: 1,
+                    updateModes: [
+                        {
+                            id: 1,
+                            name: '原合同有效'
+                        },
+                        {
+                            id: 0,
+                            name: '原合同作废'
+                        },
+                    ],
+                    newCode: '',
+                    remark: '',
+                    rules: {},
+                },
                 currentPr: '',
                 baseInfoForm: {
                     businessPerson: '',//业务经办人
@@ -1568,7 +1632,9 @@
                 },
             }
         },
-        created() {//?currentPr=&curConModelId=con2&curConTypeId=service1
+        created() {
+            console.log('created-this.operateType', this.operateType);
+            //?currentPr=&curConModelId=con2&curConTypeId=service1
             /*curConModelId:"con2"
              curConTypeId:"service1"
              currentPr:"",
@@ -1620,6 +1686,7 @@
             },
         },
         mounted(){
+            console.log('mounted-this.operateType', this.operateType);
             Api.getContractBaseInfo({}).then((data)=> {
                 this.baseInfoForm.businessPerson = data.data.dataMap.baseInfoForm.businessPerson;
                 this.baseInfoForm.businessDepartment = data.data.dataMap.baseInfoForm.businessDepartment;
@@ -2035,7 +2102,551 @@
                 };
                 this.cardSealInfoForm.sealFileList.push(item);
             },
-
+            handleQuery(id){
+                console.log('id', id);
+            },
+            handleDetail(id){
+                console.log('id', id);
+            },
         },
+        watch: {
+            '$route' (to, from) {
+                let paras = {
+                    operateType: 'create',//create:创建，update:变更，query:查询
+                    currentPr: '',
+                    baseInfoForm: {
+                        businessPerson: '',//业务经办人
+                        businessDepartment: '',
+                        conModel: '',
+                        conModelName: '',
+                        conNumber: '',
+                        conType: '',
+                        conTypeName: '',
+                        belongProject: '',
+                        conTextType: '1',
+                        conTextTypeOptions: [],
+                        templateName: '',
+                        templateOptions: [],
+                        radioSealOrder: 0,//0：我方先盖章 1：对方先盖章
+                        sealReason: '',
+                        dialogNewSubjectVisible: false,
+                        rules: {
+                            belongProject: [{required: true, message: '请输入所属项目', trigger: 'blur'}],
+                            templateName: [
+                                {required: true, message: '请选择合同模版', trigger: 'blur'},
+                            ],
+                        },
+                    },
+                    activeTabName: 'tabContInfo',
+                    cardContentInfoForm: {
+                        errCount: 0,
+                        tableSupplierInfo: [],
+                        conSubjctName: [],
+                        thirdPartyInfo: [],
+                        conStandard: [],
+                        effectiveDate: '',
+                        endDate: '',
+                        dialogAddContractSupplier: false,
+                        dialogNewThirdPartyVisible: false,
+                        rules: {
+                            effectiveDate: [{
+                                validator: validateEffectiveDateRules,
+                                trigger: 'change'
+                            }, {
+                                required: true,
+                                message: '请输入合同生效日期'
+                            }],
+                            endDate: [{
+                                validator: validateEndDate,
+                                trigger: 'change'
+                            }, {
+                                required: true,
+                                message: '请输入合同截止日期'
+                            }]
+                        }
+                    },
+                    cardFinanceInfoForm: {
+                        hasMoney: 1,
+                        onePayment: 1,
+                        paymentMethods: {
+                            advance: {
+                                type: '预付款',
+                                ifMultiPayment: false,
+                                money: 0,
+                                curTime: '',
+                                exactDate: '',
+                                times: [
+                                    {
+                                        value: '1',
+                                        label: '合同签约15天'
+                                    },
+                                    {
+                                        value: '2',
+                                        label: '合同签约30天'
+                                    },
+                                    {
+                                        value: '3',
+                                        label: '合同签约90天'
+                                    }
+                                ],
+                                remark: '',
+                                proportion: '',
+                                subItem: [
+                                    {
+                                        money: 0,
+                                        curTime: '',
+                                        exactDate: '',
+                                        times: [
+                                            {
+                                                value: 'subItem1',
+                                                label: '合同签约15天'
+                                            },
+                                            {
+                                                value: 'subItem2',
+                                                label: '合同签约30天'
+                                            },
+                                            {
+                                                value: 'subItem3',
+                                                label: '合同签约90天'
+                                            }
+                                        ],
+                                        remark: '',
+                                        proportion: '',
+                                    },
+                                ],
+                            },
+                            Progress: {
+                                type: '进度款',
+                                ifMultiPayment: false,
+                                money: 0,
+                                curTime: '',
+                                exactDate: '',
+                                times: [
+                                    {
+                                        value: '1',
+                                        label: '验收后15天'
+                                    },
+                                    {
+                                        value: '2',
+                                        label: '验收后30天'
+                                    }
+                                ],
+                                remark: '',
+                                proportion: '',
+                                subItem: []
+                            },
+                            final: {
+                                type: '尾款',
+                                ifMultiPayment: true,
+                                money: 0,
+                                curTime: '',
+                                exactDate: '',
+                                times: [
+                                    {
+                                        value: '1',
+                                        label: '合同结束后15天'
+                                    },
+                                    {
+                                        value: '2',
+                                        label: '合同结束后30天'
+                                    },
+                                    {
+                                        value: '3',
+                                        label: '合同结束后90天'
+                                    },
+                                    {
+                                        value: '4',
+                                        label: '合同结束后180天'
+                                    },
+                                ],
+                                remark: '',
+                                proportion: '',
+                                subItem: []
+                            },
+                        },
+                        paymentMethod: [
+                            {
+                                type: '预付款',
+                                ifMultiPayment: false,
+                                money: 0,
+                                curTime: '',
+                                exactDate: '',
+                                times: [
+                                    {
+                                        value: '1',
+                                        label: '合同签约15天'
+                                    },
+                                    {
+                                        value: '2',
+                                        label: '合同签约30天'
+                                    },
+                                    {
+                                        value: '3',
+                                        label: '合同签约90天'
+                                    }
+                                ],
+                                remark: '',
+                                proportion: '',
+                                subItem: [
+                                    {
+                                        money: 0,
+                                        curTime: '',
+                                        exactDate: '',
+                                        times: [
+                                            {
+                                                value: 'subItem1',
+                                                label: '合同签约15天'
+                                            },
+                                            {
+                                                value: 'subItem2',
+                                                label: '合同签约30天'
+                                            },
+                                            {
+                                                value: 'subItem3',
+                                                label: '合同签约90天'
+                                            }
+                                        ],
+                                        remark: '',
+                                        proportion: '',
+                                    },
+                                ],
+                            },
+                            {
+                                type: '进度款',
+                                ifMultiPayment: false,
+                                money: 0,
+                                curTime: '',
+                                exactDate: '',
+                                times: [
+                                    {
+                                        value: '1',
+                                        label: '验收后15天'
+                                    },
+                                    {
+                                        value: '2',
+                                        label: '验收后30天'
+                                    }
+                                ],
+                                remark: '',
+                                proportion: '',
+                                subItem: []
+                            },
+                            {
+                                type: '尾款',
+                                ifMultiPayment: true,
+                                money: 0,
+                                curTime: '',
+                                exactDate: '',
+                                times: [
+                                    {
+                                        value: '1',
+                                        label: '合同结束后15天'
+                                    },
+                                    {
+                                        value: '2',
+                                        label: '合同结束后30天'
+                                    },
+                                    {
+                                        value: '3',
+                                        label: '合同结束后90天'
+                                    },
+                                    {
+                                        value: '4',
+                                        label: '合同结束后180天'
+                                    },
+                                ],
+                                remark: '',
+                                proportion: '',
+                                subItem: []
+                            },
+                        ],
+                        currency: '',
+                        currencyOptions: [
+                            {
+                                value: '1',
+                                label: 'CNY 人民币'
+                            },
+                            {
+                                value: '2',
+                                label: 'USD 美元'
+                            }
+                        ],
+                        billingType: '',
+                        billingTypeOptions: [
+                            {
+                                value: '1',
+                                label: '增值税专用发票'
+                            },
+                            {
+                                value: '2',
+                                label: '增值税普通发票'
+                            },
+                            {
+                                value: '3',
+                                label: '普通发票'
+                            },
+                        ],
+                        hasBond: 1,
+                        bondMoney: 0,
+                        bondProportion: '',
+                        paymentTime: '',
+                        jiaBillingInfo: {
+                            companyName: '红星美凯龙家居集团股份有限公司',
+                            creditCode: '913100006624816751',
+                            registerAddress: '上海市浦东新区临御路518号6楼F801室',
+                            managementAddress: '上海市普陀区怒江北路598号10楼',
+                            phone: '021-22300563',
+                            bankAccount: '0210 0141 7000 7578',
+                            openBank: '中国民生银行上海市南支行'
+                        },
+                        yiBillingInfo: {
+                            companyName: '上海史泰博股份有限公司',
+                            contact: 'echo',
+                            bankAccount: '0210 0141 7000 7578',
+                            openBank: '中国民生银行上海市南支行',
+                            address: '上海市浦东新区临御路518号6楼F801室',
+                            phone: '021-22300563',
+                            email: '134656343@qq.com'
+                        },
+                    },
+                    cardContCheckInfoForm: {
+                        checkPerson: '',
+                        checkPersonDepart: '',
+                        checkServiceMethod: '',
+                        checkServiceMethods: [
+                            {
+                                id: 'check1',
+                                name: '验收方式1'
+                            },
+                            {
+                                id: 'check2',
+                                name: '验收方式2'
+                            },
+                            {
+                                id: 'check3',
+                                name: '验收方式3'
+                            },
+                        ],
+                        checkSupervisor: '',
+                        checkSupervisorDepart: '',
+                        unionCheckPersons: [],
+                        hasSample: 1,
+                        materialMatters: [],
+                        serviceMatters: [],
+                        dialogAddUnionCheckVisible: false,
+                        dialogAddServiceVisible: false,
+                    },
+                    cardSealInfoForm: {
+                        sealFileList: [
+                            {
+                                id: '',
+                                name: '文件名',
+                                type: '3',
+                                code: '0011001',
+                                types: [
+                                    {
+                                        id: '1',
+                                        name: '其他'
+                                    },
+                                    {
+                                        id: '2',
+                                        name: '从协议'
+                                    },
+                                    {
+                                        id: '3',
+                                        name: '合同'
+                                    },
+                                ],
+                                isSeal: true,
+                                remark: '',
+                                sealTimes: '',
+                                printTimes: '',
+                                retainFileNumber: '',
+                                sealName: '',
+                                ifPrint: '',
+                                useSeal: ['seal1', 'seal2'],
+                                useSeals: [
+                                    {
+                                        id: 'seal1',
+                                        name: '公章'
+                                    },
+                                    {
+                                        id: 'seal2',
+                                        name: '法人章'
+                                    },
+                                    {
+                                        id: 'seal3',
+                                        name: '人事章'
+                                    },
+                                ],
+
+                            }
+                        ],
+                    },
+                    cardRemarkInfoForm: {
+                        otherInstruction: '',
+                    },
+                    cardRelatedInfoForm: {
+                        contractList: [
+                            {
+                                contractCode: '0001001',
+                                type: '类型',
+                                status: '状态',
+                                company: '公司',
+                                startTime: '2018-09-11'
+                            }
+                        ],
+                    },
+                    formNewSubject: {
+                        rules: {
+                            search: [
+                                {required: true, message: '请输入搜索关键字', trigger: 'blur'},
+                            ],
+                        },
+                        search: '',
+                        subjects: [],
+                        loading: false
+                    },
+                    formNewPayment: {
+                        type: '1',
+                        typeOptions: [
+                            {
+                                value: '1',
+                                label: '预付款'
+                            },
+                            {
+                                value: '2',
+                                label: '进度款'
+                            },
+                            {
+                                value: '3',
+                                label: '尾款'
+                            },
+                        ],
+                        ifMultiPayment: 1,
+                        money: '',
+                        time: '1',
+                        timeOptions: {
+                            1: [//预付款
+                                {
+                                    value: '1',
+                                    label: '合同签约15天'
+                                },
+                                {
+                                    value: '2',
+                                    label: '合同签约30天'
+                                },
+                                {
+                                    value: '3',
+                                    label: '合同签约90天'
+                                }
+                            ],
+                            2: [
+                                {
+                                    value: '1',
+                                    label: '验收后15天'
+                                },
+                                {
+                                    value: '2',
+                                    label: '验收后30天'
+                                }
+                            ],
+                            3: [
+                                {
+                                    value: '1',
+                                    label: '合同结束后15天'
+                                },
+                                {
+                                    value: '2',
+                                    label: '合同结束后30天'
+                                },
+                                {
+                                    value: '3',
+                                    label: '合同结束后90天'
+                                },
+                                {
+                                    value: '4',
+                                    label: '合同结束后180天'
+                                },
+                            ]
+                        },
+                        remark: '',
+                    },
+                    formAddUnionCheck: {
+                        name: '',
+                        depart: '',
+                        ifRequired: 1,
+                        rules: {
+                            name: [
+                                {required: true, message: '请输入验收人', trigger: 'blur'},
+                            ],
+                        },
+                    },
+                    formAddServiceCheck: {
+                        name: '',
+                        requirement: '',
+                        remark: '',
+                    },
+                    formAddContract: {
+                        name: '',
+                        sealTimes: '',
+                        printTimes: '',
+                        retainFileNumber: '',
+                        sealName: '',
+                        remark: '',
+                        ifPrint: 1,
+                    },
+                    formAddAttachment: {
+                        type: '1',
+                        typeOptions: [
+                            {
+                                value: '0',
+                                label: '其他'
+                            },
+                            {
+                                value: '1',
+                                label: '从协议'
+                            },
+                            {
+                                value: '2',
+                                label: '合同'
+                            },
+                        ],
+                        fileList: [{
+                            name: 'food.jpeg',
+                            url: 'https://fuss10.elemecdn.com/3/63/4e7f3a15429bfda99bce42a18cdd1jpeg.jpeg?imageMogr2/thumbnail/360x360/format/webp/quality/100'
+                        }, {
+                            name: 'food2.jpeg',
+                            url: 'https://fuss10.elemecdn.com/3/63/4e7f3a15429bfda99bce42a18cdd1jpeg.jpeg?imageMogr2/thumbnail/360x360/format/webp/quality/100'
+                        }],
+                    },
+                    formContractSupplier: {
+                        rules: {
+                            search: [
+                                {required: true, message: '请输入搜索关键字', trigger: 'blur'},
+                            ],
+                        },
+                        search: '',
+                        suppliers: [],
+                        loading: false
+                    },
+                    formNewThirdParty: {
+                        rules: {
+                            search: [
+                                {required: true, message: '请输入搜索关键字', trigger: 'blur'},
+                            ],
+                        },
+                        search: '',
+                        thirdParties: [],
+                        loading: false
+                    },
+                };
+                //刷新参数放到这里里面去触发就可以刷新相同界面了
+                let path = this.$route.path;
+                if (path && path == '/conperf/conupdate') {
+                    this.operateType = 'update';
+                }
+            }
+        }
     }
 </script>
