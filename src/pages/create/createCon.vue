@@ -436,7 +436,7 @@
                                     </template>
                                 </el-table-column>
                             </el-table>
-                            <el-table :data="cardFinanceInfoForm.paymentMethod.advance"
+                            <!--<el-table :data="cardFinanceInfoForm.paymentMethod.advance"
                                       v-if="cardFinanceInfoForm.onePayment">
                                 <el-table-column type="expand">
                                     <template scope="props">
@@ -446,7 +446,7 @@
                                         </el-button>
                                     </template>
                                 </el-table-column>
-                            </el-table>
+                            </el-table>-->
                             <el-row>
                                 <el-col :span="8">
                                     <el-form-item label="币种" prop="currency">
