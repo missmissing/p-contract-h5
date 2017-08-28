@@ -374,6 +374,17 @@
                                     </template>
                                 </el-table-column>
                             </el-table>
+                            <el-table :data="cardFinanceInfoForm.paymentMethod.advance"
+                                      v-if="cardFinanceInfoForm.onePayment">
+                                <el-table-column type="expand">
+                                    <template scope="props">
+                                        <el-button icon="plus" type="primary"
+                                                   @click="handleAddAdvanceItem(props.row.type)">
+                                            添加{{props.row.type}}
+                                        </el-button>
+                                    </template>
+                                </el-table-column>
+                            </el-table>
                             <el-row>
                                 <el-col :span="8">
                                     <el-form-item label="币种" prop="currency">
@@ -1083,6 +1094,102 @@
                 cardFinanceInfoForm: {
                     hasMoney: 1,
                     onePayment: 1,
+                    paymentMethods: {
+                        advance: {
+                            type: '预付款',
+                            ifMultiPayment: false,
+                            money: 0,
+                            curTime: '',
+                            exactDate: '',
+                            times: [
+                                {
+                                    value: '1',
+                                    label: '合同签约15天'
+                                },
+                                {
+                                    value: '2',
+                                    label: '合同签约30天'
+                                },
+                                {
+                                    value: '3',
+                                    label: '合同签约90天'
+                                }
+                            ],
+                            remark: '',
+                            proportion: '',
+                            subItem: [
+                                {
+                                    money: 0,
+                                    curTime: '',
+                                    exactDate: '',
+                                    times: [
+                                        {
+                                            value: 'subItem1',
+                                            label: '合同签约15天'
+                                        },
+                                        {
+                                            value: 'subItem2',
+                                            label: '合同签约30天'
+                                        },
+                                        {
+                                            value: 'subItem3',
+                                            label: '合同签约90天'
+                                        }
+                                    ],
+                                    remark: '',
+                                    proportion: '',
+                                },
+                            ],
+                        },
+                        Progress: {
+                            type: '进度款',
+                            ifMultiPayment: false,
+                            money: 0,
+                            curTime: '',
+                            exactDate: '',
+                            times: [
+                                {
+                                    value: '1',
+                                    label: '验收后15天'
+                                },
+                                {
+                                    value: '2',
+                                    label: '验收后30天'
+                                }
+                            ],
+                            remark: '',
+                            proportion: '',
+                            subItem: []
+                        },
+                        final: {
+                            type: '尾款',
+                            ifMultiPayment: true,
+                            money: 0,
+                            curTime: '',
+                            exactDate: '',
+                            times: [
+                                {
+                                    value: '1',
+                                    label: '合同结束后15天'
+                                },
+                                {
+                                    value: '2',
+                                    label: '合同结束后30天'
+                                },
+                                {
+                                    value: '3',
+                                    label: '合同结束后90天'
+                                },
+                                {
+                                    value: '4',
+                                    label: '合同结束后180天'
+                                },
+                            ],
+                            remark: '',
+                            proportion: '',
+                            subItem: []
+                        },
+                    },
                     paymentMethod: [
                         {
                             type: '预付款',
