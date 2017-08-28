@@ -95,13 +95,12 @@
 </template>
 
 <script>
-  import _ from 'lodash';
-  import Tmpl from './tmpl.vue';
-  import Upload from '@/components/upload.vue';
-  import TreeModal from '@/components/treeModal.vue';
-  import supportModel from '@/api/support';
-  import {uploadUrl, downloadUrl} from '@/api/consts';
-  import {formatDate} from '@/filters';
+  import _ from 'lodash'
+  import Tmpl from './tmpl.vue'
+  import Upload from '@/components/upload.vue'
+  import supportModel from '@/api/support'
+  import {uploadUrl, downloadUrl} from '@/api/consts'
+  import {formatDate} from '@/filters'
 
   const defaultData = {
     form: {
@@ -124,45 +123,45 @@
     version: '',
     showTmpl: false,
     loading: false
-  };
+  }
 
   export default {
     data() {
       return Object.assign({
         regions: []
-      }, _.cloneDeep(defaultData));
+      }, _.cloneDeep(defaultData))
     },
     methods: {
       setData(tplInfo) {
-        this.tplInfo = tplInfo;
-        this['version'] = `V${tplInfo['version']}`;
-        this['operatorName'] = tplInfo['operatorName'];
-        this['creatorName'] = tplInfo['creatorName'];
-        this['busiTypeText'] = tplInfo['bizTypes'].map(item => item.businessName).join(',');
+        this.tplInfo = tplInfo
+        this['version'] = `V${tplInfo['version']}`
+        this['operatorName'] = tplInfo['operatorName']
+        this['creatorName'] = tplInfo['creatorName']
+        this['busiTypeText'] = tplInfo['bizTypes'].map(item => item.businessName).join(',')
         tplInfo['files'].forEach((item) => {
           this.fileList.push({
             name: item.fileName,
             url: `${this.download}${item.fileId}`
-          });
-        });
+          })
+        })
         Object.keys(this.form).forEach((key) => {
           if (tplInfo.hasOwnProperty(key)) {
             if (key !== 'bizTypes') {
-              this.form[key] = tplInfo[key];
+              this.form[key] = tplInfo[key]
             }
           }
-        });
+        })
       },
       getTplData() {
-        this.loading = true;
+        this.loading = true
         supportModel.getTplData({
           templateId: this.$route.params.id
         }).then((res) => {
-          console.log(res);
-          const tplInfo = res.data.dataMap;
-          this.setData(tplInfo);
-          this.loading = false;
-        });
+          console.log(res)
+          const tplInfo = res.data.dataMap
+          this.setData(tplInfo)
+          this.loading = false
+        })
       }
     },
     components: {
@@ -170,15 +169,15 @@
       Upload
     },
     created() {
-      this.getTplData();
+      this.getTplData()
     },
     computed: {
       tplTypeShow() {
-        return this.form.templateType === 'TEXT';
+        return this.form.templateType === 'TEXT'
       }
     },
     filters: {
       formatDate
     }
-  };
+  }
 </script>

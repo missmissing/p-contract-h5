@@ -74,8 +74,6 @@
         <Attachment/>
       </Form-item>
     </Form>
-
-
   </div>
 </template>
 
@@ -84,9 +82,9 @@
     data() {
       return {
         formItem: {
-          textarea: "",
+          textarea: '',
           selectvalue: '',
-          textno: "",
+          textno: '',
           radiovalue: '',
           isValid: false
         },
@@ -163,8 +161,7 @@
               2: '模板',
               3: '朱磊',
               4: '采购部',
-              5: '朱磊',
-
+              5: '朱磊'
 
             }
           ]
@@ -242,8 +239,7 @@
               2: '模板',
               3: '朱磊',
               4: '采购部',
-              5: '朱磊',
-
+              5: '朱磊'
 
             }
           ]
@@ -252,7 +248,7 @@
     },
     methods: {
       QueryTextNO(no) {
-        alert(no);
+        alert(no)
       }
     }
   }

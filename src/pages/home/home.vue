@@ -148,11 +148,11 @@
 </template>
 
 <script>
-  import store from 'store';
-  import {WebConfig} from '@/api/consts';
+  import store from 'store'
+  import {WebConfig} from '@/api/consts'
 
-  const logo = require('../../assets/img/main-logo.png');
-  const userPhoto = require('../../assets/img/user.jpg');
+  const logo = require('../../assets/img/main-logo.png')
+  const userPhoto = require('../../assets/img/user.jpg')
 
   export default {
     data() {
@@ -161,33 +161,33 @@
         userPhoto,
         username: 'test',
         isCollapse: false
-      };
+      }
     },
     computed: {
       leftClass() {
         return {
           'left-part': true,
           'collapse': this.isCollapse
-        };
+        }
       },
       rightClass() {
         return {
           'right-part': true,
           'collapse': this.isCollapse
-        };
+        }
       },
       collpaseTip() {
-        return this.isCollapse ? '显示菜单' : '隐藏菜单';
+        return this.isCollapse ? '显示菜单' : '隐藏菜单'
       }
     },
     methods: {
       collapse() {
-        this.isCollapse = !this.isCollapse;
+        this.isCollapse = !this.isCollapse
       },
       handleCommand(command) {
         if (command === 'logout') {
-          store.remove('user');
-          location.href = WebConfig.AppSetting.SSOLogoutUrl.format(WebConfig.AppSetting.AppCode, window.location.href);
+          store.remove('user')
+          location.href = WebConfig.AppSetting.SSOLogoutUrl.format(WebConfig.AppSetting.AppCode, window.location.href)
         }
       }
     }

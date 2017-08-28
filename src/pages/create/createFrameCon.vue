@@ -379,402 +379,393 @@
     import templateReplace from '../../utils/templateReplace.js'
 
     export default {
-        created() {
-            /*curConModelId:"con2"
+      created() {
+            /* curConModelId:"con2"
              curConTypeId:"service1"
              currentPr:"",
-             type:create*/
-            let query = this.$route.query;
-            console.log('query', query);
-            this.con.conModel = query.conModel;
-            this.con.conType = query.conType;
+             type:create */
+        let query = this.$route.query
+        console.log('query', query)
+        this.con.conModel = query.conModel
+        this.con.conType = query.conType
 
-            api.getPR(query).then((res) => {
-                this.pr = res.data.pr;
-            }, function (res) {
-                console.info(res)
-            });
+        api.getPR(query).then((res) => {
+          this.pr = res.data.pr
+        }, function(res) {
+          console.info(res)
+        })
 
-            this.getModuleList();
+        this.getModuleList()
+    },
+      data() {
+        return {
+          pr: {},
+          con: {
+            conModel: '0',
+            conType: '0',
+            templateCode: '0',
+            conTitle: '',
+            isOnePay: 1,
+            payments: [
+              {
+                id: '1',
+                type: 1,
+                amount: 11.00,
+                percent: 0.7,
+                payTime: '2017-7-8',
+                description: '付款'
+              },
+              {
+                id: '2',
+                type: 2,
+                amount: 121.00,
+                percent: 0.8,
+                payTime: '2017-7-7',
+                description: '付款2222'
+              }
+            ]
+          },
+          isOtherSeal: 1,
+          isOnePay: 1,
+          isAboutAmount: -1,
+          isCollectBond: 1,
+          chkAllCompany: false,
+
+          showConPreviewModal: false,
+          showConOurmodal: false,
+          showConFinancePaymodal: false,
+          showConCheckPersonModal: false,
+          showConContentCheckServiceModal: false,
+          payType: -1,
+          attachmentColumns: [{
+            title: '附件类型',
+            key: 'EmployeeName'
+          },
+          {
+            title: '编号',
+            key: 'Moible'
+          },
+          {
+            title: '文件名称',
+            key: 'Moible'
+          },
+          {
+            title: '附件',
+            key: 'Moible'
+          }
+          ],
+          conContentProviderColumns: [{
+            title: '供应商编号',
+            key: 'Moible'
+          },
+          {
+            title: '供应商名称',
+            key: 'Moible'
+          },
+          {
+            title: '银行账号',
+            key: 'Moible'
+          }
+          ],
+          conContentProviderData: [{
+            Moible: 'Moible'
+          }],
+          conContentOurColumns: [{
+            title: '公司代码',
+            width: 300,
+            key: 'Moible'
+          },
+          {
+            title: '公司名称',
+            key: 'Moible'
+          }
+          ],
+          conContentOurData: [{
+            Moible: 'Moible'
+          }],
+          conContentMaterielColumns: [{
+            title: '序号',
+            key: 'EmployeeName'
+          },
+          {
+            title: '物料编码',
+            key: 'Moible'
+          },
+          {
+            title: '物料名称',
+            key: 'EmployeeName'
+          },
+          {
+            title: '数量',
+            key: 'Moible'
+          },
+          {
+            title: '价格',
+            key: 'EmployeeName'
+          },
+          {
+            title: '税率',
+            key: 'Moible'
+          }
+          ],
+          conContentCheckMaterielColumns: [{
+            title: '序号',
+            key: 'EmployeeName'
+          },
+          {
+            title: '物料编码',
+            key: 'Moible'
+          },
+          {
+            title: '物料描述',
+            key: 'EmployeeName'
+          },
+          {
+            title: '备注',
+            key: 'Moible'
+          }
+          ],
+          conContentCheckServiceColumns: [{
+            title: '序号',
+            key: 'EmployeeName'
+          },
+          {
+            title: '服务名称',
+            key: 'Moible'
+          },
+          {
+            title: '验收要求',
+            key: 'EmployeeName'
+          },
+          {
+            title: '备注',
+            key: 'Moible'
+          }
+          ],
+          conFinancePayColumns: [{
+            title: '类型',
+            key: 'EmployeeName'
+          },
+          {
+            title: '是否多次付款',
+            key: 'Moible'
+          },
+          {
+            title: '付款金额',
+            key: 'EmployeeName'
+          },
+          {
+            title: '付款时间',
+            key: 'Moible'
+          },
+          {
+            title: '备注',
+            key: 'EmployeeName'
+          },
+          {
+            title: '占比',
+            key: 'Moible'
+          }
+          ],
+          conCheckPersonColumns: [{
+            title: '联合验收人',
+            key: 'EmployeeName'
+          },
+          {
+            title: '联合验收人部门',
+            key: 'Moible'
+          },
+          {
+            title: '是否必选',
+            key: 'EmployeeName'
+          }
+          ],
+          conSealColumns: [{
+            title: '序号',
+            key: 'EmployeeName'
+          },
+          {
+            title: '文本名称',
+            key: 'Moible'
+          },
+          {
+            title: '用章次数',
+            key: 'EmployeeName'
+          },
+          {
+            title: '打印份数',
+            key: 'EmployeeName'
+          },
+          {
+            title: '我方留存份数',
+            key: 'Moible'
+          },
+          {
+            title: '用章名称',
+            key: 'EmployeeName'
+          },
+          {
+            title: '备注',
+            key: 'Moible'
+          },
+          {
+            title: '无需打印',
+            key: 'EmployeeName'
+          }
+          ],
+          conOtherDataColumns: [{
+            title: '序号',
+            key: 'EmployeeName'
+          },
+          {
+            title: '合同号',
+            key: 'Moible'
+          },
+          {
+            title: '类型',
+            key: 'EmployeeName'
+          },
+          {
+            title: '状态',
+            key: 'EmployeeName'
+          },
+          {
+            title: '公司',
+            key: 'Moible'
+          },
+          {
+            title: '合同开始时间',
+            key: 'EmployeeName'
+          }
+          ],
+          source: {
+            templateTags: [],
+            templateModules: [],
+            targetTagKeys: [],
+            targetModuleKeys: []
+          },
+          editTemplate: {
+            show: false,
+            header: '',
+            content: '',
+            footer: '',
+            html: ' '
+          }
+        }
+      },
+      methods: {
+        getModuleList() {
+          const $self = this
+          api.getTemplateModuleList({}).then((res) => {
+            $self.source.templateModules = res.data.data.modules.map(function(el) {
+              return {
+                key: el.Code,
+                label: el.Name,
+                disabled: false,
+                content: el.Content,
+                sort: el.Sort,
+                type: el.Type,
+                position: el.Position
+              }
+            })
+
+            $self.source.templateTags = res.data.data.templateTags
+          })
         },
-        data() {
-            return {
-                pr: {},
-                con: {
-                    conModel: "0",
-                    conType: "0",
-                    templateCode: "0",
-                    conTitle: "",
-                    isOnePay: 1,
-                    payments: [
-                        {
-                            id: "1",
-                            type: 1,
-                            amount: 11.00,
-                            percent: 0.7,
-                            payTime: '2017-7-8',
-                            description: '付款'
-                        },
-                        {
-                            id: "2",
-                            type: 2,
-                            amount: 121.00,
-                            percent: 0.8,
-                            payTime: '2017-7-7',
-                            description: '付款2222'
-                        }
-                    ]
-                },
-                isOtherSeal: 1,
-                isOnePay: 1,
-                isAboutAmount: -1,
-                isCollectBond: 1,
-                chkAllCompany: false,
-
-                showConPreviewModal: false,
-                showConOurmodal: false,
-                showConFinancePaymodal: false,
-                showConCheckPersonModal: false,
-                showConContentCheckServiceModal: false,
-                payType: -1,
-                attachmentColumns: [{
-                    title: '附件类型',
-                    key: 'EmployeeName'
-                },
-                    {
-                        title: '编号',
-                        key: 'Moible'
-                    },
-                    {
-                        title: '文件名称',
-                        key: 'Moible'
-                    },
-                    {
-                        title: '附件',
-                        key: 'Moible'
-                    }
-                ],
-                conContentProviderColumns: [{
-                    title: '供应商编号',
-                    key: 'Moible'
-                },
-                    {
-                        title: '供应商名称',
-                        key: 'Moible'
-                    },
-                    {
-                        title: '银行账号',
-                        key: 'Moible'
-                    }
-                ],
-                conContentProviderData: [{
-                    Moible: 'Moible'
-                }],
-                conContentOurColumns: [{
-                    title: '公司代码',
-                    width: 300,
-                    key: 'Moible'
-                },
-                    {
-                        title: '公司名称',
-                        key: 'Moible'
-                    }
-                ],
-                conContentOurData: [{
-                    Moible: 'Moible'
-                }],
-                conContentMaterielColumns: [{
-                    title: '序号',
-                    key: 'EmployeeName'
-                },
-                    {
-                        title: '物料编码',
-                        key: 'Moible'
-                    },
-                    {
-                        title: '物料名称',
-                        key: 'EmployeeName'
-                    },
-                    {
-                        title: '数量',
-                        key: 'Moible'
-                    },
-                    {
-                        title: '价格',
-                        key: 'EmployeeName'
-                    },
-                    {
-                        title: '税率',
-                        key: 'Moible'
-                    }
-                ],
-                conContentCheckMaterielColumns: [{
-                    title: '序号',
-                    key: 'EmployeeName'
-                },
-                    {
-                        title: '物料编码',
-                        key: 'Moible'
-                    },
-                    {
-                        title: '物料描述',
-                        key: 'EmployeeName'
-                    },
-                    {
-                        title: '备注',
-                        key: 'Moible'
-                    }
-                ],
-                conContentCheckServiceColumns: [{
-                    title: '序号',
-                    key: 'EmployeeName'
-                },
-                    {
-                        title: '服务名称',
-                        key: 'Moible'
-                    },
-                    {
-                        title: '验收要求',
-                        key: 'EmployeeName'
-                    },
-                    {
-                        title: '备注',
-                        key: 'Moible'
-                    }
-                ],
-                conFinancePayColumns: [{
-                    title: '类型',
-                    key: 'EmployeeName'
-                },
-                    {
-                        title: '是否多次付款',
-                        key: 'Moible'
-                    },
-                    {
-                        title: '付款金额',
-                        key: 'EmployeeName'
-                    },
-                    {
-                        title: '付款时间',
-                        key: 'Moible'
-                    },
-                    {
-                        title: '备注',
-                        key: 'EmployeeName'
-                    },
-                    {
-                        title: '占比',
-                        key: 'Moible'
-                    }
-                ],
-                conCheckPersonColumns: [{
-                    title: '联合验收人',
-                    key: 'EmployeeName'
-                },
-                    {
-                        title: '联合验收人部门',
-                        key: 'Moible'
-                    },
-                    {
-                        title: '是否必选',
-                        key: 'EmployeeName'
-                    }
-                ],
-                conSealColumns: [{
-                    title: '序号',
-                    key: 'EmployeeName'
-                },
-                    {
-                        title: '文本名称',
-                        key: 'Moible'
-                    },
-                    {
-                        title: '用章次数',
-                        key: 'EmployeeName'
-                    },
-                    {
-                        title: '打印份数',
-                        key: 'EmployeeName'
-                    },
-                    {
-                        title: '我方留存份数',
-                        key: 'Moible'
-                    },
-                    {
-                        title: '用章名称',
-                        key: 'EmployeeName'
-                    },
-                    {
-                        title: '备注',
-                        key: 'Moible'
-                    },
-                    {
-                        title: '无需打印',
-                        key: 'EmployeeName'
-                    }
-                ],
-                conOtherDataColumns: [{
-                    title: '序号',
-                    key: 'EmployeeName'
-                },
-                    {
-                        title: '合同号',
-                        key: 'Moible'
-                    },
-                    {
-                        title: '类型',
-                        key: 'EmployeeName'
-                    },
-                    {
-                        title: '状态',
-                        key: 'EmployeeName'
-                    },
-                    {
-                        title: '公司',
-                        key: 'Moible'
-                    },
-                    {
-                        title: '合同开始时间',
-                        key: 'EmployeeName'
-                    }
-                ],
-                source: {
-                    templateTags: [],
-                    templateModules: [],
-                    targetTagKeys: [],
-                    targetModuleKeys: [],
-                },
-                editTemplate: {
-                    show: false,
-                    header: '',
-                    content: '',
-                    footer: '',
-                    html: ' '
-                }
-            }
-        },
-        methods: {
-            getModuleList() {
-                const $self = this;
-                api.getTemplateModuleList({}).then((res) => {
-                    $self.source.templateModules = res.data.data.modules.map(function (el) {
-
-                        return {
-                            key: el.Code,
-                            label: el.Name,
-                            disabled: false,
-                            content: el.Content,
-                            sort: el.Sort,
-                            type: el.Type,
-                            position: el.Position,
-                        };
-
-                    });
-
-                    $self.source.templateTags = res.data.data.templateTags;
-                });
-            },
-            refreshTemplate() {
-                const newTargetItems = [];
-                this.source.targetModuleKeys.forEach(key => {
-                    newTargetItems.push(this.source.templateModules.find((m) => {
-                        return m.key === key
-                    }));
-                });
+        refreshTemplate() {
+          const newTargetItems = []
+          this.source.targetModuleKeys.forEach(key => {
+            newTargetItems.push(this.source.templateModules.find((m) => {
+              return m.key === key
+            }))
+          })
 //				newTargetItems.sort(m => {
 //					return m.sort
 //				});
 
-                this.editTemplate.header = '';
-                this.editTemplate.footer = '';
-                const templateTags = this.source.templateTags;
+          this.editTemplate.header = ''
+          this.editTemplate.footer = ''
+          const templateTags = this.source.templateTags
 
-                newTargetItems.forEach(m => {
-                    if (m.type === 'H')
-                        this.editTemplate.header += m.content;
-                    else if (m.type === 'F')
-                        this.editTemplate.footer += m.content;
-                    else if (m.type === 'S') {
-                        this.source.targetTagKeys.forEach(c => {
-                            const item = templateTags.find(t => {
-                                return c === t.Code && m.key === t.ModuleCode;
-                            });
-                            if (item) {
-                                if (m.position === 'Top')
-                                    this.editTemplate.header += item.Content;
-                                else
-                                    this.editTemplate.footer += item.Content;
-                            }
-                        });
-                    }
-                });
-                this.editTemplate.header = tagService.template_preview('<h2 style="text-align:center;">' + "联合扶持品牌经销商营销活动协议" + '</h2><br/><br/>' + this.editTemplate.header);
-                this.editTemplate.footer = tagService.template_preview(this.editTemplate.footer);
-            },
-            formatTemplateContent(content) {
-                if (content) {
-                    return content;
-                } else {
-                    return '';
+          newTargetItems.forEach(m => {
+            if (m.type === 'H') { this.editTemplate.header += m.content } else if (m.type === 'F') { this.editTemplate.footer += m.content } else if (m.type === 'S') {
+              this.source.targetTagKeys.forEach(c => {
+                const item = templateTags.find(t => {
+                  return c === t.Code && m.key === t.ModuleCode
+                })
+                if (item) {
+                  if (m.position === 'Top') { this.editTemplate.header += item.Content } else { this.editTemplate.footer += item.Content }
                 }
-            },
-            conPreview() {
-                let templateCode = this.con.templateCode;
-                if (templateCode === "0") {
-                    this.$Message.error('请选择模板名称!');
-                    return;
-                }
-
-                const conContent = '<span>依照《中华人民共和国合同法》，《中华人民共和国建筑法》，《中华人民共和国消防法》，及其他有关法律，行政法规，遵循平等，自愿，公平和诚实信用的原则，甲方将红星美凯龙北京西四环商场防火门改造安装工程承包给乙方施工，为确保施工进度和质量，经甲、乙双方协商一致，订立本合同。</span>';
-                this.showConPreviewModal = true;
-                const conTemplates = [
-                    {concode: "1", moduleKeys: ['header2', 'purchase_table', 'footer'], content: conContent},
-                    {concode: "2", moduleKeys: ['header2', 'payment', 'footer'], content: conContent},
-                    {concode: "3", moduleKeys: ['header2', 'footer'], content: conContent},
-                    {concode: "4", moduleKeys: ['header2', 'purchase_table', 'payment', 'footer'], content: conContent}
-                ];
-
-                let conTemplate = conTemplates.find(t => {
-                    return templateCode === t.concode;
-                });
-
-                this.source.targetModuleKeys = conTemplate.moduleKeys;
-                this.editTemplate.content = conTemplate.content;
-                this.source.targetTagKeys = [];
-                if (this.pr.type === 1) {
-                    this.source.targetTagKeys.push("purchase_table_1");
-                } else {
-                    this.source.targetTagKeys.push("purchase_table_2");
-                }
-                if (this.con.isOnePay === 1) {
-                    this.source.targetTagKeys.push("payment_2");
-                } else {
-                    this.source.targetTagKeys.push("payment_1");
-                }
-                this.refreshTemplate();
-
-                this.editTemplate.html = this.editTemplate.header + this.formatTemplateContent(this.editTemplate.content) + this.editTemplate.footer;
-                templateReplace.addData("materials", this.pr.materials);
-                templateReplace.addData("payments", this.con.payments);
-                this.editTemplate.html = templateReplace.getRepalceHtml(this.editTemplate.html);
-            },
-            cancel() {
-                this.showConCheckPersonModal = false;
-            },
-            exportPDF() {
-                const newWindow = window.open("打印窗口", "_blank");
-                //打印内容写入newWindow文档
-                newWindow.document.write(this.editTemplate.html);
-                //关闭文档
-                newWindow.document.close();
-                //调用打印机
-                newWindow.print();
-                //关闭newWindow页面
-                newWindow.close();
+              })
             }
+          })
+          this.editTemplate.header = tagService.template_preview('<h2 style="text-align:center;">' + '联合扶持品牌经销商营销活动协议' + '</h2><br/><br/>' + this.editTemplate.header)
+          this.editTemplate.footer = tagService.template_preview(this.editTemplate.footer)
         },
-        components: {
-            searchuser
+        formatTemplateContent(content) {
+          if (content) {
+            return content
+          } else {
+            return ''
+          }
+        },
+        conPreview() {
+          let templateCode = this.con.templateCode
+          if (templateCode === '0') {
+            this.$Message.error('请选择模板名称!')
+            return
+          }
+
+          const conContent = '<span>依照《中华人民共和国合同法》，《中华人民共和国建筑法》，《中华人民共和国消防法》，及其他有关法律，行政法规，遵循平等，自愿，公平和诚实信用的原则，甲方将红星美凯龙北京西四环商场防火门改造安装工程承包给乙方施工，为确保施工进度和质量，经甲、乙双方协商一致，订立本合同。</span>'
+          this.showConPreviewModal = true
+          const conTemplates = [
+                    {concode: '1', moduleKeys: ['header2', 'purchase_table', 'footer'], content: conContent},
+                    {concode: '2', moduleKeys: ['header2', 'payment', 'footer'], content: conContent},
+                    {concode: '3', moduleKeys: ['header2', 'footer'], content: conContent},
+                    {concode: '4', moduleKeys: ['header2', 'purchase_table', 'payment', 'footer'], content: conContent}
+          ]
+
+          let conTemplate = conTemplates.find(t => {
+            return templateCode === t.concode
+          })
+
+          this.source.targetModuleKeys = conTemplate.moduleKeys
+          this.editTemplate.content = conTemplate.content
+          this.source.targetTagKeys = []
+          if (this.pr.type === 1) {
+            this.source.targetTagKeys.push('purchase_table_1')
+          } else {
+            this.source.targetTagKeys.push('purchase_table_2')
+          }
+          if (this.con.isOnePay === 1) {
+            this.source.targetTagKeys.push('payment_2')
+          } else {
+            this.source.targetTagKeys.push('payment_1')
+          }
+          this.refreshTemplate()
+
+          this.editTemplate.html = this.editTemplate.header + this.formatTemplateContent(this.editTemplate.content) + this.editTemplate.footer
+          templateReplace.addData('materials', this.pr.materials)
+          templateReplace.addData('payments', this.con.payments)
+          this.editTemplate.html = templateReplace.getRepalceHtml(this.editTemplate.html)
+        },
+        cancel() {
+          this.showConCheckPersonModal = false
+        },
+        exportPDF() {
+          const newWindow = window.open('打印窗口', '_blank')
+            // 打印内容写入newWindow文档
+          newWindow.document.write(this.editTemplate.html)
+            // 关闭文档
+          newWindow.document.close()
+            // 调用打印机
+          newWindow.print()
+            // 关闭newWindow页面
+          newWindow.close()
         }
+      },
+      components: {
+        searchuser
+      }
     }
 </script>

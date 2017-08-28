@@ -46,8 +46,8 @@
 </template>
 
 <script>
-  import Api from '@/api/create';
-  import {formatDate} from '@/filters';
+  import Api from '@/api/create'
+  import {formatDate} from '@/filters'
 
   export default {
     data() {
@@ -57,33 +57,33 @@
         total: 0,
         tableData: [],
         loading: false
-      };
+      }
     },
     methods: {
       getData() {
-        this.loading = true;
+        this.loading = true
         Api.getContractTableData({}).then((res) => {
-          const {list, total, pageSize} = res.data.dataMap;
-          this.tableData = list;
-          this.total = total;
-          this.pageSize = pageSize;
-          this.loading = false;
-        });
+          const {list, total, pageSize} = res.data.dataMap
+          this.tableData = list
+          this.total = total
+          this.pageSize = pageSize
+          this.loading = false
+        })
       },
       formatDate(value) {
         return formatDate(value)
       },
       handleSizeChange(val) {
-        this.pageSize = val;
-        console.log(`每页 ${val} 条`);
+        this.pageSize = val
+        console.log(`每页 ${val} 条`)
       },
       handleCurrentChange(val) {
-        this.currentPage = val;
-        console.log(`当前页: ${val}`);
+        this.currentPage = val
+        console.log(`当前页: ${val}`)
       }
     },
     created() {
-      this.getData();
+      this.getData()
     }
-  };
+  }
 </script>

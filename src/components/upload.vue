@@ -36,12 +36,11 @@
 </template>
 
 <script>
-
   export default {
     data() {
       return {
         uploadFiles: []
-      };
+      }
     },
     props: {
       action: {
@@ -65,44 +64,47 @@
     methods: {
       onChange(file, fileList) {
         if (file.status !== 'ready') {
-          return;
+          return
         }
-        this.uploadFiles = fileList;
+        this.uploadFiles = fileList
       },
       onProgress(ev, rawFile) {
-        const file = this.getFile(rawFile);
-        file.status = 'uploading';
-        file.percentage = ev.percent || 0;
+        const file = this.getFile(rawFile)
+        file.status = 'uploading'
+        file.percentage = ev.percent || 0
       },
       onSuccess(response, file, fileList) {
-        console.log(response, file, fileList);
-        const {fileId} = response.dataMap;
-        file.url = this.download ? `${this.download}${fileId}` : '';
-        file.fileId = fileId;
-        this.$emit('update:fileList', fileList);
+        console.log(response, file, fileList)
+        const {fileId} = response.dataMap
+        file.url = this.download ? `${this.download}${fileId}` : ''
+        file.fileId = fileId
+        this.$emit('update:fileList', fileList)
       },
       onError(err, file, fileList) {
-        this.$emit('update:fileList', fileList);
+        if (err) {
+          console.log(err)
+        }
+        this.$emit('update:fileList', fileList)
       },
       onRemove(index, file) {
-        this.uploadFiles.splice(index, 1);
-        this.$emit('update:fileList', this.uploadFiles);
+        this.uploadFiles.splice(index, 1)
+        this.$emit('update:fileList', this.uploadFiles)
       },
       parsePercentage(val) {
-        return parseInt(val, 10);
+        return parseInt(val, 10)
       },
       getFile(rawFile) {
-        const fileList = this.uploadFiles;
-        let target;
+        const fileList = this.uploadFiles
+        let target
         fileList.every(item => {
-          target = rawFile.uid === item.uid ? item : null;
-          return !target;
-        });
-        return target;
+          target = rawFile.uid === item.uid ? item : null
+          return !target
+        })
+        return target
       }
     },
     created() {
-      this.uploadFiles = this.fileList;
+      this.uploadFiles = this.fileList
     }
-  };
+  }
 </script>

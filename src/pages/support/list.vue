@@ -125,8 +125,8 @@
 </template>
 
 <script>
-  import moment from 'moment';
-  import supportModel from '@/api/support';
+  import moment from 'moment'
+  import supportModel from '@/api/support'
 
   export default {
     data() {
@@ -143,7 +143,7 @@
         daterange: [],
         pickerOptions: {
           disabledDate(time) {
-            return time.getTime() > Date.now();
+            return time.getTime() > Date.now()
           }
         },
         tableData: []
@@ -151,42 +151,42 @@
     },
     methods: {
       search() {
-        console.log(JSON.stringify(this.form));
-        this.getList(this.form);
+        console.log(JSON.stringify(this.form))
+        this.getList(this.form)
       },
       getList(params) {
-        this.loading = true;
+        this.loading = true
         supportModel.getList(params).then((res) => {
-          console.log(res);
-          this.tableData = res.data.dataMap;
-          this.loading = false;
+          console.log(res)
+          this.tableData = res.data.dataMap
+          this.loading = false
         })
       },
       see(index, row) {
-        console.log(row);
-        this.$router.push(`/contemplate/see/${row.id}`);
+        console.log(row)
+        this.$router.push(`/contemplate/see/${row.id}`)
       },
       formatDateRange(value) {
-        const daterange = value.split(' ');
-        this.daterange = [daterange[0], daterange[2]];
-        this.form.startTime = daterange[0];
-        this.form.ednTime = daterange[1];
+        const daterange = value.split(' ')
+        this.daterange = [daterange[0], daterange[2]]
+        this.form.startTime = daterange[0]
+        this.form.ednTime = daterange[1]
       },
       formatType(row) {
-        return row.templateType === 'TEXT' ? '合同文本' : '合同模板';
+        return row.templateType === 'TEXT' ? '合同文本' : '合同模板'
       },
       formatTime(row) {
-        return moment(row.createTime).format('YYYY-MM-DD HH:mm:ss');
+        return moment(row.createTime).format('YYYY-MM-DD HH:mm:ss')
       },
       formatDate1(row) {
-        return moment(row.startDate).format('YYYY-MM-DD');
+        return moment(row.startDate).format('YYYY-MM-DD')
       },
       formatDate2(row) {
-        return moment(row.endDate).format('YYYY-MM-DD');
+        return moment(row.endDate).format('YYYY-MM-DD')
       }
     },
     created() {
-      this.getList();
+      this.getList()
     }
-  };
+  }
 </script>

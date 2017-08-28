@@ -7,7 +7,7 @@
     <div v-if="!showTmpl"
          v-loading="loading"
          element-loading-text="拼命加载中">
-      <el-card class="mb20">
+      <el-card>
         <div slot="header">
           <span class="common-title">基本信息</span>
         </div>
@@ -141,7 +141,7 @@
           </el-form>
         </div>
       </el-card>
-      <el-row class="ml20 mb20">
+      <el-row class="mt20 mb20 ml20">
         <!--<el-button @click="save(0)">保 存</el-button>-->
         <el-button type="primary" @click="save(1)">提 交</el-button>
       </el-row>
@@ -160,14 +160,14 @@
 </template>
 
 <script>
-  import _ from 'lodash';
-  import moment from 'moment';
-  import Tmpl from './tmpl.vue';
-  import Upload from '@/components/upload.vue';
-  import TreeModal from '@/components/treeModal.vue';
-  import supportModel from '@/api/support';
-  import getBusiType from '@/mixins/getBusiType';
-  import {uploadUrl, downloadUrl} from '@/api/consts';
+  import _ from 'lodash'
+  import moment from 'moment'
+  import Tmpl from './tmpl.vue'
+  import Upload from '@/components/upload.vue'
+  import TreeModal from '@/components/treeModal.vue'
+  import supportModel from '@/api/support'
+  import getBusiType from '@/mixins/getBusiType'
+  import {uploadUrl, downloadUrl} from '@/api/consts'
 
   const defaultData = {
     form: {
@@ -192,7 +192,7 @@
     version: '',
     pickerOptions: {
       disabledDate(time) {
-        return time.getTime() < Date.now() - 8.64e7;
+        return time.getTime() < Date.now() - 8.64e7
       }
     },
     defaultProps: {
@@ -202,121 +202,121 @@
     visible: false,
     showTmpl: false,
     loading: false
-  };
+  }
 
   export default {
     mixins: [getBusiType],
     data() {
       return Object.assign({
         regions: []
-      }, _.cloneDeep(defaultData));
+      }, _.cloneDeep(defaultData))
     },
     methods: {
       search() {
-        this.loading = true;
+        this.loading = true
         supportModel.getCurrentTemplateByCode({
-          templateCode: this.form.templateCode,
+          templateCode: this.form.templateCode
         }).then((res) => {
-          console.log(res);
-          Object.assign(this.$data, _.cloneDeep(defaultData));
-          const tplInfo = res.data.dataMap;
-          this.setData(tplInfo);
-          this.loading = false;
-        });
+          console.log(res)
+          Object.assign(this.$data, _.cloneDeep(defaultData))
+          const tplInfo = res.data.dataMap
+          this.setData(tplInfo)
+          this.loading = false
+        })
       },
       showTreeModal() {
-        this.visible = true;
+        this.visible = true
       },
       formatDate(value) {
-        this.form.startDate = moment(value).valueOf();
+        this.form.startDate = moment(value).valueOf()
       },
       setBusiType(value, tree) {
-        let bizTypes = [];
-        let busiTypeText = [];
-        const leafs = tree.getCheckedNodes(true);
+        let bizTypes = []
+        let busiTypeText = []
+        const leafs = tree.getCheckedNodes(true)
         leafs.forEach((item) => {
-          bizTypes.push(item.id);
-          busiTypeText.push(item.businessName);
-        });
-        this.form.bizTypes = bizTypes;
-        this.busiTypeText = busiTypeText.join(',');
+          bizTypes.push(item.id)
+          busiTypeText.push(item.businessName)
+        })
+        this.form.bizTypes = bizTypes
+        this.busiTypeText = busiTypeText.join(',')
       },
       setData(tplInfo) {
-        this.tplInfo = tplInfo;
-        this['version'] = `V${tplInfo['version']}`;
-        this['operatorName'] = tplInfo['operatorName'];
-        this['creatorName'] = tplInfo['creatorName'];
-        this['busiTypeText'] = tplInfo['bizTypes'].map(item => item.businessName).join(',');
+        this.tplInfo = tplInfo
+        this['version'] = `V${tplInfo['version']}`
+        this['operatorName'] = tplInfo['operatorName']
+        this['creatorName'] = tplInfo['creatorName']
+        this['busiTypeText'] = tplInfo['bizTypes'].map(item => item.businessName).join(',')
         tplInfo['files'].forEach((item) => {
           this.fileList.push({
             name: item.fileName,
             url: `${this.download}${item.fileId}`
-          });
-        });
+          })
+        })
         Object.keys(this.form).forEach((key) => {
           if (tplInfo.hasOwnProperty(key)) {
             if (key === 'bizTypes') {
-              this.form[key] = tplInfo[key].map(item => item.typeId);
+              this.form[key] = tplInfo[key].map(item => item.typeId)
             } else {
-              this.form[key] = tplInfo[key];
+              this.form[key] = tplInfo[key]
             }
           }
-        });
+        })
       },
       getTplData() {
         if (this.see) {
           supportModel.getTplData({
             templateId: this.$route.params.id
           }).then((res) => {
-            console.log(res);
-            const tplInfo = res.data.dataMap;
-            this.setData(tplInfo);
-          });
+            console.log(res)
+            const tplInfo = res.data.dataMap
+            this.setData(tplInfo)
+          })
         }
       },
       getResult() {
-        const {info} = this.$store.state.support.create;
-        const result = {...this.form, ...info};
+        const {info} = this.$store.state.support.create
+        const result = {...this.form, ...info}
         return Object.assign(result, {
           operatorId: 1,
           operatorName: 'haha',
           departmentId: 12,
           departmentName: 'hehe'
-        });
+        })
       },
-      back() { //返回列表页
-        this.$router.push('/contemplate/list');
+      back() { // 返回列表页
+        this.$router.push('/contemplate/list')
       },
       querySearch(queryString, cb) {
         if (!queryString) {
-          return cb([]);
+          return cb([])
         }
         supportModel.selectTemplateCode({
           templateCode: queryString
         }).then((res) => {
-          const result = res.data.dataMap || [];
-          cb(this.createFilter(result));
-        });
+          const result = res.data.dataMap || []
+          cb(this.createFilter(result))
+        })
       },
       createFilter(result) {
         return result.map((item) => {
-          return {value: item, label: item};
-        });
+          return {value: item, label: item}
+        })
       },
       save(templateStatus) {
-        const result = this.getResult();
-        result.templateStatus = templateStatus;
-        console.log('click save：' + JSON.stringify(result));
+        const result = this.getResult()
+        result.templateStatus = templateStatus
+        console.log('click save：' + JSON.stringify(result))
         supportModel.updateTemplate(result).then((res) => {
-          console.log(res);
+          console.log(res)
           this.$message({
             message: '保存成功',
-            type: 'success',
-          });
+            type: 'success'
+          })
           if (templateStatus === 1) {
-            this.back();
+            this.back()
           }
-        });
+        })
       }
     },
     components: {
@@ -325,15 +325,15 @@
       Upload
     },
     created() {
-      this.getTplData();
+      this.getTplData()
     },
     computed: {
       showUpload() {
-        return this.form.templateType === 'TEXT';
+        return this.form.templateType === 'TEXT'
       },
       showTpl() {
-        return this.form.templateType === 'TEMPLATE';
+        return this.form.templateType === 'TEMPLATE'
       }
     }
-  };
+  }
 </script>

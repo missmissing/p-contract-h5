@@ -1,4 +1,4 @@
-import * as types from "../consts";
+import * as types from '../consts'
 
 export default {
   state: {
@@ -10,13 +10,13 @@ export default {
   },
   mutations: {
     [types.SET_INFO](state, payload) {
-      state.create.info = {...state.create.info, ...payload.info};
+      state.create.info = {...state.create.info, ...payload.info}
     },
     [types.SET_BUSITYPE](state, payload) {
-      state.busiType = payload.data;
+      state.busiType = payload.data
     },
     [types.SET_MODULES](state, payload) {
-      state.modules = payload.data;
+      state.modules = payload.data
     }
   }
-};
+}

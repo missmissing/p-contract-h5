@@ -299,228 +299,228 @@
     </div>
 </template>
 <script>
-    import Api from '../../api/create';
-    import _ from 'lodash';
+    import Api from '../../api/create'
+import _ from 'lodash'
 
-    export default {
-        data: function () {
-            return {
-                currentStage: 'create',//目前处于创建阶段
-                activeTabName: 'tabBaseInfo',
-                baseInfoForm: {
-                    tableSupplierInfo: [
-                        {
-                            id: '001',
-                            name: 'name'
-                        }
-                    ],
-                    conSubjctName: [
-                        {
-                            id: '002',
-                            name: 'name'
-                        }
-                    ],
-                    radioSealOrder: 0,//0：我方先盖章 1：对方先盖章
-                    sealReason: '',
-                    dialogAddContractSupplier: false,
-                    dialogNewSubjectVisible: false,
-                    rules: {}
-                },
-                cardSealInfoForm: {
-                    sealFileList: [
-                        {
-                            id: '',
-                            name: '文件名',
-                            type: '3',
-                            code: '0011001',
-                            types: [
-                                {
-                                    id: '1',
-                                    name: '其他'
-                                },
-                                {
-                                    id: '2',
-                                    name: '从协议'
-                                },
-                                {
-                                    id: '3',
-                                    name: '合同'
-                                },
-                            ],
-                            isSeal: true,
-                            remark: '',
-                            sealTimes: '',
-                            printTimes: '',
-                            retainFileNumber: '',
-                            sealName: '',
-                            ifPrint: '',
-                            useSeal: ['seal1', 'seal2'],
-                            useSeals: [
-                                {
-                                    id: 'seal1',
-                                    name: '公章'
-                                },
-                                {
-                                    id: 'seal2',
-                                    name: '法人章'
-                                },
-                                {
-                                    id: 'seal3',
-                                    name: '人事章'
-                                },
-                            ],
+export default {
+      data: function() {
+        return {
+          currentStage: 'create', // 目前处于创建阶段
+          activeTabName: 'tabBaseInfo',
+          baseInfoForm: {
+            tableSupplierInfo: [
+              {
+                id: '001',
+                name: 'name'
+              }
+            ],
+            conSubjctName: [
+              {
+                id: '002',
+                name: 'name'
+              }
+            ],
+            radioSealOrder: 0, // 0：我方先盖章 1：对方先盖章
+            sealReason: '',
+            dialogAddContractSupplier: false,
+            dialogNewSubjectVisible: false,
+            rules: {}
+          },
+          cardSealInfoForm: {
+            sealFileList: [
+              {
+                id: '',
+                name: '文件名',
+                type: '3',
+                code: '0011001',
+                types: [
+                  {
+                    id: '1',
+                    name: '其他'
+                  },
+                  {
+                    id: '2',
+                    name: '从协议'
+                  },
+                  {
+                    id: '3',
+                    name: '合同'
+                  }
+                ],
+                isSeal: true,
+                remark: '',
+                sealTimes: '',
+                printTimes: '',
+                retainFileNumber: '',
+                sealName: '',
+                ifPrint: '',
+                useSeal: ['seal1', 'seal2'],
+                useSeals: [
+                  {
+                    id: 'seal1',
+                    name: '公章'
+                  },
+                  {
+                    id: 'seal2',
+                    name: '法人章'
+                  },
+                  {
+                    id: 'seal3',
+                    name: '人事章'
+                  }
+                ]
 
-                        }
-                    ],
-                },
-                cardRemarkInfoForm: {
-                    otherInstruction: '',
-                },
-                formContractSupplier: {
-                    rules: {
-                        search: [
-                            {required: true, message: '请输入搜索关键字', trigger: 'blur'},
-                        ],
-                    },
-                    search: '',
-                    suppliers: [],
-                    loading: false
-                },
-                formNewSubject: {
-                    rules: {
-                        search: [
-                            {required: true, message: '请输入搜索关键字', trigger: 'blur'},
-                        ],
-                    },
-                    search: '',
-                    subjects: [],
-                    loading: false
-                },
-                cardRelatedInfoForm: {
-                    contractList: [
-                        {
-                            contractCode: '0001001',
-                            type: '类型',
-                            status: '状态',
-                            company: '公司',
-                            startTime: '2018-09-11'
-                        }
-                    ],
-                },
-            };
+              }
+            ]
+          },
+          cardRemarkInfoForm: {
+            otherInstruction: ''
+          },
+          formContractSupplier: {
+            rules: {
+              search: [
+                            {required: true, message: '请输入搜索关键字', trigger: 'blur'}
+              ]
+            },
+            search: '',
+            suppliers: [],
+            loading: false
+          },
+          formNewSubject: {
+            rules: {
+              search: [
+                            {required: true, message: '请输入搜索关键字', trigger: 'blur'}
+              ]
+            },
+            search: '',
+            subjects: [],
+            loading: false
+          },
+          cardRelatedInfoForm: {
+            contractList: [
+              {
+                contractCode: '0001001',
+                type: '类型',
+                status: '状态',
+                company: '公司',
+                startTime: '2018-09-11'
+              }
+            ]
+          }
+        }
+    },
+      methods: {
+        handleClick: function(tab, event) {
+          console.log(tab, event)
         },
-        methods: {
-            handleClick: function (tab, event) {
-                console.log(tab, event);
-            },
-            handleAddContractSupplier(){
-                this.baseInfoForm.dialogAddContractSupplier = true;
-            },
-            handleRemoveSupplier(index, rows){
-                rows.splice(index, 1);
-            },
-            getRemoteSuppliersByKeyWord(query){
-                if (query !== '') {
-                    this.formContractSupplier.loading = true;
-                    Api.getRemoteSuppliersByKeyWord({key: query})
-                            .then((data)=> {
-                                this.formContractSupplier.loading = false;
-                                this.formContractSupplier.suppliers = data.data.dataMap.list;
-                            });
-                } else {
-                    this.formContractSupplier.suppliers = [];
+        handleAddContractSupplier() {
+          this.baseInfoForm.dialogAddContractSupplier = true
+        },
+        handleRemoveSupplier(index, rows) {
+          rows.splice(index, 1)
+        },
+        getRemoteSuppliersByKeyWord(query) {
+          if (query !== '') {
+            this.formContractSupplier.loading = true
+            Api.getRemoteSuppliersByKeyWord({key: query})
+                            .then((data) => {
+                              this.formContractSupplier.loading = false
+                              this.formContractSupplier.suppliers = data.data.dataMap.list
+                            })
+          } else {
+            this.formContractSupplier.suppliers = []
+          }
+        },
+        handleNewContractSupplier(formName) {
+          let curForm = this.$refs[formName]
+          curForm.validate((valid) => {
+            if (valid) {
+              let arr = this.formContractSupplier.suppliers, key = this.formContractSupplier.search
+              for (let i = 0, len = arr.length; i < len; i++) {
+                if (arr[i].id === key) {
+                  this.baseInfoForm.tableSupplierInfo = [{
+                    id: arr[i].id,
+                    name: arr[i].name,
+                    type: 'add'
+                  }]
                 }
-            },
-            handleNewContractSupplier(formName){
-                let curForm = this.$refs[formName];
-                curForm.validate((valid) => {
-                    if (valid) {
-                        let arr = this.formContractSupplier.suppliers, key = this.formContractSupplier.search;
-                        for (let i = 0, len = arr.length; i < len; i++) {
-                            if (arr[i].id === key) {
-                                this.baseInfoForm.tableSupplierInfo = [{
-                                    id: arr[i].id,
-                                    name: arr[i].name,
-                                    type: 'add'
-                                }];
-                            }
-                        }
-                        curForm.resetFields();
-                        this.baseInfoForm.dialogAddContractSupplier = false;
-                    } else {
-                        console.log('error submit!!');
-                        return false;
-                    }
-                });
-            },
-            handleNewContractSupplierCancel(formName){
-                this.$refs[formName].resetFields();
-                this.baseInfoForm.dialogAddContractSupplier = false;
-            },
-            handleNewSubjectName(){
-                this.baseInfoForm.dialogNewSubjectVisible = true;
-            },
-            handleRemoveSubect(index, rows){
-                rows.splice(index, 1);
-            },
-            getRemoteSubjectsByKeyWord(query){
-                if (query !== '') {
-                    this.formNewSubject.loading = true;
-                    Api.getRemoteSubjectsByKeyWord({key: query})
-                            .then((data)=> {
-                                this.formNewSubject.loading = false;
-                                this.formNewSubject.subjects = data.data.dataMap.list;
-                            });
-                } else {
-                    this.formNewSubject.subjects = [];
+              }
+              curForm.resetFields()
+              this.baseInfoForm.dialogAddContractSupplier = false
+            } else {
+              console.log('error submit!!')
+              return false
+            }
+          })
+        },
+        handleNewContractSupplierCancel(formName) {
+          this.$refs[formName].resetFields()
+          this.baseInfoForm.dialogAddContractSupplier = false
+        },
+        handleNewSubjectName() {
+          this.baseInfoForm.dialogNewSubjectVisible = true
+        },
+        handleRemoveSubect(index, rows) {
+          rows.splice(index, 1)
+        },
+        getRemoteSubjectsByKeyWord(query) {
+          if (query !== '') {
+            this.formNewSubject.loading = true
+            Api.getRemoteSubjectsByKeyWord({key: query})
+                            .then((data) => {
+                              this.formNewSubject.loading = false
+                              this.formNewSubject.subjects = data.data.dataMap.list
+                            })
+          } else {
+            this.formNewSubject.subjects = []
+          }
+        },
+        handleAddNewSubject(formName) {
+          let curForm = this.$refs[formName]
+          curForm.validate((valid) => {
+            if (valid) {
+              let arr = this.formNewSubject.subjects, key = this.formNewSubject.search
+              let index = _.findIndex(this.baseInfoForm.conSubjctName, function(chr) {
+                return chr.id == key
+              })
+              if (index > -1) {
+                this.$message.error('这条数据已存在咯！')
+                return false
+              }
+              for (let i = 0, len = arr.length; i < len; i++) {
+                if (arr[i].id === key) {
+                  this.baseInfoForm.conSubjctName.push({
+                    id: arr[i].id,
+                    name: arr[i].name,
+                    type: 'add'
+                  })
                 }
-            },
-            handleAddNewSubject(formName){
-                let curForm = this.$refs[formName];
-                curForm.validate((valid) => {
-                    if (valid) {
-                        let arr = this.formNewSubject.subjects, key = this.formNewSubject.search;
-                        let index = _.findIndex(this.baseInfoForm.conSubjctName, function (chr) {
-                            return chr.id == key;
-                        });
-                        if (index > -1) {
-                            this.$message.error('这条数据已存在咯！');
-                            return false;
-                        }
-                        for (let i = 0, len = arr.length; i < len; i++) {
-                            if (arr[i].id === key) {
-                                this.baseInfoForm.conSubjctName.push({
-                                    id: arr[i].id,
-                                    name: arr[i].name,
-                                    type: 'add'
-                                });
-                            }
-                        }
-                        curForm.resetFields();
-                        this.baseInfoForm.dialogNewSubjectVisible = false;
-                    } else {
-                        console.log('error submit!!');
-                        return false;
-                    }
-                });
-            },
-            handleNewSealFile(){
-                let item = {
-                    name: '',
-                    type: '1',
-                    code: '',
-                    types: [
-                        {
-                            id: '1',
-                            name: '其他'
-                        },
-                        {
-                            id: '2',
-                            name: '从协议'
-                        }
-                    ],
-                    isSeal: false,
-                    remark: '',
+              }
+              curForm.resetFields()
+              this.baseInfoForm.dialogNewSubjectVisible = false
+            } else {
+              console.log('error submit!!')
+              return false
+            }
+          })
+        },
+        handleNewSealFile() {
+          let item = {
+            name: '',
+            type: '1',
+            code: '',
+            types: [
+              {
+                id: '1',
+                name: '其他'
+              },
+              {
+                id: '2',
+                name: '从协议'
+              }
+            ],
+            isSeal: false,
+            remark: ''
                     /* sealTimes: '',
                      printTimes: '',
                      retainFileNumber: '',
@@ -540,58 +540,58 @@
                      id: 'seal3',
                      name: '人事章'
                      },
-                     ],*/
+                     ], */
 
-                };
-                this.cardSealInfoForm.sealFileList.push(item);
-            },
-            handleUploadFileAfterSealSuccess(res, file, fileList){
-                console.log('res', res);
-                console.log('file', file);
-                console.log('fileList', fileList);
-            },
-            handleUploadFileAfterSealError(err, file, fileList){
-                console.log('error', err);
-                console.log('file', file);
-                console.log('fileList', fileList);
-            },
-            handleUploadSealFileSuccess(res, file, fileList){
-                console.log('res', res);
-                console.log('file', file);
-                console.log('fileList', fileList);
-            },
-            handleUploadSealFileError(err, file, fileList){
-                console.log('error', err);
-                console.log('file', file);
-                console.log('fileList', fileList);
-            },
-            handleSave(){
-                console.log('save');
-            },
-            handleSubmit(){
-                /*Api.getRelatedInfo({}).then((data)=> {
-                 this.cardRelatedInfoForm.contractList = data.data.dataMap.contractList;
-                 });*/
-                console.log('submit');
-                /*this.$refs.baseInfoForm.validate((valid)=> {
-                 console.log('validate');
-                 if (valid) {
-                 const supplier = this.cardContentInfoForm.tableSupplierInfo;
-                 if (supplier.length > 0) {
-                 console.log('success');
-                 } else {
-                 this.cardContentInfoForm.errCount = supplier;
-                 }
-
-                 } else {
-                 this.$message.error('请填写完整信息再提交！');
-                 return false;
-                 }
-                 });*/
-            },
-            handleContractDetail(index, row){
-                console.log('详情', index, row);
-            },
+          }
+          this.cardSealInfoForm.sealFileList.push(item)
         },
-    };
+        handleUploadFileAfterSealSuccess(res, file, fileList) {
+          console.log('res', res)
+          console.log('file', file)
+          console.log('fileList', fileList)
+        },
+        handleUploadFileAfterSealError(err, file, fileList) {
+          console.log('error', err)
+          console.log('file', file)
+          console.log('fileList', fileList)
+        },
+        handleUploadSealFileSuccess(res, file, fileList) {
+          console.log('res', res)
+          console.log('file', file)
+          console.log('fileList', fileList)
+        },
+        handleUploadSealFileError(err, file, fileList) {
+          console.log('error', err)
+          console.log('file', file)
+          console.log('fileList', fileList)
+        },
+        handleSave() {
+          console.log('save')
+        },
+        handleSubmit() {
+                /* Api.getRelatedInfo({}).then((data)=> {
+                 this.cardRelatedInfoForm.contractList = data.data.dataMap.contractList;
+                 }); */
+          console.log('submit')
+            /* this.$refs.baseInfoForm.validate((valid)=> {
+             console.log('validate');
+             if (valid) {
+             const supplier = this.cardContentInfoForm.tableSupplierInfo;
+             if (supplier.length > 0) {
+             console.log('success');
+             } else {
+             this.cardContentInfoForm.errCount = supplier;
+             }
+
+             } else {
+             this.$message.error('请填写完整信息再提交！');
+             return false;
+             }
+             }); */
+        },
+        handleContractDetail(index, row) {
+          console.log('详情', index, row)
+        }
+      }
+    }
 </script>

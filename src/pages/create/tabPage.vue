@@ -47,19 +47,19 @@
           }
         ],
         value: 1
-      };
+      }
     },
     computed: {
       view() {
         switch (this.value) {
           case 1:
-            return 'PrTable';
+            return 'PrTable'
           case 2:
-            return 'PriceTable';
+            return 'PriceTable'
           case 3:
-            return 'ContractTable';
+            return 'ContractTable'
           case 4:
-            return 'OrderTable';
+            return 'OrderTable'
         }
       }
     },
@@ -77,5 +77,5 @@
         require(['./components/tables/orderTable'], resolve)
       }
     }
-  };
+  }
 </script>

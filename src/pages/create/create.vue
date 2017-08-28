@@ -147,208 +147,205 @@
 </template>
 
 <script>
-    import Api from '../../api/manageContract';
+    import Api from '../../api/manageContract'
 
-    export default {
-        data() {
-            return {
-                conForm: {
-                    isPr: true,
-                    strPC: '',//比价单编号
-                    curConModelId: '',
-                    curConTypeId: '',
-                    conModel: [],
-                    conType: [],
-                },
-                conFormRules: {
-                    strPC: [
-                        {required: true, message: '请输入比加单编号', trigger: 'blur'},
-                    ],
-                    curConTypeId: [
+export default {
+      data() {
+        return {
+          conForm: {
+            isPr: true,
+            strPC: '', // 比价单编号
+            curConModelId: '',
+            curConTypeId: '',
+            conModel: [],
+            conType: []
+          },
+          conFormRules: {
+            strPC: [
+                        {required: true, message: '请输入比加单编号', trigger: 'blur'}
+            ],
+            curConTypeId: [
                         {required: true, message: '请选择合同模式', trigger: 'change'}
-                    ],
-                    curConModelId: [
+            ],
+            curConModelId: [
                         {required: true, message: '请选择合同类型', trigger: 'change'}
-                    ]
-                },
-                arrPr: [],//比价单列表
-                currentPr: null,//当前选择的比价单
-                dialogVisible: false,
-                prForm: {
-                    prCode: '',
-                    meterialCode: '',
-                    createPerson: '',
-                    createTime: '',
-                    pickerOption: {
-                        shortcuts: [
-                            {
-                                text: '最近一周',
-                                onClick(picker) {
-                                    const end = new Date();
-                                    const start = new Date();
-                                    start.setTime(start.getTime() - 3600 * 1000 * 24 * 7);
-                                    picker.$emit('pick', [start, end]);
-                                }
-                            }, {
-                                text: '最近一个月',
-                                onClick(picker) {
-                                    const end = new Date();
-                                    const start = new Date();
-                                    start.setTime(start.getTime() - 3600 * 1000 * 24 * 30);
-                                    picker.$emit('pick', [start, end]);
-
-                                }
-                            }, {
-                                text: '最近三个月',
-                                onClick(picker) {
-                                    const end = new Date();
-                                    const start = new Date();
-                                    start.setTime(start.getTime() - 3600 * 1000 * 24 * 90);
-                                    picker.$emit('pick', [start, end]);
-                                }
-                            }
-                        ]
-                    }
-                },
-            };
-        },
-        mounted() {
-            Api.getContractModelsAndTypes({}).then((data) => {
-                this.conForm.conModel = data.data.dataMap.modelList;
-                this.conForm.conType = data.data.dataMap.typeList;
-            });
-        },
-        computed: {
-            conModels: function () {
-                const conForm = this.conForm;
-                return conForm.isPr ? conForm.conModel : [conForm.conModel[0], conForm.conModel[1]];
-            }
-        },
-        methods: {
-            handleSwitch(newStatus) {
-                if (!newStatus) {
-                    this.arrPr = [];
-                    this.conForm.strPC = '';
-                    this.conForm.curConModelId = '';
-                    this.conForm.curConTypeId = '';
+            ]
+          },
+          arrPr: [], // 比价单列表
+          currentPr: null, // 当前选择的比价单
+          dialogVisible: false,
+          prForm: {
+            prCode: '',
+            meterialCode: '',
+            createPerson: '',
+            createTime: '',
+            pickerOption: {
+              shortcuts: [
+                {
+                  text: '最近一周',
+                  onClick(picker) {
+                    const end = new Date()
+                    const start = new Date()
+                    start.setTime(start.getTime() - 3600 * 1000 * 24 * 7)
+                    picker.$emit('pick', [start, end])
+                  }
+                }, {
+                  text: '最近一个月',
+                  onClick(picker) {
+                    const end = new Date()
+                    const start = new Date()
+                    start.setTime(start.getTime() - 3600 * 1000 * 24 * 30)
+                    picker.$emit('pick', [start, end])
+                  }
+                }, {
+                  text: '最近三个月',
+                  onClick(picker) {
+                    const end = new Date()
+                    const start = new Date()
+                    start.setTime(start.getTime() - 3600 * 1000 * 24 * 90)
+                    picker.$emit('pick', [start, end])
+                  }
                 }
-            },
-            handleQuery() {
-                this.dialogVisible = true;
-            },
-            handleDetail() {
-                Api.getPrDetail({strPC: this.conForm.strPC})
-                        .then((data)=> {
-                            let url = data.data.dataMap ? data.data.dataMap.url : '';
-                            if (url) {
-                                window.open(url);
-                            } else {
-                                this.$message.error('您输入的比加单号错了哦');
-                            }
-                        });
-
-            },
-            handleNext(formName) {
-                this.$refs[formName].validate((valid) => {
-                    if (valid) {
-                        let routePath = '';
-                        switch (this.conForm.curConModelId) {
-                            case 'con1':
-                                routePath = '/ConCreate/CreateIntentionContract';
-                                break;
-                            case 'con2':
-                                routePath = '/ConCreate/CreateFrameContract';
-                                break;
-                            case 'con3':
-                                routePath = '/ConCreate/CreateSingleContract';
-                                break;
-                            case 'con4':
-                                routePath = '/ConCreate/CreateSimpleContract';
-                                break;
-                        }
-                        this.$router.push({
-                            path: routePath,
-                            query: {
-                                currentPr: this.currentPr ? this.currentPr.id : '',
-                                curConModelId: this.conForm.curConModelId,
-                                curConTypeId: this.conForm.curConTypeId,
-                                operateType: 'create'
-                            }
-                        });
-                    }
-                    else {
-                        return false;
-                    }
-                });
-            },
-            handleCurrentChange(currentRow) {
-                this.currentPr = currentRow;
-            },
-            handleCancel(row) {
-                this.$refs.prTable.setCurrentRow(row);
-                this.currentPr = null;
-            },
-            handleCloseDialog() {
-                this.dialogVisible = false;
-            },
-            handleOKDialog() {
-                this.dialogVisible = false;
-                const startTime = this.prForm.createTime[0] ? this.prForm.createTime[0].toLocaleDateString() : '';
-                const endTime = this.prForm.createTime[1] ? this.prForm.createTime[1].toLocaleDateString() : '';
-                Api.getQrList({
-                    qrCode: this.conForm.strPC,
-                    prCode: this.prForm.prCode,
-                    meterialCode: this.prForm.meterialCode,
-                    createPerson: this.prForm.createPerson,
-                    startTime: startTime,
-                    endTime: endTime,
-                }).then((data)=> {
-                    this.arrPr = data.data.dataMap ? data.data.dataMap.list : [];
-                });
-            },
-            handleDetailPR(index, row) {
-                window.open(row.url);
-            },
-            handleTestCreate(){
-                console.log('create');
-                let routePath = '/ConCreate/CreateFrameContract';
-                this.$router.push({
-                    path: routePath,
-                    query: {
-                        currentPr: this.currentPr ? this.currentPr.id : '',
-                        curConModelId: this.conForm.curConModelId,
-                        curConTypeId: this.conForm.curConTypeId,
-                        operateType: 'create'
-                    }
-                });
-            },
-            handleTestUpdate(){
-                console.log('update');
-                let routePath = '/ConCreate/CreateFrameContract';
-                this.$router.push({
-                    path: routePath,
-                    query: {
-                        currentPr: this.currentPr ? this.currentPr.id : '',
-                        curConModelId: this.conForm.curConModelId,
-                        curConTypeId: this.conForm.curConTypeId,
-                        operateType: 'update'
-                    }
-                });
-            },
-            handleTestQuery(){
-                console.log('query');
-                //http://localhost:8080/#/ConCreate/CreateFrameContract?currentPr=&curConModelId=&curConTypeId=&operateType=update
-                let routePath = '/ConCreate/CreateFrameContract';
-                this.$router.push({
-                    path: routePath,
-                    query: {
-                        currentPr: this.currentPr ? this.currentPr.id : '',
-                        curConModelId: this.conForm.curConModelId,
-                        curConTypeId: this.conForm.curConTypeId,
-                        operateType: 'query'
-                    }
-                });
-            },
+              ]
+            }
+          }
+        }
+  },
+      mounted() {
+        Api.getContractModelsAndTypes({}).then((data) => {
+          this.conForm.conModel = data.data.dataMap.modelList
+          this.conForm.conType = data.data.dataMap.typeList
+        })
+      },
+      computed: {
+        conModels: function () {
+          const conForm = this.conForm
+          return conForm.isPr ? conForm.conModel : [conForm.conModel[0], conForm.conModel[1]]
+        }
+      },
+      methods: {
+        handleSwitch(newStatus) {
+          if (!newStatus) {
+            this.arrPr = []
+            this.conForm.strPC = ''
+            this.conForm.curConModelId = ''
+            this.conForm.curConTypeId = ''
+          }
         },
+        handleQuery() {
+          this.dialogVisible = true
+        },
+        handleDetail() {
+          Api.getPrDetail({strPC: this.conForm.strPC})
+                        .then((data) => {
+                          let url = data.data.dataMap ? data.data.dataMap.url : ''
+                          if (url) {
+                            window.open(url)
+                          } else {
+                            this.$message.error('您输入的比加单号错了哦')
+                          }
+                        })
+        },
+        handleNext(formName) {
+          this.$refs[formName].validate((valid) => {
+            if (valid) {
+              let routePath = ''
+              switch (this.conForm.curConModelId) {
+                case 'con1':
+                  routePath = '/ConCreate/CreateIntentionContract'
+                  break
+                case 'con2':
+                  routePath = '/ConCreate/CreateFrameContract'
+                  break
+                case 'con3':
+                  routePath = '/ConCreate/CreateSingleContract'
+                  break
+                case 'con4':
+                  routePath = '/ConCreate/CreateSimpleContract'
+                  break
+              }
+              this.$router.push({
+                path: routePath,
+                query: {
+                  currentPr: this.currentPr ? this.currentPr.id : '',
+                  curConModelId: this.conForm.curConModelId,
+                  curConTypeId: this.conForm.curConTypeId,
+                  operateType: 'create'
+                }
+              })
+            } else {
+              return false
+            }
+          })
+        },
+        handleCurrentChange(currentRow) {
+          this.currentPr = currentRow
+        },
+        handleCancel(row) {
+          this.$refs.prTable.setCurrentRow(row)
+          this.currentPr = null
+        },
+        handleCloseDialog() {
+          this.dialogVisible = false
+        },
+        handleOKDialog() {
+          this.dialogVisible = false
+          const startTime = this.prForm.createTime[0] ? this.prForm.createTime[0].toLocaleDateString() : ''
+          const endTime = this.prForm.createTime[1] ? this.prForm.createTime[1].toLocaleDateString() : ''
+          Api.getQrList({
+            qrCode: this.conForm.strPC,
+            prCode: this.prForm.prCode,
+            meterialCode: this.prForm.meterialCode,
+            createPerson: this.prForm.createPerson,
+            startTime: startTime,
+            endTime: endTime
+          }).then((data) => {
+            this.arrPr = data.data.dataMap ? data.data.dataMap.list : []
+          })
+        },
+        handleDetailPR(index, row) {
+          window.open(row.url)
+        },
+        handleTestCreate() {
+          console.log('create')
+          let routePath = '/ConCreate/CreateFrameContract'
+          this.$router.push({
+            path: routePath,
+            query: {
+              currentPr: this.currentPr ? this.currentPr.id : '',
+              curConModelId: this.conForm.curConModelId,
+              curConTypeId: this.conForm.curConTypeId,
+              operateType: 'create'
+            }
+          })
+        },
+        handleTestUpdate() {
+          console.log('update')
+          let routePath = '/ConCreate/CreateFrameContract'
+          this.$router.push({
+            path: routePath,
+            query: {
+              currentPr: this.currentPr ? this.currentPr.id : '',
+              curConModelId: this.conForm.curConModelId,
+              curConTypeId: this.conForm.curConTypeId,
+              operateType: 'update'
+            }
+          })
+        },
+        handleTestQuery() {
+          console.log('query')
+            // http://localhost:8080/#/ConCreate/CreateFrameContract?currentPr=&curConModelId=&curConTypeId=&operateType=update
+          let routePath = '/ConCreate/CreateFrameContract'
+          this.$router.push({
+            path: routePath,
+            query: {
+              currentPr: this.currentPr ? this.currentPr.id : '',
+              curConModelId: this.conForm.curConModelId,
+              curConTypeId: this.conForm.curConTypeId,
+              operateType: 'query'
+            }
+          })
+        }
+      }
     }
 </script>

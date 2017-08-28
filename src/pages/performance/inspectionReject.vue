@@ -195,15 +195,14 @@
         </div>
       </el-card>
     </div>
-    <div class="mt20">
-      <el-button style="margin-left:10px;">保 存</el-button>
+    <div class="mt20 mb20 ml20">
+      <el-button>保 存</el-button>
       <el-button type="primary">提 交</el-button>
     </div>
   </div>
 </template>
 
 <script>
-
   export default {
     data() {
       return {
@@ -216,11 +215,11 @@
           handleResult: '',
           fileList: []
         }
-      };
+      }
     },
     methods: {
       search() {
-        console.log(this.form.prCode);
+        console.log(this.form.prCode)
       },
       addItem() {
         this.form.nonconformity = [...this.form.nonconformity, {
@@ -228,11 +227,11 @@
           referStandar: '',
           inspectResult: '',
           remark: ''
-        }];
+        }]
       },
       handleRemove(file, fileList) {
-        console.log(file, fileList);
+        console.log(file, fileList)
       }
     }
-  };
+  }
 </script>

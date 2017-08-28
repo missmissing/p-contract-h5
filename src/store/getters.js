@@ -1,5 +1,5 @@
 export default {
   getRouteName(state) {
-    return state.route.to.name;
+    return state.route.to.name
   }
-};
+}

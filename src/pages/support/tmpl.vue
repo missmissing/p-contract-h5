@@ -95,13 +95,12 @@
 </template>
 
 <script>
-  import _ from 'lodash';
-  import {mapMutations, mapGetters} from 'vuex';
-  import {quillEditor} from 'vue-quill-editor';
-  import {routerNames} from '@/core/consts';
-  import * as types from '../../store/consts';
-  import supportModel from '../../api/support';
-  import getModules from '@/mixins/getModules';
+  import _ from 'lodash'
+  import {mapMutations} from 'vuex'
+  import {quillEditor} from 'vue-quill-editor'
+  import {routerNames} from '@/core/consts'
+  import * as types from '../../store/consts'
+  import getModules from '@/mixins/getModules'
 
   export default {
     mixins: [getModules],
@@ -117,7 +116,7 @@
         options: [],
         modulesData: [],
         editorOption: {
-          placeholder: "请输入内容...",
+          placeholder: '请输入内容...',
           modules: {
             toolbar: [
               [
@@ -131,12 +130,12 @@
                 {'list': 'bullet'},
                 {'align': []},
                 'link'
-              ],
+              ]
             ]
           }
         },
         previewContent: ''
-      };
+      }
     },
     props: {
       showTmpl: {
@@ -153,16 +152,16 @@
           value: '',
           label: '自定义',
           contentModule: ''
-        }];
+        }]
       },
       save() {
         this[types.SET_INFO]({
           info: this.form
-        });
-        this.back();
+        })
+        this.back()
       },
       back() {
-        this.$emit('update:showTmpl', false);
+        this.$emit('update:showTmpl', false)
       },
       ...mapMutations([
         types.SET_INFO
@@ -170,76 +169,76 @@
     },
     watch: {
       tplType() {
-        const options = this.options;
+        const options = this.options
         if (!options.length) {
-          return;
+          return
         }
         const option = _.find(options, (o) => {
-          return o.value === this.form.tplType;
-        });
-        this.form.contentModule = option.contentModule;
+          return o.value === this.form.tplType
+        })
+        this.form.contentModule = option.contentModule
       },
       tplInfo() {
-        const tplInfo = this.tplInfo;
+        const tplInfo = this.tplInfo
         if (!tplInfo) {
-          return;
+          return
         }
         Object.keys(this.form).forEach((key) => {
           if (tplInfo.hasOwnProperty(key)) {
             if (key === 'contentModule') {
-              this.form[key] = tplInfo[key].map(item => item.id);
+              this.form[key] = tplInfo[key].map(item => item.id)
             } else {
-              this.form[key] = tplInfo[key];
+              this.form[key] = tplInfo[key]
             }
           }
-        });
+        })
       },
-      ['form.contentModule']() {
-        const value = this.form.contentModule;
-        const modulesData = this.modulesData;
+      'form.contentModule'() {
+        const value = this.form.contentModule
+        const modulesData = this.modulesData
         if (!value.length || !modulesData.length) {
-          return [];
+          return []
         }
 
-        const header = [];
-        const footer = [];
+        const header = []
+        const footer = []
         value.forEach((key) => {
           const module = _.find(modulesData, (o) => {
-            return o.id === key;
-          });
-          const content = module.moduleContent;
+            return o.id === key
+          })
+          const content = module.moduleContent
           if (module.moduleType === 1) {
-            header.push(content);
+            header.push(content)
           } else if (module.moduleType === 2) {
-            footer.push(content);
+            footer.push(content)
           }
-        });
-        this.header = header.join('');
-        this.footer = footer.join('');
+        })
+        this.header = header.join('')
+        this.footer = footer.join('')
       }
     },
     computed: {
       disabled() {
-        return [routerNames.con_tpl_see, routerNames.con_tpl_abolish].indexOf(this.$route.name) > -1;
+        return [routerNames.con_tpl_see, routerNames.con_tpl_abolish].indexOf(this.$route.name) > -1
       }
     },
     components: {
       quillEditor
     },
     created() {
-      this.getTmplTypes();
+      this.getTmplTypes()
     },
     filters: {
       setItemDisabled(items, self) {
         if (self.disabled) {
           return items.map((item) => {
-            const newItem = Object.assign({}, item);
-            newItem.disabled = true;
-            return newItem;
-          });
+            const newItem = Object.assign({}, item)
+            newItem.disabled = true
+            return newItem
+          })
         }
-        return items;
+        return items
       }
     }
-  };
+  }
 </script>

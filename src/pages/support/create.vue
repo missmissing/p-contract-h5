@@ -6,7 +6,7 @@
   <div>
     <transition name="component-fade" mode="out-in">
       <div v-if="!showTmpl">
-        <el-card class="mb20">
+        <el-card>
           <div slot="header">
             <span class="common-title">基本信息</span>
           </div>
@@ -97,7 +97,7 @@
             </el-form>
           </div>
         </el-card>
-        <el-row class="ml20 mb20">
+        <el-row class="mt20 mb20 ml20">
           <!--<el-button @click="save(0)">保 存</el-button>-->
           <el-button type="primary" @click="save(1)">提 交</el-button>
         </el-row>
@@ -119,15 +119,14 @@
 </template>
 
 <script>
-  import _ from 'lodash';
-  import moment from 'moment';
-  import Tmpl from './tmpl.vue';
-  import Upload from '@/components/upload.vue';
-  import TreeModal from '@/components/treeModal.vue';
-  import supportModel from '@/api/support';
-  import getBusiType from '@/mixins/getBusiType';
-  import {uploadUrl, downloadUrl} from '@/api/consts';
-  import {formatTimeStamp} from '@/filters';
+  import _ from 'lodash'
+  import Tmpl from './tmpl.vue'
+  import Upload from '@/components/upload.vue'
+  import TreeModal from '@/components/treeModal.vue'
+  import supportModel from '@/api/support'
+  import getBusiType from '@/mixins/getBusiType'
+  import {uploadUrl, downloadUrl} from '@/api/consts'
+  import {formatTimeStamp} from '@/filters'
 
   const defaultData = {
     form: {
@@ -146,7 +145,7 @@
     busiTypeText: '',
     pickerOptions: {
       disabledDate(time) {
-        return time.getTime() < Date.now() - 8.64e7;
+        return time.getTime() < Date.now() - 8.64e7
       }
     },
     defaultProps: {
@@ -155,66 +154,66 @@
     },
     visible: false,
     showTmpl: false
-  };
+  }
 
   export default {
     mixins: [getBusiType],
     data() {
       return Object.assign({
         regions: []
-      }, _.cloneDeep(defaultData));
+      }, _.cloneDeep(defaultData))
     },
     methods: {
       showTreeModal() {
-        this.visible = true;
+        this.visible = true
       },
       formatDate(value) {
-        this.form.startDate = formatTimeStamp(value);
+        this.form.startDate = formatTimeStamp(value)
       },
       setBusiType(value, tree) {
-        let bizTypes = [];
-        let busiTypeText = [];
-        const leafs = tree.getCheckedNodes(true);
+        let bizTypes = []
+        let busiTypeText = []
+        const leafs = tree.getCheckedNodes(true)
         leafs.forEach((item) => {
-          bizTypes.push(item.id);
-          busiTypeText.push(item.businessName);
-        });
-        this.form.bizTypes = bizTypes;
-        this.busiTypeText = busiTypeText.join(',');
+          bizTypes.push(item.id)
+          busiTypeText.push(item.businessName)
+        })
+        this.form.bizTypes = bizTypes
+        this.busiTypeText = busiTypeText.join(',')
       },
       getResult() {
-        const {info} = this.$store.state.support.create;
-        const result = {...this.form, ...info};
+        const {info} = this.$store.state.support.create
+        const result = {...this.form, ...info}
         const files = _.map(this.fileList, (file) => {
           if (file.status === 'success') {
-            return file.fileId;
+            return file.fileId
           }
-        });
-        console.log(files);
+        })
+        console.log(files)
         return Object.assign(result, {files}, {
           operatorId: 1,
           operatorName: 'haha',
           departmentId: 12,
           departmentName: 'hehe'
-        });
+        })
       },
-      back() { //返回列表页
-        this.$router.push('/contemplate/list');
+      back() { // 返回列表页
+        this.$router.push('/contemplate/list')
       },
       save(templateStatus) {
-        const result = this.getResult();
-        result.templateStatus = templateStatus;
-        console.log('click save：', result);
+        const result = this.getResult()
+        result.templateStatus = templateStatus
+        console.log('click save：', result)
         supportModel.addTpl(result).then((res) => {
-          console.log(res);
+          console.log(res)
           this.$message({
             message: '保存成功',
-            type: 'success',
-          });
+            type: 'success'
+          })
           if (templateStatus === 1) {
-            this.back();
+            this.back()
           }
-        });
+        })
       }
     },
     components: {
@@ -224,11 +223,11 @@
     },
     computed: {
       showUpload() {
-        return this.form.templateType === 'TEXT';
+        return this.form.templateType === 'TEXT'
       },
       showTpl() {
-        return this.form.templateType === 'TEMPLATE';
+        return this.form.templateType === 'TEMPLATE'
       }
     }
-  };
+  }
 </script>

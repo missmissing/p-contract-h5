@@ -127,9 +127,9 @@
 </template>
 
 <script>
-  import performanceModel from '@/api/performance';
+  import performanceModel from '@/api/performance'
 
-  export default {
+export default {
     data() {
       return {
         form: {
@@ -150,30 +150,30 @@
     watch: {
       dialogVisible() {
         if (!this.dialogVisible) {
-          this.stopData.endDate = '';
-          this.stopData.reason = '';
+          this.stopData.endDate = ''
+          this.stopData.reason = ''
         }
       }
     },
     methods: {
       search() {
-        console.log('搜索');
-        console.log(JSON.stringify(this.form));
+        console.log('搜索')
+        console.log(JSON.stringify(this.form))
       },
       getList() {
-        this.loading = true;
+        this.loading = true
         performanceModel.getConList({}).then((res) => {
-          this.tableData = res.data.dataMap;
-          this.loading = false;
+          this.tableData = res.data.dataMap
+          this.loading = false
         })
       },
       formatDateRange(value) {
-        const daterange = value.split(' ');
-        this.form.daterange = [daterange[0], daterange[2]];
-      },
+        const daterange = value.split(' ')
+        this.form.daterange = [daterange[0], daterange[2]]
+      }
     },
     created() {
-      this.getList();
+      this.getList()
     }
-  };
+  }
 </script>

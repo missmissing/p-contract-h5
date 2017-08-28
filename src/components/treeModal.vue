@@ -32,7 +32,7 @@
     data() {
       return {
         checkNodes: []
-      };
+      }
     },
     props: {
       defaultProps: {
@@ -57,15 +57,15 @@
     },
     methods: {
       getCheckedNodes() {
-        this.checkNodes = this.$refs.tree.getCheckedNodes();
+        this.checkNodes = this.$refs.tree.getCheckedNodes()
       },
       ok() {
-        this.close();
-        this.$emit('ok', this.checkNodes, this.$refs.tree);
+        this.close()
+        this.$emit('ok', this.checkNodes, this.$refs.tree)
       },
       close() {
-        this.$emit('update:visible', false);
+        this.$emit('update:visible', false)
       }
     }
-  };
+  }
 </script>

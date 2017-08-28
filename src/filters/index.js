@@ -1,25 +1,25 @@
-import _ from 'lodash';
-import moment from 'moment';
+import _ from 'lodash'
+import moment from 'moment'
 
 export const strToArr = (value) => {
   if (!_.isString(value)) {
-    return [];
+    return []
   }
-  return value.split(',');
-};
+  return value.split(',')
+}
 
 export const formatDate = (value) => {
-  const m = moment(value);
+  const m = moment(value)
   if (m.isValid()) {
-    return m.format('YYYY-MM-DD');
+    return m.format('YYYY-MM-DD')
   }
-  return value;
-};
+  return value
+}
 
 export const formatTimeStamp = (value) => {
-  const m = moment(value);
+  const m = moment(value)
   if (m.isValid()) {
-    return m.valueOf();
+    return m.valueOf()
   }
-  return value;
-};
+  return value
+}

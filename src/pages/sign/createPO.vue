@@ -132,17 +132,17 @@
         <div class="order-info">
           <el-form label-width="100px">
             <el-row>
-              <el-col :span="8">
+              <el-col :span="7">
                 <el-form-item label="供应商">
                   <el-input disabled></el-input>
                 </el-form-item>
               </el-col>
-              <el-col :span="8">
+              <el-col :span="7">
                 <el-form-item label="订单类型">
                   <el-input disabled></el-input>
                 </el-form-item>
               </el-col>
-              <el-col :span="8">
+              <el-col :span="7">
                 <el-form-item label="公司编码">
                   <el-input disabled></el-input>
                 </el-form-item>
@@ -260,8 +260,8 @@
         </div>
       </el-card>
     </div>
-    <div class="mt20">
-      <el-button style="margin-left:10px;">保 存</el-button>
+    <div class="mt20 mb20 ml20">
+      <el-button>保 存</el-button>
       <el-button type="primary">提 交</el-button>
     </div>
     <el-dialog
@@ -338,7 +338,6 @@
 </template>
 
 <script>
-
   export default {
     data() {
       return {
@@ -350,28 +349,28 @@
         },
         matchSource: [],
         dialogVisible: false
-      };
+      }
     },
     methods: {
       search() {
-        console.log(this.form.contractCode);
+        console.log(this.form.contractCode)
       },
       match() {
-        this.dialogVisible = true;
+        this.dialogVisible = true
       },
       addService() {
         this.form.serverData = [...this.form.serverData, {
           serviceName: '',
           acceptRequire: '',
           remark: ''
-        }];
+        }]
       },
       handleServiceItem(index, row) {
-        console.log(row);
+        console.log(row)
       },
       deleteRow(index, rows) {
-        rows.splice(index, 1);
+        rows.splice(index, 1)
       }
     }
-  };
+  }
 </script>
