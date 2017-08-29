@@ -192,4 +192,4 @@ module.exports = function (api) {
       message: '成功'
     });
   });
-};
+}
