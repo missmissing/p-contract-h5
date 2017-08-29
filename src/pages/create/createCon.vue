@@ -289,9 +289,9 @@
             </el-row>
             <el-card v-if="cardFinanceInfoForm.hasMoney===1">
               <header slot="header">付款方式</header>
-              <el-table style="width: 100%" :data="cardFinanceInfoForm.paymentMethod"
+              <el-table :data="cardFinanceInfoForm.paymentMethods.advance"
                         v-if="cardFinanceInfoForm.onePayment">
-                <el-table-column type="expand">
+                <el-table-column type="expand" v-if="cardFinanceInfoForm.paymentMethods.advance[0].ifMultiPayment">
                   <template scope="props">
                     <el-button icon="plus" type="primary"
                                @click="handleAddAdvanceItem(props.row.type)">
@@ -311,22 +311,11 @@
                       </el-table-column>
                       <el-table-column
                         prop="curTime"
-                        label="付款时间">
+                        label="付款时间"
+                        width="200px">
                         <template scope="scope">
-
                           <el-row>
                             <el-col>
-                              <!--<el-select
-                                      v-model="cardFinanceInfoForm.paymentMethod[scope.$index].curTime"
-                                      placeholder="请选择付款时间"
-                                      @change="handleCurTimeChange(cardFinanceInfoForm.paymentMethod[scope.$index].curTime,cardFinanceInfoForm.paymentMethod[scope.$index])">
-                                  <el-option
-                                          v-for="item in cardFinanceInfoForm.paymentMethod[scope.$index].times"
-                                          :key="item.value"
-                                          :label="item.label"
-                                          :value="item.value">
-                                  </el-option>
-                              </el-select>-->
                               <el-select
                                 @change="handleItemCurTimeChange(props.row.subItem[scope.$index].curTime,props.row.subItem[scope.$index])"
                                 placeholder="请选择付款时间"
@@ -382,7 +371,7 @@
                   label="是否多次付款">
                   <template scope="scope">
                     <el-checkbox
-                      v-model="cardFinanceInfoForm.paymentMethod[scope.$index].ifMultiPayment"></el-checkbox>
+                      v-model="cardFinanceInfoForm.paymentMethods.advance[scope.$index].ifMultiPayment"></el-checkbox>
                   </template>
                 </el-table-column>
                 <el-table-column
@@ -390,7 +379,7 @@
                   label="付款金额">
                   <template scope="scope">
                     <el-input
-                      v-model="cardFinanceInfoForm.paymentMethod[scope.$index].money"></el-input>
+                      v-model="cardFinanceInfoForm.paymentMethods.advance[scope.$index].money"></el-input>
                   </template>
                 </el-table-column>
                 <el-table-column
@@ -401,11 +390,11 @@
                     <el-row>
                       <el-col>
                         <el-select
-                          v-model="cardFinanceInfoForm.paymentMethod[scope.$index].curTime"
+                          v-model="cardFinanceInfoForm.paymentMethods.advance[scope.$index].curTime"
                           placeholder="请选择付款时间"
-                          @change="handleCurTimeChange(cardFinanceInfoForm.paymentMethod[scope.$index].curTime,cardFinanceInfoForm.paymentMethod[scope.$index])">
+                          @change="handleCurTimeChange(cardFinanceInfoForm.paymentMethods.advance[scope.$index].curTime,cardFinanceInfoForm.paymentMethods.advance[scope.$index])">
                           <el-option
-                            v-for="item in cardFinanceInfoForm.paymentMethod[scope.$index].times"
+                            v-for="item in cardFinanceInfoForm.paymentMethods.advance[scope.$index].times"
                             :key="item.value"
                             :label="item.label"
                             :value="item.value">
@@ -414,8 +403,8 @@
                       </el-col>
                       <el-col>
                         <el-date-picker
-                          @change="handleExactDateChange(cardFinanceInfoForm.paymentMethod[scope.$index].exactDate,cardFinanceInfoForm.paymentMethod[scope.$index])"
-                          v-model="cardFinanceInfoForm.paymentMethod[scope.$index].exactDate"
+                          @change="handleExactDateChange(cardFinanceInfoForm.paymentMethods.advance[scope.$index].exactDate,cardFinanceInfoForm.paymentMethods.advance[scope.$index])"
+                          v-model="cardFinanceInfoForm.paymentMethods.advance[scope.$index].exactDate"
                           placeholder="请输入具体付款日期"
                           type="date"></el-date-picker>
                       </el-col>
@@ -427,26 +416,287 @@
                   label="备注">
                   <template scope="scope">
                     <el-input
-                      v-model="cardFinanceInfoForm.paymentMethod[scope.$index].remark"></el-input>
+                      v-model="cardFinanceInfoForm.paymentMethods.advance[scope.$index].remark"></el-input>
                   </template>
                 </el-table-column>
                 <el-table-column prop="proportion" label="占比">
                   <template scope="scope">
-                    {{getProportion(cardFinanceInfoForm.paymentMethod[scope.$index].money)}}
+                    {{getProportion(cardFinanceInfoForm.paymentMethods.advance[scope.$index].money)}}
                   </template>
                 </el-table-column>
               </el-table>
-              <!--<el-table :data="cardFinanceInfoForm.paymentMethod.advance"
+              <el-table :show-header="false" :data="cardFinanceInfoForm.paymentMethods.progress"
                         v-if="cardFinanceInfoForm.onePayment">
-                  <el-table-column type="expand">
-                      <template scope="props">
-                          <el-button icon="plus" type="primary"
-                                     @click="handleAddAdvanceItem(props.row.type)">
-                              添加{{props.row.type}}
+                <el-table-column type="expand" v-if="cardFinanceInfoForm.paymentMethods.progress[0].ifMultiPayment">
+                  <template scope="props">
+                    <el-button icon="plus" type="primary"
+                               @click="handleAddAdvanceItem(props.row.type)">
+                      添加{{props.row.type}}
+                    </el-button>
+                    <el-table :data="props.row.subItem">
+                      <el-table-column width="100px" prop="name" label="名称">
+                        <template scope="scope">{{props.row.type}}{{scope.$index+1}}</template>
+                      </el-table-column>
+                      <el-table-column
+                        prop="money"
+                        label="付款金额">
+                        <template scope="scope">
+                          <el-input
+                            v-model="props.row.subItem[scope.$index].money"></el-input>
+                        </template>
+                      </el-table-column>
+                      <el-table-column
+                        prop="curTime"
+                        label="付款时间"
+                        width="200px">
+                        <template scope="scope">
+                          <el-row>
+                            <el-col>
+                              <el-select
+                                @change="handleItemCurTimeChange(props.row.subItem[scope.$index].curTime,props.row.subItem[scope.$index])"
+                                placeholder="请选择付款时间"
+                                v-model="props.row.subItem[scope.$index].curTime">
+                                <el-option
+                                  v-for="item in props.row.subItem[scope.$index].times"
+                                  :key="item.value"
+                                  :label="item.label"
+                                  :value="item.value">
+                                </el-option>
+                              </el-select>
+                            </el-col>
+                            <el-col>
+                              <el-date-picker
+                                @change="handleItemExactDateChange(props.row.subItem[scope.$index].exactDate,props.row.subItem[scope.$index])"
+                                v-model="props.row.subItem[scope.$index].exactDate"
+                                placeholder="请输入具体付款日期"
+                                type="date"></el-date-picker>
+                            </el-col>
+                          </el-row>
+                        </template>
+                      </el-table-column>
+                      <el-table-column
+                        prop="remark"
+                        label="备注">
+                        <template scope="scope">
+                          <el-input
+                            v-model="props.row.subItem[scope.$index].remark"></el-input>
+                        </template>
+                      </el-table-column>
+                      <el-table-column prop="proportion" label="占比">
+                        <template scope="scope">
+                          {{getProportion(props.row.subItem[scope.$index].money)}}
+                        </template>
+                      </el-table-column>
+                      <el-table-column
+                        fixed="right"
+                        label="操作"
+                        width="100">
+                        <template scope="scope">
+                          <el-button
+                            @click="handleRemoveAdvanceItem(scope.$index, props.row.subItem)"
+                            type="text" size="small">移除
                           </el-button>
-                      </template>
-                  </el-table-column>
-              </el-table>-->
+                        </template>
+                      </el-table-column>
+                    </el-table>
+                  </template>
+                </el-table-column>
+                <el-table-column prop="type" label="类型"></el-table-column>
+                <el-table-column
+                  prop="ifMultiPayment"
+                  label="是否多次付款">
+                  <template scope="scope">
+                    <el-checkbox
+                      v-model="cardFinanceInfoForm.paymentMethods.progress[scope.$index].ifMultiPayment"></el-checkbox>
+                  </template>
+                </el-table-column>
+                <el-table-column
+                  prop="money"
+                  label="付款金额">
+                  <template scope="scope">
+                    <el-input
+                      v-model="cardFinanceInfoForm.paymentMethods.progress[scope.$index].money"></el-input>
+                  </template>
+                </el-table-column>
+                <el-table-column
+                  prop="curTime"
+                  label="付款时间"
+                  width="250px">
+                  <template scope="scope">
+                    <el-row>
+                      <el-col>
+                        <el-select
+                          v-model="cardFinanceInfoForm.paymentMethods.progress[scope.$index].curTime"
+                          placeholder="请选择付款时间"
+                          @change="handleCurTimeChange(cardFinanceInfoForm.paymentMethods.progress[scope.$index].curTime,cardFinanceInfoForm.paymentMethods.progress[scope.$index])">
+                          <el-option
+                            v-for="item in cardFinanceInfoForm.paymentMethods.progress[scope.$index].times"
+                            :key="item.value"
+                            :label="item.label"
+                            :value="item.value">
+                          </el-option>
+                        </el-select>
+                      </el-col>
+                      <el-col>
+                        <el-date-picker
+                          @change="handleExactDateChange(cardFinanceInfoForm.paymentMethods.progress[scope.$index].exactDate,cardFinanceInfoForm.paymentMethods.progress[scope.$index])"
+                          v-model="cardFinanceInfoForm.paymentMethods.progress[scope.$index].exactDate"
+                          placeholder="请输入具体付款日期"
+                          type="date"></el-date-picker>
+                      </el-col>
+                    </el-row>
+                  </template>
+                </el-table-column>
+                <el-table-column
+                  prop="remark"
+                  label="备注">
+                  <template scope="scope">
+                    <el-input
+                      v-model="cardFinanceInfoForm.paymentMethods.progress[scope.$index].remark"></el-input>
+                  </template>
+                </el-table-column>
+                <el-table-column prop="proportion" label="占比">
+                  <template scope="scope">
+                    {{getProportion(cardFinanceInfoForm.paymentMethods.progress[scope.$index].money)}}
+                  </template>
+                </el-table-column>
+              </el-table>
+              <el-table :show-header="false" :data="cardFinanceInfoForm.paymentMethods.final"
+                        v-if="cardFinanceInfoForm.onePayment">
+                <el-table-column type="expand" v-if="cardFinanceInfoForm.paymentMethods.final[0].ifMultiPayment">
+                  <template scope="props">
+                    <el-button icon="plus" type="primary"
+                               @click="handleAddAdvanceItem(props.row.type)">
+                      添加{{props.row.type}}
+                    </el-button>
+                    <el-table :data="props.row.subItem">
+                      <el-table-column width="100px" prop="name" label="名称">
+                        <template scope="scope">{{props.row.type}}{{scope.$index+1}}</template>
+                      </el-table-column>
+                      <el-table-column
+                        prop="money"
+                        label="付款金额">
+                        <template scope="scope">
+                          <el-input
+                            v-model="props.row.subItem[scope.$index].money"></el-input>
+                        </template>
+                      </el-table-column>
+                      <el-table-column
+                        prop="curTime"
+                        label="付款时间"
+                        width="200px">
+                        <template scope="scope">
+                          <el-row>
+                            <el-col>
+                              <el-select
+                                @change="handleItemCurTimeChange(props.row.subItem[scope.$index].curTime,props.row.subItem[scope.$index])"
+                                placeholder="请选择付款时间"
+                                v-model="props.row.subItem[scope.$index].curTime">
+                                <el-option
+                                  v-for="item in props.row.subItem[scope.$index].times"
+                                  :key="item.value"
+                                  :label="item.label"
+                                  :value="item.value">
+                                </el-option>
+                              </el-select>
+                            </el-col>
+                            <el-col>
+                              <el-date-picker
+                                @change="handleItemExactDateChange(props.row.subItem[scope.$index].exactDate,props.row.subItem[scope.$index])"
+                                v-model="props.row.subItem[scope.$index].exactDate"
+                                placeholder="请输入具体付款日期"
+                                type="date"></el-date-picker>
+                            </el-col>
+                          </el-row>
+                        </template>
+                      </el-table-column>
+                      <el-table-column
+                        prop="remark"
+                        label="备注">
+                        <template scope="scope">
+                          <el-input
+                            v-model="props.row.subItem[scope.$index].remark"></el-input>
+                        </template>
+                      </el-table-column>
+                      <el-table-column prop="proportion" label="占比">
+                        <template scope="scope">
+                          {{getProportion(props.row.subItem[scope.$index].money)}}
+                        </template>
+                      </el-table-column>
+                      <el-table-column
+                        fixed="right"
+                        label="操作"
+                        width="100">
+                        <template scope="scope">
+                          <el-button
+                            @click="handleRemoveAdvanceItem(scope.$index, props.row.subItem)"
+                            type="text" size="small">移除
+                          </el-button>
+                        </template>
+                      </el-table-column>
+                    </el-table>
+                  </template>
+                </el-table-column>
+                <el-table-column prop="type" label="类型"></el-table-column>
+                <el-table-column
+                  prop="ifMultiPayment"
+                  label="是否多次付款">
+                  <template scope="scope">
+                    <el-checkbox
+                      v-model="cardFinanceInfoForm.paymentMethods.final[scope.$index].ifMultiPayment"></el-checkbox>
+                  </template>
+                </el-table-column>
+                <el-table-column
+                  prop="money"
+                  label="付款金额">
+                  <template scope="scope">
+                    <el-input
+                      v-model="cardFinanceInfoForm.paymentMethods.final[scope.$index].money"></el-input>
+                  </template>
+                </el-table-column>
+                <el-table-column
+                  prop="curTime"
+                  label="付款时间"
+                  width="250px">
+                  <template scope="scope">
+                    <el-row>
+                      <el-col>
+                        <el-select
+                          v-model="cardFinanceInfoForm.paymentMethods.final[scope.$index].curTime"
+                          placeholder="请选择付款时间"
+                          @change="handleCurTimeChange(cardFinanceInfoForm.paymentMethods.final[scope.$index].curTime,cardFinanceInfoForm.paymentMethods.final[scope.$index])">
+                          <el-option
+                            v-for="item in cardFinanceInfoForm.paymentMethods.final[scope.$index].times"
+                            :key="item.value"
+                            :label="item.label"
+                            :value="item.value">
+                          </el-option>
+                        </el-select>
+                      </el-col>
+                      <el-col>
+                        <el-date-picker
+                          @change="handleExactDateChange(cardFinanceInfoForm.paymentMethods.final[scope.$index].exactDate,cardFinanceInfoForm.paymentMethods.final[scope.$index])"
+                          v-model="cardFinanceInfoForm.paymentMethods.final[scope.$index].exactDate"
+                          placeholder="请输入具体付款日期"
+                          type="date"></el-date-picker>
+                      </el-col>
+                    </el-row>
+                  </template>
+                </el-table-column>
+                <el-table-column
+                  prop="remark"
+                  label="备注">
+                  <template scope="scope">
+                    <el-input
+                      v-model="cardFinanceInfoForm.paymentMethods.final[scope.$index].remark"></el-input>
+                  </template>
+                </el-table-column>
+                <el-table-column prop="proportion" label="占比">
+                  <template scope="scope">
+                    {{getProportion(cardFinanceInfoForm.paymentMethods.final[scope.$index].money)}}
+                  </template>
+                </el-table-column>
+              </el-table>
               <el-row>
                 <el-col :span="8">
                   <el-form-item label="币种" prop="currency">
@@ -691,7 +941,8 @@
                 </el-form-item>
               </el-col>
             </el-row>
-            <el-button @click="handleAddUnionCheck" icon="plus" type="primary">添加联合验收人</el-button>
+            <el-button v-if="operateType!=='query'" @click="handleAddUnionCheck" icon="plus" type="primary">添加联合验收人
+            </el-button>
             <el-table :data="cardContCheckInfoForm.unionCheckPersons">
               <el-table-column prop="name" label="联合验收人"></el-table-column>
               <el-table-column prop="depart" label="联合验收人部门"></el-table-column>
@@ -718,7 +969,9 @@
             </el-card>
             <el-card v-if="!showMaterialItems">
               <header slot="header">服务验收事项</header>
-              <el-button type="primary" @click="handleAddServiceMatter" icon="plus">添加服务验收事项</el-button>
+              <el-button v-if="operateType!=='query'" type="primary" @click="handleAddServiceMatter" icon="plus">
+                添加服务验收事项
+              </el-button>
               <el-table :data="cardContCheckInfoForm.serviceMatters">
                 <el-table-column type="index" label="序号" width="100px"></el-table-column>
                 <el-table-column prop="name" label="服务名称"></el-table-column>
@@ -864,7 +1117,8 @@
             <el-card>
               <header slot="header">其他说明</header>
               <el-form-item prop="otherInstruction">
-                <el-input style="margin-left: -100px" type="textarea" placeholder="请输入内容" :rows="6"
+                <el-input :disabled="operateType==='query'" style="margin-left: -100px" type="textarea"
+                          placeholder="请输入内容" :rows="6"
                           v-model="cardRemarkInfoForm.otherInstruction"></el-input>
               </el-form-item>
             </el-card>
@@ -1180,9 +1434,9 @@
           hasMoney: 1,
           onePayment: 1,
           paymentMethods: {
-            advance: {
+            advance: [{
               type: '预付款',
-              ifMultiPayment: false,
+              ifMultiPayment: true,
               money: 0,
               curTime: '',
               exactDate: '',
@@ -1225,8 +1479,8 @@
                   proportion: ''
                 }
               ]
-            },
-            Progress: {
+            }],
+            progress: [{
               type: '进度款',
               ifMultiPayment: false,
               money: 0,
@@ -1245,8 +1499,8 @@
               remark: '',
               proportion: '',
               subItem: []
-            },
-            final: {
+            }],
+            final: [{
               type: '尾款',
               ifMultiPayment: true,
               money: 0,
@@ -1273,104 +1527,8 @@
               remark: '',
               proportion: '',
               subItem: []
-            }
+            }]
           },
-          paymentMethod: [
-            {
-              type: '预付款',
-              ifMultiPayment: false,
-              money: 0,
-              curTime: '',
-              exactDate: '',
-              times: [
-                {
-                  value: '1',
-                  label: '合同签约15天'
-                },
-                {
-                  value: '2',
-                  label: '合同签约30天'
-                },
-                {
-                  value: '3',
-                  label: '合同签约90天'
-                }
-              ],
-              remark: '',
-              proportion: '',
-              subItem: [
-                {
-                  money: 0,
-                  curTime: '',
-                  exactDate: '',
-                  times: [
-                    {
-                      value: 'subItem1',
-                      label: '合同签约15天'
-                    },
-                    {
-                      value: 'subItem2',
-                      label: '合同签约30天'
-                    },
-                    {
-                      value: 'subItem3',
-                      label: '合同签约90天'
-                    }
-                  ],
-                  remark: '',
-                  proportion: ''
-                }
-              ]
-            },
-            {
-              type: '进度款',
-              ifMultiPayment: false,
-              money: 0,
-              curTime: '',
-              exactDate: '',
-              times: [
-                {
-                  value: '1',
-                  label: '验收后15天'
-                },
-                {
-                  value: '2',
-                  label: '验收后30天'
-                }
-              ],
-              remark: '',
-              proportion: '',
-              subItem: []
-            },
-            {
-              type: '尾款',
-              ifMultiPayment: true,
-              money: 0,
-              curTime: '',
-              exactDate: '',
-              times: [
-                {
-                  value: '1',
-                  label: '合同结束后15天'
-                },
-                {
-                  value: '2',
-                  label: '合同结束后30天'
-                },
-                {
-                  value: '3',
-                  label: '合同结束后90天'
-                },
-                {
-                  value: '4',
-                  label: '合同结束后180天'
-                }
-              ],
-              remark: '',
-              proportion: '',
-              subItem: []
-            }
-          ],
           currency: '',
           currencyOptions: [
             {
@@ -1681,12 +1839,11 @@
         return result
       },
       totalConMoney: function () {
-        let paymentMethods = this.cardFinanceInfoForm.paymentMethod
-        let result = 0
-        for (let i = 0, len = paymentMethods.length; i < len; i++) {
-          result += parseFloat(paymentMethods[i].money)
-        }
-        return result
+        const paymentMethods = this.cardFinanceInfoForm.paymentMethods;
+        const advance = parseFloat(paymentMethods.advance[0].money ? paymentMethods.advance[0].money : 0);
+        const progress = parseFloat(paymentMethods.progress[0].money ? paymentMethods.progress[0].money : 0);
+        const final = parseFloat(paymentMethods.final[0].money ? paymentMethods.final[0].money : 0);
+        return advance + progress + final;
       },
       showMaterialItems: function () {
         let result = false
@@ -1990,8 +2147,8 @@
         this.cardContentInfoForm.dialogNewThirdPartyVisible = false
       },
       handleAddAdvanceItem(type) {
-        let paymentMethods = this.cardFinanceInfoForm.paymentMethod
-        let item = {
+        let paymentMethods = this.cardFinanceInfoForm.paymentMethods;
+        const item = {
           money: 0,
           curTime: '',
           exactDate: '',
@@ -2012,11 +2169,12 @@
           remark: '',
           proportion: ''
         }
-        for (let i = 0, len = paymentMethods.length; i < len; i++) {
-          if (type === paymentMethods[i].type) {
-            paymentMethods[i].subItem.push(item)
+        _.forIn(paymentMethods, function (value, key) {
+          let cur = paymentMethods[key];
+          if (cur && cur[0] && cur[0].type === type) {
+            cur[0].subItem.push(item);
           }
-        }
+        });
       },
       handleRemoveAdvanceItem(index, rows) {
         rows.splice(index, 1)

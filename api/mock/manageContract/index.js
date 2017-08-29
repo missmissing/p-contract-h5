@@ -86,17 +86,17 @@ module.exports = function (api) {
               id: 'template3',
               name: '模版3',
               version: '1.3'
-            },
+            }
           ]
 
         },
         contentInfo: {
           tableSupplierInfo: [
-            /*{
-             id: 'supplier1',
-             name: '供应商1',
-             bankAccount: '渣打银行'
-             },*/
+            {
+              id: 'supplier1',
+              name: '供应商1',
+              bankAccount: '渣打银行'
+            }
           ],
           conSubjctName: [
             {
@@ -116,22 +116,21 @@ module.exports = function (api) {
           ],
           conStandard: [
             /*{
-             id: 'material-4584358',
-             name: '红星美凯龙',
-             number: 80,
-             taxRate: 0.8
-             },
-             {
-             id: 'material-8495843085',
-             name: '悦家',
-             number: 809,
-             taxRate: 0.18
-             },*/
-          ],
-        },
+              id: 'material-4584358',
+              name: '红星美凯龙',
+              number: 80,
+              taxRate: 0.8
+            }, {
+              id: 'material-8495843085',
+              name: '悦家',
+              number: 809,
+              taxRate: 0.18
+            }*/
+          ]
+        }
       }
-    });
-  });
+    })
+  })
   api.use('/api/createContract/getRemoteSuppliersByKeyWord', function (req, res) {
     res.status(200).json({
       code: 200,
@@ -246,7 +245,7 @@ module.exports = function (api) {
             creator: '张三',
             createDepart: 'XX部门',
             createTime: '1503629338328',
-            processStatus:'已审批',
+            processStatus: '已审批',
             endTime: '1503629338328',
           }
         ]
