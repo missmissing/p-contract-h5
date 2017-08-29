@@ -1,5 +1,5 @@
 // 字符串Format参数化
-String.prototype.format = function (args) {
+export default function (args) {
   let result = this
   if (arguments.length > 0) {
     if (arguments.length === 1 && typeof (args) === 'object') {

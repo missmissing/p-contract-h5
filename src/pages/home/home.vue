@@ -150,6 +150,7 @@
 <script>
   import store from 'store'
   import {WebConfig} from '@/api/consts'
+  import stringFormat from '@/utils/stringFormat'
 
   const logo = require('../../assets/img/main-logo.png')
   const userPhoto = require('../../assets/img/user.jpg')
@@ -187,7 +188,7 @@
       handleCommand(command) {
         if (command === 'logout') {
           store.remove('user')
-          location.href = WebConfig.AppSetting.SSOLogoutUrl.format(WebConfig.AppSetting.AppCode, window.location.href)
+          location.href = stringFormat.call(WebConfig.AppSetting.SSOLogoutUrl, WebConfig.AppSetting.AppCode, window.location.href)
         }
       }
     }
