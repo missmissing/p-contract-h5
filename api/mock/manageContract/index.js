@@ -63,11 +63,11 @@ module.exports = function (api) {
           conTypeName: '礼品类',
           conTextType: [
             {
-              id: '1',
+              id: 1,
               name: '模版合同'
             },
             {
-              id: '2',
+              id: 2,
               name: '非模版合同'
             }
           ],

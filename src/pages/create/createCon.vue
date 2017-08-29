@@ -251,6 +251,7 @@
                   <el-form-item label="合同生效日期"
                                 prop="effectiveDate">
                     <el-date-picker v-model="cardContentInfoForm.effectiveDate"
+                                    :disabled="operateType==='query'"
                                     placeholder="请输入合同生效期日期"
                                     type="date"></el-date-picker>
                   </el-form-item>
@@ -259,6 +260,7 @@
                   <el-form-item label="合同终止日期"
                                 prop="endDate">
                     <el-date-picker v-model="cardContentInfoForm.endDate"
+                                    :disabled="operateType==='query'"
                                     placeholder="请输入合同终止日期"
                                     type="date"></el-date-picker>
                   </el-form-item>
@@ -272,7 +274,8 @@
             <el-row>
               <el-col :span="8">
                 <el-form-item label="是否涉及金额">
-                  <el-radio-group v-model="cardFinanceInfoForm.hasMoney">
+                  <el-radio-group v-model="cardFinanceInfoForm.hasMoney"
+                                  :disabled="operateType==='query'">
                     <el-radio :label="1">是</el-radio>
                     <el-radio :label="0">否</el-radio>
                   </el-radio-group>
@@ -280,7 +283,7 @@
               </el-col>
               <el-col :span="8" v-if="cardFinanceInfoForm.hasMoney===1">
                 <el-form-item label="是否一次性付款" label-width="120px">
-                  <el-radio-group v-model="cardFinanceInfoForm.onePayment">
+                  <el-radio-group v-model="cardFinanceInfoForm.onePayment" :disabled="operateType==='query'">
                     <el-radio :label="1">是</el-radio>
                     <el-radio :label="0">否</el-radio>
                   </el-radio-group>
@@ -294,6 +297,7 @@
                 <el-table-column type="expand" v-if="cardFinanceInfoForm.paymentMethods.advance[0].ifMultiPayment">
                   <template scope="props">
                     <el-button icon="plus" type="primary"
+                               v-if="operateType!=='query'"
                                @click="handleAddAdvanceItem(props.row.type)">
                       添加{{props.row.type}}
                     </el-button>
@@ -306,6 +310,7 @@
                         label="付款金额">
                         <template scope="scope">
                           <el-input
+                            :disabled="operateType==='query'"
                             v-model="props.row.subItem[scope.$index].money"></el-input>
                         </template>
                       </el-table-column>
@@ -318,6 +323,7 @@
                             <el-col>
                               <el-select
                                 @change="handleItemCurTimeChange(props.row.subItem[scope.$index].curTime,props.row.subItem[scope.$index])"
+                                :disabled="operateType==='query'"
                                 placeholder="请选择付款时间"
                                 v-model="props.row.subItem[scope.$index].curTime">
                                 <el-option
@@ -332,6 +338,7 @@
                               <el-date-picker
                                 @change="handleItemExactDateChange(props.row.subItem[scope.$index].exactDate,props.row.subItem[scope.$index])"
                                 v-model="props.row.subItem[scope.$index].exactDate"
+                                :disabled="operateType==='query'"
                                 placeholder="请输入具体付款日期"
                                 type="date"></el-date-picker>
                             </el-col>
@@ -343,6 +350,7 @@
                         label="备注">
                         <template scope="scope">
                           <el-input
+                            :disabled="operateType==='query'"
                             v-model="props.row.subItem[scope.$index].remark"></el-input>
                         </template>
                       </el-table-column>
@@ -354,7 +362,8 @@
                       <el-table-column
                         fixed="right"
                         label="操作"
-                        width="100">
+                        width="100"
+                        v-if="operateType!=='query'">
                         <template scope="scope">
                           <el-button
                             @click="handleRemoveAdvanceItem(scope.$index, props.row.subItem)"
@@ -371,6 +380,7 @@
                   label="是否多次付款">
                   <template scope="scope">
                     <el-checkbox
+                      :disabled="operateType==='query'"
                       v-model="cardFinanceInfoForm.paymentMethods.advance[scope.$index].ifMultiPayment"></el-checkbox>
                   </template>
                 </el-table-column>
@@ -379,6 +389,7 @@
                   label="付款金额">
                   <template scope="scope">
                     <el-input
+                      :disabled="operateType==='query'"
                       v-model="cardFinanceInfoForm.paymentMethods.advance[scope.$index].money"></el-input>
                   </template>
                 </el-table-column>
@@ -391,6 +402,7 @@
                       <el-col>
                         <el-select
                           v-model="cardFinanceInfoForm.paymentMethods.advance[scope.$index].curTime"
+                          :disabled="operateType==='query'"
                           placeholder="请选择付款时间"
                           @change="handleCurTimeChange(cardFinanceInfoForm.paymentMethods.advance[scope.$index].curTime,cardFinanceInfoForm.paymentMethods.advance[scope.$index])">
                           <el-option
@@ -405,6 +417,7 @@
                         <el-date-picker
                           @change="handleExactDateChange(cardFinanceInfoForm.paymentMethods.advance[scope.$index].exactDate,cardFinanceInfoForm.paymentMethods.advance[scope.$index])"
                           v-model="cardFinanceInfoForm.paymentMethods.advance[scope.$index].exactDate"
+                          :disabled="operateType==='query'"
                           placeholder="请输入具体付款日期"
                           type="date"></el-date-picker>
                       </el-col>
@@ -416,6 +429,7 @@
                   label="备注">
                   <template scope="scope">
                     <el-input
+                      :disabled="operateType==='query'"
                       v-model="cardFinanceInfoForm.paymentMethods.advance[scope.$index].remark"></el-input>
                   </template>
                 </el-table-column>
@@ -430,6 +444,7 @@
                 <el-table-column type="expand" v-if="cardFinanceInfoForm.paymentMethods.progress[0].ifMultiPayment">
                   <template scope="props">
                     <el-button icon="plus" type="primary"
+                               v-if="operateType!=='query'"
                                @click="handleAddAdvanceItem(props.row.type)">
                       添加{{props.row.type}}
                     </el-button>
@@ -442,6 +457,7 @@
                         label="付款金额">
                         <template scope="scope">
                           <el-input
+                            :disabled="operateType==='query'"
                             v-model="props.row.subItem[scope.$index].money"></el-input>
                         </template>
                       </el-table-column>
@@ -454,6 +470,7 @@
                             <el-col>
                               <el-select
                                 @change="handleItemCurTimeChange(props.row.subItem[scope.$index].curTime,props.row.subItem[scope.$index])"
+                                :disabled="operateType==='query'"
                                 placeholder="请选择付款时间"
                                 v-model="props.row.subItem[scope.$index].curTime">
                                 <el-option
@@ -468,6 +485,7 @@
                               <el-date-picker
                                 @change="handleItemExactDateChange(props.row.subItem[scope.$index].exactDate,props.row.subItem[scope.$index])"
                                 v-model="props.row.subItem[scope.$index].exactDate"
+                                :disabled="operateType==='query'"
                                 placeholder="请输入具体付款日期"
                                 type="date"></el-date-picker>
                             </el-col>
@@ -479,6 +497,7 @@
                         label="备注">
                         <template scope="scope">
                           <el-input
+                            :disabled="operateType==='query'"
                             v-model="props.row.subItem[scope.$index].remark"></el-input>
                         </template>
                       </el-table-column>
@@ -490,7 +509,8 @@
                       <el-table-column
                         fixed="right"
                         label="操作"
-                        width="100">
+                        width="100"
+                        v-if="operateType!=='query'">
                         <template scope="scope">
                           <el-button
                             @click="handleRemoveAdvanceItem(scope.$index, props.row.subItem)"
@@ -507,6 +527,7 @@
                   label="是否多次付款">
                   <template scope="scope">
                     <el-checkbox
+                      :disabled="operateType==='query'"
                       v-model="cardFinanceInfoForm.paymentMethods.progress[scope.$index].ifMultiPayment"></el-checkbox>
                   </template>
                 </el-table-column>
@@ -515,6 +536,7 @@
                   label="付款金额">
                   <template scope="scope">
                     <el-input
+                      :disabled="operateType==='query'"
                       v-model="cardFinanceInfoForm.paymentMethods.progress[scope.$index].money"></el-input>
                   </template>
                 </el-table-column>
@@ -527,6 +549,7 @@
                       <el-col>
                         <el-select
                           v-model="cardFinanceInfoForm.paymentMethods.progress[scope.$index].curTime"
+                          :disabled="operateType==='query'"
                           placeholder="请选择付款时间"
                           @change="handleCurTimeChange(cardFinanceInfoForm.paymentMethods.progress[scope.$index].curTime,cardFinanceInfoForm.paymentMethods.progress[scope.$index])">
                           <el-option
@@ -541,6 +564,7 @@
                         <el-date-picker
                           @change="handleExactDateChange(cardFinanceInfoForm.paymentMethods.progress[scope.$index].exactDate,cardFinanceInfoForm.paymentMethods.progress[scope.$index])"
                           v-model="cardFinanceInfoForm.paymentMethods.progress[scope.$index].exactDate"
+                          :disabled="operateType==='query'"
                           placeholder="请输入具体付款日期"
                           type="date"></el-date-picker>
                       </el-col>
@@ -552,6 +576,7 @@
                   label="备注">
                   <template scope="scope">
                     <el-input
+                      :disabled="operateType==='query'"
                       v-model="cardFinanceInfoForm.paymentMethods.progress[scope.$index].remark"></el-input>
                   </template>
                 </el-table-column>
@@ -566,6 +591,7 @@
                 <el-table-column type="expand" v-if="cardFinanceInfoForm.paymentMethods.final[0].ifMultiPayment">
                   <template scope="props">
                     <el-button icon="plus" type="primary"
+                               v-if="operateType!=='query'"
                                @click="handleAddAdvanceItem(props.row.type)">
                       添加{{props.row.type}}
                     </el-button>
@@ -578,6 +604,7 @@
                         label="付款金额">
                         <template scope="scope">
                           <el-input
+                            :disabled="operateType==='query'"
                             v-model="props.row.subItem[scope.$index].money"></el-input>
                         </template>
                       </el-table-column>
@@ -590,6 +617,7 @@
                             <el-col>
                               <el-select
                                 @change="handleItemCurTimeChange(props.row.subItem[scope.$index].curTime,props.row.subItem[scope.$index])"
+                                :disabled="operateType==='query'"
                                 placeholder="请选择付款时间"
                                 v-model="props.row.subItem[scope.$index].curTime">
                                 <el-option
@@ -604,6 +632,7 @@
                               <el-date-picker
                                 @change="handleItemExactDateChange(props.row.subItem[scope.$index].exactDate,props.row.subItem[scope.$index])"
                                 v-model="props.row.subItem[scope.$index].exactDate"
+                                :disabled="operateType==='query'"
                                 placeholder="请输入具体付款日期"
                                 type="date"></el-date-picker>
                             </el-col>
@@ -615,6 +644,7 @@
                         label="备注">
                         <template scope="scope">
                           <el-input
+                            :disabled="operateType==='query'"
                             v-model="props.row.subItem[scope.$index].remark"></el-input>
                         </template>
                       </el-table-column>
@@ -626,7 +656,8 @@
                       <el-table-column
                         fixed="right"
                         label="操作"
-                        width="100">
+                        width="100"
+                        v-if="operateType!=='query'">
                         <template scope="scope">
                           <el-button
                             @click="handleRemoveAdvanceItem(scope.$index, props.row.subItem)"
@@ -643,6 +674,7 @@
                   label="是否多次付款">
                   <template scope="scope">
                     <el-checkbox
+                      :disabled="operateType==='query'"
                       v-model="cardFinanceInfoForm.paymentMethods.final[scope.$index].ifMultiPayment"></el-checkbox>
                   </template>
                 </el-table-column>
@@ -651,6 +683,7 @@
                   label="付款金额">
                   <template scope="scope">
                     <el-input
+                      :disabled="operateType==='query'"
                       v-model="cardFinanceInfoForm.paymentMethods.final[scope.$index].money"></el-input>
                   </template>
                 </el-table-column>
@@ -663,6 +696,7 @@
                       <el-col>
                         <el-select
                           v-model="cardFinanceInfoForm.paymentMethods.final[scope.$index].curTime"
+                          :disabled="operateType==='query'"
                           placeholder="请选择付款时间"
                           @change="handleCurTimeChange(cardFinanceInfoForm.paymentMethods.final[scope.$index].curTime,cardFinanceInfoForm.paymentMethods.final[scope.$index])">
                           <el-option
@@ -677,6 +711,7 @@
                         <el-date-picker
                           @change="handleExactDateChange(cardFinanceInfoForm.paymentMethods.final[scope.$index].exactDate,cardFinanceInfoForm.paymentMethods.final[scope.$index])"
                           v-model="cardFinanceInfoForm.paymentMethods.final[scope.$index].exactDate"
+                          :disabled="operateType==='query'"
                           placeholder="请输入具体付款日期"
                           type="date"></el-date-picker>
                       </el-col>
@@ -688,6 +723,7 @@
                   label="备注">
                   <template scope="scope">
                     <el-input
+                      :disabled="operateType==='query'"
                       v-model="cardFinanceInfoForm.paymentMethods.final[scope.$index].remark"></el-input>
                   </template>
                 </el-table-column>
@@ -700,7 +736,8 @@
               <el-row>
                 <el-col :span="8">
                   <el-form-item label="币种" prop="currency">
-                    <el-select v-model="cardFinanceInfoForm.currency" placeholder="请选择币种">
+                    <el-select v-model="cardFinanceInfoForm.currency" placeholder="请选择币种"
+                               :disabled="operateType==='query'">
                       <el-option
                         v-for="item in cardFinanceInfoForm.currencyOptions"
                         :key="item.value"
@@ -713,7 +750,8 @@
                 <el-col :span="8">
                   <el-form-item label="开票类型" prop="billingType">
                     <el-select v-model="cardFinanceInfoForm.billingType"
-                               placeholder="请选择开票类型">
+                               placeholder="请选择开票类型"
+                               :disabled="operateType==='query'">
                       <el-option
                         v-for="item in cardFinanceInfoForm.billingTypeOptions"
                         :key="item.value"
@@ -733,7 +771,7 @@
               <el-row>
                 <el-col :span="8">
                   <el-form-item label="是否收取保证金" label-width="120px">
-                    <el-radio-group v-model="cardFinanceInfoForm.hasBond">
+                    <el-radio-group v-model="cardFinanceInfoForm.hasBond" :disabled="operateType==='query'">
                       <el-radio :label="1">是</el-radio>
                       <el-radio :label="0">否</el-radio>
                     </el-radio-group>
@@ -743,7 +781,7 @@
               <el-row v-if="cardFinanceInfoForm.hasBond">
                 <el-col :span="8">
                   <el-form-item label="保证金金额" prop="bondMoney">
-                    <el-input v-model="cardFinanceInfoForm.bondMoney"
+                    <el-input v-model="cardFinanceInfoForm.bondMoney" :disabled="operateType==='query'"
                               placeholder="请输入保证金金额"></el-input>
                   </el-form-item>
                 </el-col>
@@ -751,6 +789,7 @@
                   <el-form-item label="付款时间" prop="paymentTime">
                     <el-date-picker v-model="cardFinanceInfoForm.paymentTime"
                                     placeholder="请输入付款时间"
+                                    :disabled="operateType==='query'"
                                     type="date"></el-date-picker>
                   </el-form-item>
                 </el-col>
@@ -953,7 +992,7 @@
               </el-table-column>
             </el-table>
             <el-form-item prop="hasSample" label="是否有样品">
-              <el-radio-group v-model="cardContCheckInfoForm.hasSample">
+              <el-radio-group v-model="cardContCheckInfoForm.hasSample" :disabled="operateType==='query'">
                 <el-radio :label="1">是</el-radio>
                 <el-radio :label="0">否</el-radio>
               </el-radio-group>
@@ -995,7 +1034,7 @@
         </el-tab-pane>
         <el-tab-pane label="合同附件及盖章信息" name="tabSealInfo" v-if="baseInfoForm.conModel!=='con4'">
           <el-form rel="cardSealInfoForm" :model="cardSealInfoForm" label-width="100px">
-            <el-button type="primary" @click="handleNewSealFile" icon="plus">新增</el-button>
+            <el-button type="primary" @click="handleNewSealFile" icon="plus" v-if="operateType!=='query'">新增</el-button>
             <template v-for="(item,index) in cardSealInfoForm.sealAttachments">
               <template v-if="index===0">
                 <el-table :data="item">
@@ -1119,19 +1158,19 @@
                       <el-row>
                         <el-col :span="6">
                           <el-form-item label="用章次数" prop="sealTimes">
-                            <el-input :disabled="props.row.type!==1" v-model="props.row.sealTimes">
+                            <el-input :disabled="operateType==='query'||props.row.type!==1" v-model="props.row.sealTimes">
                             </el-input>
                           </el-form-item>
                         </el-col>
                         <el-col :span="6">
                           <el-form-item label="打印份数" prop="printTimes">
-                            <el-input :disabled="props.row.type!==1"
+                            <el-input :disabled="operateType==='query'||props.row.type!==1"
                                       v-model="props.row.printTimes"></el-input>
                           </el-form-item>
                         </el-col>
                         <el-col :span="6">
                           <el-form-item label="我方留存份数" prop="retainFileNumber">
-                            <el-input :disabled="props.row.type!==1"
+                            <el-input :disabled="operateType==='query'||props.row.type!==1"
                                       v-model="props.row.retainFileNumber"></el-input>
                           </el-form-item>
                         </el-col>
@@ -1144,7 +1183,7 @@
                               :on-success="handleUploadFileAfterSealSuccess"
                               :on-error="handleUploadFileAfterSealError"
                             >
-                              <el-button :disabled="props.row.type!==1" size="small" type="primary">上传
+                              <el-button :disabled="operateType==='query'||props.row.type!==1" size="small" type="primary">上传
                               </el-button>
                               </el-button>
                             </el-upload>
@@ -1173,7 +1212,8 @@
                       <el-select
                         size="small"
                         v-model="item[scope.$index].type"
-                      @change="handleChangeType(item[scope.$index].type,item[scope.$index])">
+                        :disabled="operateType==='query'"
+                        @change="handleChangeType(item[scope.$index].type,item[scope.$index])">
                         <el-option
                           v-for="item in item[scope.$index].types"
                           :key="item.id"
@@ -1185,13 +1225,13 @@
                   </el-table-column>
                   <el-table-column prop="code" label="从协议编号">
                     <template scope="scope">
-                      <el-input :disabled="item[scope.$index].type===3"
+                      <el-input :disabled="operateType==='query'||item[scope.$index].type===3"
                                 v-model="item[scope.$index].code"></el-input>
                     </template>
                   </el-table-column>
                   <el-table-column prop="name" label="文件名称">
                     <template scope="scope">
-                      <el-input :disabled="item[scope.$index].type===3"
+                      <el-input :disabled="operateType==='query'||item[scope.$index].type===3"
                                 v-model="item[scope.$index].name"></el-input>
                     </template>
                   </el-table-column>
@@ -1204,7 +1244,7 @@
                         :on-success="handleUploadSealFileSuccess"
                         :on-error="handleUploadSealFileError"
                       >
-                        <el-button :disabled="item[scope.$index].type===3"
+                        <el-button :disabled="operateType==='query'||item[scope.$index].type===3"
                                    size="small" type="primary">上传
                         </el-button>
                       </el-upload>
@@ -1213,7 +1253,7 @@
                   <el-table-column prop="isSeal" label="是否盖章" width="50px">
                     <template scope="scope">
                       <el-checkbox
-                        :disabled="item[scope.$index].type===3||item[scope.$index].type==2"
+                        :disabled="operateType==='query'||item[scope.$index].type!==1"
                         v-model="item[scope.$index].isSeal"></el-checkbox>
                     </template>
                   </el-table-column>
@@ -1222,13 +1262,14 @@
                     label="备注">
                     <template scope="scope">
                       <el-input
-                        :disabled="item[scope.$index].type===3"
+                        :disabled="operateType==='query'||item[scope.$index].type===3"
                         v-model="item[scope.$index].remark"></el-input>
                     </template>
                   </el-table-column>
                   <el-table-column
                     fixed="right"
-                    label="操作">
+                    label="操作"
+                    v-if="operateType!=='query'">
                     <template v-if="item[scope.$index].operate==='add'" scope="scope">
                       <el-button
                         @click="handleRemoveSealItem(scope.$index, cardSealInfoForm.sealAttachments)"
@@ -1444,9 +1485,9 @@
         <el-button type="primary" @click="handleCancelAttachment('formAddAttachment')">取消</el-button>
       </footer>
     </el-dialog>
-    <el-row v-if="operateType==='update'&&updateForm.visible">
+    <el-row>
       <el-col :span="4" :offset="4">
-        <el-button type="primary" @click="handleSave('')">保存</el-button>
+        <el-button v-if="operateType!=='query'" type="primary" @click="handleSave('')">保存</el-button>
       </el-col>
       <el-col :span="6">
         <el-button type="primary" @click="handlePreview" style="margin-left:33px"
@@ -1454,7 +1495,7 @@
         </el-button>
       </el-col>
       <el-col :span="4">
-        <el-button type="primary" @click="handleSubmit">提交</el-button>
+        <el-button v-if="operateType!=='query'" type="primary" @click="handleSubmit">提交</el-button>
       </el-col>
     </el-row>
   </div>
@@ -1516,7 +1557,7 @@
           conType: '',
           conTypeName: '',
           belongProject: '',
-          conTextType: '1',
+          conTextType: 1,
           conTextTypeOptions: [],
           templateName: '',
           templateOptions: [],
@@ -2396,7 +2437,7 @@
               name: '从协议'
             }
           ],
-          isSeal: false,
+          isSeal: true,
           remark: '',
           /* sealTimes: '',
            printTimes: '',
@@ -2430,12 +2471,12 @@
       handleDetail(id) {
         console.log('id', id)
       },
-      handleChangeType(index,row){
-        if(index===2){
-          row.isSeal=false;
+      handleChangeType(index, row){
+        if (index === 2) {
+          row.isSeal = false;
         }
       },
-      handleRemoveSealItem(index,rows){
+      handleRemoveSealItem(index, rows){
         rows.splice(index, 1)
       },
     },
