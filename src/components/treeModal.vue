@@ -45,15 +45,11 @@
       title: {
         default: '提示'
       },
-      regions: {
-        default: []
-      },
+      regions: Array,
       visible: {
         default: false
       },
-      initialKeys: {
-        default: []
-      }
+      initialKeys: Array
     },
     methods: {
       getCheckedNodes() {

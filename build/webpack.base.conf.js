@@ -2,7 +2,6 @@ var path = require('path');
 var utils = require('./utils');
 var config = require('../config');
 var vueLoaderConfig = require('./vue-loader.conf');
-var LodashModuleReplacementPlugin = require('lodash-webpack-plugin');
 
 function resolve(dir) {
   return path.join(__dirname, '..', dir)
@@ -72,11 +71,5 @@ module.exports = {
         }
       }
     ]
-  },
-  plugins: [
-    new LodashModuleReplacementPlugin({
-      'collections': true,
-      'paths': true
-    })
-  ]
+  }
 };

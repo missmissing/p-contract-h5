@@ -14,7 +14,7 @@ module.exports = function (config) {
     browsers: ['PhantomJS'],
     frameworks: ['mocha', 'sinon-chai', 'phantomjs-shim'],
     reporters: ['spec', 'coverage'],
-    files: ['./index.js'],
+    files: ['../../node_modules/babel-polyfill/dist/polyfill.min.js', './index.js'],
     preprocessors: {
       './index.js': ['webpack', 'sourcemap']
     },
@@ -25,8 +25,8 @@ module.exports = function (config) {
     coverageReporter: {
       dir: './coverage',
       reporters: [
-        { type: 'lcov', subdir: '.' },
-        { type: 'text-summary' }
+        {type: 'lcov', subdir: '.'},
+        {type: 'text-summary'}
       ]
     }
   })

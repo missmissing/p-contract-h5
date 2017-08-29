@@ -1,2 +1,4 @@
 build/*.js
 config/*.js
+api/**/*.js
+node_modules/**/*.js
