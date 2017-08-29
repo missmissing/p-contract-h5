@@ -46,7 +46,7 @@
 </template>
 
 <script>
-  import Api from '@/api/create'
+  import Api from '@/api/manageContract'
   import {formatDate} from '@/filters'
 
   export default {

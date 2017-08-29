@@ -299,7 +299,7 @@
   </div>
 </template>
 <script>
-  import Api from '../../api/create'
+  import Api from '../../api/manageContract'
   import _ from 'lodash'
 
   export default {

@@ -661,7 +661,8 @@
                 </el-form-item>
               </el-col>
               <el-col :span="8" v-if="!showMaterialItems">
-                <el-form-item prop="checkServiceMethod" label="服务类验收方式" label-width="120px">
+                <el-form-item :disabled="operateType==='query'" prop="checkServiceMethod" label="服务类验收方式"
+                              label-width="120px">
                   <el-select
                     size="small"
                     v-model="cardContCheckInfoForm.checkServiceMethod"
