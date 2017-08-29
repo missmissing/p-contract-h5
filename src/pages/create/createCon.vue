@@ -1210,7 +1210,7 @@
                       </el-upload>
                     </template>
                   </el-table-column>
-                  <el-table-column prop="isSeal" label="是否盖章">
+                  <el-table-column prop="isSeal" label="是否盖章" width="50px">
                     <template scope="scope">
                       <el-checkbox
                         :disabled="item[scope.$index].type===3||item[scope.$index].type==2"
@@ -1224,6 +1224,16 @@
                       <el-input
                         :disabled="item[scope.$index].type===3"
                         v-model="item[scope.$index].remark"></el-input>
+                    </template>
+                  </el-table-column>
+                  <el-table-column
+                    fixed="right"
+                    label="操作">
+                    <template v-if="item[scope.$index].operate==='add'" scope="scope">
+                      <el-button
+                        @click="handleRemoveSealItem(scope.$index, cardSealInfoForm.sealAttachments)"
+                        type="text" size="small">移除
+                      </el-button>
                     </template>
                   </el-table-column>
                 </el-table>
@@ -2424,6 +2434,9 @@
         if(index===2){
           row.isSeal=false;
         }
+      },
+      handleRemoveSealItem(index,rows){
+        rows.splice(index, 1)
       },
     },
     watch: {
