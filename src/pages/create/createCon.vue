@@ -1820,7 +1820,7 @@
               ]
 
             }]
-          ],
+          ]
         },
         cardRemarkInfoForm: {
           otherInstruction: ''
@@ -2009,11 +2009,11 @@
         return result
       },
       totalConMoney: function () {
-        const paymentMethods = this.cardFinanceInfoForm.paymentMethods;
-        const advance = parseFloat(paymentMethods.advance[0].money ? paymentMethods.advance[0].money : 0);
-        const progress = parseFloat(paymentMethods.progress[0].money ? paymentMethods.progress[0].money : 0);
-        const final = parseFloat(paymentMethods.final[0].money ? paymentMethods.final[0].money : 0);
-        return advance + progress + final;
+        const paymentMethods = this.cardFinanceInfoForm.paymentMethods
+        const advance = parseFloat(paymentMethods.advance[0].money ? paymentMethods.advance[0].money : 0)
+        const progress = parseFloat(paymentMethods.progress[0].money ? paymentMethods.progress[0].money : 0)
+        const final = parseFloat(paymentMethods.final[0].money ? paymentMethods.final[0].money : 0)
+        return advance + progress + final
       },
       showMaterialItems: function () {
         let result = false
@@ -2317,7 +2317,7 @@
         this.cardContentInfoForm.dialogNewThirdPartyVisible = false
       },
       handleAddAdvanceItem(type) {
-        let paymentMethods = this.cardFinanceInfoForm.paymentMethods;
+        let paymentMethods = this.cardFinanceInfoForm.paymentMethods
         const item = {
           money: 0,
           curTime: '',
@@ -2340,11 +2340,11 @@
           proportion: ''
         }
         _.forIn(paymentMethods, function (value, key) {
-          let cur = paymentMethods[key];
+          let cur = paymentMethods[key]
           if (cur && cur[0] && cur[0].type === type) {
-            cur[0].subItem.push(item);
+            cur[0].subItem.push(item)
           }
-        });
+        })
       },
       handleRemoveAdvanceItem(index, rows) {
         rows.splice(index, 1)
@@ -2438,7 +2438,7 @@
             }
           ],
           isSeal: true,
-          remark: '',
+          remark: ''
           /* sealTimes: '',
            printTimes: '',
            retainFileNumber: '',
@@ -2471,14 +2471,14 @@
       handleDetail(id) {
         console.log('id', id)
       },
-      handleChangeType(index, row){
+      handleChangeType(index, row) {
         if (index === 2) {
-          row.isSeal = false;
+          row.isSeal = false
         }
       },
-      handleRemoveSealItem(index, rows){
+      handleRemoveSealItem(index, rows) {
         rows.splice(index, 1)
-      },
+      }
     },
     watch: {
       '$route'(to, from) {

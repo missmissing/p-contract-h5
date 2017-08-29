@@ -23,3 +23,11 @@ export const formatTimeStamp = (value) => {
   }
   return value
 }
+
+export const formatToDate = (value) => {
+  const m = moment(value)
+  if (m.isValid()) {
+    return m.toDate()
+  }
+  return value
+}

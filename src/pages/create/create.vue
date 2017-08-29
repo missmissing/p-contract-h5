@@ -305,8 +305,8 @@
       },
       handleDetailPR(index, row) {
         window.open(row.url)
-      },
-      /*handleTestCreate() {
+      }
+      /* handleTestCreate() {
        console.log('create')
        let routePath = '/ConCreate/CreateFrameContract'
        this.$router.push({
@@ -345,7 +345,7 @@
        operateType: 'query'
        }
        })
-       }*/
+       } */
     }
 
   }

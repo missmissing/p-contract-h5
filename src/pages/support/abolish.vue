@@ -128,7 +128,7 @@
                     type="date"
                     placeholder="选择日期"
                     v-model="abolishForm.endDate"
-                    @change="formatDate1"
+                    @change="formatDate"
                     style="width:100%;"
                     :editable="false">
                   </el-date-picker>
@@ -171,12 +171,11 @@
 
 <script>
   import _ from 'lodash'
-  import moment from 'moment'
   import Tmpl from './tmpl.vue'
   import Upload from '@/components/upload.vue'
   import supportModel from '@/api/support'
   import {uploadUrl, downloadUrl} from '@/api/consts'
-  import {formatDate} from '@/filters'
+  import {formatDate, formatTimeStamp, formatToDate} from '@/filters'
 
   const defaultData = {
     form: {
@@ -224,8 +223,8 @@
           this.loading = false
         })
       },
-      formatDate1(value) {
-        this.abolishForm.endDate = value ? moment(value).valueOf() : ''
+      formatDate(value) {
+        this.abolishForm.endDate = formatTimeStamp(value)
       },
       setData(tplInfo) {
         this.tplInfo = tplInfo
@@ -241,22 +240,13 @@
         })
         Object.keys(this.form).forEach((key) => {
           if (tplInfo.hasOwnProperty(key)) {
-            if (key !== 'bizTypes') {
+            if (key === 'startDate') {
+              this.form[key] = formatToDate(this.form[key])
+            } else {
               this.form[key] = tplInfo[key]
             }
           }
         })
-      },
-      getTplData() {
-        if (this.see) {
-          supportModel.getTplData({
-            templateId: this.$route.params.id
-          }).then((res) => {
-            console.log(res)
-            const tplInfo = res.data.dataMap
-            this.setData(tplInfo)
-          })
-        }
       },
       getResult() {
         const {info} = this.$store.state.support.create
@@ -305,9 +295,6 @@
     components: {
       Tmpl,
       Upload
-    },
-    created() {
-      this.getTplData()
     },
     computed: {
       showUpload() {

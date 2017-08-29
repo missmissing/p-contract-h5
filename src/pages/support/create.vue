@@ -11,10 +11,10 @@
             <span class="common-title">基本信息</span>
           </div>
           <div>
-            <el-form ref="form" label-width="120px">
+            <el-form :model="form" :rules="rules" ref="form" label-width="120px">
               <el-row>
                 <el-col :span="8">
-                  <el-form-item label="文本名称">
+                  <el-form-item label="文本名称" prop="templateName">
                     <el-input
                       v-model.trim="form.templateName"
                       class="wp100">
@@ -22,12 +22,11 @@
                   </el-form-item>
                 </el-col>
                 <el-col :span="8">
-                  <el-form-item label="文本类型">
+                  <el-form-item label="文本类型" prop="templateType">
                     <el-select
                       v-model="form.templateType"
                       placeholder="请选择"
                       class="wp100">
-                      <el-option label="请选择" value=""></el-option>
                       <el-option label="合同模板" value="TEMPLATE"></el-option>
                       <el-option label="合同文本" value="TEXT"></el-option>
                     </el-select>
@@ -36,11 +35,11 @@
               </el-row>
               <el-row>
                 <el-col :span="8">
-                  <el-form-item label="业务类型">
+                  <el-form-item label="业务类型" prop="busiTypeText">
                     <el-input
                       type="textarea"
-                      :value="busiTypeText"
-                      @focus="showTreeModal"
+                      v-model="form.busiTypeText"
+                      @focus="visible = true"
                       resize="none"
                       :autosize="{maxRows:6}"
                       readonly>
@@ -50,12 +49,11 @@
               </el-row>
               <el-row>
                 <el-col :span="8">
-                  <el-form-item label="生效时间">
+                  <el-form-item label="生效时间" prop="startDate">
                     <el-date-picker
                       type="date"
                       placeholder="选择日期"
                       v-model="form.startDate"
-                      @change="formatDate"
                       style="width:100%;"
                       :picker-options="pickerOptions"
                       :editable="false">
@@ -72,10 +70,9 @@
                   </el-form-item>
                 </el-col>
               </el-row>
-              <el-form-item label="使用说明">
+              <el-form-item label="使用说明" prop="description">
                 <el-input
                   type="textarea"
-                  :maxlength="300"
                   :autosize="{ minRows: 2 }"
                   resize="none"
                   v-model="form.description">
@@ -131,10 +128,11 @@
   const defaultData = {
     form: {
       templateName: '',
-      templateType: '',
+      templateType: null,
       startDate: '',
       description: '',
       bizTypes: [],
+      busiTypeText: '',
       files: []
     },
     action: uploadUrl,
@@ -142,7 +140,6 @@
     fileList: [],
     uploadData: {userId: '12'},
     endDate: '9999-12-31',
-    busiTypeText: '',
     pickerOptions: {
       disabledDate(time) {
         return time.getTime() < Date.now() - 8.64e7
@@ -160,26 +157,27 @@
     mixins: [getBusiType],
     data() {
       return Object.assign({
-        regions: []
+        regions: [],
+        rules: {
+          templateName: [{required: true, message: '请输入模板名称'}],
+          templateType: [{required: true, message: '请选择文本类型'}],
+          busiTypeText: [{required: true, message: '请选择业务类型', trigger: 'change'}],
+          startDate: [{type: 'date', required: true, message: '请选择生效时间', trigger: 'change'}],
+          description: [{max: 300, message: '长度不超过300个字符', trigger: 'change'}]
+        }
       }, _.cloneDeep(defaultData))
     },
     methods: {
-      showTreeModal() {
-        this.visible = true
-      },
-      formatDate(value) {
-        this.form.startDate = formatTimeStamp(value)
-      },
       setBusiType(value, tree) {
-        let bizTypes = []
-        let busiTypeText = []
+        const bizTypes = []
+        const busiTypeText = []
         const leafs = tree.getCheckedNodes(true)
         leafs.forEach((item) => {
           bizTypes.push(item.id)
           busiTypeText.push(item.businessName)
         })
         this.form.bizTypes = bizTypes
-        this.busiTypeText = busiTypeText.join(',')
+        this.form.busiTypeText = busiTypeText.join(',')
       },
       getResult() {
         const {info} = this.$store.state.support.create
@@ -190,28 +188,40 @@
           }
         })
         console.log(files)
-        return Object.assign(result, {files}, {
+        Object.assign(result, {
+          startDate: formatTimeStamp(result.startDate),
+          files,
           operatorId: 1,
           operatorName: 'haha',
           departmentId: 12,
           departmentName: 'hehe'
         })
+        delete result.busiTypeText
+        console.log(result)
+        return result
       },
       back() { // 返回列表页
         this.$router.push('/contemplate/list')
       },
       save(templateStatus) {
-        const result = this.getResult()
-        result.templateStatus = templateStatus
-        console.log('click save：', result)
-        supportModel.addTpl(result).then((res) => {
-          console.log(res)
-          this.$message({
-            message: '保存成功',
-            type: 'success'
-          })
-          if (templateStatus === 1) {
-            this.back()
+        this.$refs['form'].validate((valid) => {
+          if (valid) {
+            const result = this.getResult()
+            result.templateStatus = templateStatus
+            console.log('click save：', result)
+            supportModel.addTpl(result).then((res) => {
+              console.log(res)
+              this.$message({
+                message: '提交成功',
+                type: 'success'
+              })
+              if (templateStatus === 1) {
+                this.back()
+              }
+            })
+          } else {
+            console.log('error submit!!')
+            return false
           }
         })
       }

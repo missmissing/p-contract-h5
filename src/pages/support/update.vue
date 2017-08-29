@@ -12,10 +12,10 @@
           <span class="common-title">基本信息</span>
         </div>
         <div>
-          <el-form ref="form" label-width="120px">
+          <el-form :model="form" :rules="rules" ref="form" label-width="120px">
             <el-row>
               <el-col :span="8">
-                <el-form-item label="模板编号">
+                <el-form-item label="模板编号" prop="templateCode">
                   <el-autocomplete
                     class="wp100"
                     icon="search"
@@ -23,6 +23,8 @@
                     @select="search"
                     placeholder="点击图标进行搜索"
                     v-model="form.templateCode"
+                    :value="form.templateCode"
+                    :trigger-on-focus="false"
                     :on-icon-click="search">
                   </el-autocomplete>
                 </el-form-item>
@@ -45,7 +47,6 @@
                     placeholder="请选择"
                     disabled
                     class="wp100">
-                    <el-option label="请选择" value=""></el-option>
                     <el-option label="合同模板" value="TEMPLATE"></el-option>
                     <el-option label="合同文本" value="TEXT"></el-option>
                   </el-select>
@@ -54,11 +55,11 @@
             </el-row>
             <el-row>
               <el-col :span="8">
-                <el-form-item label="业务类型">
+                <el-form-item label="业务类型" prop="busiTypeText">
                   <el-input
                     type="textarea"
-                    :value="busiTypeText"
-                    @focus="showTreeModal"
+                    v-model="form.busiTypeText"
+                    @focus="visible = true"
                     resize="none"
                     :autosize="{maxRows:6}"
                     readonly>
@@ -68,12 +69,11 @@
             </el-row>
             <el-row>
               <el-col :span="8">
-                <el-form-item label="生效时间">
+                <el-form-item label="生效时间" prop="startDate">
                   <el-date-picker
                     type="date"
                     placeholder="选择日期"
                     v-model="form.startDate"
-                    @change="formatDate"
                     style="width:100%;"
                     :picker-options="pickerOptions"
                     :editable="false">
@@ -116,10 +116,9 @@
                 </el-form-item>
               </el-col>
             </el-row>
-            <el-form-item label="使用说明">
+            <el-form-item label="使用说明" prop="description">
               <el-input
                 type="textarea"
-                :maxlength="300"
                 :autosize="{ minRows: 2 }"
                 resize="none"
                 v-model="form.description">
@@ -161,21 +160,22 @@
 
 <script>
   import _ from 'lodash'
-  import moment from 'moment'
   import Tmpl from './tmpl.vue'
   import Upload from '@/components/upload.vue'
   import TreeModal from '@/components/treeModal.vue'
   import supportModel from '@/api/support'
   import getBusiType from '@/mixins/getBusiType'
   import {uploadUrl, downloadUrl} from '@/api/consts'
+  import {formatTimeStamp, formatToDate} from '@/filters'
 
   const defaultData = {
     form: {
       id: '',
       templateCode: '',
       templateName: '',
-      templateType: '',
+      templateType: null,
       startDate: '',
+      busiTypeText: '',
       description: '',
       bizTypes: [],
       files: []
@@ -186,7 +186,6 @@
     download: downloadUrl,
     uploadData: {userId: '12'},
     endDate: '9999-12-31',
-    busiTypeText: '',
     operatorName: '',
     creatorName: '',
     version: '',
@@ -207,8 +206,21 @@
   export default {
     mixins: [getBusiType],
     data() {
+      const autocompleteBlur = (rule, value, callback) => {
+        if (!value) {
+          callback(rule.message)
+          return
+        }
+        callback()
+      }
       return Object.assign({
-        regions: []
+        regions: [],
+        rules: {
+          templateCode: [{validator: autocompleteBlur, message: '请输入模板编号', trigger: 'blur'}],
+          busiTypeText: [{required: true, message: '请选择业务类型', trigger: 'change'}],
+          startDate: [{type: 'date', required: true, message: '请选择生效时间', trigger: 'change'}],
+          description: [{max: 300, message: '长度不超过300个字符', trigger: 'change'}]
+        }
       }, _.cloneDeep(defaultData))
     },
     methods: {
@@ -224,29 +236,22 @@
           this.loading = false
         })
       },
-      showTreeModal() {
-        this.visible = true
-      },
-      formatDate(value) {
-        this.form.startDate = moment(value).valueOf()
-      },
       setBusiType(value, tree) {
-        let bizTypes = []
-        let busiTypeText = []
+        const bizTypes = []
+        const busiTypeText = []
         const leafs = tree.getCheckedNodes(true)
         leafs.forEach((item) => {
           bizTypes.push(item.id)
           busiTypeText.push(item.businessName)
         })
         this.form.bizTypes = bizTypes
-        this.busiTypeText = busiTypeText.join(',')
+        this.form.busiTypeText = busiTypeText.join(',')
       },
       setData(tplInfo) {
         this.tplInfo = tplInfo
         this['version'] = `V${tplInfo['version']}`
         this['operatorName'] = tplInfo['operatorName']
         this['creatorName'] = tplInfo['creatorName']
-        this['busiTypeText'] = tplInfo['bizTypes'].map(item => item.businessName).join(',')
         tplInfo['files'].forEach((item) => {
           this.fileList.push({
             name: item.fileName,
@@ -257,32 +262,37 @@
           if (tplInfo.hasOwnProperty(key)) {
             if (key === 'bizTypes') {
               this.form[key] = tplInfo[key].map(item => item.typeId)
+              this.form['busiTypeText'] = tplInfo['bizTypes'].map(item => item.businessName).join(',')
+            } else if (key === 'startDate') {
+              this.form[key] = formatToDate(this.form[key])
             } else {
               this.form[key] = tplInfo[key]
             }
           }
         })
       },
-      getTplData() {
-        if (this.see) {
-          supportModel.getTplData({
-            templateId: this.$route.params.id
-          }).then((res) => {
-            console.log(res)
-            const tplInfo = res.data.dataMap
-            this.setData(tplInfo)
-          })
-        }
-      },
       getResult() {
         const {info} = this.$store.state.support.create
         const result = {...this.form, ...info}
-        return Object.assign(result, {
+        const files = _.map(this.fileList, (file) => {
+          if (file.status === 'success') {
+            return file.fileId
+          }
+        })
+        console.log(files)
+        Object.assign(result, {
+          startDate: formatTimeStamp(result.startDate),
+          files,
           operatorId: 1,
           operatorName: 'haha',
           departmentId: 12,
           departmentName: 'hehe'
         })
+        delete result.templateName
+        delete result.templateType
+        delete result.busiTypeText
+        console.log(result)
+        return result
       },
       back() { // 返回列表页
         this.$router.push('/contemplate/list')
@@ -304,17 +314,24 @@
         })
       },
       save(templateStatus) {
-        const result = this.getResult()
-        result.templateStatus = templateStatus
-        console.log('click save：' + JSON.stringify(result))
-        supportModel.updateTemplate(result).then((res) => {
-          console.log(res)
-          this.$message({
-            message: '保存成功',
-            type: 'success'
-          })
-          if (templateStatus === 1) {
-            this.back()
+        this.$refs['form'].validate((valid) => {
+          if (valid) {
+            const result = this.getResult()
+            result.templateStatus = templateStatus
+            console.log('click save：', result)
+            supportModel.updateTemplate(result).then((res) => {
+              console.log(res)
+              this.$message({
+                message: '提交成功',
+                type: 'success'
+              })
+              if (templateStatus === 1) {
+                this.back()
+              }
+            })
+          } else {
+            console.log('error submit!!')
+            return false
           }
         })
       }
@@ -323,9 +340,6 @@
       TreeModal,
       Tmpl,
       Upload
-    },
-    created() {
-      this.getTplData()
     },
     computed: {
       showUpload() {

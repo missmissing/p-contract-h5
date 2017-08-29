@@ -100,7 +100,7 @@
   import Upload from '@/components/upload.vue'
   import supportModel from '@/api/support'
   import {uploadUrl, downloadUrl} from '@/api/consts'
-  import {formatDate} from '@/filters'
+  import {formatDate, formatToDate} from '@/filters'
 
   const defaultData = {
     form: {
@@ -146,7 +146,9 @@
         })
         Object.keys(this.form).forEach((key) => {
           if (tplInfo.hasOwnProperty(key)) {
-            if (key !== 'bizTypes') {
+            if (key === 'startDate') {
+              this.form[key] = formatToDate(this.form[key])
+            } else {
               this.form[key] = tplInfo[key]
             }
           }

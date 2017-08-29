@@ -155,6 +155,16 @@
         }]
       },
       save() {
+        if (!_.trim(this.form.content)) {
+          this.$message.error('请输入内容！')
+          return false
+        }
+
+        if (!this.form.contentModule.length) {
+          this.$message.error('请选择模块！')
+          return false
+        }
+
         this[types.SET_INFO]({
           info: this.form
         })
