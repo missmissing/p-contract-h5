@@ -423,17 +423,17 @@
         if (query !== '') {
           this.formContractSupplier.loading = true
           Api.getRemoteSuppliersByKeyWord({key: query})
-            .then((data) = > {
-            this.formContractSupplier.loading = false
-          this.formContractSupplier.suppliers = data.data.dataMap.list
-        })
+            .then((data) => {
+              this.formContractSupplier.loading = false
+              this.formContractSupplier.suppliers = data.data.dataMap.list
+            })
         } else {
           this.formContractSupplier.suppliers = []
         }
       },
       handleNewContractSupplier(formName) {
         let curForm = this.$refs[formName]
-        curForm.validate((valid) = > {
+        curForm.validate((valid) => {
           if (valid) {
             let arr = this.formContractSupplier.suppliers
             let key = this.formContractSupplier.search
@@ -450,9 +450,9 @@
             this.baseInfoForm.dialogAddContractSupplier = false
           } else {
             console.log('error submit!!')
-          return false
-        }
-      })
+            return false
+          }
+        })
       },
       handleNewContractSupplierCancel(formName) {
         this.$refs[formName].resetFields()
@@ -468,17 +468,17 @@
         if (query !== '') {
           this.formNewSubject.loading = true
           Api.getRemoteSubjectsByKeyWord({key: query})
-            .then((data) = > {
-            this.formNewSubject.loading = false
-          this.formNewSubject.subjects = data.data.dataMap.list
-        })
+            .then((data) => {
+              this.formNewSubject.loading = false
+              this.formNewSubject.subjects = data.data.dataMap.list
+            })
         } else {
           this.formNewSubject.subjects = []
         }
       },
       handleAddNewSubject(formName) {
         let curForm = this.$refs[formName]
-        curForm.validate((valid) = > {
+        curForm.validate((valid) => {
           if (valid) {
             let arr = this.formNewSubject.subjects
             let key = this.formNewSubject.search
@@ -502,9 +502,9 @@
             this.baseInfoForm.dialogNewSubjectVisible = false
           } else {
             console.log('error submit!!')
-          return false
-        }
-      })
+            return false
+          }
+        })
       },
       handleNewSealFile() {
         let item = {
