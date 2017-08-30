@@ -1,8 +1,9 @@
 <style>
-  .title{
-    position:relative;
+  .title {
+    position: relative;
   }
-  .errorCount{
+
+  .errorCount {
     font-style: normal;
     position: absolute;
     top: -10px;
@@ -12,14 +13,16 @@
     background: red;
     color: white;
     border-radius: 50% 50%;
-    padding: 5px;
+    padding: 3px;
   }
-  .errorMsg{
-    color:red;
+
+  .errorMsg {
+    color: red;
     font-style: normal;
     font-size: 12px;
     margin-left: 20px;
   }
+
   .card {
     margin-bottom: 20px;
   }
@@ -1181,7 +1184,8 @@
                       <el-row>
                         <el-col :span="6">
                           <el-form-item label="用章次数" prop="sealTimes">
-                            <el-input :disabled="operateType==='query'||props.row.type!==1" v-model="props.row.sealTimes">
+                            <el-input :disabled="operateType==='query'||props.row.type!==1"
+                                      v-model="props.row.sealTimes">
                             </el-input>
                           </el-form-item>
                         </el-col>
@@ -1206,7 +1210,8 @@
                               :on-success="handleUploadFileAfterSealSuccess"
                               :on-error="handleUploadFileAfterSealError"
                             >
-                              <el-button :disabled="operateType==='query'||props.row.type!==1" size="small" type="primary">上传
+                              <el-button :disabled="operateType==='query'||props.row.type!==1" size="small"
+                                         type="primary">上传
                               </el-button>
                               </el-button>
                             </el-upload>
@@ -1597,9 +1602,9 @@
         activeTabName: 'tabContInfo',
         cardContentInfoForm: {
           tableSupplierInfo: [],
-          errorCount:0,
-          supplierErrorMsg:'',
-          subjectsErrorMsg:'',
+          errorCount: 0,
+          supplierErrorMsg: '',
+          subjectsErrorMsg: '',
           conSubjctName: [],
           thirdPartyInfo: [],
           conStandard: [],
@@ -1797,8 +1802,8 @@
           hasSample: 1,
           materialMatters: [],
           serviceMatters: [],
-          serviceCheckMsg:'',
-          errorCount:0,
+          serviceCheckMsg: '',
+          errorCount: 0,
           dialogAddUnionCheckVisible: false,
           dialogAddServiceVisible: false
         },
@@ -2005,7 +2010,8 @@
           search: '',
           thirdParties: [],
           loading: false
-        }
+        },
+        isSubmit: false
       }
     },
     created() {
@@ -2144,6 +2150,9 @@
             })
             curForm.resetFields()
             this.cardContCheckInfoForm.dialogAddServiceVisible = false
+            if (this.isSubmit) {
+              this.validateForms()
+            }
           } else {
             console.log('error submit!!')
             return false
@@ -2221,6 +2230,9 @@
             }
             curForm.resetFields()
             this.baseInfoForm.dialogNewSubjectVisible = false
+            if (this.isSubmit) {
+              this.validateForms()
+            }
           } else {
             console.log('error submit!!')
             return false
@@ -2263,6 +2275,9 @@
             }
             curForm.resetFields()
             this.cardContentInfoForm.dialogAddContractSupplier = false
+            if (this.isSubmit) {
+              this.validateForms()
+            }
           } else {
             console.log('error submit!!')
             return false
@@ -2406,50 +2421,52 @@
         console.log('file', file)
         console.log('fileList', fileList)
       },
-      validateForms(){
-        let errors={
-          cardContentInfoForm:{
-            errorCount:0,
-            supplierErrorMsg:'',
-            subjectsErrorMsg:''
+      validateForms() {
+        let errors = {
+          cardContentInfoForm: {
+            errorCount: 0,
+            supplierErrorMsg: '',
+            subjectsErrorMsg: ''
           },
-          cardContCheckInfoForm:{
-            errorCount:0,
-            serviceCheckMsg:''
+          cardContCheckInfoForm: {
+            errorCount: 0,
+            serviceCheckMsg: ''
           }
-        };
+        }
         this.$refs.cardContentInfoForm.validate((valid) => {
           if (valid) {
-            const supplier = this.cardContentInfoForm.tableSupplierInfo;
-            const subjects = this.cardContentInfoForm.conSubjctName;
+            const supplier = this.cardContentInfoForm.tableSupplierInfo
+            const subjects = this.cardContentInfoForm.conSubjctName
             if (supplier.length === 0) {
-              errors.cardContentInfoForm.errorCount+=1;
-              errors.cardContentInfoForm.supplierErrorMsg='合同供应商信息不能为空';
+              errors.cardContentInfoForm.errorCount += 1
+              errors.cardContentInfoForm.supplierErrorMsg = '合同供应商信息不能为空'
             }
-            if(subjects.length===0){
-              errors.cardContentInfoForm.errorCount+=1;
-              errors.cardContentInfoForm.subjectsErrorMsg='我方主体信息不能为空';
+            if (subjects.length === 0) {
+              errors.cardContentInfoForm.errorCount += 1
+              errors.cardContentInfoForm.subjectsErrorMsg = '我方主体信息不能为空'
             }
           } else {
             this.$message.error('请填写完整信息再提交！')
             return false
           }
         })
-        console.log('this.$refs',this.$refs);
-        console.log('this.$refs.cardContCheckInfoForm',this.$refs.cardContCheckInfoForm);
         this.$refs.cardContCheckInfoForm.validate((valid) => {
           if (valid) {
-            const service = this.cardContCheckInfoForm.serviceMatters;
+            const service = this.cardContCheckInfoForm.serviceMatters
             if (service.length === 0) {
-              errors.cardContCheckInfoForm.errorCount+=1;
-              errors.cardContCheckInfoForm.serviceCheckMsg='服务验收事项不能为空';
+              errors.cardContCheckInfoForm.errorCount += 1
+              errors.cardContCheckInfoForm.serviceCheckMsg = '服务验收事项不能为空'
             }
           } else {
             this.$message.error('请填写完整信息再提交！')
             return false
           }
         })
-        return errors;
+        this.cardContentInfoForm.errorCount = errors.cardContentInfoForm.errorCount
+        this.cardContentInfoForm.supplierErrorMsg = errors.cardContentInfoForm.supplierErrorMsg
+        this.cardContentInfoForm.subjectsErrorMsg = errors.cardContentInfoForm.subjectsErrorMsg
+        this.cardContCheckInfoForm.errorCount = errors.cardContCheckInfoForm.errorCount
+        this.cardContCheckInfoForm.serviceCheckMsg = errors.cardContCheckInfoForm.serviceCheckMsg
       },
       handleSave(formName) {
         console.log('save', formName)
@@ -2458,12 +2475,8 @@
         /* Api.getRelatedInfo({}).then((data)=> {
          this.cardRelatedInfoForm.contractList = data.data.dataMap.contractList;
          }); */
-        const errors=this.validateForms();
-        this.cardContentInfoForm.errorCount=errors.cardContentInfoForm.errorCount;
-        this.cardContentInfoForm.supplierErrorMsg=errors.cardContentInfoForm.supplierErrorMsg;
-        this.cardContentInfoForm.subjectsErrorMsg=errors.cardContentInfoForm.subjectsErrorMsg;
-        this.cardContCheckInfoForm.errorCount=errors.cardContCheckInfoForm.errorCount;
-        this.cardContCheckInfoForm.serviceCheckMsg=errors.cardContCheckInfoForm.serviceCheckMsg;
+        this.isSubmit = true
+        this.validateForms()
       },
       handleCurTimeChange(value, row) {
         if (value) {
@@ -2552,6 +2565,7 @@
           this.operateType = 'update'
         }
       }
+
     }
   }
 </script>
