@@ -1,4 +1,25 @@
 <style>
+  .title{
+    position:relative;
+  }
+  .errorCount{
+    font-style: normal;
+    position: absolute;
+    top: -10px;
+    left: -15px;
+    line-height: 15px;
+    text-align: center;
+    background: red;
+    color: white;
+    border-radius: 50% 50%;
+    padding: 5px;
+  }
+  .errorMsg{
+    color:red;
+    font-style: normal;
+    font-size: 12px;
+    margin-left: 20px;
+  }
   .card {
     margin-bottom: 20px;
   }
@@ -156,11 +177,12 @@
     </el-card>
     <el-card v-if="contentVisible">
       <el-tabs v-model="activeTabName" @tab-click="handleTabClick">
-        <el-tab-pane label="合同内容信息" name="tabContInfo">
+        <el-tab-pane name="tabContInfo">
+          <span slot="label" class="title">合同内容信息<i v-if="cardContentInfoForm.errorCount" class="errorCount">{{cardContentInfoForm.errorCount}}</i> </span>
           <el-form ref="cardContentInfoForm" :model="cardContentInfoForm" label-width="120px"
                    :rules="cardContentInfoForm.rules">
             <el-card>
-              <header slot="header">合同供应商信息</header>
+              <header slot="header">合同供应商信息<i class="errorMsg">{{cardContentInfoForm.supplierErrorMsg}}</i></header>
               <el-button v-if="cardContentInfoForm.tableSupplierInfo.length<=0"
                          @click="handleAddContractSupplier" icon="plus"
                          type="primary">新增
@@ -184,7 +206,7 @@
               </el-table>
             </el-card>
             <el-card>
-              <header slot="header">合同我方主体名称</header>
+              <header slot="header">合同我方主体名称<i class="errorMsg">{{cardContentInfoForm.subjectsErrorMsg}}</i></header>
               <el-button v-if="operateType!=='query'" type="primary" @click="handleNewSubjectName"
                          icon="plus">新增
               </el-button>
@@ -933,9 +955,10 @@
             </el-card>
           </el-form>
         </el-tab-pane>
-        <el-tab-pane label="合同验收与样品信息" name="tabContCheckInfo"
+        <el-tab-pane name="tabContCheckInfo"
                      v-if="baseInfoForm.conModel==='con2'">
-          <el-form rel="cardContCheckInfoForm" :model="cardContCheckInfoForm" label-width="100px">
+          <span slot="label" class="title"><i v-if="cardContCheckInfoForm.errorCount" class="errorCount">{{cardContCheckInfoForm.errorCount}}</i>合同验收与样品信息</span>
+          <el-form ref="cardContCheckInfoForm" :model="cardContCheckInfoForm" label-width="100px">
             <el-row>
               <el-col :span="8">
                 <el-form-item prop="checkPerson" label="验收责任人">
@@ -1007,7 +1030,7 @@
               </el-table>
             </el-card>
             <el-card v-if="!showMaterialItems">
-              <header slot="header">服务验收事项</header>
+              <header slot="header">服务验收事项<i class="errorMsg">{{cardContCheckInfoForm.serviceCheckMsg}}</i></header>
               <el-button v-if="operateType!=='query'" type="primary" @click="handleAddServiceMatter" icon="plus">
                 添加服务验收事项
               </el-button>
@@ -1573,8 +1596,10 @@
         },
         activeTabName: 'tabContInfo',
         cardContentInfoForm: {
-          errCount: 0,
           tableSupplierInfo: [],
+          errorCount:0,
+          supplierErrorMsg:'',
+          subjectsErrorMsg:'',
           conSubjctName: [],
           thirdPartyInfo: [],
           conStandard: [],
@@ -1772,6 +1797,8 @@
           hasSample: 1,
           materialMatters: [],
           serviceMatters: [],
+          serviceCheckMsg:'',
+          errorCount:0,
           dialogAddUnionCheckVisible: false,
           dialogAddServiceVisible: false
         },
@@ -2379,6 +2406,51 @@
         console.log('file', file)
         console.log('fileList', fileList)
       },
+      validateForms(){
+        let errors={
+          cardContentInfoForm:{
+            errorCount:0,
+            supplierErrorMsg:'',
+            subjectsErrorMsg:''
+          },
+          cardContCheckInfoForm:{
+            errorCount:0,
+            serviceCheckMsg:''
+          }
+        };
+        this.$refs.cardContentInfoForm.validate((valid) => {
+          if (valid) {
+            const supplier = this.cardContentInfoForm.tableSupplierInfo;
+            const subjects = this.cardContentInfoForm.conSubjctName;
+            if (supplier.length === 0) {
+              errors.cardContentInfoForm.errorCount+=1;
+              errors.cardContentInfoForm.supplierErrorMsg='合同供应商信息不能为空';
+            }
+            if(subjects.length===0){
+              errors.cardContentInfoForm.errorCount+=1;
+              errors.cardContentInfoForm.subjectsErrorMsg='我方主体信息不能为空';
+            }
+          } else {
+            this.$message.error('请填写完整信息再提交！')
+            return false
+          }
+        })
+        console.log('this.$refs',this.$refs);
+        console.log('this.$refs.cardContCheckInfoForm',this.$refs.cardContCheckInfoForm);
+        this.$refs.cardContCheckInfoForm.validate((valid) => {
+          if (valid) {
+            const service = this.cardContCheckInfoForm.serviceMatters;
+            if (service.length === 0) {
+              errors.cardContCheckInfoForm.errorCount+=1;
+              errors.cardContCheckInfoForm.serviceCheckMsg='服务验收事项不能为空';
+            }
+          } else {
+            this.$message.error('请填写完整信息再提交！')
+            return false
+          }
+        })
+        return errors;
+      },
       handleSave(formName) {
         console.log('save', formName)
       },
@@ -2386,20 +2458,12 @@
         /* Api.getRelatedInfo({}).then((data)=> {
          this.cardRelatedInfoForm.contractList = data.data.dataMap.contractList;
          }); */
-        this.$refs.cardContentInfoForm.validate((valid) => {
-          console.log('validate')
-          if (valid) {
-            const supplier = this.cardContentInfoForm.tableSupplierInfo
-            if (supplier.length > 0) {
-              console.log('success')
-            } else {
-              this.cardContentInfoForm.errCount = supplier
-            }
-          } else {
-            this.$message.error('请填写完整信息再提交！')
-            return false
-          }
-        })
+        const errors=this.validateForms();
+        this.cardContentInfoForm.errorCount=errors.cardContentInfoForm.errorCount;
+        this.cardContentInfoForm.supplierErrorMsg=errors.cardContentInfoForm.supplierErrorMsg;
+        this.cardContentInfoForm.subjectsErrorMsg=errors.cardContentInfoForm.subjectsErrorMsg;
+        this.cardContCheckInfoForm.errorCount=errors.cardContCheckInfoForm.errorCount;
+        this.cardContCheckInfoForm.serviceCheckMsg=errors.cardContCheckInfoForm.serviceCheckMsg;
       },
       handleCurTimeChange(value, row) {
         if (value) {

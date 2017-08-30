@@ -92,11 +92,11 @@ module.exports = function (api) {
         },
         contentInfo: {
           tableSupplierInfo: [
-            {
+            /*{
               id: 'supplier1',
               name: '供应商1',
               bankAccount: '渣打银行'
-            }
+            }*/
           ],
           conSubjctName: [
             {
