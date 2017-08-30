@@ -3,9 +3,11 @@
 </style>
 
 <template>
-  <div>
+  <div
+    v-loading="loadingFlag"
+    :element-loading-text="loadingText">
     <transition name="component-fade" mode="out-in">
-      <div v-if="!showTmpl">
+      <div v-show="!showTmpl">
         <el-card>
           <div slot="header">
             <span class="common-title">基本信息</span>
@@ -100,7 +102,7 @@
         </el-row>
       </div>
     </transition>
-    <transition name="component-fade" mode="in-out">
+    <transition name="component-fade" mode="out-in">
       <Tmpl v-show="showTmpl" :showTmpl.sync="showTmpl"></Tmpl>
     </transition>
     <TreeModal
@@ -122,8 +124,9 @@
   import TreeModal from '@/components/treeModal.vue'
   import supportModel from '@/api/support'
   import getBusiType from '@/mixins/getBusiType'
+  import comLoading from '@/mixins/comLoading'
   import {uploadUrl, downloadUrl} from '@/api/consts'
-  import {formatTimeStamp} from '@/filters'
+  import {formatTimeStamp} from '@/filters/moment'
 
   const defaultData = {
     form: {
@@ -139,7 +142,7 @@
   }
 
   export default {
-    mixins: [getBusiType],
+    mixins: [getBusiType, comLoading],
     data() {
       return Object.assign({
         action: uploadUrl,
@@ -158,6 +161,8 @@
         regions: [],
         visible: false,
         showTmpl: false,
+        loadingFlag: false,
+        loadingText: '',
         rules: {
           templateName: [{required: true, message: '请输入模板名称'}],
           templateType: [{required: true, message: '请选择文本类型'}],
@@ -211,11 +216,13 @@
       save(templateStatus) {
         this.$refs['form'].validate((valid) => {
           if (valid) {
+            this.comLoading(1)
             const result = this.getResult()
             result.templateStatus = templateStatus
             console.log('click save：', result)
             supportModel.addTpl(result).then((res) => {
               console.log(res)
+              this.comLoading()
               this.$message({
                 message: '提交成功',
                 type: 'success'
@@ -223,6 +230,8 @@
               if (templateStatus === 1) {
                 this.back()
               }
+            }, () => {
+              this.comLoading()
             })
           } else {
             console.log('error submit!!')

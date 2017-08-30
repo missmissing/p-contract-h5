@@ -3,165 +3,171 @@
 </style>
 
 <template>
-  <div>
-    <div v-if="!showTmpl"
-         v-loading="loading"
-         element-loading-text="拼命加载中">
-      <el-card>
-        <div slot="header">
-          <span class="common-title">基本信息</span>
-        </div>
-        <div>
-          <el-form :model="form" :rules="rules" ref="form" label-width="120px">
-            <el-row>
-              <el-col :span="8">
-                <el-form-item label="模板编号" prop="templateCode">
-                  <el-autocomplete
-                    class="wp100"
-                    icon="search"
-                    :fetch-suggestions="querySearch"
-                    @select="search"
-                    v-model="form.templateCode">
-                  </el-autocomplete>
-                </el-form-item>
-              </el-col>
-            </el-row>
-            <el-row>
-              <el-col :span="8">
-                <el-form-item label="文本名称">
-                  <el-input
-                    disabled
-                    v-model.trim="form.templateName"
-                    class="wp100">
-                  </el-input>
-                </el-form-item>
-              </el-col>
-              <el-col :span="8">
-                <el-form-item label="文本类型">
-                  <el-select
-                    v-model="form.templateType"
-                    placeholder="请选择"
-                    disabled
-                    class="wp100">
-                    <el-option label="请选择" value=""></el-option>
-                    <el-option label="合同模板" value="TEMPLATE"></el-option>
-                    <el-option label="合同文本" value="TEXT"></el-option>
-                  </el-select>
-                </el-form-item>
-              </el-col>
-            </el-row>
-            <el-row>
-              <el-col :span="8">
-                <el-form-item label="业务类型">
-                  <el-input
-                    disabled
-                    type="textarea"
-                    v-model="form.busiTypeText"
-                    resize="none"
-                    :autosize="{maxRows:6}">
-                  </el-input>
-                </el-form-item>
-              </el-col>
-            </el-row>
-            <el-row>
-              <el-col :span="8">
-                <el-form-item label="生效时间">
-                  <el-input
-                    disabled
-                    :value="form.startDate | formatDate"
-                    class="wp100">
-                  </el-input>
-                </el-form-item>
-              </el-col>
-              <el-col :span="8">
-                <el-form-item label="终止时间">
-                  <el-input
-                    :value="endDate | formatDate"
-                    class="wp100"
-                    disabled
-                  ></el-input>
-                </el-form-item>
-              </el-col>
-            </el-row>
-            <el-row>
-              <el-col :span="8">
-                <el-form-item label="创建人">
-                  <el-input
-                    disabled
-                    :value="form.creatorName">
-                  </el-input>
-                </el-form-item>
-              </el-col>
-              <el-col :span="8">
-                <el-form-item label="最新版本">
-                  <el-input
-                    disabled
-                    :value="form.version">
-                  </el-input>
-                </el-form-item>
-              </el-col>
-              <el-col :span="8">
-                <el-form-item label="最近更新人">
-                  <el-input
-                    disabled
-                    :value="form.operatorName">
-                  </el-input>
-                </el-form-item>
-              </el-col>
-            </el-row>
-            <el-form-item label="使用说明">
-              <el-input
-                disabled
-                type="textarea"
-                :maxlength="300"
-                :autosize="{ minRows: 2 }"
-                resize="none"
-                v-model="form.description">
-              </el-input>
-            </el-form-item>
-            <el-form-item label="文本上传" v-show="showUpload">
-              <Upload
-                :action="action"
-                :download="download"
-                :fileList.sync="fileList"
-                multiple>
-                <!--<div class="el-upload__tip" slot="tip">文件不超过10M</div>-->
-              </Upload>
-            </el-form-item>
-            <el-form-item v-show="showTpl">
-              <el-button type="primary" @click="showTmpl=true">模板信息</el-button>
-            </el-form-item>
-            <el-row>
-              <el-col :span="8">
-                <el-form-item label="停用日期" prop="abolishDate">
-                  <el-date-picker
-                    type="date"
-                    placeholder="选择日期"
-                    v-model="form.abolishDate"
-                    style="width:100%;"
-                    :editable="false">
-                  </el-date-picker>
-                </el-form-item>
-              </el-col>
-              <el-col>
-                <el-form-item label="停用原因" prop="abolishReason">
-                  <el-input
-                    type="textarea"
-                    :autosize="{ minRows: 2 }"
-                    resize="none"
-                    v-model="form.abolishReason">
-                  </el-input>
-                </el-form-item>
-              </el-col>
-            </el-row>
-          </el-form>
-        </div>
-      </el-card>
-      <el-row class="mt20 mb20 ml20">
-        <el-button type="primary" @click="save">提交</el-button>
-      </el-row>
-    </div>
-    <Tmpl v-show="showTmpl" :tplInfo="tplInfo" :showTmpl.sync="showTmpl"></Tmpl>
+  <div
+    v-loading="loadingFlag"
+    :element-loading-text="loadingText">
+    <transition name="component-fade" mode="out-in">
+      <div v-show="!showTmpl"
+           v-loading="loading"
+           element-loading-text="拼命加载中">
+        <el-card>
+          <div slot="header">
+            <span class="common-title">基本信息</span>
+          </div>
+          <div>
+            <el-form :model="form" :rules="rules" ref="form" label-width="120px">
+              <el-row>
+                <el-col :span="8">
+                  <el-form-item label="模板编号" prop="templateCode">
+                    <el-autocomplete
+                      class="wp100"
+                      icon="search"
+                      :fetch-suggestions="querySearch"
+                      @select="search"
+                      v-model="form.templateCode">
+                    </el-autocomplete>
+                  </el-form-item>
+                </el-col>
+              </el-row>
+              <el-row>
+                <el-col :span="8">
+                  <el-form-item label="文本名称">
+                    <el-input
+                      disabled
+                      v-model.trim="form.templateName"
+                      class="wp100">
+                    </el-input>
+                  </el-form-item>
+                </el-col>
+                <el-col :span="8">
+                  <el-form-item label="文本类型">
+                    <el-select
+                      v-model="form.templateType"
+                      placeholder="请选择"
+                      disabled
+                      class="wp100">
+                      <el-option label="请选择" value=""></el-option>
+                      <el-option label="合同模板" value="TEMPLATE"></el-option>
+                      <el-option label="合同文本" value="TEXT"></el-option>
+                    </el-select>
+                  </el-form-item>
+                </el-col>
+              </el-row>
+              <el-row>
+                <el-col :span="8">
+                  <el-form-item label="业务类型">
+                    <el-input
+                      disabled
+                      type="textarea"
+                      v-model="form.busiTypeText"
+                      resize="none"
+                      :autosize="{maxRows:6}">
+                    </el-input>
+                  </el-form-item>
+                </el-col>
+              </el-row>
+              <el-row>
+                <el-col :span="8">
+                  <el-form-item label="生效时间">
+                    <el-input
+                      disabled
+                      :value="form.startDate | formatDate"
+                      class="wp100">
+                    </el-input>
+                  </el-form-item>
+                </el-col>
+                <el-col :span="8">
+                  <el-form-item label="终止时间">
+                    <el-input
+                      :value="endDate | formatDate"
+                      class="wp100"
+                      disabled
+                    ></el-input>
+                  </el-form-item>
+                </el-col>
+              </el-row>
+              <el-row>
+                <el-col :span="8">
+                  <el-form-item label="创建人">
+                    <el-input
+                      disabled
+                      :value="form.creatorName">
+                    </el-input>
+                  </el-form-item>
+                </el-col>
+                <el-col :span="8">
+                  <el-form-item label="最新版本">
+                    <el-input
+                      disabled
+                      :value="form.version">
+                    </el-input>
+                  </el-form-item>
+                </el-col>
+                <el-col :span="8">
+                  <el-form-item label="最近更新人">
+                    <el-input
+                      disabled
+                      :value="form.operatorName">
+                    </el-input>
+                  </el-form-item>
+                </el-col>
+              </el-row>
+              <el-form-item label="使用说明">
+                <el-input
+                  disabled
+                  type="textarea"
+                  :maxlength="300"
+                  :autosize="{ minRows: 2 }"
+                  resize="none"
+                  v-model="form.description">
+                </el-input>
+              </el-form-item>
+              <el-form-item label="文本上传" v-show="showUpload">
+                <Upload
+                  :action="action"
+                  :download="download"
+                  :fileList.sync="fileList"
+                  multiple>
+                  <!--<div class="el-upload__tip" slot="tip">文件不超过10M</div>-->
+                </Upload>
+              </el-form-item>
+              <el-form-item v-show="showTpl">
+                <el-button type="primary" @click="showTmpl=true">模板信息</el-button>
+              </el-form-item>
+              <el-row>
+                <el-col :span="8">
+                  <el-form-item label="停用日期" prop="abolishDate">
+                    <el-date-picker
+                      type="date"
+                      placeholder="选择日期"
+                      v-model="form.abolishDate"
+                      style="width:100%;"
+                      :editable="false">
+                    </el-date-picker>
+                  </el-form-item>
+                </el-col>
+                <el-col>
+                  <el-form-item label="停用原因" prop="abolishReason">
+                    <el-input
+                      type="textarea"
+                      :autosize="{ minRows: 2 }"
+                      resize="none"
+                      v-model="form.abolishReason">
+                    </el-input>
+                  </el-form-item>
+                </el-col>
+              </el-row>
+            </el-form>
+          </div>
+        </el-card>
+        <el-row class="mt20 mb20 ml20">
+          <el-button type="primary" @click="save">提交</el-button>
+        </el-row>
+      </div>
+    </transition>
+    <transition name="component-fade" mode="out-in">
+      <Tmpl v-show="showTmpl" :tplInfo="tplInfo" :showTmpl.sync="showTmpl"></Tmpl>
+    </transition>
   </div>
 </template>
 
@@ -169,9 +175,10 @@
   import _ from 'lodash'
   import Tmpl from './tmpl.vue'
   import Upload from '@/components/upload.vue'
+  import comLoading from '@/mixins/comLoading'
   import supportModel from '@/api/support'
   import {uploadUrl, downloadUrl} from '@/api/consts'
-  import {formatDate, formatTimeStamp, formatToDate} from '@/filters'
+  import {formatDate, formatTimeStamp, formatToDate} from '@/filters/moment'
 
   const defaultData = {
     form: {
@@ -194,6 +201,7 @@
   }
 
   export default {
+    mixins: [comLoading],
     data() {
       return Object.assign({
         action: uploadUrl,
@@ -202,6 +210,8 @@
         endDate: '9999-12-31',
         showTmpl: false,
         loading: false,
+        loadingFlag: false,
+        loadingText: '',
         rules: {
           templateCode: [{required: true, message: '请输入模板编号', trigger: 'blur'}],
           abolishDate: [{required: true, message: '请选择停用日期', trigger: 'change'}],
@@ -211,18 +221,18 @@
     },
     methods: {
       search() {
-        this.loading = true
+        this.comLoading(1)
         supportModel.getCurrentTemplateByCode({
           templateCode: this.form.templateCode
         }).then((res) => {
           console.log(res)
+          this.comLoading()
           Object.assign(this.$data, _.cloneDeep(defaultData))
           const tplInfo = res.data.dataMap
           this.resetForm()
           this.setData(tplInfo)
-          this.loading = false
         }, () => {
-          this.loading = false
+          this.comLoading()
         })
       },
       setData(tplInfo) {
@@ -286,14 +296,18 @@
       save() {
         this.$refs['form'].validate((valid) => {
           if (valid) {
+            this.comLoading(2)
             const result = this.getResult()
             supportModel.setTemplateAbolish(result).then((res) => {
               console.log(res)
+              this.comLoading()
               this.$message({
                 message: '废除提交成功',
                 type: 'success'
               })
               this.back()
+            }, () => {
+              this.comLoading()
             })
           } else {
             console.log('error submit!!')

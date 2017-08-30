@@ -4,8 +4,8 @@
 
 <template>
   <div class="pd20"
-       v-loading="loading"
-       element-loading-text="拼命加载中">
+       v-loading="loadingFlag"
+       :element-loading-text="loadingText">
     <el-form class="mb20" ref="form" :model="form" label-width="100px">
       <el-row>
         <el-col :span="21">
@@ -125,10 +125,12 @@
 </template>
 
 <script>
-  import moment from 'moment'
   import supportModel from '@/api/support'
+  import comLoading from '@/mixins/comLoading'
+  import {formatTime, formatDate} from '@/filters/moment'
 
   export default {
+    mixins: [comLoading],
     data() {
       return {
         form: {
@@ -146,7 +148,9 @@
             return time.getTime() > Date.now()
           }
         },
-        tableData: []
+        tableData: [],
+        loadingFlag: false,
+        loadingText: ''
       }
     },
     methods: {
@@ -155,11 +159,13 @@
         this.getList(this.form)
       },
       getList(params) {
-        this.loading = true
+        this.comLoading(1)
         supportModel.getList(params).then((res) => {
           console.log(res)
+          this.comLoading()
           this.tableData = res.data.dataMap
-          this.loading = false
+        }, () => {
+          this.comLoading()
         })
       },
       see(index, row) {
@@ -176,13 +182,13 @@
         return row.templateType === 'TEXT' ? '合同文本' : '合同模板'
       },
       formatTime(row) {
-        return moment(row.createTime).format('YYYY-MM-DD HH:mm:ss')
+        return formatTime(row.createTime)
       },
       formatDate1(row) {
-        return moment(row.startDate).format('YYYY-MM-DD')
+        return formatDate(row.startDate)
       },
       formatDate2(row) {
-        return moment(row.endDate).format('YYYY-MM-DD')
+        return formatDate(row.endDate)
       }
     },
     created() {

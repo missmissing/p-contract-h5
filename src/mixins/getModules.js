@@ -1,3 +1,7 @@
+/**
+ * 依赖data中的modulesData,默认为[]
+ */
+
 import supportModel from '@/api/support'
 import store from '../store'
 import {SET_MODULES} from '../store/consts'

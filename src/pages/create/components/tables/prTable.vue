@@ -49,7 +49,7 @@
 
 <script>
   import Api from '@/api/manageContract'
-  import {formatDate} from '@/filters'
+  import {formatDate} from '@/filters/moment'
 
   export default {
     data() {
