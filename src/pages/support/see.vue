@@ -37,36 +37,36 @@
             <el-row>
               <el-col :span="8">
                 <el-form-item label="业务类型">
-                  {{busiTypeText}}
+                  {{form.busiTypeText}}
                 </el-form-item>
               </el-col>
             </el-row>
             <el-row>
               <el-col :span="8">
                 <el-form-item label="生效时间">
-                  {{form.startDate | formatDate}}
+                  {{form.startDate}}
                 </el-form-item>
               </el-col>
               <el-col :span="8">
                 <el-form-item label="终止时间">
-                  {{form.endDate | formatDate}}
+                  {{form.endDate}}
                 </el-form-item>
               </el-col>
             </el-row>
             <el-row>
               <el-col :span="8">
                 <el-form-item label="创建人">
-                  {{creatorName}}
+                  {{form.creatorName}}
                 </el-form-item>
               </el-col>
               <el-col :span="8">
                 <el-form-item label="最新版本">
-                  {{version}}
+                  {{form.version}}
                 </el-form-item>
               </el-col>
               <el-col :span="8">
                 <el-form-item label="最近更新人">
-                  {{operatorName}}
+                  {{form.operatorName}}
                 </el-form-item>
               </el-col>
             </el-row>
@@ -100,7 +100,7 @@
   import Upload from '@/components/upload.vue'
   import supportModel from '@/api/support'
   import {uploadUrl, downloadUrl} from '@/api/consts'
-  import {formatDate, formatToDate} from '@/filters'
+  import {formatDate} from '@/filters'
 
   const defaultData = {
     form: {
@@ -109,50 +109,50 @@
       templateName: '',
       templateType: 'TEMPLATE',
       startDate: '',
+      endDate: '',
       description: '',
-      files: []
+      files: [],
+      busiTypeText: '',
+      operatorName: '',
+      creatorName: '',
+      version: ''
     },
     tplInfo: {},
-    action: uploadUrl,
-    download: downloadUrl,
-    fileList: [],
-    endDate: '9999-12-31',
-    busiTypeText: '',
-    operatorName: '',
-    creatorName: '',
-    version: '',
-    showTmpl: false,
-    loading: false
+    fileList: []
   }
 
   export default {
     data() {
       return Object.assign({
-        regions: []
+        action: uploadUrl,
+        download: downloadUrl,
+        regions: [],
+        showTmpl: false,
+        loading: false
       }, _.cloneDeep(defaultData))
     },
     methods: {
       setData(tplInfo) {
+        const {id, templateName, templateType, bizTypes, startDate, endDate, version, operatorName, creatorName, files} = tplInfo
         this.tplInfo = tplInfo
-        this['version'] = `V${tplInfo['version']}`
-        this['operatorName'] = tplInfo['operatorName']
-        this['creatorName'] = tplInfo['creatorName']
-        this['busiTypeText'] = tplInfo['bizTypes'].map(item => item.businessName).join(',')
-        tplInfo['files'].forEach((item) => {
-          this.fileList.push({
-            name: item.fileName,
-            url: `${this.download}${item.fileId}`
+        this.form['id'] = id
+        this.form['templateName'] = templateName
+        this.form['templateType'] = templateType
+        this.form['busiTypeText'] = bizTypes.map(item => item.businessName).join(',')
+        this.form['startDate'] = formatDate(startDate)
+        this.form['endDate'] = formatDate(endDate)
+        this.form['version'] = `V${version}`
+        this.form['operatorName'] = operatorName
+        this.form['creatorName'] = creatorName
+        if (files.length) {
+          files.forEach((item) => {
+            this.fileList.push({
+              name: item.fileName,
+              url: `${this.download}${item.fileId}`,
+              status: 'success'
+            })
           })
-        })
-        Object.keys(this.form).forEach((key) => {
-          if (tplInfo.hasOwnProperty(key)) {
-            if (key === 'startDate') {
-              this.form[key] = formatToDate(this.form[key])
-            } else {
-              this.form[key] = tplInfo[key]
-            }
-          }
-        })
+        }
       },
       getTplData() {
         this.loading = true
@@ -162,6 +162,8 @@
           console.log(res)
           const tplInfo = res.data.dataMap
           this.setData(tplInfo)
+          this.loading = false
+        }, () => {
           this.loading = false
         })
       }
@@ -177,9 +179,6 @@
       tplTypeShow() {
         return this.form.templateType === 'TEXT'
       }
-    },
-    filters: {
-      formatDate
     }
   }
 </script>

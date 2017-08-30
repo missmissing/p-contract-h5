@@ -21,11 +21,9 @@
                     icon="search"
                     :fetch-suggestions="querySearch"
                     @select="search"
-                    placeholder="点击图标进行搜索"
                     v-model="form.templateCode"
                     :value="form.templateCode"
-                    :trigger-on-focus="false"
-                    :on-icon-click="search">
+                    :trigger-on-focus="false">
                   </el-autocomplete>
                 </el-form-item>
               </el-col>
@@ -95,7 +93,7 @@
                 <el-form-item label="创建人">
                   <el-input
                     disabled
-                    :value="creatorName">
+                    :value="form.creatorName">
                   </el-input>
                 </el-form-item>
               </el-col>
@@ -103,7 +101,7 @@
                 <el-form-item label="最新版本">
                   <el-input
                     disabled
-                    :value="version">
+                    :value="form.version">
                   </el-input>
                 </el-form-item>
               </el-col>
@@ -111,7 +109,7 @@
                 <el-form-item label="最近更新人">
                   <el-input
                     disabled
-                    :value="operatorName">
+                    :value="form.operatorName">
                   </el-input>
                 </el-form-item>
               </el-col>
@@ -175,48 +173,41 @@
       templateName: '',
       templateType: null,
       startDate: '',
+      bizTypes: [],
       busiTypeText: '',
       description: '',
-      bizTypes: [],
-      files: []
+      files: [],
+      operatorName: '',
+      creatorName: '',
+      version: ''
     },
     tplInfo: {},
-    fileList: [],
-    action: uploadUrl,
-    download: downloadUrl,
-    uploadData: {userId: '12'},
-    endDate: '9999-12-31',
-    operatorName: '',
-    creatorName: '',
-    version: '',
-    pickerOptions: {
-      disabledDate(time) {
-        return time.getTime() < Date.now() - 8.64e7
-      }
-    },
-    defaultProps: {
-      children: 'children',
-      label: 'businessName'
-    },
-    visible: false,
-    showTmpl: false,
-    loading: false
+    fileList: []
   }
 
   export default {
     mixins: [getBusiType],
     data() {
-      const autocompleteBlur = (rule, value, callback) => {
-        if (!value) {
-          callback(rule.message)
-          return
-        }
-        callback()
-      }
       return Object.assign({
+        action: uploadUrl,
+        download: downloadUrl,
+        endDate: '9999-12-31',
         regions: [],
+        uploadData: {userId: '12'},
+        pickerOptions: {
+          disabledDate(time) {
+            return time.getTime() < Date.now() - 8.64e7
+          }
+        },
+        defaultProps: {
+          children: 'children',
+          label: 'businessName'
+        },
+        visible: false,
+        showTmpl: false,
+        loading: false,
         rules: {
-          templateCode: [{validator: autocompleteBlur, message: '请输入模板编号', trigger: 'blur'}],
+          templateCode: [{required: true, message: '请输入模板编号', trigger: 'blur'}],
           busiTypeText: [{required: true, message: '请选择业务类型', trigger: 'change'}],
           startDate: [{type: 'date', required: true, message: '请选择生效时间', trigger: 'change'}],
           description: [{max: 300, message: '长度不超过300个字符', trigger: 'change'}]
@@ -232,7 +223,10 @@
           console.log(res)
           Object.assign(this.$data, _.cloneDeep(defaultData))
           const tplInfo = res.data.dataMap
+          this.resetForm()
           this.setData(tplInfo)
+          this.loading = false
+        }, () => {
           this.loading = false
         })
       },
@@ -248,32 +242,43 @@
         this.form.busiTypeText = busiTypeText.join(',')
       },
       setData(tplInfo) {
+        const {id, templateName, templateType, bizTypes, startDate, version, operatorName, creatorName, files} = tplInfo
         this.tplInfo = tplInfo
-        this['version'] = `V${tplInfo['version']}`
-        this['operatorName'] = tplInfo['operatorName']
-        this['creatorName'] = tplInfo['creatorName']
-        tplInfo['files'].forEach((item) => {
-          this.fileList.push({
-            name: item.fileName,
-            url: `${this.download}${item.fileId}`
+        this.form['id'] = id
+        this.form['templateName'] = templateName
+        this.form['templateType'] = templateType
+        this.form['bizTypes'] = bizTypes.map(item => item.typeId)
+        this.form['busiTypeText'] = bizTypes.map(item => item.businessName).join(',')
+        this.form['startDate'] = formatToDate(startDate)
+        this.form['version'] = `V${version}`
+        this.form['operatorName'] = operatorName
+        this.form['creatorName'] = creatorName
+        if (files.length) {
+          files.forEach((item) => {
+            this.fileList.push({
+              name: item.fileName,
+              url: `${this.download}${item.fileId}`,
+              status: 'success'
+            })
           })
-        })
-        Object.keys(this.form).forEach((key) => {
-          if (tplInfo.hasOwnProperty(key)) {
-            if (key === 'bizTypes') {
-              this.form[key] = tplInfo[key].map(item => item.typeId)
-              this.form['busiTypeText'] = tplInfo['bizTypes'].map(item => item.businessName).join(',')
-            } else if (key === 'startDate') {
-              this.form[key] = formatToDate(this.form[key])
-            } else {
-              this.form[key] = tplInfo[key]
-            }
-          }
-        })
+        }
+      },
+      resetForm() {
+        const {id} = this.tplInfo
+        if (id) {
+          this.refs['form'].resetFields()
+          this.fileList = []
+          this.tplInfo = {}
+        }
       },
       getResult() {
         const {info} = this.$store.state.support.create
-        const result = {...this.form, ...info}
+        const {startDate, description, bizTypes} = this.form
+        const result = Object.assign({
+          startDate: formatTimeStamp(startDate),
+          description,
+          bizTypes
+        }, info)
         const files = _.map(this.fileList, (file) => {
           if (file.status === 'success') {
             return file.fileId
@@ -281,16 +286,12 @@
         })
         console.log(files)
         Object.assign(result, {
-          startDate: formatTimeStamp(result.startDate),
           files,
           operatorId: 1,
           operatorName: 'haha',
           departmentId: 12,
           departmentName: 'hehe'
         })
-        delete result.templateName
-        delete result.templateType
-        delete result.busiTypeText
         console.log(result)
         return result
       },
@@ -306,6 +307,8 @@
         }).then((res) => {
           const result = res.data.dataMap || []
           cb(this.createFilter(result))
+        }, () => {
+          cb([])
         })
       },
       createFilter(result) {

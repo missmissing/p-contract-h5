@@ -135,29 +135,29 @@
       busiTypeText: '',
       files: []
     },
-    action: uploadUrl,
-    download: downloadUrl,
-    fileList: [],
-    uploadData: {userId: '12'},
-    endDate: '9999-12-31',
-    pickerOptions: {
-      disabledDate(time) {
-        return time.getTime() < Date.now() - 8.64e7
-      }
-    },
-    defaultProps: {
-      children: 'children',
-      label: 'businessName'
-    },
-    visible: false,
-    showTmpl: false
+    fileList: []
   }
 
   export default {
     mixins: [getBusiType],
     data() {
       return Object.assign({
+        action: uploadUrl,
+        download: downloadUrl,
+        endDate: '9999-12-31',
+        uploadData: {userId: '12'},
+        pickerOptions: {
+          disabledDate(time) {
+            return time.getTime() < Date.now() - 8.64e7
+          }
+        },
+        defaultProps: {
+          children: 'children',
+          label: 'businessName'
+        },
         regions: [],
+        visible: false,
+        showTmpl: false,
         rules: {
           templateName: [{required: true, message: '请输入模板名称'}],
           templateType: [{required: true, message: '请选择文本类型'}],
@@ -181,7 +181,14 @@
       },
       getResult() {
         const {info} = this.$store.state.support.create
-        const result = {...this.form, ...info}
+        const {templateName, templateType, startDate, description, bizTypes} = this.form
+        const result = Object.assign({
+          templateName,
+          templateType,
+          startDate: formatTimeStamp(startDate),
+          description,
+          bizTypes
+        }, info)
         const files = _.map(this.fileList, (file) => {
           if (file.status === 'success') {
             return file.fileId
@@ -189,14 +196,12 @@
         })
         console.log(files)
         Object.assign(result, {
-          startDate: formatTimeStamp(result.startDate),
           files,
           operatorId: 1,
           operatorName: 'haha',
           departmentId: 12,
           departmentName: 'hehe'
         })
-        delete result.busiTypeText
         console.log(result)
         return result
       },

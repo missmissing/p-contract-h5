@@ -12,18 +12,16 @@
           <span class="common-title">基本信息</span>
         </div>
         <div>
-          <el-form ref="form" label-width="120px">
+          <el-form :model="form" :rules="rules" ref="form" label-width="120px">
             <el-row>
               <el-col :span="8">
-                <el-form-item label="模板编号">
+                <el-form-item label="模板编号" prop="templateCode">
                   <el-autocomplete
                     class="wp100"
                     icon="search"
                     :fetch-suggestions="querySearch"
                     @select="search"
-                    placeholder="点击图标进行搜索"
-                    v-model="form.templateCode"
-                    :on-icon-click="search">
+                    v-model="form.templateCode">
                   </el-autocomplete>
                 </el-form-item>
               </el-col>
@@ -58,7 +56,7 @@
                   <el-input
                     disabled
                     type="textarea"
-                    :value="busiTypeText"
+                    v-model="form.busiTypeText"
                     resize="none"
                     :autosize="{maxRows:6}">
                   </el-input>
@@ -90,7 +88,7 @@
                 <el-form-item label="创建人">
                   <el-input
                     disabled
-                    :value="creatorName">
+                    :value="form.creatorName">
                   </el-input>
                 </el-form-item>
               </el-col>
@@ -98,7 +96,7 @@
                 <el-form-item label="最新版本">
                   <el-input
                     disabled
-                    :value="version">
+                    :value="form.version">
                   </el-input>
                 </el-form-item>
               </el-col>
@@ -106,7 +104,7 @@
                 <el-form-item label="最近更新人">
                   <el-input
                     disabled
-                    :value="operatorName">
+                    :value="form.operatorName">
                   </el-input>
                 </el-form-item>
               </el-col>
@@ -121,31 +119,6 @@
                 v-model="form.description">
               </el-input>
             </el-form-item>
-            <el-row>
-              <el-col :span="8">
-                <el-form-item label="停用日期">
-                  <el-date-picker
-                    type="date"
-                    placeholder="选择日期"
-                    v-model="abolishForm.endDate"
-                    @change="formatDate"
-                    style="width:100%;"
-                    :editable="false">
-                  </el-date-picker>
-                </el-form-item>
-              </el-col>
-              <el-col>
-                <el-form-item label="停用原因">
-                  <el-input
-                    type="textarea"
-                    :maxlength="300"
-                    :autosize="{ minRows: 2 }"
-                    resize="none"
-                    v-model="abolishForm.abolishReason">
-                  </el-input>
-                </el-form-item>
-              </el-col>
-            </el-row>
             <el-form-item label="文本上传" v-show="showUpload">
               <Upload
                 :action="action"
@@ -158,11 +131,34 @@
             <el-form-item v-show="showTpl">
               <el-button type="primary" @click="showTmpl=true">模板信息</el-button>
             </el-form-item>
+            <el-row>
+              <el-col :span="8">
+                <el-form-item label="停用日期" prop="abolishDate">
+                  <el-date-picker
+                    type="date"
+                    placeholder="选择日期"
+                    v-model="form.abolishDate"
+                    style="width:100%;"
+                    :editable="false">
+                  </el-date-picker>
+                </el-form-item>
+              </el-col>
+              <el-col>
+                <el-form-item label="停用原因" prop="abolishReason">
+                  <el-input
+                    type="textarea"
+                    :autosize="{ minRows: 2 }"
+                    resize="none"
+                    v-model="form.abolishReason">
+                  </el-input>
+                </el-form-item>
+              </el-col>
+            </el-row>
           </el-form>
         </div>
       </el-card>
       <el-row class="mt20 mb20 ml20">
-        <el-button type="primary" @click="abolishFn">提交</el-button>
+        <el-button type="primary" @click="save">提交</el-button>
       </el-row>
     </div>
     <Tmpl v-show="showTmpl" :tplInfo="tplInfo" :showTmpl.sync="showTmpl"></Tmpl>
@@ -184,30 +180,33 @@
       templateName: '',
       templateType: '',
       startDate: '',
+      busiTypeText: '',
       description: '',
-      files: []
-    },
-    tplInfo: {},
-    action: uploadUrl,
-    download: downloadUrl,
-    fileList: [],
-    abolishForm: {
-      endDate: '',
+      files: [],
+      operatorName: '',
+      creatorName: '',
+      version: '',
+      abolishDate: '',
       abolishReason: ''
     },
-    endDate: '9999-12-31',
-    busiTypeText: '',
-    operatorName: '',
-    creatorName: '',
-    version: '',
-    showTmpl: false,
-    loading: false
+    tplInfo: {},
+    fileList: []
   }
 
   export default {
     data() {
       return Object.assign({
-        regions: []
+        action: uploadUrl,
+        download: downloadUrl,
+        regions: [],
+        endDate: '9999-12-31',
+        showTmpl: false,
+        loading: false,
+        rules: {
+          templateCode: [{required: true, message: '请输入模板编号', trigger: 'blur'}],
+          abolishDate: [{required: true, message: '请选择停用日期', trigger: 'change'}],
+          abolishReason: [{required: true, max: 300, message: '请填写停用原因', trigger: 'change'}]
+        }
       }, _.cloneDeep(defaultData))
     },
     methods: {
@@ -219,44 +218,49 @@
           console.log(res)
           Object.assign(this.$data, _.cloneDeep(defaultData))
           const tplInfo = res.data.dataMap
+          this.resetForm()
           this.setData(tplInfo)
+          this.loading = false
+        }, () => {
           this.loading = false
         })
       },
-      formatDate(value) {
-        this.abolishForm.endDate = formatTimeStamp(value)
-      },
       setData(tplInfo) {
+        const {id, templateName, templateType, bizTypes, startDate, version, operatorName, creatorName, files} = tplInfo
         this.tplInfo = tplInfo
-        this['version'] = `V${tplInfo['version']}`
-        this['operatorName'] = tplInfo['operatorName']
-        this['creatorName'] = tplInfo['creatorName']
-        this['busiTypeText'] = tplInfo['bizTypes'].map(item => item.businessName).join(',')
-        tplInfo['files'].forEach((item) => {
-          this.fileList.push({
-            name: item.fileName,
-            url: `${this.download}${item.fileId}`
+        this.form['id'] = id
+        this.form['templateName'] = templateName
+        this.form['templateType'] = templateType
+        this.form['busiTypeText'] = bizTypes.map(item => item.businessName).join(',')
+        this.form['startDate'] = formatToDate(startDate)
+        this.form['version'] = `V${version}`
+        this.form['operatorName'] = operatorName
+        this.form['creatorName'] = creatorName
+        if (files.length) {
+          files.forEach((item) => {
+            this.fileList.push({
+              name: item.fileName,
+              url: `${this.download}${item.fileId}`,
+              status: 'success'
+            })
           })
-        })
-        Object.keys(this.form).forEach((key) => {
-          if (tplInfo.hasOwnProperty(key)) {
-            if (key === 'startDate') {
-              this.form[key] = formatToDate(this.form[key])
-            } else {
-              this.form[key] = tplInfo[key]
-            }
-          }
-        })
+        }
+      },
+      resetForm() {
+        const {id} = this.tplInfo
+        if (id) {
+          this.refs['form'].resetFields()
+          this.fileList = []
+          this.tplInfo = {}
+        }
       },
       getResult() {
-        const {info} = this.$store.state.support.create
-        const result = {...this.form, ...info}
-        return Object.assign(result, {
-          operatorId: 1,
-          operatorName: 'haha',
-          departmentId: 12,
-          departmentName: 'hehe'
-        })
+        const {id, abolishDate, abolishReason} = this.form
+        return {
+          templateId: id,
+          endDate: formatTimeStamp(abolishDate),
+          abolishReason: abolishReason
+        }
       },
       back() { // 返回列表页
         this.$router.push('/contemplate/list')
@@ -270,6 +274,8 @@
         }).then((res) => {
           const result = res.data.dataMap || []
           cb(this.createFilter(result))
+        }, () => {
+          cb([])
         })
       },
       createFilter(result) {
@@ -277,18 +283,22 @@
           return {value: item, label: item}
         })
       },
-      abolishFn() {
-        supportModel.setTemplateAbolish({
-          templateId: this.form.id,
-          endDate: this.abolishForm.endDate,
-          abolishReason: this.abolishForm.abolishReason
-        }).then((res) => {
-          console.log(res)
-          this.$message({
-            message: '废除提交成功',
-            type: 'success'
-          })
-          this.back()
+      save() {
+        this.$refs['form'].validate((valid) => {
+          if (valid) {
+            const result = this.getResult()
+            supportModel.setTemplateAbolish(result).then((res) => {
+              console.log(res)
+              this.$message({
+                message: '废除提交成功',
+                type: 'success'
+              })
+              this.back()
+            })
+          } else {
+            console.log('error submit!!')
+            return false
+          }
         })
       }
     },
