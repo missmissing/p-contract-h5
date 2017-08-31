@@ -19,7 +19,7 @@
   "dependencies": {
     "async-validator": "^1.8.0",
     "axios": "^0.16.2",
-    "element-ui": "^1.4.2",
+    "element-ui": "^1.4.3",
     "js-cookie": "^2.1.4",
     "lodash": "^4.17.4",
     "mitt": "^1.1.2",

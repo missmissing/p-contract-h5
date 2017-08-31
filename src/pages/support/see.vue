@@ -3,7 +3,9 @@
 </style>
 
 <template>
-  <div>
+  <div
+    v-loading="loadingFlag"
+    :element-loading-text="loadingText">
     <transition name="component-fade" mode="out-in">
       <div v-show="!showTmpl">
         <el-card class="mb20">
@@ -12,8 +14,6 @@
           </div>
           <div>
             <el-form
-              v-loading="loading"
-              element-loading-text="拼命加载中"
               ref="form"
               label-width="120px">
               <el-row>
@@ -103,12 +103,12 @@
   import Tmpl from './tmpl.vue'
   import Upload from '@/components/upload.vue'
   import supportModel from '@/api/support'
+  import comLoading from '@/mixins/comLoading'
   import {uploadUrl, downloadUrl} from '@/api/consts'
   import {formatDate} from '@/filters/moment'
 
   const defaultData = {
     form: {
-      id: '',
       templateCode: '',
       templateName: '',
       templateType: 'TEMPLATE',
@@ -126,20 +126,19 @@
   }
 
   export default {
+    mixins: [comLoading],
     data() {
       return Object.assign({
         action: uploadUrl,
         download: downloadUrl,
-        regions: [],
-        showTmpl: false,
-        loading: false
+        showTmpl: false
       }, _.cloneDeep(defaultData))
     },
     methods: {
       setData(tplInfo) {
-        const {id, templateName, templateType, bizTypes, startDate, endDate, version, operatorName, creatorName, files} = tplInfo
+        const {templateCode, templateName, templateType, bizTypes, startDate, endDate, version, operatorName, creatorName,description, files} = tplInfo
         this.tplInfo = tplInfo
-        this.form['id'] = id
+        this.form['templateCode'] = templateCode
         this.form['templateName'] = templateName
         this.form['templateType'] = templateType
         this.form['busiTypeText'] = bizTypes.map(item => item.businessName).join(',')
@@ -148,6 +147,7 @@
         this.form['version'] = `V${version}`
         this.form['operatorName'] = operatorName
         this.form['creatorName'] = creatorName
+        this.form['description'] = description
         if (files.length) {
           files.forEach((item) => {
             this.fileList.push({
@@ -159,16 +159,16 @@
         }
       },
       getTplData() {
-        this.loading = true
+        this.comLoading(1)
         supportModel.getTplData({
           templateId: this.$route.params.id
         }).then((res) => {
           console.log(res)
           const tplInfo = res.data.dataMap
           this.setData(tplInfo)
-          this.loading = false
+          this.comLoading()
         }, () => {
-          this.loading = false
+          this.comLoading()
         })
       }
     },

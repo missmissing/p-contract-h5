@@ -1,8 +1,8 @@
 <template>
-  <div>
+  <div
+    v-loading="loadingFlag"
+    :element-loading-text="loadingText">
     <el-table
-      v-loading="loading"
-      element-loading-text="拼命加载中"
       :data="tableData"
       border
       class="wp100">
@@ -52,26 +52,29 @@
 <script>
   import Api from '@/api/manageContract'
   import {formatDate} from '@/filters/moment'
+  import comLoading from '@/mixins/comLoading'
 
   export default {
+    mixins: [comLoading],
     data() {
       return {
         currentPage: 1,
         pageSize: 10,
         total: 0,
-        tableData: [],
-        loading: false
+        tableData: []
       }
     },
     methods: {
       getData() {
-        this.loading = true
+        this.comLoading(1)
         Api.getPriceTableData({}).then((res) => {
           const {list, total, pageSize} = res.data.dataMap
           this.tableData = list
           this.total = total
           this.pageSize = pageSize
-          this.loading = false
+          this.comLoading()
+        }, () => {
+          this.comLoading()
         })
       },
       formatDate(value) {

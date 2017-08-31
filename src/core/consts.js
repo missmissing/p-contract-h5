@@ -1,7 +1,6 @@
 /**
  * 系统常量
  */
-
 export default {
   APP_ID: '',
   SERVICE_ROOT: {
@@ -27,7 +26,6 @@ export default {
 
 /**
  * 获取所有的路由名称
- *
  */
 export const routerNames = {
   login: '登录',

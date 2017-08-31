@@ -197,7 +197,6 @@
         action: uploadUrl,
         download: downloadUrl,
         endDate: '9999-12-31',
-        regions: [],
         uploadData: {userId: '12'},
         pickerOptions: {
           disabledDate(time) {
@@ -210,9 +209,6 @@
         },
         visible: false,
         showTmpl: false,
-        loadingFlag: false,
-        loadingText: '',
-        saveLoading: false,
         rules: {
           templateCode: [{required: true, message: '请输入模板编号', trigger: 'blur'}],
           busiTypeText: [{required: true, message: '请选择业务类型', trigger: 'change'}],
@@ -229,9 +225,8 @@
         }).then((res) => {
           console.log(res)
           this.comLoading()
-          Object.assign(this.$data, _.cloneDeep(defaultData))
-          const tplInfo = res.data.dataMap
           this.resetForm()
+          const tplInfo = res.data.dataMap
           this.setData(tplInfo)
         }, () => {
           this.comLoading()
@@ -249,9 +244,8 @@
         this.form.busiTypeText = busiTypeText.join(',')
       },
       setData(tplInfo) {
-        const {id, templateName, templateType, bizTypes, startDate, version, operatorName, creatorName, files} = tplInfo
+        const {templateName, templateType, bizTypes, startDate, version, operatorName, creatorName, description, files} = tplInfo
         this.tplInfo = tplInfo
-        this.form['id'] = id
         this.form['templateName'] = templateName
         this.form['templateType'] = templateType
         this.form['bizTypes'] = bizTypes.map(item => item.typeId)
@@ -260,6 +254,7 @@
         this.form['version'] = `V${version}`
         this.form['operatorName'] = operatorName
         this.form['creatorName'] = creatorName
+        this.form['description'] = description
         if (files.length) {
           files.forEach((item) => {
             this.fileList.push({
@@ -273,7 +268,9 @@
       resetForm() {
         const {id} = this.tplInfo
         if (id) {
-          this.refs['form'].resetFields()
+          const templateCode = this.form.templateCode
+          this.$refs['form'].resetFields()
+          this.form.templateCode = templateCode
           this.fileList = []
           this.tplInfo = {}
         }

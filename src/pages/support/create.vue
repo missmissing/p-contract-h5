@@ -158,11 +158,8 @@
           children: 'children',
           label: 'businessName'
         },
-        regions: [],
         visible: false,
         showTmpl: false,
-        loadingFlag: false,
-        loadingText: '',
         rules: {
           templateName: [{required: true, message: '请输入模板名称'}],
           templateType: [{required: true, message: '请选择文本类型'}],

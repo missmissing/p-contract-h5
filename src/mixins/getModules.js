@@ -1,5 +1,5 @@
 /**
- * 依赖data中的modulesData,默认为[]
+ * 使用方法：提供modulesData属性，需要的地方直接使用
  */
 
 import supportModel from '@/api/support'
@@ -24,6 +24,11 @@ class support {
 }
 
 export default {
+  data() {
+    return {
+      modulesData: []
+    }
+  },
   created() {
     support.getModules.call(this)
   }

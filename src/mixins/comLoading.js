@@ -1,5 +1,7 @@
 /**
- * 依赖v-loading="loadingFlag",:element-loading-text="loadingText"
+ * 局部loading
+ * 依赖属性v-loading="loadingFlag",:element-loading-text="loadingText",可加修饰符body,fullscreen,lock
+ * 使用方法：在需要显示的标签上添加
  * @param {number}type 不传则关闭
  */
 
@@ -26,6 +28,12 @@ class support {
 }
 
 export default {
+  data() {
+    return {
+      loadingFlag: false,
+      loadingText: ''
+    }
+  },
   methods: {
     comLoading: support.comLoading
   }

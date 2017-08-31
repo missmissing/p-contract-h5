@@ -2,8 +2,7 @@
   .tmpl-container {
     .back {
       float: right;
-      line-height: 0;
-      font-size: 16px;
+      margin-top: -7px;
     }
 
     .quill-editor {
@@ -42,7 +41,7 @@
     <el-card>
       <div slot="header">
         <span class="common-title">模板信息</span>
-        <el-button class="back" type="text" @click="back">返 回</el-button>
+        <el-button class="back" type="primary" @click="save">返 回</el-button>
       </div>
       <div>
         <el-row>
@@ -86,9 +85,6 @@
             </div>
           </el-col>
         </el-row>
-        <div class="mt20">
-          <el-button type="primary" @click="save">保 存</el-button>
-        </div>
       </div>
     </el-card>
   </div>
@@ -114,7 +110,6 @@
         footer: '',
         tplType: '',
         options: [],
-        modulesData: [],
         editorOption: {
           placeholder: '请输入内容...',
           modules: {
@@ -155,19 +150,21 @@
         }]
       },
       save() {
-        if (!_.trim(this.form.content)) {
-          this.$message.error('请输入内容！')
-          return false
-        }
+        if (!this.disabled) {
+          if (!_.trim(this.form.content)) {
+            this.$message.error('请输入内容！')
+            return false
+          }
 
-        if (!this.form.contentModule.length) {
-          this.$message.error('请选择模块！')
-          return false
-        }
+          if (!this.form.contentModule.length) {
+            this.$message.error('请选择模块！')
+            return false
+          }
 
-        this[types.SET_INFO]({
-          info: this.form
-        })
+          this[types.SET_INFO]({
+            info: this.form
+          })
+        }
         this.back()
       },
       back() {

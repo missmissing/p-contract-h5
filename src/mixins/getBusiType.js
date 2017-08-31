@@ -1,5 +1,5 @@
 /**
- * 依赖data中的regions，默认为[]
+ * 使用方法：提供regions属性，需要的地方直接使用
  */
 
 import supportModel from '@/api/support'
@@ -24,6 +24,11 @@ class support {
 }
 
 export default {
+  data() {
+    return {
+      regions: []
+    }
+  },
   created() {
     support.getBusiType.call(this)
   }

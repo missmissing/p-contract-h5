@@ -5,6 +5,8 @@ import 'nprogress/nprogress.css'
 import store from '../store'
 import * as types from '../store/consts'
 import {routerNames} from '../core/consts'
+import Api from '../api'
+import Cookies from 'js-cookie'
 
 Vue.use(Router)
 
@@ -300,7 +302,6 @@ const router = new Router({
 router.beforeEach((to, from, next) => {
   nprogress.start()
   window.document.title = to.name
-
   // Auth验证
   // if (to.meta.auth) {
   //   if (to.path === '/login') {

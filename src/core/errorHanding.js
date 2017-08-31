@@ -1,6 +1,6 @@
 import {Message} from 'element-ui'
-import emitter from '../core/emitter'
-import Consts from '../core/consts'
+import emitter from './emitter'
+import Consts from './consts'
 
 class Base {
   static errorProcess() {

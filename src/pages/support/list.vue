@@ -3,9 +3,7 @@
 </style>
 
 <template>
-  <div class="pd20"
-       v-loading="loadingFlag"
-       :element-loading-text="loadingText">
+  <div class="pd20">
     <el-form class="mb20" ref="form" :model="form" label-width="100px">
       <el-row>
         <el-col :span="21">
@@ -65,6 +63,8 @@
       :data="tableData"
       border
       highlight-current-row
+      v-loading="loadingFlag"
+      :element-loading-text="loadingText"
       class="wp100">
       <el-table-column
         prop="templateName"
@@ -148,9 +148,7 @@
             return time.getTime() > Date.now()
           }
         },
-        tableData: [],
-        loadingFlag: false,
-        loadingText: ''
+        tableData: []
       }
     },
     methods: {

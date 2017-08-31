@@ -7,9 +7,7 @@
     v-loading="loadingFlag"
     :element-loading-text="loadingText">
     <transition name="component-fade" mode="out-in">
-      <div v-show="!showTmpl"
-           v-loading="loading"
-           element-loading-text="拼命加载中">
+      <div v-show="!showTmpl">
         <el-card>
           <div slot="header">
             <span class="common-title">基本信息</span>
@@ -182,7 +180,6 @@
 
   const defaultData = {
     form: {
-      id: '',
       templateCode: '',
       templateName: '',
       templateType: '',
@@ -206,15 +203,11 @@
       return Object.assign({
         action: uploadUrl,
         download: downloadUrl,
-        regions: [],
         endDate: '9999-12-31',
         showTmpl: false,
-        loading: false,
-        loadingFlag: false,
-        loadingText: '',
         rules: {
           templateCode: [{required: true, message: '请输入模板编号', trigger: 'blur'}],
-          abolishDate: [{required: true, message: '请选择停用日期', trigger: 'change'}],
+          abolishDate: [{type: 'date', required: true, message: '请选择停用日期', trigger: 'change'}],
           abolishReason: [{required: true, max: 300, message: '请填写停用原因', trigger: 'change'}]
         }
       }, _.cloneDeep(defaultData))
@@ -227,18 +220,16 @@
         }).then((res) => {
           console.log(res)
           this.comLoading()
-          Object.assign(this.$data, _.cloneDeep(defaultData))
-          const tplInfo = res.data.dataMap
           this.resetForm()
+          const tplInfo = res.data.dataMap
           this.setData(tplInfo)
         }, () => {
           this.comLoading()
         })
       },
       setData(tplInfo) {
-        const {id, templateName, templateType, bizTypes, startDate, version, operatorName, creatorName, files} = tplInfo
+        const {templateName, templateType, bizTypes, startDate, version, operatorName, creatorName, description, files} = tplInfo
         this.tplInfo = tplInfo
-        this.form['id'] = id
         this.form['templateName'] = templateName
         this.form['templateType'] = templateType
         this.form['busiTypeText'] = bizTypes.map(item => item.businessName).join(',')
@@ -246,6 +237,7 @@
         this.form['version'] = `V${version}`
         this.form['operatorName'] = operatorName
         this.form['creatorName'] = creatorName
+        this.form['description'] = description
         if (files.length) {
           files.forEach((item) => {
             this.fileList.push({
@@ -259,13 +251,16 @@
       resetForm() {
         const {id} = this.tplInfo
         if (id) {
-          this.refs['form'].resetFields()
+          const templateCode = this.form.templateCode
+          this.$refs['form'].resetFields()
+          this.form.templateCode = templateCode
           this.fileList = []
           this.tplInfo = {}
         }
       },
       getResult() {
-        const {id, abolishDate, abolishReason} = this.form
+        const {id} = this.tplInfo
+        const {abolishDate, abolishReason} = this.form
         return {
           templateId: id,
           endDate: formatTimeStamp(abolishDate),
