@@ -102,6 +102,9 @@
       <el-table-column
         prop="conCode"
         label="合同编号">
+        <template scope="scope">
+          <router-link :to="{ path: '/ConCreate/CreateFrameContract', query: { operateType: 'query' }}">{{tableData[scope.$index].conCode}}</router-link>
+        </template>
       </el-table-column>
       <el-table-column
         prop="pr"

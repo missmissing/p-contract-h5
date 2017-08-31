@@ -2021,11 +2021,18 @@
        curConTypeId:"service1"
        currentPr:"",
        type:create */
+      let path = this.$route.path
+      if (path && path === '/conperf/conupdate') {;
+        this.operateType = 'update'
+      }
+
       let query = this.$route.query
-      this.operateType = query.operateType
-      this.currentPr = query.currentPr
-      this.baseInfoForm.conModel = query.curConModelId
-      this.baseInfoForm.conType = query.curConTypeId
+      if (JSON.stringify(query) !== '{}') {
+        this.operateType = query.operateType
+        this.currentPr = query.currentPr
+        this.baseInfoForm.conModel = query.curConModelId
+        this.baseInfoForm.conType = query.curConTypeId
+      }
     },
     computed: {
       conVersion: function () {
@@ -2080,6 +2087,7 @@
       }
     },
     mounted() {
+      console.log('request');
       // console.log('mounted-this.operateType', this.operateType)
       Api.getContractBaseInfo({}).then((data) => {
         this.baseInfoForm.businessPerson = data.data.dataMap.baseInfoForm.businessPerson
@@ -2562,6 +2570,7 @@
         // 刷新参数放到这里里面去触发就可以刷新相同界面了
         let path = this.$route.path
         if (path && path === '/conperf/conupdate') {
+          console.log('request');
           this.operateType = 'update'
         }
       }
