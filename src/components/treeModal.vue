@@ -1,4 +1,4 @@
-<style>
+<style type="text/scss" lang="scss" scoped>
 
 </style>
 
@@ -7,8 +7,7 @@
     :title="title"
     :visible.sync="visible"
     size="tiny"
-    :show-close="false"
-    :close-on-click-modal="false">
+    @close="close">
     <div>
       <el-tree
         :data="regions"
