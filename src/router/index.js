@@ -140,6 +140,16 @@ const router = new Router({
           name: routerNames.con_createSimpleContract
         },
         {
+          path: '/ConCreate/conCheck',// 查看合同
+          component: function (resolve) {
+            require(['../pages/create/createCon.vue'], resolve)
+          },
+          name: routerNames.con_Check,
+          meta: {
+            auth: true
+          }
+        },
+        {
           path: '/ConCreate/tabPage', // 标签页
           meta: {
             auth: true

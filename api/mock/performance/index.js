@@ -19,7 +19,11 @@ module.exports = function (api) {
         pr: '0000123456',
         materialCode: 200333,
         price: 100,
-        counts: 1
+        counts: 1,
+        conModelName:'框架合同',
+        curConModelId:'con2',
+        conTypeName:'礼品类',
+        conTypeId:'service2',
       }, {
         id: 2,
         createDate: '2016-05-02',
@@ -29,7 +33,11 @@ module.exports = function (api) {
         pr: '0000123456',
         materialCode: 200333,
         price: 100,
-        counts: 1
+        counts: 1,
+        conModelName:'框架合同',
+        curConModelId:'con2',
+        conTypeName:'礼品类',
+        conTypeId:'service2',
       }, {
         id: 3,
         createDate: '2016-05-04',
@@ -39,7 +47,11 @@ module.exports = function (api) {
         pr: '0000123456',
         materialCode: 200333,
         price: 100,
-        counts: 1
+        counts: 1,
+        conModelName:'框架合同',
+        curConModelId:'con2',
+        conTypeName:'礼品类',
+        conTypeId:'service2',
       }, {
         id: 4,
         createDate: '2016-05-01',
@@ -49,7 +61,11 @@ module.exports = function (api) {
         pr: '0000123456',
         materialCode: 200333,
         price: 100,
-        counts: 1
+        counts: 1,
+        conModelName:'框架合同',
+        curConModelId:'con2',
+        conTypeName:'礼品类',
+        conTypeId:'service2',
       }]
     })
   })

@@ -99,11 +99,13 @@
         label="创建人"
         width="100">
       </el-table-column>
+      <el-table-column prop="conTypeName" label="合同类型"></el-table-column>
+      <el-table-column prop="conModelName" label="合同模式"></el-table-column>
       <el-table-column
         prop="conCode"
         label="合同编号">
         <template scope="scope">
-          <router-link :to="{ path: '/ConCreate/CreateFrameContract', query: { operateType: 'query'}}">
+          <router-link :to="{path:'/ConCreate/conCheck', query:{operateType: 'query',currentPr:''+tableData[scope.$index].pr,curConModelId:''+tableData[scope.$index].curConModelId,curConTypeId:''+tableData[scope.$index].conTypeId}}">
             {{tableData[scope.$index].conCode}}
           </router-link>
         </template>
