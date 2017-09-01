@@ -11,9 +11,8 @@ Vue.use(ElementUI)
 
 new Vue({
   el: '#app',
-  template: '<App/>',
   mixins: [errorHanding],
   router,
   store,
-  components: {App}
+  render: h => h(App)
 })
