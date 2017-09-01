@@ -186,7 +186,7 @@
                    :rules="cardContentInfoForm.rules">
             <el-card>
               <header slot="header">合同供应商信息<i class="errorMsg">{{cardContentInfoForm.supplierErrorMsg}}</i></header>
-              <el-button v-if="cardContentInfoForm.tableSupplierInfo.length<=0"
+              <el-button v-if="isVisibleNewSupplierBtn"
                          @click="handleAddContractSupplier" icon="plus"
                          type="primary">新增
               </el-button>
@@ -2088,16 +2088,26 @@
         }
         return visible
       },
-      //查询操作时不可用，变更操作选择原合同作废时可用，选择原合同有效时不可用，否则都是可用的状态
+      //查询及创建操作时不可用，变更操作选择原合同作废时可用，选择原合同有效时不可用，否则都是可用的状态
       isEnabled:function(){
         let enabled=false;
         if(this.operateType==='update'){
           this.updateForm.updateMode?enabled=true:enabled=false;
         }
-        if(this.operateType==='query'){
+        if(this.operateType==='query'||this.operateType==='create'){
           enabled=true;
+
         }
         return enabled;
+      },
+      isVisibleNewSupplierBtn:function(){
+       let visible=false;
+        if(this.operateType==='query'){
+          visible=false;
+        }else if(this.cardContentInfoForm.tableSupplierInfo.length<=0){
+          visible=true;
+        }
+        return visible;
       }
     },
     mounted() {

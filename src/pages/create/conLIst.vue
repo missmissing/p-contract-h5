@@ -103,7 +103,9 @@
         prop="conCode"
         label="合同编号">
         <template scope="scope">
-          <router-link :to="{ path: '/ConCreate/CreateFrameContract', query: { operateType: 'query' }}">{{tableData[scope.$index].conCode}}</router-link>
+          <router-link :to="{ path: '/ConCreate/CreateFrameContract', query: { operateType: 'query'}}">
+            {{tableData[scope.$index].conCode}}
+          </router-link>
         </template>
       </el-table-column>
       <el-table-column
@@ -132,7 +134,7 @@
 <script>
   import performanceModel from '@/api/performance'
 
-export default {
+  export default {
     data() {
       return {
         form: {

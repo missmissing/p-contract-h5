@@ -165,10 +165,10 @@
             {required: true, message: '请输入比加单编号', trigger: 'blur'}
           ],
           curConTypeId: [
-            {required: true, message: '请选择合同模式', trigger: 'change'}
+            {required: true, message: '请选择合同类型', trigger: 'change'}
           ],
           curConModelId: [
-            {required: true, message: '请选择合同类型', trigger: 'change'}
+            {required: true, message: '请选择合同模式', trigger: 'change'}
           ]
         },
         arrPr: [], // 比价单列表
