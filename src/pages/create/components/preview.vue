@@ -14,6 +14,9 @@
 
 <script>
   export default {
+    props: {
+      visible: Boolean
+    },
     methods: {
       ok() {
         this.$emit('update:visible', false)
