@@ -146,7 +146,8 @@ const router = new Router({
           },
           name: routerNames.con_Check,
           meta: {
-            auth: true
+            auth: true,
+            hidden: true
           }
         },
         {
