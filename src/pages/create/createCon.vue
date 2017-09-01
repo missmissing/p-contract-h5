@@ -1526,11 +1526,13 @@
         <el-button v-if="operateType!=='query'" type="primary" @click="handleSubmit">提交</el-button>
       </el-col>
     </el-row>
+    <Preview :visible.sync="visible"></Preview>
   </div>
 </template>
 <script>
   import Api from '../../api/manageContract'
   import _ from 'lodash'
+  import Preview from './components/preview.vue';
 
   export default {
     data() {
@@ -1553,6 +1555,7 @@
         callback()
       }
       return {
+        visible:false,//预览
         operateType: 'create', // create:创建，update:变更，query:查询
         updateForm: {
           visible: false,
@@ -2115,7 +2118,7 @@
     },
     methods: {
       handlePreview() {
-        console.log('合同预览')
+        this.visible=true;
       },
       handleTabClick(tab, event) {
         console.log('handleTabClick')
@@ -2575,6 +2578,9 @@
       handleRemoveSealItem(index, rows) {
         rows.splice(index, 1)
       }
+    },
+    components:{
+      Preview
     },
     watch: {
       '$route'(to, from) {
