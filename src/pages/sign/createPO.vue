@@ -73,191 +73,186 @@
         </div>
       </el-card>
       <el-card>
-        <div slot="header">
-          <span class="common-title">合同信息</span>
-        </div>
-        <div class="contract-info">
-          <el-form label-width="100px">
-            <el-row>
-              <el-col :span="8">
-                <el-form-item label="合同编号">
-                  <el-input disabled></el-input>
-                </el-form-item>
-              </el-col>
-              <el-button type="primary" class="ml20">详 情</el-button>
-            </el-row>
-            <el-row>
-              <el-col :span="8">
-                <el-form-item label="合同版本">
-                  <el-input disabled></el-input>
-                </el-form-item>
-              </el-col>
-            </el-row>
-            <el-row>
-              <el-col :span="8">
-                <el-form-item label="合同模式">
-                  <el-input disabled></el-input>
-                </el-form-item>
-              </el-col>
-              <el-col :span="8">
-                <el-form-item label="合同类型">
-                  <el-input disabled></el-input>
-                </el-form-item>
-              </el-col>
-              <el-col :span="8">
-                <el-form-item label="所属项目">
-                  <el-input disabled></el-input>
-                </el-form-item>
-              </el-col>
-            </el-row>
-            <el-row>
-              <el-col :span="8">
-                <el-form-item label="生效日期">
-                  <el-input disabled></el-input>
-                </el-form-item>
-              </el-col>
-              <el-col :span="8">
-                <el-form-item label="终止日期">
-                  <el-input disabled></el-input>
-                </el-form-item>
-              </el-col>
-            </el-row>
-          </el-form>
-        </div>
-      </el-card>
-      <el-card>
-        <div slot="header">
-          <span class="common-title">订单信息</span>
-        </div>
-        <div class="order-info">
-          <el-form label-width="100px">
-            <el-row>
-              <el-col :span="7">
-                <el-form-item label="供应商">
-                  <el-input disabled></el-input>
-                </el-form-item>
-              </el-col>
-              <el-col :span="7">
-                <el-form-item label="订单类型">
-                  <el-input disabled></el-input>
-                </el-form-item>
-              </el-col>
-              <el-col :span="7">
-                <el-form-item label="公司编码">
-                  <el-input disabled></el-input>
-                </el-form-item>
-              </el-col>
-            </el-row>
-          </el-form>
-          <el-table
-            :data="form.orderData"
-            border
-            style="width: 100%">
-            <el-table-column
-              type="index"
-              label="序号"
-              width="80">
-            </el-table-column>
-            <el-table-column
-              prop="type"
-              label="类型"
-              width="100">
-            </el-table-column>
-            <el-table-column
-              prop="materielCode"
-              label="物料编码"
-              width="100">
-            </el-table-column>
-            <el-table-column
-              prop="materielName"
-              label="物料名称">
-            </el-table-column>
-            <el-table-column
-              prop="materielCode"
-              label="数量"
-              width="80">
-            </el-table-column>
-            <el-table-column
-              prop="taxPrice"
-              label="含税价"
-              width="80">
-            </el-table-column>
-            <el-table-column
-              prop="taxRate"
-              label="税率"
-              width="80">
-            </el-table-column>
-            <el-table-column
-              prop="deliveryDate"
-              label="交货日期"
-              width="100">
-            </el-table-column>
-            <el-table-column
-              prop="purchseRequest"
-              label="采购申请"
-              width="100">
-            </el-table-column>
-            <el-table-column
-              prop="itemNum"
-              label="行项目号"
-              width="100">
-            </el-table-column>
-          </el-table>
-        </div>
-      </el-card>
-      <el-card>
-        <div slot="header">
-          <span class="common-title">服务验收信息</span>
-        </div>
-        <div class="server-info">
-          <div class="mb20">
-            <el-button type="primary" @click="addService">新 增</el-button>
-          </div>
-          <el-table
-            :data="form.serverData"
-            border
-            style="width: 100%">
-            <el-table-column
-              type="index"
-              label="序号"
-              width="80">
-            </el-table-column>
-            <el-table-column
-              prop="serviceName"
-              label="服务名称">
-              <template scope="scope">
-                <el-input v-model="scope.row.serviceName"></el-input>
-              </template>
-            </el-table-column>
-            <el-table-column
-              prop="acceptRequire"
-              label="验收要求">
-              <template scope="scope">
-                <el-input v-model="scope.row.acceptRequire"></el-input>
-              </template>
-            </el-table-column>
-            <el-table-column
-              prop="remark"
-              label="备注">
-              <template scope="scope">
-                <el-input v-model="scope.row.remark"></el-input>
-              </template>
-            </el-table-column>
-            <el-table-column
-              fixed="right"
-              label="操作"
-              width="100">
-              <template scope="scope">
-                <el-button
-                  @click.native.prevent="deleteRow(scope.$index, form.serverData)"
-                  type="text"
-                  size="small">
-                  移除
-                </el-button>
-              </template>
-            </el-table-column>
-          </el-table>
-        </div>
+        <el-tabs>
+          <el-tab-pane label="合同信息">
+            <div class="contract-info">
+              <el-form label-width="100px">
+                <el-row>
+                  <el-col :span="8">
+                    <el-form-item label="合同编号">
+                      <el-input disabled></el-input>
+                    </el-form-item>
+                  </el-col>
+                  <el-button type="primary" class="ml20">详 情</el-button>
+                </el-row>
+                <el-row>
+                  <el-col :span="8">
+                    <el-form-item label="合同版本">
+                      <el-input disabled></el-input>
+                    </el-form-item>
+                  </el-col>
+                </el-row>
+                <el-row>
+                  <el-col :span="8">
+                    <el-form-item label="合同模式">
+                      <el-input disabled></el-input>
+                    </el-form-item>
+                  </el-col>
+                  <el-col :span="8">
+                    <el-form-item label="合同类型">
+                      <el-input disabled></el-input>
+                    </el-form-item>
+                  </el-col>
+                  <el-col :span="8">
+                    <el-form-item label="所属项目">
+                      <el-input disabled></el-input>
+                    </el-form-item>
+                  </el-col>
+                </el-row>
+                <el-row>
+                  <el-col :span="8">
+                    <el-form-item label="生效日期">
+                      <el-input disabled></el-input>
+                    </el-form-item>
+                  </el-col>
+                  <el-col :span="8">
+                    <el-form-item label="终止日期">
+                      <el-input disabled></el-input>
+                    </el-form-item>
+                  </el-col>
+                </el-row>
+              </el-form>
+            </div>
+          </el-tab-pane>
+          <el-tab-pane label="订单信息">
+            <div class="order-info">
+              <el-form label-width="100px">
+                <el-row>
+                  <el-col :span="7">
+                    <el-form-item label="供应商">
+                      <el-input disabled></el-input>
+                    </el-form-item>
+                  </el-col>
+                  <el-col :span="7">
+                    <el-form-item label="订单类型">
+                      <el-input disabled></el-input>
+                    </el-form-item>
+                  </el-col>
+                  <el-col :span="7">
+                    <el-form-item label="公司编码">
+                      <el-input disabled></el-input>
+                    </el-form-item>
+                  </el-col>
+                </el-row>
+              </el-form>
+              <el-table
+                :data="form.orderData"
+                border
+                style="width: 100%">
+                <el-table-column
+                  type="index"
+                  label="序号"
+                  width="80">
+                </el-table-column>
+                <el-table-column
+                  prop="type"
+                  label="类型"
+                  width="100">
+                </el-table-column>
+                <el-table-column
+                  prop="materielCode"
+                  label="物料编码"
+                  width="100">
+                </el-table-column>
+                <el-table-column
+                  prop="materielName"
+                  label="物料名称">
+                </el-table-column>
+                <el-table-column
+                  prop="materielCode"
+                  label="数量"
+                  width="80">
+                </el-table-column>
+                <el-table-column
+                  prop="taxPrice"
+                  label="含税价"
+                  width="80">
+                </el-table-column>
+                <el-table-column
+                  prop="taxRate"
+                  label="税率"
+                  width="80">
+                </el-table-column>
+                <el-table-column
+                  prop="deliveryDate"
+                  label="交货日期"
+                  width="100">
+                </el-table-column>
+                <el-table-column
+                  prop="purchseRequest"
+                  label="采购申请"
+                  width="100">
+                </el-table-column>
+                <el-table-column
+                  prop="itemNum"
+                  label="行项目号"
+                  width="100">
+                </el-table-column>
+              </el-table>
+            </div>
+          </el-tab-pane>
+          <el-tab-pane label="服务验收信息">
+            <div class="server-info">
+              <div class="mb20">
+                <el-button type="primary" @click="addService">新 增</el-button>
+              </div>
+              <el-table
+                :data="form.serverData"
+                border
+                style="width: 100%">
+                <el-table-column
+                  type="index"
+                  label="序号"
+                  width="80">
+                </el-table-column>
+                <el-table-column
+                  prop="serviceName"
+                  label="服务名称">
+                  <template scope="scope">
+                    <el-input v-model="scope.row.serviceName"></el-input>
+                  </template>
+                </el-table-column>
+                <el-table-column
+                  prop="acceptRequire"
+                  label="验收要求">
+                  <template scope="scope">
+                    <el-input v-model="scope.row.acceptRequire"></el-input>
+                  </template>
+                </el-table-column>
+                <el-table-column
+                  prop="remark"
+                  label="备注">
+                  <template scope="scope">
+                    <el-input v-model="scope.row.remark"></el-input>
+                  </template>
+                </el-table-column>
+                <el-table-column
+                  fixed="right"
+                  label="操作"
+                  width="100">
+                  <template scope="scope">
+                    <el-button
+                      @click.native.prevent="deleteRow(scope.$index, form.serverData)"
+                      type="text"
+                      size="small">
+                      移除
+                    </el-button>
+                  </template>
+                </el-table-column>
+              </el-table>
+            </div>
+          </el-tab-pane>
+        </el-tabs>
       </el-card>
     </div>
     <div class="mt20 mb20 ml20">
