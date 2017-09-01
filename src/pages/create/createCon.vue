@@ -126,7 +126,7 @@
           </el-col>
           <el-col :span="16" v-if="baseInfoForm.conTextType===1">
             <el-form-item label="模版名称" prop="templateName">
-              <el-select :disabled="isEnabled" v-model="baseInfoForm.templateName"
+              <el-select :disabled="isEnabled1" v-model="baseInfoForm.templateName"
                          placeholder="请选择合同模版">
                 <el-option
                   v-for="item in baseInfoForm.templateOptions"
@@ -142,7 +142,7 @@
         <el-row>
           <el-col :span="8">
             <el-form-item label="合同文本类型">
-              <el-select :disabled="isEnabled" v-model="baseInfoForm.conTextType"
+              <el-select :disabled="isEnabled1" v-model="baseInfoForm.conTextType"
                          placeholder="请选择合同文本类型">
                 <el-option
                   v-for="item in baseInfoForm.conTextTypeOptions"
@@ -163,7 +163,7 @@
         <el-row>
           <el-col :span="16">
             <el-form-item label="盖章次序">
-              <el-radio-group v-model="baseInfoForm.radioSealOrder" :disabled="isEnabled">
+              <el-radio-group v-model="baseInfoForm.radioSealOrder" :disabled="isEnabled1">
                 <el-radio :label="1">对方先盖章（默认)</el-radio>
                 <el-radio :label="0">我方先盖章</el-radio>
               </el-radio-group>
@@ -172,7 +172,7 @@
         </el-row>
         <el-row v-if="baseInfoForm.radioSealOrder===0">
           <el-col :span="16" style="margin-left: 100px">
-            <el-input :disabled="isEnabled" type="textarea" :rows="4" placeholder="请输入内容"
+            <el-input :disabled="isEnabled1" type="textarea" :rows="4" placeholder="请输入内容"
                       v-model="baseInfoForm.sealReason"></el-input>
           </el-col>
         </el-row>
@@ -2136,7 +2136,20 @@
         }
         if(this.operateType==='query'||this.operateType==='create'){
           enabled=true;
-
+        }
+        return enabled;
+      },
+      //查询操作不可用，创建操作可用，变更操作选择原合同作废时可用，选择原合同有效时不可用，否则都是可用的状态
+      isEnabled1:function(){
+        let enabled=false;
+        if(this.operateType==='update'){
+          this.updateForm.updateMode?enabled=true:enabled=false;
+        }
+        if(this.operateType==='query'){
+          enabled=true;
+        }
+        if(this.operateType==='create'){
+          enabled=false;
         }
         return enabled;
       },
