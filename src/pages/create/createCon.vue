@@ -1323,7 +1323,7 @@
           </el-form>
         </el-tab-pane>
         <el-tab-pane label="相关数据" name="tabRelatedData"
-                     v-if="baseInfoForm.conModel!=='con4'&&operateType==='create'">
+                     v-if="cardRelatedInfoForm.contractList.length">
           <el-form rel="cardRelatedInfoForm" :model="cardRelatedInfoForm" label-width="100px">
             <el-table :data="cardRelatedInfoForm.contractList">
               <el-table-column type="index" label="序号" width="100px"></el-table-column>
@@ -1881,13 +1881,13 @@
         },
         cardRelatedInfoForm: {
           contractList: [
-            {
+            /*{
               contractCode: '0001001',
               type: '类型',
               status: '状态',
               company: '公司',
               startTime: '2018-09-11'
-            }
+            }*/
           ]
         },
         cardOtherInfo:{
