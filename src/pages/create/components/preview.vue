@@ -178,7 +178,9 @@ E-mail:
     props: {
       visible: Boolean,
       data: {
-        default: {}
+        default() {
+          return {}
+        }
       }
     },
     data() {
