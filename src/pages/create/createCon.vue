@@ -75,7 +75,7 @@
               </el-select>
             </el-form-item>
           </el-col>
-          <el-col :span="8" v-if="updateForm.updateMode">
+          <el-col :span="8" v-if="!updateForm.updateMode">
             <el-form-item label="新合同编号" prop="newCode">
               <el-input :disabled="true" v-model="updateForm.newCode" placeholder="新合同编号"></el-input>
             </el-form-item>
@@ -92,13 +92,13 @@
         <el-row>
           <el-col :span="8">
             <el-form-item label="业务经办人">
-              <el-input :disabled="true" v-model="baseInfoForm.businessPerson"
+              <el-input :disabled="isEnabled" v-model="baseInfoForm.businessPerson"
                         placeholder="请输入业务经办人"></el-input>
             </el-form-item>
           </el-col>
           <el-col :span="8">
             <el-form-item label="业务部门">
-              <el-input :disabled="true" v-model="baseInfoForm.businessDepartment"
+              <el-input :disabled="isEnabled" v-model="baseInfoForm.businessDepartment"
                         placeholder="请输入业务部门"></el-input>
             </el-form-item>
           </el-col>
@@ -106,13 +106,13 @@
         <el-row>
           <el-col :span="8">
             <el-form-item label="合同模式">
-              <el-input :disabled="true" v-model="baseInfoForm.conModelName"
+              <el-input :disabled="isEnabled" v-model="baseInfoForm.conModelName"
                         placeholder="请输入合同模式"></el-input>
             </el-form-item>
           </el-col>
           <el-col :span="8">
             <el-form-item label="合同类型">
-              <el-input :disabled="true" v-model="baseInfoForm.conTypeName"
+              <el-input :disabled="isEnabled" v-model="baseInfoForm.conTypeName"
                         placeholder="请输入合同类型"></el-input>
             </el-form-item>
           </el-col>
@@ -126,7 +126,7 @@
           </el-col>
           <el-col :span="16" v-if="baseInfoForm.conTextType===1">
             <el-form-item label="模版名称" prop="templateName">
-              <el-select :disabled="operateType!=='create'" v-model="baseInfoForm.templateName"
+              <el-select :disabled="isEnabled" v-model="baseInfoForm.templateName"
                          placeholder="请选择合同模版">
                 <el-option
                   v-for="item in baseInfoForm.templateOptions"
@@ -142,7 +142,7 @@
         <el-row>
           <el-col :span="8">
             <el-form-item label="合同文本类型">
-              <el-select :disabled="operateType!=='create'" v-model="baseInfoForm.conTextType"
+              <el-select :disabled="isEnabled" v-model="baseInfoForm.conTextType"
                          placeholder="请选择合同文本类型">
                 <el-option
                   v-for="item in baseInfoForm.conTextTypeOptions"
@@ -153,7 +153,7 @@
               </el-select>
             </el-form-item>
           </el-col>
-          <el-col :span="8" v-if="operateType!=='create'">
+          <el-col :span="8" v-if="operateType!=='create'&&updateForm.updateMode">
             <el-form-item label="合同编号">
               <el-input v-model="baseInfoForm.conNumber" placeholder="请输入合同编号"
                         :disabled="true"></el-input>
@@ -163,7 +163,7 @@
         <el-row>
           <el-col :span="16">
             <el-form-item label="盖章次序">
-              <el-radio-group v-model="baseInfoForm.radioSealOrder" :disabled="operateType!=='create'">
+              <el-radio-group v-model="baseInfoForm.radioSealOrder" :disabled="isEnabled">
                 <el-radio :label="1">对方先盖章（默认)</el-radio>
                 <el-radio :label="0">我方先盖章</el-radio>
               </el-radio-group>
@@ -172,7 +172,7 @@
         </el-row>
         <el-row v-if="baseInfoForm.radioSealOrder===0">
           <el-col :span="16" style="margin-left: 100px">
-            <el-input :disabled="operateType!=='create'" type="textarea" :rows="4" placeholder="请输入内容"
+            <el-input :disabled="isEnabled" type="textarea" :rows="4" placeholder="请输入内容"
                       v-model="baseInfoForm.sealReason"></el-input>
           </el-col>
         </el-row>
@@ -965,13 +965,13 @@
             <el-row>
               <el-col :span="8">
                 <el-form-item prop="checkPerson" label="验收责任人">
-                  <el-input v-model="cardContCheckInfoForm.checkPerson" :disabled="true"
+                  <el-input v-model="cardContCheckInfoForm.checkPerson" :disabled="isEnabled"
                             placeholder="请输入验收责任人"></el-input>
                 </el-form-item>
               </el-col>
               <el-col :span="8">
                 <el-form-item prop="checkPersonDepart" label="验收责任人部门" label-width="120px">
-                  <el-input :disabled="true" v-model="cardContCheckInfoForm.checkPersonDepart"
+                  <el-input :disabled="isEnabled" v-model="cardContCheckInfoForm.checkPersonDepart"
                             placeholder="请输入验收责任人部门"></el-input>
                 </el-form-item>
               </el-col>
@@ -995,13 +995,13 @@
             <el-row>
               <el-col :span="8">
                 <el-form-item prop="checkSupervisor" label="验收监督人">
-                  <el-input :disabled="true" v-model="cardContCheckInfoForm.checkSupervisor"
+                  <el-input :disabled="isEnabled" v-model="cardContCheckInfoForm.checkSupervisor"
                             placeholder="请输入验收监督人"></el-input>
                 </el-form-item>
               </el-col>
               <el-col :span="8">
                 <el-form-item prop="checkSupervisorDepart" label="验收监督人部门" label-width="120px">
-                  <el-input :disabled="true" v-model="cardContCheckInfoForm.checkSupervisorDepart"
+                  <el-input :disabled="isEnabled" v-model="cardContCheckInfoForm.checkSupervisorDepart"
                             placeholder="请输入验收监督人部门"></el-input>
                 </el-form-item>
               </el-col>
@@ -1069,18 +1069,18 @@
                       <el-row>
                         <el-col :span="6">
                           <el-form-item label="用章次数" prop="sealTimes">
-                            <el-input :disabled="true" v-model="props.row.sealTimes"></el-input>
+                            <el-input :disabled="operateType==='query'" v-model="props.row.sealTimes"></el-input>
                           </el-form-item>
                         </el-col>
                         <el-col :span="6">
                           <el-form-item label="打印份数" prop="printTimes">
-                            <el-input :disabled="true"
+                            <el-input :disabled="operateType==='query'"
                                       v-model="props.row.printTimes"></el-input>
                           </el-form-item>
                         </el-col>
                         <el-col :span="6">
                           <el-form-item label="我方留存份数" prop="retainFileNumber">
-                            <el-input :disabled="true"
+                            <el-input :disabled="operateType==='query'"
                                       v-model="props.row.retainFileNumber"></el-input>
                           </el-form-item>
                         </el-col>
@@ -1093,7 +1093,7 @@
                               :on-success="handleUploadFileAfterSealSuccess"
                               :on-error="handleUploadFileAfterSealError"
                             >
-                              <el-button :disabled="true" size="small" type="primary">上传
+                              <el-button :disabled="operateType==='query'" size="small" type="primary">上传
                               </el-button>
                               </el-button>
                             </el-upload>
@@ -1105,7 +1105,7 @@
                           <el-form-item prop="useSeal">
                             <el-checkbox-group v-model="props.row.useSeal">
                               <el-checkbox
-                                disabled
+                                :disabled="operateType==='query'"
                                 v-for="item in props.row.useSeals"
                                 :label="item.id"
                                 :key="item.id">
@@ -2084,6 +2084,17 @@
           visible = true
         }
         return visible
+      },
+      //查询操作时不可用，变更操作选择原合同作废时可用，选择原合同有效时不可用，否则都是可用的状态
+      isEnabled:function(){
+        let enabled=false;
+        if(this.operateType==='update'){
+          this.updateForm.updateMode?enabled=true:enabled=false;
+        }
+        if(this.operateType==='query'){
+          enabled=true;
+        }
+        return enabled;
       }
     },
     mounted() {
