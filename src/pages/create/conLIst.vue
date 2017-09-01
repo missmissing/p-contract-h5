@@ -1,7 +1,3 @@
-<style type="text/scss" lang="scss" scoped>
-
-</style>
-
 <template>
   <div class="pd20"
        v-loading="loading"

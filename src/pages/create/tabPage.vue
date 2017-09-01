@@ -1,6 +1,3 @@
-<style type="text/scss" lang="scss" scoped>
-
-</style>
 
 <template>
   <div class="pd20">

@@ -1345,6 +1345,25 @@
             </el-table>
           </el-form>
         </el-tab-pane>
+        <el-tab-pane label="其他" name="tabOtherInfo" v-if="operateType==='query'">
+          <el-select
+            v-model="cardOtherInfo.condition"
+            placeholder="请选择"
+            class="mb20"
+          >
+            <el-option
+              v-for="item in cardOtherInfo.conditionOptions"
+              :key="item.value"
+              :label="item.label"
+              :value="item.value">
+            </el-option>
+          </el-select>
+          <keep-alive>
+            <transition name="component-fade" mode="out-in">
+              <component :is="tabs"></component>
+            </transition>
+          </keep-alive>
+        </el-tab-pane>
       </el-tabs>
     </el-card>
     <el-dialog title="新增合同供应商信息" :visible.sync="cardContentInfoForm.dialogAddContractSupplier" size="small">
@@ -1871,6 +1890,27 @@
             }
           ]
         },
+        cardOtherInfo:{
+          condition:1,
+          conditionOptions:[
+            {
+              value: 1,
+              label: '采购申请'
+            },
+            {
+              value: 2,
+              label: '比价单信息'
+            },
+            {
+              value: 3,
+              label: '合同信息'
+            },
+            {
+              value: 4,
+              label: '订单信息'
+            }
+          ],
+        },
         formNewSubject: {
           rules: {
             search: [
@@ -2108,11 +2148,22 @@
           visible=true;
         }
         return visible;
+      },
+      tabs:function(){
+        switch (this.cardOtherInfo.condition) {
+          case 1:
+            return 'PrTable'
+          case 2:
+            return 'PriceTable'
+          case 3:
+            return 'ContractTable'
+          case 4:
+            return 'OrderTable'
+        }
       }
     },
     mounted() {
       console.log('request');
-      // console.log('mounted-this.operateType', this.operateType)
       Api.getContractBaseInfo({}).then((data) => {
         this.baseInfoForm.businessPerson = data.data.dataMap.baseInfoForm.businessPerson
         this.baseInfoForm.businessDepartment = data.data.dataMap.baseInfoForm.businessDepartment
@@ -2590,7 +2641,19 @@
       }
     },
     components:{
-      Preview
+      Preview,
+      PrTable: (resolve) => {
+        require(['./components/tables/prTable'], resolve)
+      },
+      PriceTable: (resolve) => {
+        require(['./components/tables/priceTable'], resolve)
+      },
+      ContractTable: (resolve) => {
+        require(['./components/tables/contractTable'], resolve)
+      },
+      OrderTable: (resolve) => {
+        require(['./components/tables/orderTable'], resolve)
+      }
     },
     watch: {
       '$route'(to, from) {
