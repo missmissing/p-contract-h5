@@ -149,16 +149,6 @@ const router = new Router({
             auth: true,
             hidden: true
           }
-        },
-        {
-          path: '/ConCreate/tabPage', // 标签页
-          meta: {
-            auth: true
-          },
-          component: function (resolve) {
-            require(['../pages/create/tabPage.vue'], resolve)
-          },
-          name: routerNames.con_tabPage
         }
       ]
     },

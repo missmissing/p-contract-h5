@@ -42,7 +42,6 @@ export const routerNames = {
   con_createIntentionContract: '意向合同创建',
   con_createSingleContract: '单一合同创建',
   con_createSimpleContract: '简易合同创建',
-  con_tabPage: '合同标签页',
   con_Check: '查看合同',
 
   con_sign: '合同签订',
