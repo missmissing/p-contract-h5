@@ -1,9 +1,9 @@
 <style>
-  .title {
+  .createCon .title {
     position: relative;
   }
 
-  .errorCount {
+  .createCon .errorCount {
     font-style: normal;
     position: absolute;
     top: -10px;
@@ -16,32 +16,22 @@
     padding: 3px;
   }
 
-  .errorMsg {
+  .createCon .errorMsg {
     color: red;
     font-style: normal;
     font-size: 12px;
     margin-left: 20px;
   }
-
-  .card {
-    margin-bottom: 20px;
+  .createCon .select-money{
+    padding-top:5px;
+    padding-bottom:5px;
   }
-
-  .ivu-input-type,
-  .ivu-select-single {
-    width: 180px;
-  }
-
-  .template-preview {
-    border: solid 1px #dddee1;
-    padding: 10px;
-    margin-left: 20px;
-    height: 450px;
-    overflow: auto;
+  .createCon .select-curTime{
+    margin-bottom:5px;
   }
 </style>
 <template>
-  <div>
+  <div class="createCon">
     <el-card v-if="operateType==='update'">
       <header slot="header">变更原因</header>
       <el-form ref="updateForm" :model="updateForm" label-width="100px" :rules="updateForm.rules">
@@ -119,9 +109,16 @@
         </el-row>
         <el-row>
           <el-col :span="8">
-            <el-form-item label="所属项目" prop="belongProject">
-              <el-input :disabled="operateType==='query'" v-model="baseInfoForm.belongProject"
-                        placeholder="请输入所属项目"></el-input>
+            <el-form-item label="合同文本类型">
+              <el-select :disabled="isEnabled1" v-model="baseInfoForm.conTextType"
+                         placeholder="请选择合同文本类型">
+                <el-option
+                  v-for="item in baseInfoForm.conTextTypeOptions"
+                  :key="item.id"
+                  :label="item.name"
+                  :value="item.id">
+                </el-option>
+              </el-select>
             </el-form-item>
           </el-col>
           <el-col :span="16" v-if="baseInfoForm.conTextType===1">
@@ -141,16 +138,9 @@
         </el-row>
         <el-row>
           <el-col :span="8">
-            <el-form-item label="合同文本类型">
-              <el-select :disabled="isEnabled1" v-model="baseInfoForm.conTextType"
-                         placeholder="请选择合同文本类型">
-                <el-option
-                  v-for="item in baseInfoForm.conTextTypeOptions"
-                  :key="item.id"
-                  :label="item.name"
-                  :value="item.id">
-                </el-option>
-              </el-select>
+            <el-form-item label="所属项目" prop="belongProject">
+              <el-input :disabled="operateType==='query'" v-model="baseInfoForm.belongProject"
+                        placeholder="请输入所属项目"></el-input>
             </el-form-item>
           </el-col>
           <el-col :span="8" v-if="operateType!=='create'&&updateForm.updateMode">
@@ -181,13 +171,13 @@
     <el-card v-if="contentVisible">
       <el-tabs v-model="activeTabName" @tab-click="handleTabClick">
         <el-tab-pane name="tabContInfo">
-          <span slot="label" class="title">合同内容信息<i v-if="cardContentInfoForm.errorCount" class="errorCount">{{cardContentInfoForm.errorCount}}</i> </span>
+          <span slot="label" class="title">合同内容信息<i v-if="cardContentInfoForm.errorCount" class="errorCount">{{cardContentInfoForm.errorCount}}</i></span>
           <el-form ref="cardContentInfoForm" :model="cardContentInfoForm" label-width="120px"
                    :rules="cardContentInfoForm.rules">
             <el-card>
               <header slot="header">合同供应商信息<i class="errorMsg">{{cardContentInfoForm.supplierErrorMsg}}</i></header>
               <el-button v-if="isVisibleNewSupplierBtn"
-                         @click="handleAddContractSupplier" icon="plus"
+                         @click="handleAddContractSupplier" icon="plus" class="mb10"
                          type="primary">新增
               </el-button>
               <el-table :data="cardContentInfoForm.tableSupplierInfo">
@@ -208,10 +198,10 @@
                 </el-table-column>
               </el-table>
             </el-card>
-            <el-card>
+            <el-card class="mt20">
               <header slot="header">合同我方主体名称<i class="errorMsg">{{cardContentInfoForm.subjectsErrorMsg}}</i></header>
               <el-button v-if="operateType!=='query'" type="primary" @click="handleNewSubjectName"
-                         icon="plus">新增
+                         icon="plus" class="mb10">新增
               </el-button>
               <el-table :data="cardContentInfoForm.conSubjctName">
                 <el-table-column prop="id" label="公司代码"></el-table-column>
@@ -230,10 +220,10 @@
                 </el-table-column>
               </el-table>
             </el-card>
-            <el-card v-if="baseInfoForm.conModel!=='con4'">
+            <el-card v-if="baseInfoForm.conModel!=='con4'" class="mt20">
               <header slot="header">第三方信息</header>
               <el-button v-if="operateType==='create'" type="primary" @click="handleNewthirdPartyInfo"
-                         icon="plus">新增
+                         icon="plus" class="mb10">新增
               </el-button>
               <el-table :data="cardContentInfoForm.thirdPartyInfo">
                 <el-table-column prop="id" label="供应商编号"></el-table-column>
@@ -252,7 +242,7 @@
                 </el-table-column>
               </el-table>
             </el-card>
-            <el-card v-if="baseInfoForm.conModel!=='con1'">
+            <el-card v-if="baseInfoForm.conModel!=='con1'" class="mt20">
               <header slot="header">合同标的</header>
               <el-table :data="cardContentInfoForm.conStandard">
                 <el-table-column type="index"></el-table-column>
@@ -323,8 +313,9 @@
                   <template scope="props">
                     <el-button icon="plus" type="primary"
                                v-if="operateType!=='query'"
-                               @click="handleAddAdvanceItem(props.row.type)">
-                      添加{{props.row.type}}
+                               @click="handleAddAdvanceItem(props.row.type)"
+                               class="mb10">
+                      添加
                     </el-button>
                     <el-table :data="props.row.subItem">
                       <el-table-column width="100px" prop="name" label="名称">
@@ -342,11 +333,12 @@
                       <el-table-column
                         prop="curTime"
                         label="付款时间"
-                        width="200px">
+                        width="250px">
                         <template scope="scope">
-                          <el-row>
+                          <el-row class="select-money">
                             <el-col>
                               <el-select
+                                class="select-curTime"
                                 @change="handleItemCurTimeChange(props.row.subItem[scope.$index].curTime,props.row.subItem[scope.$index])"
                                 :disabled="operateType==='query'"
                                 placeholder="请选择付款时间"
@@ -372,14 +364,17 @@
                       </el-table-column>
                       <el-table-column
                         prop="remark"
-                        label="备注">
+                        label="备注"
+                        width="200px">
                         <template scope="scope">
                           <el-input
+                            type="textarea"
+                            :rows="2"
                             :disabled="operateType==='query'"
                             v-model="props.row.subItem[scope.$index].remark"></el-input>
                         </template>
                       </el-table-column>
-                      <el-table-column prop="proportion" label="占比">
+                      <el-table-column prop="proportion" label="占比" width="80px">
                         <template scope="scope">
                           {{getProportion(props.row.subItem[scope.$index].money)}}
                         </template>
@@ -399,10 +394,8 @@
                     </el-table>
                   </template>
                 </el-table-column>
-                <el-table-column prop="type" label="类型"></el-table-column>
-                <el-table-column
-                  prop="ifMultiPayment"
-                  label="是否多次付款">
+                <el-table-column prop="type" label="类型" width="100px"></el-table-column>
+                <el-table-column width="90px" prop="ifMultiPayment" label="是否多次付款">
                   <template scope="scope">
                     <el-checkbox
                       :disabled="operateType==='query'"
@@ -423,9 +416,10 @@
                   label="付款时间"
                   width="250px">
                   <template scope="scope">
-                    <el-row>
+                    <el-row class="select-money">
                       <el-col>
                         <el-select
+                          class="select-curTime"
                           v-model="cardFinanceInfoForm.paymentMethods.advance[scope.$index].curTime"
                           :disabled="operateType==='query'"
                           placeholder="请选择付款时间"
@@ -451,14 +445,17 @@
                 </el-table-column>
                 <el-table-column
                   prop="remark"
-                  label="备注">
+                  label="备注"
+                width="250px">
                   <template scope="scope">
                     <el-input
+                      type="textarea"
+                      :rows="2"
                       :disabled="operateType==='query'"
                       v-model="cardFinanceInfoForm.paymentMethods.advance[scope.$index].remark"></el-input>
                   </template>
                 </el-table-column>
-                <el-table-column prop="proportion" label="占比">
+                <el-table-column prop="proportion" label="占比" width="80px">
                   <template scope="scope">
                     {{getProportion(cardFinanceInfoForm.paymentMethods.advance[scope.$index].money)}}
                   </template>
@@ -468,10 +465,9 @@
                         v-if="cardFinanceInfoForm.onePayment">
                 <el-table-column type="expand" v-if="cardFinanceInfoForm.paymentMethods.progress[0].ifMultiPayment">
                   <template scope="props">
-                    <el-button icon="plus" type="primary"
-                               v-if="operateType!=='query'"
+                    <el-button icon="plus" type="primary" class="mb10" v-if="operateType!=='query'"
                                @click="handleAddAdvanceItem(props.row.type)">
-                      添加{{props.row.type}}
+                      添加
                     </el-button>
                     <el-table :data="props.row.subItem">
                       <el-table-column width="100px" prop="name" label="名称">
@@ -489,11 +485,12 @@
                       <el-table-column
                         prop="curTime"
                         label="付款时间"
-                        width="200px">
+                        width="250px">
                         <template scope="scope">
-                          <el-row>
+                          <el-row class="select-money">
                             <el-col>
                               <el-select
+                                class="select-curTime"
                                 @change="handleItemCurTimeChange(props.row.subItem[scope.$index].curTime,props.row.subItem[scope.$index])"
                                 :disabled="operateType==='query'"
                                 placeholder="请选择付款时间"
@@ -519,14 +516,17 @@
                       </el-table-column>
                       <el-table-column
                         prop="remark"
-                        label="备注">
+                        label="备注"
+                        width="200px">
                         <template scope="scope">
                           <el-input
+                            type="textarea"
+                            :rows="2"
                             :disabled="operateType==='query'"
                             v-model="props.row.subItem[scope.$index].remark"></el-input>
                         </template>
                       </el-table-column>
-                      <el-table-column prop="proportion" label="占比">
+                      <el-table-column prop="proportion" label="占比" width="80px">
                         <template scope="scope">
                           {{getProportion(props.row.subItem[scope.$index].money)}}
                         </template>
@@ -546,10 +546,8 @@
                     </el-table>
                   </template>
                 </el-table-column>
-                <el-table-column prop="type" label="类型"></el-table-column>
-                <el-table-column
-                  prop="ifMultiPayment"
-                  label="是否多次付款">
+                <el-table-column prop="type" label="类型" width="100px"></el-table-column>
+                <el-table-column width="90px" prop="ifMultiPayment" label="是否多次付款">
                   <template scope="scope">
                     <el-checkbox
                       :disabled="operateType==='query'"
@@ -570,9 +568,10 @@
                   label="付款时间"
                   width="250px">
                   <template scope="scope">
-                    <el-row>
+                    <el-row class="select-money">
                       <el-col>
                         <el-select
+                          class="select-curTime"
                           v-model="cardFinanceInfoForm.paymentMethods.progress[scope.$index].curTime"
                           :disabled="operateType==='query'"
                           placeholder="请选择付款时间"
@@ -598,14 +597,17 @@
                 </el-table-column>
                 <el-table-column
                   prop="remark"
-                  label="备注">
+                  label="备注"
+                  width="250px">
                   <template scope="scope">
                     <el-input
+                      type="textarea"
+                      :rows="2"
                       :disabled="operateType==='query'"
                       v-model="cardFinanceInfoForm.paymentMethods.progress[scope.$index].remark"></el-input>
                   </template>
                 </el-table-column>
-                <el-table-column prop="proportion" label="占比">
+                <el-table-column prop="proportion" label="占比"  width="80px">
                   <template scope="scope">
                     {{getProportion(cardFinanceInfoForm.paymentMethods.progress[scope.$index].money)}}
                   </template>
@@ -615,10 +617,10 @@
                         v-if="cardFinanceInfoForm.onePayment">
                 <el-table-column type="expand" v-if="cardFinanceInfoForm.paymentMethods.final[0].ifMultiPayment">
                   <template scope="props">
-                    <el-button icon="plus" type="primary"
+                    <el-button icon="plus" type="primary" class="mb10"
                                v-if="operateType!=='query'"
                                @click="handleAddAdvanceItem(props.row.type)">
-                      添加{{props.row.type}}
+                      添加
                     </el-button>
                     <el-table :data="props.row.subItem">
                       <el-table-column width="100px" prop="name" label="名称">
@@ -636,11 +638,12 @@
                       <el-table-column
                         prop="curTime"
                         label="付款时间"
-                        width="200px">
+                        width="250px">
                         <template scope="scope">
-                          <el-row>
+                          <el-row class="select-money">
                             <el-col>
                               <el-select
+                                class="select-curTime"
                                 @change="handleItemCurTimeChange(props.row.subItem[scope.$index].curTime,props.row.subItem[scope.$index])"
                                 :disabled="operateType==='query'"
                                 placeholder="请选择付款时间"
@@ -666,14 +669,17 @@
                       </el-table-column>
                       <el-table-column
                         prop="remark"
-                        label="备注">
+                        label="备注"
+                        width="200px">
                         <template scope="scope">
                           <el-input
+                            type="textarea"
+                            :rows="2"
                             :disabled="operateType==='query'"
                             v-model="props.row.subItem[scope.$index].remark"></el-input>
                         </template>
                       </el-table-column>
-                      <el-table-column prop="proportion" label="占比">
+                      <el-table-column prop="proportion" label="占比" width="80px">
                         <template scope="scope">
                           {{getProportion(props.row.subItem[scope.$index].money)}}
                         </template>
@@ -693,8 +699,9 @@
                     </el-table>
                   </template>
                 </el-table-column>
-                <el-table-column prop="type" label="类型"></el-table-column>
+                <el-table-column prop="type" label="类型" width="100px"></el-table-column>
                 <el-table-column
+                  width="90px"
                   prop="ifMultiPayment"
                   label="是否多次付款">
                   <template scope="scope">
@@ -717,9 +724,10 @@
                   label="付款时间"
                   width="250px">
                   <template scope="scope">
-                    <el-row>
+                    <el-row class="select-money">
                       <el-col>
                         <el-select
+                          class="select-curTime"
                           v-model="cardFinanceInfoForm.paymentMethods.final[scope.$index].curTime"
                           :disabled="operateType==='query'"
                           placeholder="请选择付款时间"
@@ -745,20 +753,23 @@
                 </el-table-column>
                 <el-table-column
                   prop="remark"
-                  label="备注">
+                  label="备注"
+                  width="250px">
                   <template scope="scope">
                     <el-input
+                      type="textarea"
+                      :rows="2"
                       :disabled="operateType==='query'"
                       v-model="cardFinanceInfoForm.paymentMethods.final[scope.$index].remark"></el-input>
                   </template>
                 </el-table-column>
-                <el-table-column prop="proportion" label="占比">
+                <el-table-column prop="proportion" label="占比" width="80px">
                   <template scope="scope">
                     {{getProportion(cardFinanceInfoForm.paymentMethods.final[scope.$index].money)}}
                   </template>
                 </el-table-column>
               </el-table>
-              <el-row>
+              <el-row class="mt20">
                 <el-col :span="8">
                   <el-form-item label="币种" prop="currency">
                     <el-select v-model="cardFinanceInfoForm.currency" placeholder="请选择币种"
@@ -825,7 +836,7 @@
                 </el-col>
               </el-row>
             </el-card>
-            <el-card v-if="baseInfoForm.conModel==='con2'&&cardFinanceInfoForm.hasMoney===1">
+            <el-card class="mt20" v-if="baseInfoForm.conModel==='con2'&&cardFinanceInfoForm.hasMoney===1">
               <header slot="header">开票信息</header>
               <el-row>
                 <el-col :span="12" class="billingInfo">
@@ -1006,7 +1017,7 @@
                 </el-form-item>
               </el-col>
             </el-row>
-            <el-button v-if="operateType!=='query'" @click="handleAddUnionCheck" icon="plus" type="primary">添加联合验收人
+            <el-button v-if="operateType!=='query'" @click="handleAddUnionCheck" icon="plus" type="primary" class="mb20">添加
             </el-button>
             <el-table :data="cardContCheckInfoForm.unionCheckPersons">
               <el-table-column prop="name" label="联合验收人"></el-table-column>
@@ -1034,8 +1045,8 @@
             </el-card>
             <el-card v-if="!showMaterialItems">
               <header slot="header">服务验收事项<i class="errorMsg">{{cardContCheckInfoForm.serviceCheckMsg}}</i></header>
-              <el-button v-if="operateType!=='query'" type="primary" @click="handleAddServiceMatter" icon="plus">
-                添加服务验收事项
+              <el-button v-if="operateType!=='query'" type="primary" @click="handleAddServiceMatter" icon="plus" class="mb20">
+                添加
               </el-button>
               <el-table :data="cardContCheckInfoForm.serviceMatters">
                 <el-table-column type="index" label="序号" width="100px"></el-table-column>
@@ -1060,7 +1071,7 @@
         </el-tab-pane>
         <el-tab-pane label="合同附件及盖章信息" name="tabSealInfo" v-if="baseInfoForm.conModel!=='con4'">
           <el-form rel="cardSealInfoForm" :model="cardSealInfoForm" label-width="100px">
-            <el-button type="primary" @click="handleNewSealFile" icon="plus" v-if="operateType!=='query'">新增</el-button>
+            <el-button type="primary" @click="handleNewSealFile" icon="plus" v-if="operateType!=='query'" class="mb20">新增</el-button>
             <template v-for="(item,index) in cardSealInfoForm.sealAttachments">
               <template v-if="index===0">
                 <el-table :data="item">
@@ -1532,7 +1543,7 @@
         <el-button type="primary" @click="handleCancelAttachment('formAddAttachment')">取消</el-button>
       </footer>
     </el-dialog>
-    <el-row>
+    <el-row class="mt20">
       <el-col :span="4" :offset="4">
         <el-button v-if="operateType!=='query'" type="primary" @click="handleSave('')">保存</el-button>
       </el-col>
@@ -2650,6 +2661,8 @@
         }
       },
       handleRemoveSealItem(index, rows) {
+        console.log('index',index);
+        console.log('rows',rows);
         rows.splice(index, 1)
       }
     },
