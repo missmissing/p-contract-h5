@@ -1,233 +1,235 @@
 <template>
   <div>
-    <el-tabs v-model="activeTabName" @tab-click="handleClick">
-      <el-tab-pane label="基本信息" name="tabBaseInfo">
-        <el-form ref="baseInfoForm" :model="baseInfoForm" label-width="100px"
-                 :rules="baseInfoForm.rules">
-          <el-row>
-            <el-col :span="8">
-              <el-form-item prop="code" label="从协议编号">
-                <el-input v-model="baseInfoForm.code" :disabled="true"></el-input>
+    <el-card class="mb20">
+      <el-tabs v-model="activeTabName" @tab-click="handleClick">
+        <el-tab-pane label="基本信息" name="tabBaseInfo">
+          <el-form ref="baseInfoForm" :model="baseInfoForm" label-width="100px"
+                   :rules="baseInfoForm.rules">
+            <el-row>
+              <el-col :span="8">
+                <el-form-item prop="code" label="从协议编号">
+                  <el-input v-model="baseInfoForm.code" :disabled="true"></el-input>
+                </el-form-item>
+              </el-col>
+            </el-row>
+            <el-card class="mb20 mr20 ml20">
+              <header slot="header">供应商信息</header>
+              <el-button
+                v-if="baseInfoForm.tableSupplierInfo.length<=0"
+                @click="handleAddContractSupplier" icon="plus"
+                type="primary">新增
+              </el-button>
+              <el-table :data="baseInfoForm.tableSupplierInfo">
+                <el-table-column type="index"></el-table-column>
+                <el-table-column prop="id" label="供应商编号"></el-table-column>
+                <el-table-column prop="name" label="供应商名称"></el-table-column>
+                <el-table-column
+                  fixed="right"
+                  label="操作"
+                  width="100">
+                  <template scope="scope">
+                    <el-button
+                      v-if="baseInfoForm.tableSupplierInfo[scope.$index].type"
+                      @click="handleRemoveSupplier(scope.$index, cardContentInfoForm.tableSupplierInfo)"
+                      type="text" size="small">移除
+                    </el-button>
+                  </template>
+                </el-table-column>
+              </el-table>
+            </el-card>
+            <el-card class="mb20 mr20 ml20">
+              <header slot="header">我方主体名称</header>
+              <el-button type="primary" @click="handleNewSubjectName" icon="plus">新增</el-button>
+              <el-table :data="baseInfoForm.conSubjctName">
+                <el-table-column prop="id" label="公司代码"></el-table-column>
+                <el-table-column prop="name" label="公司名称"></el-table-column>
+                <el-table-column
+                  fixed="right"
+                  label="操作"
+                  width="100">
+                  <template scope="scope">
+                    <el-button
+                      v-if="baseInfoForm.conSubjctName[scope.$index].type"
+                      @click="handleRemoveSubect(scope.$index, baseInfoForm.conSubjctName)"
+                      type="text" size="small">移除
+                    </el-button>
+                  </template>
+                </el-table-column>
+              </el-table>
+            </el-card>
+            <el-row>
+              <el-col :span="16">
+                <el-form-item label="盖章次序">
+                  <el-radio-group v-model="baseInfoForm.radioSealOrder">
+                    <el-radio :label="1">对方先盖章（默认)</el-radio>
+                    <el-radio :label="0">我方先盖章</el-radio>
+                  </el-radio-group>
+                </el-form-item>
+              </el-col>
+            </el-row>
+            <el-row v-if="baseInfoForm.radioSealOrder==0">
+              <el-col :span="16" style="margin-left: 100px">
+                <el-input type="textarea" :rows="4" placeholder="请输入内容"
+                          v-model="baseInfoForm.sealReason"></el-input>
+              </el-col>
+            </el-row>
+          </el-form>
+        </el-tab-pane>
+        <el-tab-pane label="合同附件及盖章信息" name="tabSealInfo">
+          <el-form rel="cardSealInfoForm" :model="cardSealInfoForm" label-width="100px">
+            <el-button type="primary" @click="handleNewSealFile" icon="plus">新增</el-button>
+            <el-table :data="cardSealInfoForm.sealFileList">
+              <el-table-column type="expand">
+                <template scope="props">
+                  <el-row>
+                    <el-col :span="6">
+                      <el-form-item label="用章次数" prop="sealTimes">
+                        <el-input :disabled="true" v-model="props.row.sealTimes"></el-input>
+                      </el-form-item>
+                    </el-col>
+                    <el-col :span="6">
+                      <el-form-item label="打印份数" prop="printTimes">
+                        <el-input :disabled="true"
+                                  v-model="props.row.printTimes"></el-input>
+                      </el-form-item>
+                    </el-col>
+                    <el-col :span="6">
+                      <el-form-item label="我方留存份数" prop="retainFileNumber">
+                        <el-input :disabled="true"
+                                  v-model="props.row.retainFileNumber"></el-input>
+                      </el-form-item>
+                    </el-col>
+                    <el-col :span="6">
+                      <el-form-item label="用印后上传">
+                        <el-upload
+                          ref="uploadFileAfterSeal"
+                          action="https://jsonplaceholder.typicode.com/posts/"
+                          :with-credentials="true"
+                          :on-success="handleUploadFileAfterSealSuccess"
+                          :on-error="handleUploadFileAfterSealError"
+                        >
+                          <el-button :disabled="true" size="small" type="primary">上传
+                          </el-button>
+                          </el-button>
+                        </el-upload>
+                      </el-form-item>
+                    </el-col>
+                  </el-row>
+                  <el-row>
+                    <el-col :span="12">
+                      <el-form-item prop="useSeal">
+                        <el-checkbox-group v-model="props.row.useSeal">
+                          <el-checkbox
+                            disabled
+                            v-for="item in props.row.useSeals"
+                            :label="item.id"
+                            :key="item.id">
+                            {{item.name}}
+                          </el-checkbox>
+                        </el-checkbox-group>
+                      </el-form-item>
+                    </el-col>
+                  </el-row>
+                </template>
+              </el-table-column>
+              <el-table-column type="index" label="序号" width="100px"></el-table-column>
+              <el-table-column prop="type" label="附件类型">
+                <template scope="scope">
+                  <el-select
+                    :disabled="cardSealInfoForm.sealFileList[scope.$index].type==3"
+                    size="small"
+                    v-model="cardSealInfoForm.sealFileList[scope.$index].type">
+                    <el-option
+                      v-for="item in cardSealInfoForm.sealFileList[scope.$index].types"
+                      :key="item.id"
+                      :label="item.name"
+                      :value="item.id">
+                    </el-option>
+                  </el-select>
+                </template>
+              </el-table-column>
+              <el-table-column prop="code" label="从协议编号">
+                <template scope="scope">
+                  <el-input :disabled="cardSealInfoForm.sealFileList[scope.$index].type==3"
+                            v-model="cardSealInfoForm.sealFileList[scope.$index].code"></el-input>
+                </template>
+              </el-table-column>
+              <el-table-column prop="name" label="文件名称">
+                <template scope="scope">
+                  <el-input :disabled="cardSealInfoForm.sealFileList[scope.$index].type==3"
+                            v-model="cardSealInfoForm.sealFileList[scope.$index].name"></el-input>
+                </template>
+              </el-table-column>
+              <el-table-column prop="upload" label="上传">
+                <template scope="scope">
+                  <el-upload
+                    ref="uploadSealFile"
+                    action="https://jsonplaceholder.typicode.com/posts/"
+                    :with-credentials="true"
+                    :on-success="handleUploadSealFileSuccess"
+                    :on-error="handleUploadSealFileError"
+                  >
+                    <el-button :disabled="cardSealInfoForm.sealFileList[scope.$index].type==3"
+                               size="small" type="primary">上传
+                    </el-button>
+                  </el-upload>
+                </template>
+              </el-table-column>
+              <el-table-column prop="isSeal" label="是否盖章">
+                <template scope="scope">
+                  <el-checkbox
+                    :disabled="cardSealInfoForm.sealFileList[scope.$index].type==3||cardSealInfoForm.sealFileList[scope.$index].type==2"
+                    v-model="cardSealInfoForm.sealFileList[scope.$index].isSeal"></el-checkbox>
+                </template>
+              </el-table-column>
+              <el-table-column
+                prop="remark"
+                label="备注">
+                <template scope="scope">
+                  <el-input
+                    :disabled="cardSealInfoForm.sealFileList[scope.$index].type==3"
+                    v-model="cardSealInfoForm.sealFileList[scope.$index].remark"></el-input>
+                </template>
+              </el-table-column>
+            </el-table>
+          </el-form>
+        </el-tab-pane>
+        <el-tab-pane label="补充信息" name="tabRemark">
+          <el-form rel="cardRemarkInfoForm" :model="cardRemarkInfoForm" label-width="100px">
+            <el-card>
+              <header slot="header">备注</header>
+              <el-form-item prop="otherInstruction">
+                <el-input style="margin-left: -100px" type="textarea" placeholder="请输入内容" :rows="6"
+                          v-model="cardRemarkInfoForm.otherInstruction"></el-input>
               </el-form-item>
-            </el-col>
-          </el-row>
-          <el-card>
-            <header slot="header">供应商信息</header>
-            <el-button
-              v-if="baseInfoForm.tableSupplierInfo.length<=0"
-              @click="handleAddContractSupplier" icon="plus"
-              type="primary">新增
-            </el-button>
-            <el-table :data="baseInfoForm.tableSupplierInfo">
-              <el-table-column type="index"></el-table-column>
-              <el-table-column prop="id" label="供应商编号"></el-table-column>
-              <el-table-column prop="name" label="供应商名称"></el-table-column>
+            </el-card>
+          </el-form>
+        </el-tab-pane>
+        <el-tab-pane label="相关数据" name="tabRelatedData"
+                     v-if="currentStage=='create'">
+          <el-form rel="cardRelatedInfoForm" :model="cardRelatedInfoForm" label-width="100px">
+            <el-table :data="cardRelatedInfoForm.contractList">
+              <el-table-column type="index" label="序号" width="100px"></el-table-column>
+              <el-table-column prop="contractCode" label="合同号"></el-table-column>
+              <el-table-column prop="type" label="类型"></el-table-column>
+              <el-table-column prop="status" label="状态"></el-table-column>
+              <el-table-column prop="company" label="公司"></el-table-column>
+              <el-table-column prop="startTime" label="开始时间"></el-table-column>
               <el-table-column
                 fixed="right"
                 label="操作"
                 width="100">
                 <template scope="scope">
-                  <el-button
-                    v-if="baseInfoForm.tableSupplierInfo[scope.$index].type"
-                    @click="handleRemoveSupplier(scope.$index, cardContentInfoForm.tableSupplierInfo)"
-                    type="text" size="small">移除
+                  <el-button @click="handleContractDetail(scope.$index, scope.row)" type="text"
+                             size="small">详情
                   </el-button>
                 </template>
               </el-table-column>
             </el-table>
-          </el-card>
-          <el-card>
-            <header slot="header">我方主体名称</header>
-            <el-button type="primary" @click="handleNewSubjectName" icon="plus">新增</el-button>
-            <el-table :data="baseInfoForm.conSubjctName">
-              <el-table-column prop="id" label="公司代码"></el-table-column>
-              <el-table-column prop="name" label="公司名称"></el-table-column>
-              <el-table-column
-                fixed="right"
-                label="操作"
-                width="100">
-                <template scope="scope">
-                  <el-button
-                    v-if="baseInfoForm.conSubjctName[scope.$index].type"
-                    @click="handleRemoveSubect(scope.$index, baseInfoForm.conSubjctName)"
-                    type="text" size="small">移除
-                  </el-button>
-                </template>
-              </el-table-column>
-            </el-table>
-          </el-card>
-          <el-row>
-            <el-col :span="16">
-              <el-form-item label="盖章次序">
-                <el-radio-group v-model="baseInfoForm.radioSealOrder">
-                  <el-radio :label="1">对方先盖章（默认)</el-radio>
-                  <el-radio :label="0">我方先盖章</el-radio>
-                </el-radio-group>
-              </el-form-item>
-            </el-col>
-          </el-row>
-          <el-row v-if="baseInfoForm.radioSealOrder==0">
-            <el-col :span="16" style="margin-left: 100px">
-              <el-input type="textarea" :rows="4" placeholder="请输入内容"
-                        v-model="baseInfoForm.sealReason"></el-input>
-            </el-col>
-          </el-row>
-        </el-form>
-      </el-tab-pane>
-      <el-tab-pane label="合同附件及盖章信息" name="tabSealInfo">
-        <el-form rel="cardSealInfoForm" :model="cardSealInfoForm" label-width="100px">
-          <el-button type="primary" @click="handleNewSealFile" icon="plus">新增</el-button>
-          <el-table :data="cardSealInfoForm.sealFileList">
-            <el-table-column type="expand">
-              <template scope="props">
-                <el-row>
-                  <el-col :span="6">
-                    <el-form-item label="用章次数" prop="sealTimes">
-                      <el-input :disabled="true" v-model="props.row.sealTimes"></el-input>
-                    </el-form-item>
-                  </el-col>
-                  <el-col :span="6">
-                    <el-form-item label="打印份数" prop="printTimes">
-                      <el-input :disabled="true"
-                                v-model="props.row.printTimes"></el-input>
-                    </el-form-item>
-                  </el-col>
-                  <el-col :span="6">
-                    <el-form-item label="我方留存份数" prop="retainFileNumber">
-                      <el-input :disabled="true"
-                                v-model="props.row.retainFileNumber"></el-input>
-                    </el-form-item>
-                  </el-col>
-                  <el-col :span="6">
-                    <el-form-item label="用印后上传">
-                      <el-upload
-                        ref="uploadFileAfterSeal"
-                        action="https://jsonplaceholder.typicode.com/posts/"
-                        :with-credentials="true"
-                        :on-success="handleUploadFileAfterSealSuccess"
-                        :on-error="handleUploadFileAfterSealError"
-                      >
-                        <el-button :disabled="true" size="small" type="primary">上传
-                        </el-button>
-                        </el-button>
-                      </el-upload>
-                    </el-form-item>
-                  </el-col>
-                </el-row>
-                <el-row>
-                  <el-col :span="12">
-                    <el-form-item prop="useSeal">
-                      <el-checkbox-group v-model="props.row.useSeal">
-                        <el-checkbox
-                          disabled
-                          v-for="item in props.row.useSeals"
-                          :label="item.id"
-                          :key="item.id">
-                          {{item.name}}
-                        </el-checkbox>
-                      </el-checkbox-group>
-                    </el-form-item>
-                  </el-col>
-                </el-row>
-              </template>
-            </el-table-column>
-            <el-table-column type="index" label="序号" width="100px"></el-table-column>
-            <el-table-column prop="type" label="附件类型">
-              <template scope="scope">
-                <el-select
-                  :disabled="cardSealInfoForm.sealFileList[scope.$index].type==3"
-                  size="small"
-                  v-model="cardSealInfoForm.sealFileList[scope.$index].type">
-                  <el-option
-                    v-for="item in cardSealInfoForm.sealFileList[scope.$index].types"
-                    :key="item.id"
-                    :label="item.name"
-                    :value="item.id">
-                  </el-option>
-                </el-select>
-              </template>
-            </el-table-column>
-            <el-table-column prop="code" label="从协议编号">
-              <template scope="scope">
-                <el-input :disabled="cardSealInfoForm.sealFileList[scope.$index].type==3"
-                          v-model="cardSealInfoForm.sealFileList[scope.$index].code"></el-input>
-              </template>
-            </el-table-column>
-            <el-table-column prop="name" label="文件名称">
-              <template scope="scope">
-                <el-input :disabled="cardSealInfoForm.sealFileList[scope.$index].type==3"
-                          v-model="cardSealInfoForm.sealFileList[scope.$index].name"></el-input>
-              </template>
-            </el-table-column>
-            <el-table-column prop="upload" label="上传">
-              <template scope="scope">
-                <el-upload
-                  ref="uploadSealFile"
-                  action="https://jsonplaceholder.typicode.com/posts/"
-                  :with-credentials="true"
-                  :on-success="handleUploadSealFileSuccess"
-                  :on-error="handleUploadSealFileError"
-                >
-                  <el-button :disabled="cardSealInfoForm.sealFileList[scope.$index].type==3"
-                             size="small" type="primary">上传
-                  </el-button>
-                </el-upload>
-              </template>
-            </el-table-column>
-            <el-table-column prop="isSeal" label="是否盖章">
-              <template scope="scope">
-                <el-checkbox
-                  :disabled="cardSealInfoForm.sealFileList[scope.$index].type==3||cardSealInfoForm.sealFileList[scope.$index].type==2"
-                  v-model="cardSealInfoForm.sealFileList[scope.$index].isSeal"></el-checkbox>
-              </template>
-            </el-table-column>
-            <el-table-column
-              prop="remark"
-              label="备注">
-              <template scope="scope">
-                <el-input
-                  :disabled="cardSealInfoForm.sealFileList[scope.$index].type==3"
-                  v-model="cardSealInfoForm.sealFileList[scope.$index].remark"></el-input>
-              </template>
-            </el-table-column>
-          </el-table>
-        </el-form>
-      </el-tab-pane>
-      <el-tab-pane label="补充信息" name="tabRemark">
-        <el-form rel="cardRemarkInfoForm" :model="cardRemarkInfoForm" label-width="100px">
-          <el-card>
-            <header slot="header">备注</header>
-            <el-form-item prop="otherInstruction">
-              <el-input style="margin-left: -100px" type="textarea" placeholder="请输入内容" :rows="6"
-                        v-model="cardRemarkInfoForm.otherInstruction"></el-input>
-            </el-form-item>
-          </el-card>
-        </el-form>
-      </el-tab-pane>
-      <el-tab-pane label="相关数据" name="tabRelatedData"
-                   v-if="currentStage=='create'">
-        <el-form rel="cardRelatedInfoForm" :model="cardRelatedInfoForm" label-width="100px">
-          <el-table :data="cardRelatedInfoForm.contractList">
-            <el-table-column type="index" label="序号" width="100px"></el-table-column>
-            <el-table-column prop="contractCode" label="合同号"></el-table-column>
-            <el-table-column prop="type" label="类型"></el-table-column>
-            <el-table-column prop="status" label="状态"></el-table-column>
-            <el-table-column prop="company" label="公司"></el-table-column>
-            <el-table-column prop="startTime" label="开始时间"></el-table-column>
-            <el-table-column
-              fixed="right"
-              label="操作"
-              width="100">
-              <template scope="scope">
-                <el-button @click="handleContractDetail(scope.$index, scope.row)" type="text"
-                           size="small">详情
-                </el-button>
-              </template>
-            </el-table-column>
-          </el-table>
-        </el-form>
-      </el-tab-pane>
-    </el-tabs>
+          </el-form>
+        </el-tab-pane>
+      </el-tabs>
+    </el-card>
     <el-row>
       <el-col :span="4" :offset="4">
         <el-button type="primary" @click="handleSave('')">保存</el-button>
