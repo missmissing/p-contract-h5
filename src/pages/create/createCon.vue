@@ -1309,12 +1309,10 @@
                     fixed="right"
                     label="操作"
                     v-if="operateType!=='query'">
-                    <template v-if="item[scope.$index].operate==='add'" scope="scope">
                       <el-button
-                        @click="handleRemoveSealItem(scope.$index, cardSealInfoForm.sealAttachments)"
+                        @click="handleRemoveSealItem(index, cardSealInfoForm.sealAttachments)"
                         type="text" size="small">移除
                       </el-button>
-                    </template>
                   </el-table-column>
                 </el-table>
               </template>
