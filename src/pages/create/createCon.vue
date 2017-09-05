@@ -1305,14 +1305,12 @@
                         v-model="item[scope.$index].remark"></el-input>
                     </template>
                   </el-table-column>
-                  <el-table-column
-                    fixed="right"
-                    label="操作"
-                    v-if="operateType!=='query'">
-                      <el-button
-                        @click="handleRemoveSealItem(index, cardSealInfoForm.sealAttachments)"
-                        type="text" size="small">移除
+                  <el-table-column>
+                    <template v-if="item[scope.$index].operate==='add'" scope="scope">
+                      <el-button @click="handleRemoveSealItem(index, cardSealInfoForm.sealAttachments)"
+                                 type="text" size="small">移除
                       </el-button>
+                    </template>
                   </el-table-column>
                 </el-table>
               </template>
@@ -2654,9 +2652,7 @@
         console.log('id', id)
       },
       handleChangeType(index, row) {
-        if (index === 2) {
-          row.isSeal = false
-        }
+        index===2?row.isSeal = false:row.isSeal = true;
       },
       handleRemoveSealItem(index, rows) {
         console.log('index',index);
