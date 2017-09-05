@@ -1128,7 +1128,7 @@
                       </el-row>
                     </template>
                   </el-table-column>
-                  <el-table-column prop="type" label="附件类型">
+                  <el-table-column prop="type" label="附件类型" width="150px">
                     <template scope="scope">
                       <el-select
                         :disabled="item[scope.$index].type===3"
@@ -1143,19 +1143,19 @@
                       </el-select>
                     </template>
                   </el-table-column>
-                  <el-table-column prop="code" label="从协议编号">
+                  <el-table-column prop="code" label="从协议编号" width="150px">
                     <template scope="scope">
                       <el-input :disabled="item[scope.$index].type===3"
                                 v-model="item[scope.$index].code"></el-input>
                     </template>
                   </el-table-column>
-                  <el-table-column prop="name" label="文件名称">
+                  <el-table-column prop="name" label="文件名称" width="200px">
                     <template scope="scope">
                       <el-input :disabled="item[scope.$index].type===3"
                                 v-model="item[scope.$index].name"></el-input>
                     </template>
                   </el-table-column>
-                  <el-table-column prop="upload" label="上传">
+                  <el-table-column prop="upload" label="上传" width="100px">
                     <template scope="scope">
                       <el-upload
                         ref="uploadSealFile"
@@ -1170,7 +1170,7 @@
                       </el-upload>
                     </template>
                   </el-table-column>
-                  <el-table-column prop="isSeal" label="是否盖章">
+                  <el-table-column prop="isSeal" label="是否盖章" width="70px">
                     <template scope="scope">
                       <el-checkbox
                         :disabled="item[scope.$index].type===3||item[scope.$index].type==2"
@@ -1179,13 +1179,15 @@
                   </el-table-column>
                   <el-table-column
                     prop="remark"
-                    label="备注">
+                    label="备注"
+                    width="200px">
                     <template scope="scope">
                       <el-input
                         :disabled="item[scope.$index].type===3"
                         v-model="item[scope.$index].remark"></el-input>
                     </template>
                   </el-table-column>
+                  <el-table-column fixed="right" label="操作"></el-table-column>
                 </el-table>
               </template>
               <template v-else>
@@ -1246,7 +1248,7 @@
                       </el-row>
                     </template>
                   </el-table-column>
-                  <el-table-column prop="type" label="附件类型">
+                  <el-table-column prop="type" label="附件类型" width="150px">
                     <template scope="scope">
                       <el-select
                         size="small"
@@ -1262,19 +1264,19 @@
                       </el-select>
                     </template>
                   </el-table-column>
-                  <el-table-column prop="code" label="从协议编号">
+                  <el-table-column prop="code" label="从协议编号" width="150px">
                     <template scope="scope">
                       <el-input :disabled="operateType==='query'||item[scope.$index].type===3"
                                 v-model="item[scope.$index].code"></el-input>
                     </template>
                   </el-table-column>
-                  <el-table-column prop="name" label="文件名称">
+                  <el-table-column prop="name" label="文件名称" width="200px">
                     <template scope="scope">
                       <el-input :disabled="operateType==='query'||item[scope.$index].type===3"
                                 v-model="item[scope.$index].name"></el-input>
                     </template>
                   </el-table-column>
-                  <el-table-column prop="upload" label="上传">
+                  <el-table-column prop="upload" label="上传" width="100px">
                     <template scope="scope">
                       <el-upload
                         ref="uploadSealFile"
@@ -1289,7 +1291,7 @@
                       </el-upload>
                     </template>
                   </el-table-column>
-                  <el-table-column prop="isSeal" label="是否盖章" width="50px">
+                  <el-table-column prop="isSeal" label="是否盖章" width="70px">
                     <template scope="scope">
                       <el-checkbox
                         :disabled="operateType==='query'||item[scope.$index].type!==1"
@@ -1298,14 +1300,17 @@
                   </el-table-column>
                   <el-table-column
                     prop="remark"
-                    label="备注">
+                    label="备注"
+                  width="200px">
                     <template scope="scope">
                       <el-input
                         :disabled="operateType==='query'||item[scope.$index].type===3"
                         v-model="item[scope.$index].remark"></el-input>
                     </template>
                   </el-table-column>
-                  <el-table-column>
+                  <el-table-column
+                    fixed="right"
+                    label="操作">
                     <template v-if="item[scope.$index].operate==='add'" scope="scope">
                       <el-button @click="handleRemoveSealItem(index, cardSealInfoForm.sealAttachments)"
                                  type="text" size="small">移除
