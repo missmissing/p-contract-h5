@@ -29,6 +29,9 @@
   .createCon .select-curTime{
     margin-bottom:5px;
   }
+  .createCon table{
+    width: 100%!important;
+  }
 </style>
 <template>
   <div class="createCon">
@@ -308,7 +311,9 @@
             <el-card v-if="cardFinanceInfoForm.hasMoney===1">
               <header slot="header">付款方式</header>
               <el-table :data="cardFinanceInfoForm.paymentMethods.advance"
-                        v-if="cardFinanceInfoForm.onePayment">
+                        v-if="cardFinanceInfoForm.onePayment"
+                        style="width: 100%"
+              >
                 <el-table-column type="expand" v-if="cardFinanceInfoForm.paymentMethods.advance[0].ifMultiPayment">
                   <template scope="props">
                     <el-button icon="plus" type="primary"
@@ -404,7 +409,8 @@
                 </el-table-column>
                 <el-table-column
                   prop="money"
-                  label="付款金额">
+                  label="付款金额"
+                width="150px">
                   <template scope="scope">
                     <el-input
                       :disabled="operateType==='query'"
@@ -462,7 +468,7 @@
                 </el-table-column>
               </el-table>
               <el-table :show-header="false" :data="cardFinanceInfoForm.paymentMethods.progress"
-                        v-if="cardFinanceInfoForm.onePayment">
+                        v-if="cardFinanceInfoForm.onePayment" style="width: 100%">
                 <el-table-column type="expand" v-if="cardFinanceInfoForm.paymentMethods.progress[0].ifMultiPayment">
                   <template scope="props">
                     <el-button icon="plus" type="primary" class="mb10" v-if="operateType!=='query'"
@@ -556,7 +562,8 @@
                 </el-table-column>
                 <el-table-column
                   prop="money"
-                  label="付款金额">
+                  label="付款金额"
+                  width="150px">
                   <template scope="scope">
                     <el-input
                       :disabled="operateType==='query'"
@@ -614,7 +621,7 @@
                 </el-table-column>
               </el-table>
               <el-table :show-header="false" :data="cardFinanceInfoForm.paymentMethods.final"
-                        v-if="cardFinanceInfoForm.onePayment">
+                        v-if="cardFinanceInfoForm.onePayment" style="width: 100%">
                 <el-table-column type="expand" v-if="cardFinanceInfoForm.paymentMethods.final[0].ifMultiPayment">
                   <template scope="props">
                     <el-button icon="plus" type="primary" class="mb10"
@@ -712,7 +719,8 @@
                 </el-table-column>
                 <el-table-column
                   prop="money"
-                  label="付款金额">
+                  label="付款金额"
+                  width="150px">
                   <template scope="scope">
                     <el-input
                       :disabled="operateType==='query'"
