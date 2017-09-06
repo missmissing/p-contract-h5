@@ -1,9 +1,11 @@
 import Http from '@/core/commonModel'
+const contract = '/api-contract'
+// const contract = '';
 
 export default {
     // 获取比价单列表数据
   getQrList(params) {
-    return Http.get(`/api/createContract/getQrList`, params)
+    return Http.post(`${contract}/contract-web/contract/folio/list`, params)
   },
     // 获取比价单详情
   getPrDetail(params) {

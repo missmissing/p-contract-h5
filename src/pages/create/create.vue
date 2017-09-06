@@ -300,15 +300,21 @@
         this.dialogVisible = false
         const startTime = this.prForm.createTime[0] ? this.prForm.createTime[0].toLocaleDateString() : ''
         const endTime = this.prForm.createTime[1] ? this.prForm.createTime[1].toLocaleDateString() : ''
+        /*
+        *"pr": "0010028015",
+         "fromDate": "",
+         "toDate":
+         */
         Api.getQrList({
-          qrCode: this.conForm.strPC,
-          prCode: this.prForm.prCode,
+          qr: this.conForm.strPC,
+          pr: this.prForm.prCode,
           meterialCode: this.prForm.meterialCode,
           createPerson: this.prForm.createPerson,
-          startTime: startTime,
-          endTime: endTime
+          fromDate: startTime,
+          toDate: endTime
         }).then((data) => {
-          this.arrPr = data.data.dataMap ? data.data.dataMap.list : []
+          this.arrPr = data.data.dataMap ? data.data.dataMap: []
+          console.log('list',this.arrPr);
         })
       },
       handleDetailPR(index, row) {
