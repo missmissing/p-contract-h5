@@ -23,7 +23,6 @@
                       :fetch-suggestions="querySearch"
                       @select="search"
                       v-model="form.templateCode"
-                      :value="form.templateCode"
                       :trigger-on-focus="false">
                     </el-autocomplete>
                   </el-form-item>

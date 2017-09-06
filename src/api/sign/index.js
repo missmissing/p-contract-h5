@@ -1,7 +1,10 @@
 import Http from '@/core/commonModel'
 
+const contract = '/api-contract'
+// const contract = '';
+
 export default {
-  getModuleList(params) {
-    return Http.get(`api/moduleLists/`, {params})
+  getContract(params) {
+    return Http.post(`${contract}/contract-web/getContract/`, {params})
   }
 }

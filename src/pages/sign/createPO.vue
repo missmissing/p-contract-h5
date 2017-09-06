@@ -16,7 +16,7 @@
             <el-row>
               <el-col :span="8">
                 <el-form-item label="采购申请">
-                  <el-input v-model="form.prCode"></el-input>
+                  <el-input v-model.trim="prCode"></el-input>
                 </el-form-item>
               </el-col>
               <el-button type="primary" class="ml20" @click="add">添 加</el-button>
@@ -24,20 +24,22 @@
             <el-row>
               <el-col :span="8">
                 <el-form-item label="合同编号">
-                  <el-input
+                  <el-autocomplete
+                    class="wp100"
                     icon="search"
-                    placeholder="匹配前，先点击图标进行搜索"
-                    v-model="form.contractCode"
-                    :on-icon-click="search">
-                  </el-input>
+                    :fetch-suggestions="querySearch"
+                    @select="search"
+                    v-model="contractCode"
+                    :trigger-on-focus="false">
+                  </el-autocomplete>
                 </el-form-item>
               </el-col>
               <el-button type="primary" @click="match" class="ml20">匹 配</el-button>
             </el-row>
           </el-form>
-          <div v-if="matchData.length!==0">
+          <div v-if="prData.length!==0">
             <el-table
-              :data="matchData"
+              :data="prData"
               border
               style="width: 100%">
               <el-table-column
@@ -73,7 +75,7 @@
                 label="操作">
                 <template scope="scope">
                   <el-button
-                    @click.native.prevent="deleteRow(scope.$index, orderData)"
+                    @click.native.prevent="deleteRow(scope.$index, prData)"
                     type="text"
                     size="small">
                     移除
@@ -210,6 +212,17 @@
                   label="行项目号"
                   width="100">
                 </el-table-column>
+                <el-table-column
+                  label="操作">
+                  <template scope="scope">
+                    <el-button
+                      @click.native.prevent="deleteRow(scope.$index, orderData)"
+                      type="text"
+                      size="small">
+                      移除
+                    </el-button>
+                  </template>
+                </el-table-column>
               </el-table>
             </div>
           </el-tab-pane>
@@ -299,7 +312,7 @@
       :visible.sync="dialogVisible">
       <div>
         <el-table
-          :data="matchSource"
+          :data="matchData"
           border
           max-height="450"
           style="width: 100%">
@@ -368,23 +381,24 @@
       </div>
       <div slot="footer">
         <el-button @click="dialogVisible = false">取 消</el-button>
-        <el-button type="primary" @click="dialogVisible = false">确 定</el-button>
+        <el-button type="primary" @click="getInfo">确 定</el-button>
       </div>
     </el-dialog>
   </div>
 </template>
 
 <script>
+  import signModel from '@/api/sign'
+
   export default {
     data() {
       return {
-        form: {
-          prCode: '',
-          contractCode: ''
-        },
-        matchData: [],
+        prCode: '',
+        contractCode: '',
+        prMap: {},
+        prData: [],
         contractData: [],
-        matchSource: [],
+        matchData: [],
         radio: null,
         orderData: [],
         serverData: [],
@@ -416,8 +430,18 @@
     },
     methods: {
       add() {
-        console.log('add')
-        this.matchData.push({
+        const prCode = this.prCode
+        if (!prCode) {
+          this.$message.warning('请输入采购申请号！')
+          return
+        }
+        if (this.prMap[prCode]) {
+          this.$message.warning('列表中已存在！')
+          return
+        }
+        this.prMap[prCode] = true
+
+        this.prData.push({
           prNum: '1',
           itemNum: 10,
           companyCode: '2',
@@ -446,9 +470,28 @@
         })
       },
       search() {
-        console.log(this.form.contractCode)
+        console.log(this.contractCode)
+      },
+      querySearch(queryString, cb) {
+        if (!queryString) {
+          return cb([])
+        }
+        signModel.getContract({
+          contractCode: queryString
+        }).then((res) => {
+          const result = res.data.dataMap || []
+          cb(this.createFilter(result))
+        }, () => {
+          cb([])
+        })
       },
       match() {
+        const contractCode = this.contractCode
+        if (!contractCode) {
+          this.$message.warning('请输入合同号！')
+          return
+        }
+
         this.dialogVisible = true
 
         const data = [{
@@ -480,13 +523,13 @@
         }]
         this.contractData = data
 
-        this.matchSource = this.getSource(data)
+        this.matchData = this.getSource(data)
       },
       getSource(data) {
         const result = []
         const goodMaps = {}
         const contractData = data
-        this.matchData.forEach((pr) => {
+        this.prData.forEach((pr) => {
           const {prNum, itemNum, prGoods = []} = pr
           prGoods.forEach((prGood) => {
             const {materielName, materielCode = []} = prGood
@@ -535,6 +578,15 @@
         })
         console.log(result)
         return result
+      },
+      getInfo() {
+        if (!this.radio) {
+          this.$message.warning('请选择一项！')
+          return
+        }
+        this.dialogVisible = false
+        const {contractCode} = this.matchData[this.radio]
+        console.log(contractCode, this.prData)
       },
       addService() {
         this.serverDialogVisible = true
