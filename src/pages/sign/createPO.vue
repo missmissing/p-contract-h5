@@ -16,10 +16,10 @@
             <el-row>
               <el-col :span="8">
                 <el-form-item label="采购申请">
-                  <el-input></el-input>
+                  <el-input v-model="form.prCode"></el-input>
                 </el-form-item>
               </el-col>
-              <el-button type="primary" class="ml20">添 加</el-button>
+              <el-button type="primary" class="ml20" @click="add">添 加</el-button>
             </el-row>
             <el-row>
               <el-col :span="8">
@@ -35,9 +35,9 @@
               <el-button type="primary" @click="match" class="ml20">匹 配</el-button>
             </el-row>
           </el-form>
-          <div v-if="form.matchData.length!==0">
+          <div v-if="matchData.length!==0">
             <el-table
-              :data="form.orderData"
+              :data="matchData"
               border
               style="width: 100%">
               <el-table-column
@@ -67,6 +67,18 @@
               <el-table-column
                 prop="prLink"
                 label="PR申请链接">
+              </el-table-column>
+              √
+              <el-table-column
+                label="操作">
+                <template scope="scope">
+                  <el-button
+                    @click.native.prevent="deleteRow(scope.$index, orderData)"
+                    type="text"
+                    size="small">
+                    移除
+                  </el-button>
+                </template>
               </el-table-column>
             </el-table>
           </div>
@@ -146,7 +158,7 @@
                 </el-row>
               </el-form>
               <el-table
-                :data="form.orderData"
+                :data="orderData"
                 border
                 style="width: 100%">
                 <el-table-column
@@ -207,7 +219,7 @@
                 <el-button type="primary" @click="addService">新 增</el-button>
               </div>
               <el-table
-                :data="form.serverData"
+                :data="serverData"
                 border
                 style="width: 100%">
                 <el-table-column
@@ -218,23 +230,14 @@
                 <el-table-column
                   prop="serviceName"
                   label="服务名称">
-                  <template scope="scope">
-                    <el-input v-model="scope.row.serviceName"></el-input>
-                  </template>
                 </el-table-column>
                 <el-table-column
                   prop="acceptRequire"
                   label="验收要求">
-                  <template scope="scope">
-                    <el-input v-model="scope.row.acceptRequire"></el-input>
-                  </template>
                 </el-table-column>
                 <el-table-column
                   prop="remark"
                   label="备注">
-                  <template scope="scope">
-                    <el-input v-model="scope.row.remark"></el-input>
-                  </template>
                 </el-table-column>
                 <el-table-column
                   fixed="right"
@@ -242,7 +245,7 @@
                   width="100">
                   <template scope="scope">
                     <el-button
-                      @click.native.prevent="deleteRow(scope.$index, form.serverData)"
+                      @click.native.prevent="deleteRow(scope.$index, serverData)"
                       type="text"
                       size="small">
                       移除
@@ -256,9 +259,40 @@
       </el-card>
     </div>
     <div class="mt20 mb20 ml20">
-      <el-button>保 存</el-button>
+      <!--<el-button>保 存</el-button>-->
       <el-button type="primary">提 交</el-button>
     </div>
+    <el-dialog
+      title="新增服务验收信息"
+      :visible.sync="serverDialogVisible">
+      <el-form
+        ref="serverDialogForm"
+        :model="serverDialogForm"
+        :rules="serverRules"
+        label-width="80px">
+        <el-form-item label="服务名称" prop="serverName">
+          <el-input v-model="serverDialogForm.serverName"></el-input>
+        </el-form-item>
+        <el-form-item label="验收要求" prop="acceptRequire">
+          <el-input
+            type="textarea"
+            :autosize="{ minRows: 2 }"
+            resize="none"
+            v-model="serverDialogForm.acceptRequire"></el-input>
+        </el-form-item>
+        <el-form-item label="备注" prop="remark">
+          <el-input
+            type="textarea"
+            :autosize="{ minRows: 2 }"
+            resize="none"
+            v-model="serverDialogForm.remark"></el-input>
+        </el-form-item>
+      </el-form>
+      <div slot="footer">
+        <el-button @click="serverDialogVisible=false">取 消</el-button>
+        <el-button type="primary" @click="addDialogOk">确 定</el-button>
+      </div>
+    </el-dialog>
     <el-dialog
       title="匹配界面"
       size="large"
@@ -267,7 +301,7 @@
         <el-table
           :data="matchSource"
           border
-          max-height="250"
+          max-height="450"
           style="width: 100%">
           <el-table-column
             prop="prNum"
@@ -287,6 +321,14 @@
           <el-table-column
             prop="materielName"
             label="物料名称">
+            <template scope="scope">
+              <template v-if="!scope.row.materielName">
+                <el-radio v-model="radio" :label="scope.$index">{{''}}</el-radio>
+              </template>
+              <template v-else>
+                {{scope.row.materielName}}
+              </template>
+            </template>
           </el-table-column>
           <el-table-column
             prop="contractCode"
@@ -337,34 +379,182 @@
     data() {
       return {
         form: {
-          contractCode: '',
-          matchData: [],
-          orderData: [],
-          serverData: []
+          prCode: '',
+          contractCode: ''
         },
+        matchData: [],
+        contractData: [],
         matchSource: [],
+        radio: null,
+        orderData: [],
+        serverData: [],
+        serverDialogVisible: false,
+        serverDialogForm: {
+          serverName: '',
+          acceptRequire: '',
+          remark: ''
+        },
+        serverRules: {
+          serverName: [{
+            required: true,
+            message: '请输入服务名称',
+            trigger: 'blur'
+          }],
+          acceptRequire: [{
+            required: true,
+            message: '请输入验收要求',
+            trigger: 'blur'
+          }, {
+            max: 300,
+            message: '长度不超过300个字符',
+            trigger: 'change'
+          }],
+          remark: [{max: 300, message: '长度不超过300个字符', trigger: 'change'}]
+        },
         dialogVisible: false
       }
     },
     methods: {
+      add() {
+        console.log('add')
+        this.matchData.push({
+          prNum: '1',
+          itemNum: 10,
+          companyCode: '2',
+          companyName: '红星美凯龙',
+          initiator: 'tester',
+          sponsDepart: 'hh',
+          prCreateTime: '2017-09-08',
+          prLink: 'baidu.com',
+          prGoods: [{
+            materielCode: 'abc',
+            materielName: '笔记本'
+          }]
+        }, {
+          prNum: '2',
+          itemNum: 20,
+          companyCode: '22',
+          companyName: '红星美凯龙',
+          initiator: 'tester',
+          sponsDepart: 'hh',
+          prCreateTime: '2017-09-08',
+          prLink: 'baidu.com',
+          prGoods: [{
+            materielCode: 'abcd',
+            materielName: '铅笔'
+          }]
+        })
+      },
       search() {
         console.log(this.form.contractCode)
       },
       match() {
         this.dialogVisible = true
+
+        const data = [{
+          contractCode: 1234,
+          supplier: 'ff',
+          supplierName: 'gg',
+          startDate: '2017-08-03',
+          endDate: '2017-09-04',
+          contractGoods: [{
+            contractGoodCode: 'abc',
+            taxPrice: '444',
+            taxRate: '10%'
+          }]
+        }, {
+          contractCode: 12345,
+          supplier: 'ff',
+          supplierName: 'gg',
+          startDate: '2017-08-03',
+          endDate: '2017-09-04',
+          contractGoods: [{
+            contractGoodCode: 'abc',
+            taxPrice: '44',
+            taxRate: '10%'
+          }, {
+            contractGoodCode: 'abcd',
+            taxPrice: '444',
+            taxRate: '10%'
+          }]
+        }]
+        this.contractData = data
+
+        this.matchSource = this.getSource(data)
+      },
+      getSource(data) {
+        const result = []
+        const goodMaps = {}
+        const contractData = data
+        this.matchData.forEach((pr) => {
+          const {prNum, itemNum, prGoods = []} = pr
+          prGoods.forEach((prGood) => {
+            const {materielName, materielCode = []} = prGood
+            contractData.forEach((contract) => {
+              const {contractCode, supplier, supplierName, startDate, endDate, contractGoods = []} = contract
+              contractGoods.forEach((contractGood) => {
+                const {contractGoodCode, taxPrice, taxRate} = contractGood
+                if (materielCode === contractGoodCode) {
+                  const contractGoodData = {
+                    contractCode,
+                    contractGoodCode,
+                    supplier,
+                    supplierName,
+                    startDate,
+                    endDate,
+                    taxPrice,
+                    taxRate
+                  }
+                  if (goodMaps[materielCode]) {
+                    goodMaps[materielCode]['data'].push({
+                      ...contractGoodData
+                    })
+                  } else {
+                    goodMaps[materielCode] = {
+                      prNum,
+                      itemNum,
+                      materielCode,
+                      materielName,
+                      data: [{
+                        ...contractGoodData
+                      }]
+                    }
+                  }
+                }
+              })
+            })
+          })
+        })
+
+        Object.keys(goodMaps).forEach((key) => {
+          const {prNum, itemNum, materielCode, materielName, data} = goodMaps[key]
+          result.push({prNum, itemNum, materielCode, materielName})
+          data.forEach((item) => {
+            result.push(item)
+          })
+        })
+        console.log(result)
+        return result
       },
       addService() {
-        this.form.serverData = [...this.form.serverData, {
-          serviceName: '',
-          acceptRequire: '',
-          remark: ''
-        }]
+        this.serverDialogVisible = true
       },
       handleServiceItem(index, row) {
         console.log(row)
       },
       deleteRow(index, rows) {
         rows.splice(index, 1)
+      },
+      addDialogOk() {
+        this.$refs['serverDialogForm'].validate((valid) => {
+          if (valid) {
+            this.serverData.push({...this.serverDialogForm})
+            this.serverDialogVisible = false
+          } else {
+            console.log('error submit!!')
+            return false
+          }
+        })
       }
     }
   }

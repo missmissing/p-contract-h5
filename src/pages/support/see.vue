@@ -31,7 +31,7 @@
                 </el-col>
                 <el-col :span="8">
                   <el-form-item label="文本类型">
-                    {{form.templateType==='TEMPLATE'?'合同模板':'合同文本'}}
+                    {{form.templateType === 'TEMPLATE' ? '合同模板' : '合同文本'}}
                   </el-form-item>
                 </el-col>
               </el-row>
@@ -136,7 +136,7 @@
     },
     methods: {
       setData(tplInfo) {
-        const {templateCode, templateName, templateType, bizTypes, startDate, endDate, version, operatorName, creatorName,description, files} = tplInfo
+        const {templateCode, templateName, templateType, bizTypes, startDate, endDate, version, operatorName, creatorName, description, files} = tplInfo
         this.tplInfo = tplInfo
         this.form['templateCode'] = templateCode
         this.form['templateName'] = templateName
