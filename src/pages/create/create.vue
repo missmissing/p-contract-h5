@@ -38,20 +38,8 @@
             </el-form-item>
           </el-col>
           <el-col :span="8">
-            <el-form-item label="合同类型" prop="curConTypeId">
-              <el-select
-                v-model="conForm.curConTypeId"
-                placeholder="请选择合同类型"
-                class="wp100"
-              >
-                <el-option
-                  v-for="item in conForm.conType"
-                  :key="item.id"
-                  :value="item.id"
-                  :label="item.name"
-                >
-                </el-option>
-              </el-select>
+            <el-form-item label="合同类型" prop="conTypeName">
+              <el-input readonly placeholder="请选择合同类型" @focus="visible=true" v-model="conForm.conTypeName"></el-input>
             </el-form-item>
           </el-col>
         </el-row>
@@ -61,7 +49,8 @@
       <el-table ref="prTable" :data="arrPr" highlight-current-row @current-change="handleCurrentChange">
         <el-table-column
           label="序号"
-          type="index">
+          type="index"
+        width="80px">
         </el-table-column>
         <el-table-column
           property="id"
@@ -121,9 +110,9 @@
         <el-form-item label="PR号">
           <el-input v-model="prForm.prCode" placeholder="请输入PR号"></el-input>
         </el-form-item>
-        <el-form-item label="材料编码">
+        <!--<el-form-item label="材料编码">
           <el-input v-model="prForm.meterialCode" placeholder="请输入材料编码"></el-input>
-        </el-form-item>
+        </el-form-item>-->
         <el-form-item label="创建人">
           <el-input v-model="prForm.createPerson" placeholder="请输入创建人"></el-input>
         </el-form-item>
@@ -143,33 +132,47 @@
         <el-button type="primary" @click="handleOKDialog">确定</el-button>
       </template>
     </el-dialog>
+    <TreeModal
+      nodeKey="id"
+      title="选择业务类型"
+      :visible.sync="visible"
+      :regions="regions"
+      :defaultProps="defaultProps"
+      @ok="setBusiType">
+    </TreeModal>
   </div>
 </template>
 
 <script>
   import Api from '../../api/manageContract'
+  import getBusiType from '@/mixins/getBusiType'
+  import TreeModal from '@/components/treeModal.vue'
 
   export default {
+    mixins: [getBusiType],
     data() {
       return {
         conForm: {
           isPr: true,
           strPC: '', // 比价单编号
           curConModelId: '',
-          curConTypeId: '',
-          conModel: [],
-          conType: []
+          conModel: [{id: 'con1', name: '框架意向合同'},
+            {id: 'con2', name: '框架合同'},
+            {id: 'con3', name: '单一合同'},
+            {id: 'con4', name: '简易合同'},],
+          conType: [],
+          conTypeName:'',
         },
         conFormRules: {
           strPC: [
             {required: true, message: '请输入比加单编号', trigger: 'blur'}
           ],
-          curConTypeId: [
-            {required: true, message: '请选择合同类型', trigger: 'change'}
-          ],
           curConModelId: [
             {required: true, message: '请选择合同模式', trigger: 'change'}
-          ]
+          ],
+          conTypeName:[
+            {required: true, message: '请选择合同类型', trigger: 'change'}
+          ],
         },
         arrPr: [], // 比价单列表
         currentPr: null, // 当前选择的比价单
@@ -208,14 +211,15 @@
               }
             ]
           }
-        }
+        },
+        visible:false,
+        defaultProps: {
+          children: 'children',
+          label: 'businessName'
+        },
       }
     },
     mounted() {
-      Api.getContractModelsAndTypes({}).then((data) => {
-        this.conForm.conModel = data.data.dataMap.modelList
-        this.conForm.conType = data.data.dataMap.typeList
-      })
     },
     computed: {
       conModels: function () {
@@ -223,13 +227,17 @@
         return conForm.isPr ? conForm.conModel : [conForm.conModel[0], conForm.conModel[1]]
       }
     },
+    components:{
+      TreeModal
+    },
     methods: {
       handleSwitch(newStatus) {
         if (!newStatus) {
           this.arrPr = []
           this.conForm.strPC = ''
           this.conForm.curConModelId = ''
-          this.conForm.curConTypeId = ''
+          this.conForm.conTypeName = ''
+          this.conForm.conType = []
         }
       },
       handleQuery() {
@@ -269,7 +277,7 @@
               query: {
                 currentPr: this.currentPr ? this.currentPr.id : '',
                 curConModelId: this.conForm.curConModelId,
-                curConTypeId: this.conForm.curConTypeId,
+                curConTypeId: this.conForm.conType,
                 operateType: 'create'
               }
             })
@@ -305,7 +313,7 @@
       },
       handleDetailPR(index, row) {
         window.open(row.url)
-      }
+      },
       /* handleTestCreate() {
        console.log('create')
        let routePath = '/ConCreate/CreateFrameContract'
@@ -346,6 +354,17 @@
        }
        })
        } */
+      setBusiType(checkNodes,tree){
+        const conType = []
+        const conTypeName = []
+        const leafs = tree.getCheckedNodes(true)
+        leafs.forEach((item) => {
+          conType.push(item.id)
+          conTypeName.push(item.businessName)
+        })
+        this.conForm.conType = conType
+        this.conForm.conTypeName = conTypeName.join(',')
+      }
     }
 
   }
