@@ -154,6 +154,7 @@
       :defaultProps="defaultProps"
       :regions="regions"
       :initialKeys="form.bizTypes"
+      multi
       @ok="setBusiType">
     </TreeModal>
   </div>
@@ -241,6 +242,7 @@
         })
         this.form.bizTypes = bizTypes
         this.form.busiTypeText = busiTypeText.join(',')
+        this.visible = false
       },
       setData(tplInfo) {
         const {templateName, templateType, bizTypes, startDate, version, operatorName, creatorName, description, files} = tplInfo

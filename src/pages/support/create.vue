@@ -112,6 +112,7 @@
       :defaultProps="defaultProps"
       :regions="regions"
       :initialKeys="form.bizTypes"
+      multi
       @ok="setBusiType">
     </TreeModal>
   </div>
@@ -180,6 +181,7 @@
         })
         this.form.bizTypes = bizTypes
         this.form.busiTypeText = busiTypeText.join(',')
+        this.visible = false
       },
       getResult() {
         const {info} = this.$store.state.support.create
