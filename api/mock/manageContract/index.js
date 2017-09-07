@@ -1,10 +1,9 @@
 module.exports = function (api) {
-  api.use('/api/createContract/getQrList', function (req, res) {
+  api.use('/contract-web/contract/folio/list', function (req, res) {
     res.status(200).json({
       code: 200,
       message: 'success',
-      dataMap: {
-        list: [
+      dataMap: [
           {
             id: '111',
             name: 'wyy',
@@ -24,7 +23,6 @@ module.exports = function (api) {
             url: 'http://www.baidu.com',
           }
         ]
-      }
     });
   });
   api.use('/api/createContract/getPrDetail', function (req, res) {

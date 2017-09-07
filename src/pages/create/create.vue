@@ -53,15 +53,15 @@
         width="80px">
         </el-table-column>
         <el-table-column
-          property="id"
+          property="folio"
           label="比价单编码">
         </el-table-column>
         <el-table-column
-          property="name"
+          property="originatorName"
           label="发起人">
         </el-table-column>
         <el-table-column
-          property="department"
+          property="originatorDepartmentName"
           label="发起部门">
         </el-table-column>
         <el-table-column
@@ -73,7 +73,7 @@
           label="流程状态">
         </el-table-column>
         <el-table-column
-          property="endTime"
+          property="finishTime"
           label="结束时间">
         </el-table-column>
         <el-table-column
@@ -85,7 +85,7 @@
         </el-table-column>
       </el-table>
       <div style="text-align: right;margin-top:20px">
-        <el-button class="btnCancelChoose" type="primary" :disabled="!(currentPr&&currentPr.id)"
+        <el-button class="btnCancelChoose" type="primary" :disabled="!(currentPr&&currentPr.folio)"
                    @click="handleCancel">取消选择
         </el-button>
       </div>
@@ -275,7 +275,7 @@
             this.$router.push({
               path: routePath,
               query: {
-                currentPr: this.currentPr ? this.currentPr.id : '',
+                currentPr: this.currentPr ? this.currentPr.currentPr : '',
                 curConModelId: this.conForm.curConModelId,
                 curConTypeId: this.conForm.conType,
                 operateType: 'create'
@@ -313,12 +313,21 @@
           fromDate: startTime,
           toDate: endTime
         }).then((data) => {
-          this.arrPr = data.data.dataMap ? data.data.dataMap: []
+          this.arrPr = data.data.dataMap ? data.data.dataMap: [];
+          /*
+           id: '111',
+           name: 'wyy',
+           department: '技术研发部',
+           startTime: '2017-09-09',
+           processStatus: '1',
+           endTime: '2017-10-09',
+           url: 'http://www.baidu.com',
+           */
           console.log('list',this.arrPr);
         })
       },
       handleDetailPR(index, row) {
-        window.open(row.url)
+        window.open(row.processViewUrl)
       },
       /* handleTestCreate() {
        console.log('create')

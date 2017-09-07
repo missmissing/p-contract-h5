@@ -506,6 +506,17 @@
         cardRemarkInfoForm: {
           otherInstruction: ''
         },
+        cardRelatedInfoForm: {
+          contractList: [
+            {
+              contractCode: '0001001',
+              type: '类型',
+              status: '状态',
+              company: '公司',
+              startTime: '2018-09-11'
+            }
+          ]
+        },
         formContractSupplier: {
           rules: {
             search: [
@@ -525,17 +536,6 @@
           search: '',
           subjects: [],
           loading: false
-        },
-        cardRelatedInfoForm: {
-          contractList: [
-            {
-              contractCode: '0001001',
-              type: '类型',
-              status: '状态',
-              company: '公司',
-              startTime: '2018-09-11'
-            }
-          ]
         }
       }
     },
