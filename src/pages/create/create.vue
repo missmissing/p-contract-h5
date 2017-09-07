@@ -146,10 +146,11 @@
 <script>
   import Api from '../../api/manageContract'
   import getBusiType from '@/mixins/getBusiType'
+  import comLoading from '@/mixins/comLoading'
   import TreeModal from '@/components/treeModal.vue'
 
   export default {
-    mixins: [getBusiType],
+    mixins: [getBusiType,comLoading],
     data() {
       return {
         conForm: {
@@ -275,7 +276,7 @@
             this.$router.push({
               path: routePath,
               query: {
-                currentPr: this.currentPr ? this.currentPr.currentPr : '',
+                currentPr: this.currentPr ? this.currentPr.pr : '',
                 curConModelId: this.conForm.curConModelId,
                 curConTypeId: this.conForm.conType,
                 operateType: 'create'
@@ -297,14 +298,10 @@
         this.dialogVisible = false
       },
       handleOKDialog() {
+        this.comLoading(1)
         this.dialogVisible = false
         const startTime = this.prForm.createTime[0] ? this.prForm.createTime[0].toLocaleDateString() : ''
         const endTime = this.prForm.createTime[1] ? this.prForm.createTime[1].toLocaleDateString() : ''
-        /*
-        *"pr": "0010028015",
-         "fromDate": "",
-         "toDate":
-         */
         Api.getQrList({
           qr: this.conForm.strPC,
           pr: this.prForm.prCode,
@@ -314,16 +311,7 @@
           toDate: endTime
         }).then((data) => {
           this.arrPr = data.data.dataMap ? data.data.dataMap: [];
-          /*
-           id: '111',
-           name: 'wyy',
-           department: '技术研发部',
-           startTime: '2017-09-09',
-           processStatus: '1',
-           endTime: '2017-10-09',
-           url: 'http://www.baidu.com',
-           */
-          console.log('list',this.arrPr);
+          this.comLoading()
         })
       },
       handleDetailPR(index, row) {
