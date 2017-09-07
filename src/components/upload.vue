@@ -75,7 +75,11 @@
       },
       onSuccess(response, file, fileList) {
         console.log(response, file, fileList)
-        const {fileId} = response.dataMap
+        const {code, dataMap} = response
+        if (code !== '200') {
+          return
+        }
+        const {fileId} = dataMap
         file.url = this.download ? `${this.download}${fileId}` : ''
         file.fileId = fileId
         this.$emit('update:fileList', fileList)

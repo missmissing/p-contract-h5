@@ -16,12 +16,14 @@
             <el-row>
               <el-col :span="8">
                 <el-form-item label="合同编号">
-                  <el-input
+                  <el-autocomplete
+                    class="wp100"
                     icon="search"
-                    placeholder="点击图标进行搜索"
-                    v-model="form.contractCode"
-                    :on-icon-click="search">
-                  </el-input>
+                    :fetch-suggestions="querySearch"
+                    @select="search"
+                    v-model="contractCode"
+                    :trigger-on-focus="false">
+                  </el-autocomplete>
                 </el-form-item>
               </el-col>
               <el-button type="info" class="ml20">详 情</el-button>
@@ -51,7 +53,7 @@
                 <el-form-item label="合同中止原因">
                   <el-select
                     class="wp100"
-                    v-model="form.stopReason"
+                    v-model="stopReason"
                     placeholder="请选择">
                     <el-option
                       v-for="item in options"
@@ -66,7 +68,7 @@
                 <el-form-item label="实际中止日期">
                   <el-date-picker
                     style="width:100%;"
-                    v-model="form.stopDate"
+                    v-model="stopDate"
                     type="date"
                     placeholder="选择日期">
                   </el-date-picker>
@@ -79,7 +81,7 @@
                 :maxlength="300"
                 :autosize="{ minRows: 2 }"
                 resize="none"
-                v-model="form.desc">
+                v-model="desc">
               </el-input>
             </el-form-item>
           </el-form>
@@ -94,15 +96,15 @@
 </template>
 
 <script>
+  import Api from '@/api/performance'
+
   export default {
     data() {
       return {
-        form: {
-          contractCode: '',
-          stopDate: '',
-          stopReason: '1',
-          desc: ''
-        },
+        contractCode: '',
+        stopDate: '',
+        stopReason: '1',
+        desc: '',
         options: [{
           value: '1',
           label: '合同违约中止'
@@ -111,7 +113,25 @@
     },
     methods: {
       search() {
-        console.log(this.form.prCode)
+        console.log(this.contractCode)
+      },
+      querySearch(queryString, cb) {
+        if (!queryString) {
+          return cb([])
+        }
+        Api.getContractCode({
+          contractCode: queryString
+        }).then((res) => {
+          const result = res.data.dataMap || []
+          cb(this.createFilter(result))
+        }, () => {
+          cb([])
+        })
+      },
+      createFilter(result) {
+        return result.map((item) => {
+          return {value: item, label: item}
+        })
       }
     }
   }

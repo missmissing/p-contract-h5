@@ -213,7 +213,9 @@
                   width="100">
                 </el-table-column>
                 <el-table-column
-                  label="操作">
+                  label="操作"
+                  fixed="right"
+                  width="100">
                   <template scope="scope">
                     <el-button
                       @click.native.prevent="deleteRow(scope.$index, orderData)"
@@ -485,6 +487,11 @@
           cb([])
         })
       },
+      createFilter(result) {
+        return result.map((item) => {
+          return {value: item, label: item}
+        })
+      },
       match() {
         const contractCode = this.contractCode
         if (!contractCode) {
@@ -600,7 +607,11 @@
       addDialogOk() {
         this.$refs['serverDialogForm'].validate((valid) => {
           if (valid) {
-            this.serverData.push({...this.serverDialogForm})
+            const form = this.serverDialogForm
+            this.serverData.push({...form})
+            Object.keys(form).forEach((key) => {
+              form[key] = ''
+            })
             this.serverDialogVisible = false
           } else {
             console.log('error submit!!')
