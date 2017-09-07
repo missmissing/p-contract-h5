@@ -6,14 +6,15 @@
   .createCon .errorCount {
     font-style: normal;
     position: absolute;
-    top: -10px;
+    top: -11px;
     left: -15px;
-    line-height: 15px;
+    line-height: 18px;
     text-align: center;
     background: red;
     color: white;
     border-radius: 50% 50%;
-    padding: 3px;
+    width: 18px;
+    height: 18px;
   }
 
   .createCon .errorMsg {
@@ -2549,6 +2550,8 @@
             serviceCheckMsg: ''
           }
         }
+        console.log('this.$refs.cardContentInfoForm',this.$refs.cardContentInfoForm);
+        console.log('this.$refs.cardContCheckInfoForm',this.$refs.cardContCheckInfoForm);
         this.$refs.cardContentInfoForm.validate((valid) => {
           if (valid) {
             const supplier = this.cardContentInfoForm.tableSupplierInfo
@@ -2566,18 +2569,20 @@
             return false
           }
         })
-        this.$refs.cardContCheckInfoForm.validate((valid) => {
-          if (valid) {
-            const service = this.cardContCheckInfoForm.serviceMatters
-            if (service.length === 0) {
-              errors.cardContCheckInfoForm.errorCount += 1
-              errors.cardContCheckInfoForm.serviceCheckMsg = '服务验收事项不能为空'
+        if(this.$refs.cardContCheckInfoForm){
+          this.$refs.cardContCheckInfoForm.validate((valid) => {
+            if (valid) {
+              const service = this.cardContCheckInfoForm.serviceMatters
+              if (service.length === 0) {
+                errors.cardContCheckInfoForm.errorCount += 1
+                errors.cardContCheckInfoForm.serviceCheckMsg = '服务验收事项不能为空'
+              }
+            } else {
+              this.$message.error('请填写完整信息再提交！')
+              return false
             }
-          } else {
-            this.$message.error('请填写完整信息再提交！')
-            return false
-          }
-        })
+          })
+        }
         this.cardContentInfoForm.errorCount = errors.cardContentInfoForm.errorCount
         this.cardContentInfoForm.supplierErrorMsg = errors.cardContentInfoForm.supplierErrorMsg
         this.cardContentInfoForm.subjectsErrorMsg = errors.cardContentInfoForm.subjectsErrorMsg
@@ -2659,6 +2664,7 @@
       handleQuery(id) {
         console.log('handleQuery', id)
         this.updateForm.visible = true
+        //根据合同编号获取合同模式设置当前合同模式及合同类型
         // Api.getUpdateInfo()
       },
       handleDetail(id) {
