@@ -5,8 +5,6 @@ import 'nprogress/nprogress.css'
 import store from '../store'
 import * as types from '../store/consts'
 import {routerNames} from '../core/consts'
-import Api from '../api'
-import Cookies from 'js-cookie'
 
 Vue.use(Router)
 
@@ -242,7 +240,7 @@ const router = new Router({
           name: routerNames.con_tpl_list
         },
         {
-          path: '/contemplate/see/:id',
+          path: '/contemplate/see',
           component: function (resolve) {
             require(['../pages/support/see.vue'], resolve)
           },
@@ -283,6 +281,26 @@ const router = new Router({
           name: routerNames.con_tpl_abolish
         }
       ],
+      meta: {
+        iconCls: 'stats-bars'
+      }
+    },
+    {
+      path: '/',
+      component: function (resolve) {
+        require(['../pages/home/home.vue'], resolve)
+      },
+      name: routerNames.con_process,
+      children: [{
+        path: '/conProcess/handingProcess',
+        meta: {
+          auth: true
+        },
+        component: function (resolve) {
+          require(['../pages/process/handingProcess.vue'], resolve)
+        },
+        name: routerNames.con_handing_process
+      }],
       meta: {
         iconCls: 'stats-bars'
       }

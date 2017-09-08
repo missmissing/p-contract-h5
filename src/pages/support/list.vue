@@ -63,8 +63,6 @@
       :data="tableData"
       border
       highlight-current-row
-      v-loading="loadingFlag"
-      :element-loading-text="loadingText"
       class="wp100">
       <el-table-column
         prop="templateName"
@@ -168,7 +166,7 @@
       },
       see(index, row) {
         console.log(row)
-        this.$router.push(`/contemplate/see/${row.id}`)
+        this.$router.push(`/contemplate/see?id=${row.id}`)
       },
       formatDateRange(value) {
         const daterange = value.split(' ')

@@ -58,7 +58,16 @@ export const routerNames = {
   con_tpl_see: '合同模板查看',
   con_tpl_create: '合同模板创建',
   con_tpl_update: '合同模板变更',
-  con_tpl_abolish: '合同模板废除'
+  con_tpl_abolish: '合同模板废除',
+
+  con_process: '合同流程',
+  con_handing_process: '我的待办流程'
+
+}
+
+export const procCode = {
+  template: 'CRS_Contract_CreateTemplate',
+  contract: ''
 }
 
 /** 审批按钮（新版本） */

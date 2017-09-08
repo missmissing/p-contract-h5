@@ -8,6 +8,6 @@ export default {
     return Http.post(`${contract}/contract-web/getOrderCode/`, {params})
   },
   getContractCode(params) {
-    return Http.post(`${contract}/contract-web/getContractCode/`, {params})
+    return Http.post(`${contract}/contract-web/getContractCode/`, params)
   }
 }

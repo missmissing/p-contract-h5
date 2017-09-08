@@ -5,6 +5,6 @@ const contract = '/api-contract'
 
 export default {
   getContract(params) {
-    return Http.post(`${contract}/contract-web/getContract/`, {params})
+    return Http.post(`${contract}/contract-web/getContract/`, params)
   }
 }

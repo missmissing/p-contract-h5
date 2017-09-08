@@ -1,6 +1,7 @@
 import Http from '@/core/commonModel'
 
-const contract = '/api-contract'
+const contract = 'api'
+// const contract = '/api-contract'
 
 export default {
   login(params) {
