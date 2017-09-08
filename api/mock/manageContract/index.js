@@ -4,34 +4,43 @@ module.exports = function (api) {
       code: 200,
       message: 'success',
       dataMap: [
-          {
-            id: '111',
-            name: 'wyy',
-            department: '技术研发部',
-            startTime: '2017-09-09',
-            processStatus: '1',
-            endTime: '2017-10-09',
-            url: 'http://www.baidu.com',
-          },
-          {
-            id: '222',
-            name: 'echo',
-            department: '技术研发部11',
-            startTime: '2017-11-11',
-            processStatus: '2',
-            endTime: '2017-11-11',
-            url: 'http://www.baidu.com',
-          }
+        {
+          "folio": "XBJ1760945",
+          "title": "4323",
+          "pr": "0010028015",
+          "procInstId": "60945",
+          "originatorId": "51006793",
+          "originatorName": "顾康",
+          "originatorDepartmentCode": "10000315",
+          "originatorDepartmentName": "财务管理中心.采购部",
+          "startTime": 1504074683663,
+          "finishTime": 1504577479987,
+          "supplierCode": "0040001628",
+          "supplierName": "史泰博(上海)有限公司",
+          "companyCode": "1001",
+          "companyName": "红星美凯龙家居集团股份有限公司",
+          "processViewUrl": "http://192.168.122.214:8081/Finance/XBJ/View.aspx?ProcInstId=60945",
+          "items": null
+        },
+        {
+          "folio": "XBJ17609451",
+          "title": "43231",
+          "pr": "0010028015",
+          "procInstId": "60945",
+          "originatorId": "51006793",
+          "originatorName": "顾康",
+          "originatorDepartmentCode": "10000315",
+          "originatorDepartmentName": "财务管理中心.采购部",
+          "startTime": 1504074683663,
+          "finishTime": 1504577479987,
+          "supplierCode": "0040001628",
+          "supplierName": "史泰博(上海)有限公司",
+          "companyCode": "1001",
+          "companyName": "红星美凯龙家居集团股份有限公司",
+          "processViewUrl": "http://192.168.122.214:8081/Finance/XBJ/View.aspx?ProcInstId=60945",
+          "items": null
+        }
         ]
-    });
-  });
-  api.use('/api/createContract/getPrDetail', function (req, res) {
-    res.status(200).json({
-      code: 200,
-      message: 'success',
-      dataMap: {
-        url: 'http://www.baidu.com'
-      }
     });
   });
   api.use('/api/createContract/getContractBaseInfo', function (req, res) {

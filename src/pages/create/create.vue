@@ -15,7 +15,7 @@
             <el-button style="margin-left: 33px" :disabled="!conForm.strPC" class="btnSearch"
                        @click="handleQuery" type="primary">查找
             </el-button>
-            <el-button @click="handleDetail" :disabled="!conForm.strPC" type="primary">详情
+            <el-button @click="handleHighQuery" type="primary">高级
             </el-button>
           </el-col>
         </el-row>
@@ -45,16 +45,14 @@
         </el-row>
       </el-form>
     </el-card>
-    <el-card v-if="conForm.isPr&&arrPr.length">
-      <el-table ref="prTable" :data="arrPr" highlight-current-row @current-change="handleCurrentChange">
-        <el-table-column
-          label="序号"
-          type="index"
-        width="80px">
-        </el-table-column>
+    <el-card v-if="curPriceList.length">
+      <el-table ref="prTable" :data="curPriceList">
         <el-table-column
           property="folio"
           label="比价单编码">
+          <template scope="scope">
+            {{scope.row.folio}}
+          </template>
         </el-table-column>
         <el-table-column
           property="originatorName"
@@ -62,7 +60,8 @@
         </el-table-column>
         <el-table-column
           property="originatorDepartmentName"
-          label="发起部门">
+          label="发起部门"
+          :show-overflow-tooltip="true">
         </el-table-column>
         <el-table-column
           property="startTime"
@@ -84,11 +83,6 @@
           </template>
         </el-table-column>
       </el-table>
-      <div style="text-align: right;margin-top:20px">
-        <el-button class="btnCancelChoose" type="primary" :disabled="!(currentPr&&currentPr.folio)"
-                   @click="handleCancel">取消选择
-        </el-button>
-      </div>
     </el-card>
     <div style="text-align: center;margin-top:20px">
       <el-button type="primary" @click="handleNext('conForm')" :disabled="!!(arrPr.length&&!currentPr)">下一步
@@ -105,28 +99,82 @@
         <el-button type="primary" @click="handleTestQuery">查看</el-button>
       </el-col>
     </el-row>-->
-    <el-dialog title="查询比价单" :visible.sync="dialogVisible" size="tiny">
+    <el-dialog title="查询比价单" :visible.sync="dialogVisible" size="large">
       <el-form ref="prForm" :model="prForm" label-width="100px">
-        <el-form-item label="PR号">
-          <el-input v-model="prForm.prCode" placeholder="请输入PR号"></el-input>
-        </el-form-item>
+        <el-row>
+          <el-col :span="8">
+            <el-form-item label="PR号">
+              <el-input v-model="prForm.prCode" placeholder="请输入PR号"></el-input>
+            </el-form-item>
+          </el-col>
+          <el-col :span="8">
+            <el-form-item label="创建人">
+              <el-input v-model="prForm.createPerson" placeholder="请输入创建人"></el-input>
+            </el-form-item>
+          </el-col>
+        </el-row>
         <!--<el-form-item label="材料编码">
           <el-input v-model="prForm.meterialCode" placeholder="请输入材料编码"></el-input>
         </el-form-item>-->
-        <el-form-item label="创建人">
-          <el-input v-model="prForm.createPerson" placeholder="请输入创建人"></el-input>
-        </el-form-item>
-        <el-form-item label="创建时间">
-          <el-date-picker
-            style="width:100%"
-            v-model="prForm.createTime"
-            type="daterange"
-            align="right"
-            placeholder="选择日期范围"
-            :picker-options="prForm.pickerOption">
-          </el-date-picker>
-        </el-form-item>
+        <el-row>
+          <el-col :span="8">
+            <el-form-item label="创建时间">
+              <el-date-picker
+                style="width:100%"
+                v-model="prForm.createTime"
+                type="daterange"
+                align="right"
+                placeholder="选择日期范围"
+                :picker-options="prForm.pickerOption">
+              </el-date-picker>
+            </el-form-item>
+          </el-col>
+          <el-col :span="8">
+            <el-button type="primary" @click="handleQueryPriceList">查询</el-button>
+          </el-col>
+        </el-row>
       </el-form>
+      <el-table ref="priceList" :data="priceList" highlight-current-row border @current-change="handleSelectCurrent"
+                max-height="250" @row-click="handleRowClick">
+        <el-table-column prop="ifSelect" label="选择">
+          <template scope="scope">
+            <el-checkbox v-model="scope.row.ifSelect"></el-checkbox>
+          </template>
+        </el-table-column>
+        <el-table-column
+          label="序号"
+          type="index"
+          width="80px">
+        </el-table-column>
+        <el-table-column
+          property="folio"
+          label="比价单编码">
+        </el-table-column>
+        <el-table-column
+          property="originatorName"
+          label="发起人">
+        </el-table-column>
+        <el-table-column
+          :show-overflow-tooltip="true"
+          property="originatorDepartmentName"
+          label="发起部门">
+        </el-table-column>
+        <el-table-column
+          property="startTime"
+          label="发起时间">
+        </el-table-column>
+        <el-table-column
+          property="finishTime"
+          label="结束时间">
+        </el-table-column>
+        <el-table-column
+          fixed="right"
+          label="操作">
+          <template scope="scope">
+            <el-button @click.stop="handleDetailPR(scope.$index,scope.row)" type="text">查看</el-button>
+          </template>
+        </el-table-column>
+      </el-table>
       <template slot="footer">
         <el-button type="primary" @click="handleCloseDialog">关闭</el-button>
         <el-button type="primary" @click="handleOKDialog">确定</el-button>
@@ -138,7 +186,8 @@
       :visible.sync="visible"
       :regions="regions"
       :defaultProps="defaultProps"
-      @ok="setBusiType">
+      @ok="setBusiType"
+      v-on:close="closeTree">
     </TreeModal>
   </div>
 </template>
@@ -150,7 +199,7 @@
   import TreeModal from '@/components/treeModal.vue'
 
   export default {
-    mixins: [getBusiType,comLoading],
+    mixins: [getBusiType, comLoading],
     data() {
       return {
         conForm: {
@@ -162,7 +211,7 @@
             {id: 'con3', name: '单一合同'},
             {id: 'con4', name: '简易合同'},],
           conType: [],
-          conTypeName:'',
+          conTypeName: '',
         },
         conFormRules: {
           strPC: [
@@ -171,12 +220,11 @@
           curConModelId: [
             {required: true, message: '请选择合同模式', trigger: 'change'}
           ],
-          conTypeName:[
+          conTypeName: [
             {required: true, message: '请选择合同类型', trigger: 'change'}
           ],
         },
         arrPr: [], // 比价单列表
-        currentPr: null, // 当前选择的比价单
         dialogVisible: false,
         prForm: {
           prCode: '',
@@ -211,9 +259,12 @@
                 }
               }
             ]
-          }
+          },
         },
-        visible:false,
+        priceList: [],
+        currentPr: null, // 当前选择的比价单
+        curPriceList: [], // 当前选择的比价单
+        visible: false,
         defaultProps: {
           children: 'children',
           label: 'businessName'
@@ -228,7 +279,7 @@
         return conForm.isPr ? conForm.conModel : [conForm.conModel[0], conForm.conModel[1]]
       }
     },
-    components:{
+    components: {
       TreeModal
     },
     methods: {
@@ -242,18 +293,16 @@
         }
       },
       handleQuery() {
-        this.dialogVisible = true
+        this.comLoading(1)
+        Api.getQrList({
+          originator: this.conForm.strPC,
+        }).then((data) => {
+          this.arrPr = data.data.dataMap ? data.data.dataMap : [];
+          this.comLoading()
+        })
       },
-      handleDetail() {
-        Api.getPrDetail({strPC: this.conForm.strPC})
-          .then((data) => {
-            let url = data.data.dataMap ? data.data.dataMap.url : ''
-            if (url) {
-              window.open(url)
-            } else {
-              this.$message.error('您输入的比加单号错了哦')
-            }
-          })
+      handleHighQuery() {
+        this.dialogVisible = true
       },
       handleNext(formName) {
         this.$refs[formName].validate((valid) => {
@@ -287,32 +336,14 @@
           }
         })
       },
-      handleCurrentChange(currentRow) {
-        this.currentPr = currentRow
-      },
-      handleCancel(row) {
-        this.$refs.prTable.setCurrentRow(row)
-        this.currentPr = null
-      },
       handleCloseDialog() {
         this.dialogVisible = false
       },
       handleOKDialog() {
-        this.comLoading(1)
         this.dialogVisible = false
-        const startTime = this.prForm.createTime[0] ? this.prForm.createTime[0].toLocaleDateString() : ''
-        const endTime = this.prForm.createTime[1] ? this.prForm.createTime[1].toLocaleDateString() : ''
-        Api.getQrList({
-          qr: this.conForm.strPC,
-          pr: this.prForm.prCode,
-          meterialCode: this.prForm.meterialCode,
-          createPerson: this.prForm.createPerson,
-          fromDate: startTime,
-          toDate: endTime
-        }).then((data) => {
-          this.arrPr = data.data.dataMap ? data.data.dataMap: [];
-          this.comLoading()
-        })
+        if(this.currentPr){
+          this.curPriceList = [this.currentPr];
+        }
       },
       handleDetailPR(index, row) {
         window.open(row.processViewUrl)
@@ -357,18 +388,52 @@
        }
        })
        } */
-      setBusiType(checkNodes,tree){
-        const conType = []
-        const conTypeName = []
-        const leafs = tree.getCheckedNodes(true)
-        leafs.forEach((item) => {
-          conType.push(item.id)
-          conTypeName.push(item.businessName)
+      setBusiType(checkNodes){
+        this.conForm.conType = checkNodes[0].id
+        this.conForm.conTypeName = checkNodes[0].businessName
+        this.visible = false;
+      },
+      handleQueryPriceList(){
+        this.comLoading(1)
+        const startTime = this.prForm.createTime[0] ? this.prForm.createTime[0].toLocaleDateString() : ''
+        const endTime = this.prForm.createTime[1] ? this.prForm.createTime[1].toLocaleDateString() : ''
+        Api.getQrList({
+          pr: this.prForm.prCode,
+          createPerson: this.prForm.createPerson,
+          fromDate: startTime,
+          toDate: endTime
+        }).then((data) => {
+          if (data.data.dataMap && data.data.dataMap.length > 0) {
+            let arr = data.data.dataMap;
+            for (let i = 0, len = arr.length; i < len; i++) {
+              arr[i].ifSelect = false;
+            }
+            this.priceList = arr;
+          }
+          this.comLoading()
         })
-        this.conForm.conType = conType
-        this.conForm.conTypeName = conTypeName.join(',')
+      },
+      handleSelectCurrent(currentRow, oldRow){
+        if(currentRow){
+          currentRow.ifSelect = true;
+          this.currentPr = currentRow;
+        }
+        if (oldRow) {
+          oldRow.ifSelect = false
+        }
+      },
+      handleRowClick(row){
+        if(row.clicked){
+          row.clicked = false;
+          this.$refs.priceList.setCurrentRow(null);
+          this.currentPr = null
+        }else{
+          row.clicked = true;
+        }
+      },
+      closeTree(){
+        this.visible = false;
       }
     }
-
   }
 </script>
