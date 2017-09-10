@@ -7,9 +7,12 @@ export default {
   getRemoteCreatePersonsByKeyWord(params){
     return Http.post(`${contract}/contract-web/contract/getRemoteCreatePersonsByKeyWord`, params)
   },
-    // 获取比价单列表数据
+  // 获取比价单列表数据
   getQrList(params) {
     return Http.post(`${contract}/contract-web/contract/folio/list`, params)
+  },
+  getQrDetail(params){
+    return Http.post(`${contract}/contract-web/contract/folio`, params)
   },
     // 获取合同基本信息
   getContractBaseInfo(params) {

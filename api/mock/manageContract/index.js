@@ -72,9 +72,45 @@ module.exports = function (api) {
           "processViewUrl": "http://192.168.122.214:8081/Finance/XBJ/View.aspx?ProcInstId=60945",
           "items": null
         }
-        ]
+      ]
     });
   });
+  api.use('/contract-web/contract/folio', function (req, res) {
+    res.status(200).json({
+      code: 200,
+      message: 'success',
+      dataMap: {
+        "folio": "XBJ1760945",
+        "title": "4323",
+        "pr": "0010028015",
+        "procInstId": "60945",
+        "originatorId": "51006793",
+        "originatorName": "顾康11",
+        "originatorDepartmentCode": "10000315",
+        "originatorDepartmentName": "财务管理中心.采购部",
+        "startTime": 1504074683663,
+        "finishTime": 1504577479987,
+        "supplierCode": "0040001628",
+        "supplierName": "史泰博(上海)有限公司",
+        "companyCode": "1001",
+        "companyName": "红星美凯龙家居集团股份有限公司",
+        "processViewUrl": "http://192.168.122.214:8081/Finance/XBJ/View.aspx?ProcInstId=60945",
+        "items": [
+          {
+            "itemNo": "00001",
+            "materialCode": "2100040006",
+            "materialName": "笔记本电脑（6000元职级）",
+            "taxRate": "5%",
+            "taxCode": "J6",
+            "price": "6000.00",
+            "amount": "12000.00",
+            "quantity": "2"
+          }
+        ]
+      }
+    });
+  });
+
   api.use('/api/createContract/getContractBaseInfo', function (req, res) {
     res.status(200).json({
       code: 200,

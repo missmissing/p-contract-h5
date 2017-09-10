@@ -231,9 +231,6 @@
           conTypeName: '',
         },
         conFormRules: {
-          strPC: [
-            {required: true, message: '请输入比加单编号', trigger: 'blur'}
-          ],
           curConModelId: [
             {required: true, message: '请选择合同模式', trigger: 'change'}
           ],
@@ -246,9 +243,9 @@
         prForm: {
           prCode: '',
           meterialCode: '',
-          createPerson:'',
-          createPersons:[],
-          loading:false,
+          createPerson: '',
+          createPersons: [],
+          loading: false,
           createTime: '',
           pickerOption: {
             shortcuts: [
@@ -303,6 +300,13 @@
         return conForm.isPr ? conForm.conModel : [conForm.conModel[0], conForm.conModel[1]]
       }
     },
+    watch: {
+      'conForm.isPr': function (val, oldVal) {
+        if (!val) {
+          this.curPriceList = [];
+        }
+      }
+    },
     components: {
       TreeModal
     },
@@ -318,10 +322,13 @@
       },
       handleQuery() {
         this.comLoading(1)
-        Api.getQrList({
-          originator: this.conForm.strPC,
+        Api.getQrDetail({
+          folio: this.conForm.strPC,
         }).then((data) => {
-          this.arrPr = data.data.dataMap ? data.data.dataMap : [];
+          if (data.data.dataMap) {
+            this.currentPr = data.data.dataMap;
+            this.curPriceList = [data.data.dataMap];
+          }
           this.comLoading()
         })
       },
@@ -331,6 +338,13 @@
       handleNext(formName) {
         this.$refs[formName].validate((valid) => {
           if (valid) {
+            if (this.conForm.isPr && !this.curPriceList.length) {
+              this.$message({
+                message: '请选择一条比加单信息！',
+                type: 'warning'
+              });
+              return
+            }
             let routePath = ''
             switch (this.conForm.curConModelId) {
               case 'con1':
@@ -346,6 +360,7 @@
                 routePath = '/ConCreate/CreateSimpleContract'
                 break
             }
+
             this.$router.push({
               path: routePath,
               query: {
@@ -355,6 +370,13 @@
                 operateType: 'create'
               }
             })
+
+            if (this.curPriceList.length) {
+              this.curPriceList = [];
+              this.currentPr = null;
+            }
+            this.$refs[formName].resetFields();
+
           } else {
             return false
           }
@@ -362,15 +384,24 @@
       },
       handleCloseDialog() {
         this.dialogVisible = false
+        if (this.currentPr) {
+          this.currentPr.clicked = false;
+          this.currentPr.ifSelect = false;
+          this.$refs.priceList.setCurrentRow(null);
+          this.priceList=[];
+        }
+        this.$refs.prForm.resetFields()
       },
       handleOKDialog() {
         this.dialogVisible = false
-        if(this.currentPr){
+        if (this.currentPr) {
           this.curPriceList = [this.currentPr];
+          this.conForm.strPC = '';
         }
-        this.currentPr.clicked=false;
-        this.currentPr.ifSelect=false;
+        this.currentPr.clicked = false;
+        this.currentPr.ifSelect = false;
         this.$refs.priceList.setCurrentRow(null);
+        this.priceList=[];
         this.$refs.prForm.resetFields()
 
       },
@@ -450,7 +481,7 @@
         })
       },
       handleSelectCurrent(currentRow, oldRow){
-        if(currentRow){
+        if (currentRow) {
           currentRow.ifSelect = true;
           this.currentPr = currentRow;
         }
@@ -459,11 +490,11 @@
         }
       },
       handleRowClick(row){
-        if(row.clicked){
+        if (row.clicked) {
           row.clicked = false;
           this.$refs.priceList.setCurrentRow(null);
           this.currentPr = null
-        }else{
+        } else {
           row.clicked = true;
         }
       },
