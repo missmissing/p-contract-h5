@@ -222,11 +222,13 @@
         conForm: {
           isPr: true,
           strPC: '', // 比价单编号
-          curConModelId: '',
-          conModel: [{id: 'con1', name: '框架意向合同'},
-            {id: 'con2', name: '框架合同'},
-            {id: 'con3', name: '单一合同'},
-            {id: 'con4', name: '简易合同'},],
+          curConModelId: null,
+          conModel:[
+            {id: '1', name: '单一合同'},
+            {id: '2', name: '简易合同'},
+            {id: '3', name: '框架合同'},
+            {id: '4', name: '框架意向合同'}
+          ],
           conType: [],
           conTypeName: '',
         },
@@ -297,7 +299,7 @@
     computed: {
       conModels: function () {
         const conForm = this.conForm
-        return conForm.isPr ? conForm.conModel : [conForm.conModel[0], conForm.conModel[1]]
+        return conForm.isPr ? conForm.conModel : [conForm.conModel[2], conForm.conModel[3]]
       }
     },
     watch: {
@@ -347,16 +349,16 @@
             }
             let routePath = ''
             switch (this.conForm.curConModelId) {
-              case 'con1':
+              case '4':
                 routePath = '/ConCreate/CreateIntentionContract'
                 break
-              case 'con2':
+              case '3':
                 routePath = '/ConCreate/CreateFrameContract'
                 break
-              case 'con3':
+              case '1':
                 routePath = '/ConCreate/CreateSingleContract'
                 break
-              case 'con4':
+              case '2':
                 routePath = '/ConCreate/CreateSimpleContract'
                 break
             }
