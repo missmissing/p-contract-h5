@@ -100,16 +100,33 @@
       </el-col>
     </el-row>-->
     <el-dialog title="查询比价单" :visible.sync="dialogVisible" size="large">
-      <el-form ref="prForm" :model="prForm" label-width="100px">
+      <el-form ref="prForm" :model="prForm" label-width="100px" :rules="prForm.rules">
         <el-row>
           <el-col :span="8">
-            <el-form-item label="PR号">
+            <el-form-item label="PR号" prop="prCode">
               <el-input v-model="prForm.prCode" placeholder="请输入PR号"></el-input>
             </el-form-item>
           </el-col>
           <el-col :span="8">
-            <el-form-item label="创建人">
-              <el-input v-model="prForm.createPerson" placeholder="请输入创建人"></el-input>
+            <el-form-item label="创建人" prop="createPerson">
+              <el-select
+                style="width:300px"
+                size="small"
+                v-model="prForm.createPerson"
+                filterable
+                remote
+                placeholder="请输入关键词搜索"
+                :remote-method="getRemoteCreatePersonsByKeyWord"
+                :loading="prForm.loading">
+                <el-option
+                  v-for="item in prForm.createPersons"
+                  :key="item.userId"
+                  :label="item.userName"
+                  :value="item.userId">
+                  <span style="float: left">{{ item.userName }}</span>
+                  <span style="float: right; color: #8492a6; font-size: 13px">{{ item.deptName }}</span>
+                </el-option>
+              </el-select>
             </el-form-item>
           </el-col>
         </el-row>
@@ -117,7 +134,7 @@
           <el-input v-model="prForm.meterialCode" placeholder="请输入材料编码"></el-input>
         </el-form-item>-->
         <el-row>
-          <el-col :span="8">
+          <el-col :span="8" prop="createTime">
             <el-form-item label="创建时间">
               <el-date-picker
                 style="width:100%"
@@ -129,8 +146,8 @@
               </el-date-picker>
             </el-form-item>
           </el-col>
-          <el-col :span="8">
-            <el-button type="primary" @click="handleQueryPriceList">查询</el-button>
+          <el-col :span="8" :offset="1">
+            <el-button type="primary" @click="handleQueryPriceList('prForm')">查询</el-button>
           </el-col>
         </el-row>
       </el-form>
@@ -229,7 +246,9 @@
         prForm: {
           prCode: '',
           meterialCode: '',
-          createPerson: '',
+          createPerson:'',
+          createPersons:[],
+          loading:false,
           createTime: '',
           pickerOption: {
             shortcuts: [
@@ -258,6 +277,11 @@
                   picker.$emit('pick', [start, end])
                 }
               }
+            ]
+          },
+          rules: {
+            createPerson: [
+              {required: true, message: '请输入搜索关键字', trigger: 'blur'}
             ]
           },
         },
@@ -344,6 +368,11 @@
         if(this.currentPr){
           this.curPriceList = [this.currentPr];
         }
+        this.currentPr.clicked=false;
+        this.currentPr.ifSelect=false;
+        this.$refs.priceList.setCurrentRow(null);
+        this.$refs.prForm.resetFields()
+
       },
       handleDetailPR(index, row) {
         window.open(row.processViewUrl)
@@ -393,24 +422,31 @@
         this.conForm.conTypeName = checkNodes[0].businessName
         this.visible = false;
       },
-      handleQueryPriceList(){
+      handleQueryPriceList(formName){
         this.comLoading(1)
         const startTime = this.prForm.createTime[0] ? this.prForm.createTime[0].toLocaleDateString() : ''
         const endTime = this.prForm.createTime[1] ? this.prForm.createTime[1].toLocaleDateString() : ''
-        Api.getQrList({
-          pr: this.prForm.prCode,
-          createPerson: this.prForm.createPerson,
-          fromDate: startTime,
-          toDate: endTime
-        }).then((data) => {
-          if (data.data.dataMap && data.data.dataMap.length > 0) {
-            let arr = data.data.dataMap;
-            for (let i = 0, len = arr.length; i < len; i++) {
-              arr[i].ifSelect = false;
-            }
-            this.priceList = arr;
+        this.$refs[formName].validate((valid) => {
+          if (valid) {
+            Api.getQrList({
+              pr: this.prForm.prCode,
+              createPerson: this.prForm.createPerson,
+              fromDate: startTime,
+              toDate: endTime
+            }).then((data) => {
+              if (data.data.dataMap && data.data.dataMap.length > 0) {
+                let arr = data.data.dataMap;
+                for (let i = 0, len = arr.length; i < len; i++) {
+                  arr[i].ifSelect = false;
+                }
+                this.priceList = arr;
+              }
+              this.comLoading()
+            })
+          } else {
+            console.log('error submit!!')
+            return false
           }
-          this.comLoading()
         })
       },
       handleSelectCurrent(currentRow, oldRow){
@@ -433,7 +469,19 @@
       },
       closeTree(){
         this.visible = false;
-      }
+      },
+      getRemoteCreatePersonsByKeyWord(query){
+        if (query !== '') {
+          this.prForm.loading = true
+          Api.getRemoteCreatePersonsByKeyWord({key: query})
+            .then((data) => {
+              this.prForm.loading = false
+              this.prForm.createPersons = data.data.dataMap
+            })
+        } else {
+          this.prForm.createPersons = []
+        }
+      },
     }
   }
 </script>
