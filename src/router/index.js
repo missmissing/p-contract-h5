@@ -94,6 +94,16 @@ const router = new Router({
           }
         },
         {
+          path: '/contract/agreementList',
+          component: function (resolve) {
+            require(['../pages/create/agreementList.vue'], resolve)
+          },
+          name: routerNames.con_agreementList,
+          meta: {
+            auth: true
+          }
+        },
+        {
           path: '/ConCreate/CreateFrameContract', // 创建框架合同
           meta: {
             auth: true,

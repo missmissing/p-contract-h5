@@ -37,6 +37,7 @@ export const routerNames = {
   con_createIndex: '创建合同',
   con_createSlaveProtocol: '创建从协议',
   con_list: '合同列表',
+  con_agreementList: '从协议列表',
   con_update: '合同变更',
   con_createFrameContract: '框架合同创建',
   con_createIntentionContract: '意向合同创建',
