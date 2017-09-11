@@ -74,21 +74,21 @@ const router = new Router({
           name: routerNames.con_createSlaveProtocol
         },
         {
-          path: '/conperf/conlist',
-          component: function (resolve) {
-            require(['../pages/create/conLIst.vue'], resolve)
-          },
-          name: routerNames.con_list,
-          meta: {
-            auth: true
-          }
-        },
-        {
           path: '/conperf/conupdate',
           component: function (resolve) {
             require(['../pages/create/createCon.vue'], resolve)
           },
           name: routerNames.con_update,
+          meta: {
+            auth: true
+          }
+        },
+        {
+          path: '/conperf/conlist',
+          component: function (resolve) {
+            require(['../pages/create/conLIst.vue'], resolve)
+          },
+          name: routerNames.con_list,
           meta: {
             auth: true
           }
