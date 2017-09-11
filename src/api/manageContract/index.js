@@ -1,6 +1,6 @@
 import Http from '@/core/commonModel'
-//const contract = '/api-contract'
- const contract = ''
+const contract = '/api-contract'
+ //const contract = ''
 
 export default {
   //根据关键字获取创建人列表
@@ -12,11 +12,11 @@ export default {
     return Http.post(`${contract}/contract-web/contract/folio/list`, params)
   },
   getQrDetail(params){
-    return Http.post(`${contract}/contract-web/contract/folio`, params)
+    return Http.get(`${contract}/contract-web/contract/folio`, params)
   },
     // 获取合同基本信息
   getContractBaseInfo(params) {
-    return Http.get(`/api/createContract/getContractBaseInfo`, params)
+    return Http.get(`${contract}/contract-web/contract/pre`, params)
   },
     // 获取供应商列表根据关键字
   getRemoteSuppliersByKeyWord(params) {

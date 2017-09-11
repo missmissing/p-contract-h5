@@ -363,10 +363,11 @@
                 break
             }
 
+            console.log('this.conForm.curConModelId',this.conForm.curConModelId);
             this.$router.push({
               path: routePath,
               query: {
-                currentPr: this.currentPr ? this.currentPr.pr : '',
+                currentPr: this.currentPr ? this.currentPr.folio : '',
                 curConModelId: this.conForm.curConModelId,
                 curConTypeId: this.conForm.conType,
                 operateType: 'create'

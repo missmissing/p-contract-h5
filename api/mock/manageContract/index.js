@@ -110,8 +110,7 @@ module.exports = function (api) {
       }
     });
   });
-
-  api.use('/api/createContract/getContractBaseInfo', function (req, res) {
+  api.use('/contract-web/contract/pre', function (req, res) {
     res.status(200).json({
       code: 200,
       message: 'success',

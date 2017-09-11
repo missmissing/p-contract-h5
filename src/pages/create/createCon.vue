@@ -125,7 +125,7 @@
               </el-select>
             </el-form-item>
           </el-col>
-          <el-col :span="16" v-if="baseInfoForm.conTextType===1">
+          <el-col :span="16" v-if="baseInfoForm.conTextType==='1'">
             <el-form-item label="模版名称" prop="templateName">
               <el-select :disabled="isEnabled1" v-model="baseInfoForm.templateName"
                          placeholder="请选择合同模版">
@@ -224,7 +224,7 @@
                 </el-table-column>
               </el-table>
             </el-card>
-            <el-card v-if="baseInfoForm.conModel!=='con4'" class="mt20">
+            <el-card v-if="baseInfoForm.conModel!=='2'" class="mt20">
               <header slot="header">第三方信息</header>
               <el-button v-if="operateType==='create'" type="primary" @click="handleNewthirdPartyInfo"
                          icon="plus" class="mb10">新增
@@ -246,7 +246,7 @@
                 </el-table-column>
               </el-table>
             </el-card>
-            <el-card v-if="baseInfoForm.conModel!=='con1'" class="mt20">
+            <el-card v-if="baseInfoForm.conModel!=='4'" class="mt20">
               <header slot="header">合同标的</header>
               <el-table :data="cardContentInfoForm.conStandard">
                 <el-table-column type="index"></el-table-column>
@@ -845,7 +845,7 @@
                 </el-col>
               </el-row>
             </el-card>
-            <el-card class="mt20" v-if="baseInfoForm.conModel==='con2'&&cardFinanceInfoForm.hasMoney===1">
+            <el-card class="mt20" v-if="baseInfoForm.conModel==='3'&&cardFinanceInfoForm.hasMoney===1">
               <header slot="header">开票信息</header>
               <el-row>
                 <el-col :span="12" class="billingInfo">
@@ -979,7 +979,7 @@
           </el-form>
         </el-tab-pane>
         <el-tab-pane name="tabContCheckInfo"
-                     v-if="baseInfoForm.conModel==='con2'">
+                     v-if="baseInfoForm.conModel==='3'">
           <span slot="label" class="title"><i v-if="cardContCheckInfoForm.errorCount" class="errorCount">{{cardContCheckInfoForm.errorCount}}</i>合同验收与样品信息</span>
           <el-form ref="cardContCheckInfoForm" :model="cardContCheckInfoForm" label-width="100px">
             <el-row>
@@ -1078,7 +1078,7 @@
             </el-card>
           </el-form>
         </el-tab-pane>
-        <el-tab-pane label="合同附件及盖章信息" name="tabSealInfo" v-if="baseInfoForm.conModel!=='con4'">
+        <el-tab-pane label="合同附件及盖章信息" name="tabSealInfo" v-if="baseInfoForm.conModel!=='2'">
           <el-form rel="cardSealInfoForm" :model="cardSealInfoForm" label-width="100px">
             <el-button type="primary" @click="handleNewSealFile" icon="plus" v-if="operateType!=='query'" class="mb20">新增</el-button>
             <template v-for="(item,index) in cardSealInfoForm.sealAttachments">
@@ -1559,7 +1559,7 @@
       </el-col>
       <el-col :span="6">
         <el-button type="primary" @click="handlePreview" style="margin-left:33px"
-                   v-if="baseInfoForm.conTextType===1">预览
+                   v-if="baseInfoForm.conTextType==='1'">预览
         </el-button>
       </el-col>
       <el-col :span="4">
@@ -1624,12 +1624,23 @@
           businessDepartment: '',
           conModel: '',
           conModelName: '',
+          conModelId:'',
           conNumber: '',
           conType: '',
           conTypeName: '',
+          conTypeId: '',
           belongProject: '',
-          conTextType: 1,
-          conTextTypeOptions: [],
+          conTextType: '1',
+          conTextTypeOptions: [
+            {
+              id:'1',
+              name:'模板合同'
+            },
+            {
+              id:'2',
+              name:'非模板合同'
+            }
+          ],
           templateName: '',
           templateOptions: [],
           radioSealOrder: 0, // 0：我方先盖章 1：对方先盖章
@@ -2079,12 +2090,6 @@
       }
     },
     created() {
-      // console.log('created-this.operateType', this.operateType)
-      // ?currentPr=&curConModelId=con2&curConTypeId=service1
-      /* curConModelId:"con2"
-       curConTypeId:"service1"
-       currentPr:"",
-       type:create */
       let path = this.$route.path
       if (path && path === '/conperf/conupdate') {;
         this.operateType = 'update'
@@ -2197,21 +2202,45 @@
       }
     },
     mounted() {
-      console.log('request');
-      Api.getContractBaseInfo({}).then((data) => {
-        this.baseInfoForm.businessPerson = data.data.dataMap.baseInfoForm.businessPerson
-        this.baseInfoForm.businessDepartment = data.data.dataMap.baseInfoForm.businessDepartment
-        this.baseInfoForm.conModelName = data.data.dataMap.baseInfoForm.conModelName
-        this.baseInfoForm.conTypeName = data.data.dataMap.baseInfoForm.conTypeName
-        this.baseInfoForm.conTextTypeOptions = data.data.dataMap.baseInfoForm.conTextType
+      let params={};
+      let query = this.$route.query
+      if (JSON.stringify(query) !== '{}') {
+        params.folio=query.currentPr
+        params.contractType=query.curConModelId;//合同模式
+        params.contractBusinessTypeFirst=1;
+        params.contractBusinessTypeSecond=1;
+        params.contractBusinessTypeThird=1;
+      }
+
+      Api.getContractBaseInfo(params).then((data) => {
+        this.baseInfoForm.businessPerson = data.data.dataMap.baseInfoForm.businessOperator
+        this.baseInfoForm.businessDepartment = data.data.dataMap.baseInfoForm.businessDept
+        this.baseInfoForm.conModelId = data.data.dataMap.baseInfoForm.contractType
+        this.baseInfoForm.conModelName = this.getContractModelName(data.data.dataMap.baseInfoForm.contractType)
+        this.baseInfoForm.conTypeName = data.data.dataMap.baseInfoForm.contractBusinessTypeThirdName
+        this.baseInfoForm.conTypeId = data.data.dataMap.baseInfoForm.contractBusinessTypeThird
+        this.baseInfoForm.conTextType = data.data.dataMap.baseInfoForm.contractTextType?data.data.dataMap.baseInfoForm.contractTextType+'':'1'
         this.baseInfoForm.templateOptions = data.data.dataMap.baseInfoForm.templateName
-        this.cardContentInfoForm.tableSupplierInfo = data.data.dataMap.contentInfo.tableSupplierInfo
-        this.cardContentInfoForm.conSubjctName = data.data.dataMap.contentInfo.conSubjctName
-        this.cardContentInfoForm.thirdPartyInfo = data.data.dataMap.contentInfo.thirdPartyInfo
-        this.cardContentInfoForm.conStandard = data.data.dataMap.contentInfo.conStandard
+        this.cardContentInfoForm.tableSupplierInfo = data.data.dataMap.cardContentInfoForm.tableSupplierInfo
+        this.cardContentInfoForm.conSubjctName = data.data.dataMap.cardContentInfoForm.conSubjctName
+        this.cardContentInfoForm.thirdPartyInfo = data.data.dataMap.cardContentInfoForm.thirdPartyInfo
+        this.cardContentInfoForm.conStandard = data.data.dataMap.cardContentInfoForm.conStandard
       })
     },
     methods: {
+      getContractModelName(id){
+        switch(id){
+          case '1':
+            return '单一合同'
+          case '2':
+            return '简易合同'
+          case '3':
+            return '框架合同'
+          case '4':
+            return '意向合同'
+
+        }
+      },
       handlePreview() {
         this.visible=true;
       },
@@ -2695,7 +2724,7 @@
       }
     },
     watch: {
-      '$route'(to, from) {
+      '$route'(to, from) {console.log('watch');
         // 刷新参数放到这里里面去触发就可以刷新相同界面了
         let path = this.$route.path
         if (path && path === '/conperf/conupdate') {
