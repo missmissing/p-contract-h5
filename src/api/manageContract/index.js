@@ -52,6 +52,11 @@ export default {
     // 根据合同编号获取变更合同的数据
   getUpdateInfo(params) {
     return Http.get(`/api/updateContract/getUpdateInfo`, params)
-  }
+  },
     /** ****变更合同接口end******/
+  /** ***从协议列表接口****/
+    getAgreementList(params){
+      return Http.get(`/api/agreeement/getAgreementList`, params)
+    }
+  /** ***从协议列表接口****/
 }

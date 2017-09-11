@@ -1390,7 +1390,7 @@
     <el-dialog title="新增合同供应商信息" :visible.sync="cardContentInfoForm.dialogAddContractSupplier" size="small">
       <el-form :model="formContractSupplier" label-width="100px" ref="formContractSupplier"
                :rules="formContractSupplier.rules">
-        <el-form-item label="供应商名称／编号" prop="search" label-width="150px">
+        <el-form-item label="供应商名称" prop="search" label-width="150px">
           <el-select
             style="width:300px"
             size="small"
@@ -1418,7 +1418,7 @@
     <el-dialog title="新增合同我方主体" :visible.sync="baseInfoForm.dialogNewSubjectVisible" size="small">
       <el-form :model="formNewSubject" label-width="100px" ref="formNewSubject"
                :rules="formNewSubject.rules">
-        <el-form-item label="公司名称／编号" prop="search" label-width="150px">
+        <el-form-item label="公司名称" prop="search" label-width="150px">
           <el-select
             style="width:300px"
             size="small"
