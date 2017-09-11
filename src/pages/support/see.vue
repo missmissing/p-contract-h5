@@ -132,7 +132,7 @@
         action: uploadUrl,
         download: downloadUrl,
         showTmpl: false,
-        showProcess: true
+        showProcess: false
       }, _.cloneDeep(defaultData))
     },
     methods: {
@@ -160,15 +160,17 @@
         }
       },
       getTplData() {
+        const {id, processData} = this.$route.query
+        if (processData) {
+          this.showProcess = true
+        }
         this.comLoading(1)
         supportModel.getTplData({
-          templateId: this.$route.query.id
+          templateId: id
         }).then((res) => {
           console.log(res)
           const tplInfo = res.data.dataMap
           this.setData(tplInfo)
-          this.comLoading()
-        }, () => {
           this.comLoading()
         })
       }

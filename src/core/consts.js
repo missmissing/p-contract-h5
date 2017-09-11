@@ -66,7 +66,7 @@ export const routerNames = {
 
 }
 
-export const procCode = {
+export const procMap = {
   template: 'CRS_Contract_CreateTemplate',
   contract: ''
 }

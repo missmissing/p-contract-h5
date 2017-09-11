@@ -12,11 +12,13 @@ class Base {
   }
 
   static error500Process() {
-    Message.error('系统异常!')
+    Message.error('系统异常,请刷新页面重试!')
   }
 
   static errorNot200Process(msg) {
-    Message.warning(msg)
+    if (msg) {
+      Message.warning(msg)
+    }
   }
 
   constructor() {
