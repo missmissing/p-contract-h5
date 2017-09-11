@@ -363,4 +363,20 @@ module.exports = function (api) {
       ]
     });
   });
+  api.use('/contract-web/template/getTemplateByBizTypeId', function (req, res) {
+    res.status(200).json({
+      code: 200,
+      message: 'success',
+      dataMap: [
+        {
+          contractId:'001',
+          id:'001001',
+          name:'从协议1',
+          createPerson:'wyy',
+          createDepart:'development',
+          createTime:'2017-09-11'
+        }
+      ]
+    });
+  });
 };

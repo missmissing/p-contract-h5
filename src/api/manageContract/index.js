@@ -34,6 +34,10 @@ export default {
   getRelatedInfo(params) {
     return Http.get(`/api/createContract/getRelatedInfo`, params)
   },
+  //获取模版名称（合同文本类型，合同类型）
+  getTemplateByBizTypeId(params){
+    return Http.get(`${contract}/contract-web/template/getTemplateByBizTypeId`, params)
+  },
     /** ***标签页****/
   getPrTableData(params) {
     return Http.get(`/api/createContract/getPrTableData`, params)

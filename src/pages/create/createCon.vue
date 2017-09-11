@@ -85,14 +85,30 @@
       <el-form ref="baseInfoForm" :model="baseInfoForm" label-width="100px" :rules="baseInfoForm.rules">
         <el-row>
           <el-col :span="8">
-            <el-form-item label="业务经办人">
-              <el-input :disabled="isEnabled" v-model="baseInfoForm.businessPerson"
-                        placeholder="请输入业务经办人"></el-input>
+            <el-form-item label="业务经办人" prop="businessOperator">
+              <el-select
+                :disabled="isEnabled1"
+                size="small"
+                v-model="baseInfoForm.businessOperator"
+                filterable
+                remote
+                placeholder="请输入业务经办人关键词"
+                :remote-method="getRemotebusinessOperatorsByKeyWord"
+                :loading="baseInfoForm.loading">
+                <el-option
+                  v-for="item in baseInfoForm.businessOperators"
+                  :key="item.userId"
+                  :label="item.userName"
+                  :value="item.userId">
+                  <span style="float: left">{{ item.userName }}</span>
+                  <span style="float: right; color: #8492a6; font-size: 13px">{{ item.deptName }}</span>
+                </el-option>
+              </el-select>
             </el-form-item>
           </el-col>
           <el-col :span="8">
             <el-form-item label="业务部门">
-              <el-input :disabled="isEnabled" v-model="baseInfoForm.businessDepartment"
+              <el-input :disabled="isEnabled" v-model="baseInfoForm.businessDept"
                         placeholder="请输入业务部门"></el-input>
             </el-form-item>
           </el-col>
@@ -100,13 +116,13 @@
         <el-row>
           <el-col :span="8">
             <el-form-item label="合同模式">
-              <el-input :disabled="isEnabled" v-model="baseInfoForm.conModelName"
+              <el-input :disabled="isEnabled" v-model="baseInfoForm.contractTypeName"
                         placeholder="请输入合同模式"></el-input>
             </el-form-item>
           </el-col>
           <el-col :span="8">
             <el-form-item label="合同类型">
-              <el-input :disabled="isEnabled" v-model="baseInfoForm.conTypeName"
+              <el-input :disabled="isEnabled" v-model="baseInfoForm.contractBusinessTypeThirdName"
                         placeholder="请输入合同类型"></el-input>
             </el-form-item>
           </el-col>
@@ -114,10 +130,10 @@
         <el-row>
           <el-col :span="8">
             <el-form-item label="合同文本类型">
-              <el-select :disabled="isEnabled1" v-model="baseInfoForm.conTextType"
+              <el-select :disabled="isEnabled1" v-model="baseInfoForm.contractTextType"
                          placeholder="请选择合同文本类型">
                 <el-option
-                  v-for="item in baseInfoForm.conTextTypeOptions"
+                  v-for="item in baseInfoForm.contractTextTypeOptions"
                   :key="item.id"
                   :label="item.name"
                   :value="item.id">
@@ -125,12 +141,11 @@
               </el-select>
             </el-form-item>
           </el-col>
-          <el-col :span="16" v-if="baseInfoForm.conTextType==='1'">
-            <el-form-item label="模版名称" prop="templateName">
-              <el-select :disabled="isEnabled1" v-model="baseInfoForm.templateName"
-                         placeholder="请选择合同模版">
+          <el-col :span="16">
+            <el-form-item label="模版名称" prop="templateId">
+              <el-select :disabled="isEnabled1" v-model="baseInfoForm.templateId" placeholder="请选择合同模版">
                 <el-option
-                  v-for="item in baseInfoForm.templateOptions"
+                  v-for="item in templateOptions"
                   :key="item.id"
                   :label="item.name"
                   :value="item.id">
@@ -157,17 +172,17 @@
         <el-row>
           <el-col :span="16">
             <el-form-item label="盖章次序">
-              <el-radio-group v-model="baseInfoForm.radioSealOrder" :disabled="isEnabled1">
-                <el-radio :label="1">对方先盖章（默认)</el-radio>
+              <el-radio-group v-model="baseInfoForm.sealOrder" :disabled="isEnabled1">
+                <el-radio :label="1">对方先盖章</el-radio>
                 <el-radio :label="0">我方先盖章</el-radio>
               </el-radio-group>
             </el-form-item>
           </el-col>
         </el-row>
-        <el-row v-if="baseInfoForm.radioSealOrder===0">
+        <el-row v-if="baseInfoForm.sealOrder===0">
           <el-col :span="16" style="margin-left: 100px">
             <el-input :disabled="isEnabled1" type="textarea" :rows="4" placeholder="请输入内容"
-                      v-model="baseInfoForm.sealReason"></el-input>
+                      v-model="baseInfoForm.ourSealOpinion"></el-input>
           </el-col>
         </el-row>
       </el-form>
@@ -224,7 +239,7 @@
                 </el-table-column>
               </el-table>
             </el-card>
-            <el-card v-if="baseInfoForm.conModel!=='2'" class="mt20">
+            <el-card v-if="baseInfoForm.contractType!==2" class="mt20">
               <header slot="header">第三方信息</header>
               <el-button v-if="operateType==='create'" type="primary" @click="handleNewthirdPartyInfo"
                          icon="plus" class="mb10">新增
@@ -246,7 +261,7 @@
                 </el-table-column>
               </el-table>
             </el-card>
-            <el-card v-if="baseInfoForm.conModel!=='4'" class="mt20">
+            <el-card v-if="baseInfoForm.contractType!==4" class="mt20">
               <header slot="header">合同标的</header>
               <el-table :data="cardContentInfoForm.conStandard">
                 <el-table-column type="index"></el-table-column>
@@ -845,7 +860,7 @@
                 </el-col>
               </el-row>
             </el-card>
-            <el-card class="mt20" v-if="baseInfoForm.conModel==='3'&&cardFinanceInfoForm.hasMoney===1">
+            <el-card class="mt20" v-if="baseInfoForm.contractType===3&&cardFinanceInfoForm.hasMoney===1">
               <header slot="header">开票信息</header>
               <el-row>
                 <el-col :span="12" class="billingInfo">
@@ -979,7 +994,7 @@
           </el-form>
         </el-tab-pane>
         <el-tab-pane name="tabContCheckInfo"
-                     v-if="baseInfoForm.conModel==='3'">
+                     v-if="baseInfoForm.contractType===3">
           <span slot="label" class="title"><i v-if="cardContCheckInfoForm.errorCount" class="errorCount">{{cardContCheckInfoForm.errorCount}}</i>合同验收与样品信息</span>
           <el-form ref="cardContCheckInfoForm" :model="cardContCheckInfoForm" label-width="100px">
             <el-row>
@@ -1078,7 +1093,7 @@
             </el-card>
           </el-form>
         </el-tab-pane>
-        <el-tab-pane label="合同附件及盖章信息" name="tabSealInfo" v-if="baseInfoForm.conModel!=='2'">
+        <el-tab-pane label="合同附件及盖章信息" name="tabSealInfo" v-if="baseInfoForm.contractType!==2">
           <el-form rel="cardSealInfoForm" :model="cardSealInfoForm" label-width="100px">
             <el-button type="primary" @click="handleNewSealFile" icon="plus" v-if="operateType!=='query'" class="mb20">新增</el-button>
             <template v-for="(item,index) in cardSealInfoForm.sealAttachments">
@@ -1559,7 +1574,7 @@
       </el-col>
       <el-col :span="6">
         <el-button type="primary" @click="handlePreview" style="margin-left:33px"
-                   v-if="baseInfoForm.conTextType==='1'">预览
+                   v-if="baseInfoForm.contractTextType===1">预览
         </el-button>
       </el-col>
       <el-col :span="4">
@@ -1620,36 +1635,44 @@
         },
         currentPr: '',
         baseInfoForm: {
-          businessPerson: '', // 业务经办人
-          businessDepartment: '',
-          conModel: '',
-          conModelName: '',
-          conModelId:'',
-          conNumber: '',
-          conType: '',
-          conTypeName: '',
-          conTypeId: '',
-          belongProject: '',
-          conTextType: '1',
-          conTextTypeOptions: [
+          id:'',//??
+          businessOperator: '', // 业务经办人
+          businessDept: '',
+          contractType:'',//合同模式id
+          contractTypeName:'',//合同模式名称
+          businessOperators:[],//业务操作人数组
+          loading:false,//业务操作人
+          contractBusinessTypeThirdName:'',
+          contractTextType: 1,
+          contractTextTypeOptions: [
             {
-              id:'1',
+              id:1,
               name:'模板合同'
             },
             {
-              id:'2',
+              id:2,
               name:'非模板合同'
             }
           ],
-          templateName: '',
-          templateOptions: [],
-          radioSealOrder: 0, // 0：我方先盖章 1：对方先盖章
-          sealReason: '',
+          sealOrder: 1, // 0：我方先盖章 1：对方先盖章
+          ourSealOpinion: '',
+          templateId: '',
+          templateOptions: [{
+            id:'1',
+            name:'模版1',
+            version:'1'
+          }],
+          belongProject: '',
+
+          conNumber: '',
+
+
+
+
           dialogNewSubjectVisible: false,
           rules: {
-            belongProject: [{required: true, message: '请输入所属项目', trigger: 'blur'}],
-            templateName: [
-              {required: true, message: '请输入备注', trigger: 'blur'}
+            templateId: [
+              {required: true, message: '请选择模版名称', trigger: 'blur'}
             ]
           }
         },
@@ -2099,13 +2122,13 @@
       if (JSON.stringify(query) !== '{}') {
         this.operateType = query.operateType
         this.currentPr = query.currentPr
-        this.baseInfoForm.conModel = query.curConModelId
-        this.baseInfoForm.conType = query.curConTypeId
+        this.baseInfoForm.contractType = query.curConModelId
+        this.baseInfoForm.contractBusinessTypeThird = query.curConTypeId
       }
     },
     computed: {
       conVersion: function () {
-        let id = this.baseInfoForm.templateName
+        let id = this.baseInfoForm.templateId
         let templateOptions = this.baseInfoForm.templateOptions
         let result = ''
         if (templateOptions && templateOptions.length > 0) {
@@ -2199,6 +2222,16 @@
           case 4:
             return 'OrderTable'
         }
+      },
+      templateOptions:function(){
+        if(this.baseInfoForm.contractTextType){
+          const params={}
+          params.bizTypeId=this.baseInfoForm.contractBusinessTypeThird;//业务类型
+          params.bizTypeId=(this.baseInfoForm.contractTextType===1?'TEMPLATE':'TEXT');//业务类型
+          Api.getTemplateByBizTypeId(params).then((data)=>{
+            return data.data.dataMap||[]
+          });
+        }
       }
     },
     mounted() {
@@ -2213,18 +2246,21 @@
       }
 
       Api.getContractBaseInfo(params).then((data) => {
-        this.baseInfoForm.businessPerson = data.data.dataMap.baseInfoForm.businessOperator
-        this.baseInfoForm.businessDepartment = data.data.dataMap.baseInfoForm.businessDept
-        this.baseInfoForm.conModelId = data.data.dataMap.baseInfoForm.contractType
-        this.baseInfoForm.conModelName = this.getContractModelName(data.data.dataMap.baseInfoForm.contractType)
-        this.baseInfoForm.conTypeName = data.data.dataMap.baseInfoForm.contractBusinessTypeThirdName
-        this.baseInfoForm.conTypeId = data.data.dataMap.baseInfoForm.contractBusinessTypeThird
-        this.baseInfoForm.conTextType = data.data.dataMap.baseInfoForm.contractTextType?data.data.dataMap.baseInfoForm.contractTextType+'':'1'
-        this.baseInfoForm.templateOptions = data.data.dataMap.baseInfoForm.templateName
+        Object.assign(this.baseInfoForm,data.data.dataMap.baseInfoForm);
+        Object.assign(this.cardContentInfoForm,data.data.dataMap.cardContentInfoForm);
+        Object.assign(this.cardFinanceInfoForm,data.data.dataMap.cardFinanceInfoForm);
+        Object.assign(this.cardContCheckInfoForm,data.data.dataMap.cardContCheckInfoForm);
+        Object.assign(this.cardSealInfoForm,data.data.dataMap.cardSealInfoForm);
+        Object.assign(this.cardRemarkInfoForm,data.data.dataMap.cardRemarkInfoForm);
+        Object.assign(this.cardOtherInfo,data.data.dataMap.cardOtherInfo);
+
+        this.baseInfoForm.contractTypeName=this.getContractModelName(data.data.dataMap.baseInfoForm.contractType);
+
+        /*
         this.cardContentInfoForm.tableSupplierInfo = data.data.dataMap.cardContentInfoForm.tableSupplierInfo
         this.cardContentInfoForm.conSubjctName = data.data.dataMap.cardContentInfoForm.conSubjctName
         this.cardContentInfoForm.thirdPartyInfo = data.data.dataMap.cardContentInfoForm.thirdPartyInfo
-        this.cardContentInfoForm.conStandard = data.data.dataMap.cardContentInfoForm.conStandard
+        this.cardContentInfoForm.conStandard = data.data.dataMap.cardContentInfoForm.conStandard*/
       })
     },
     methods: {
@@ -2706,6 +2742,27 @@
         console.log('index',index);
         console.log('rows',rows);
         rows.splice(index, 1)
+      },
+      getRemotebusinessOperatorsByKeyWord(query){
+        if (query !== '') {
+          this.baseInfoForm.loading = true
+          Api.getRemoteCreatePersonsByKeyWord({key: query})
+            .then((data) => {
+              this.baseInfoForm.loading = false
+              this.baseInfoForm.businessOperators = data.data.dataMap
+            })
+        } else {
+          this.baseInfoForm.businessOperators = []
+        }
+      },
+      handleContractTextTypeChange(val){
+        let params={};
+        params.bizTypeId=this.baseInfoForm.contractBusinessTypeThird
+        params.templateType=(val===1?'TEMPLATE':'TEXT')
+
+        Api.getTemplateByBizTypeId().then((data)=>{
+          this.baseInfoForm.templateOptions=data.data.dataMap;
+        });
       }
     },
     components:{
