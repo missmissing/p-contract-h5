@@ -79,12 +79,23 @@
       getCheckedNodes() {
         this.checkNodes = this.$refs.tree.getCheckedNodes()
       },
+      getNodeDetail(node, result) {
+        const {parent} = node
+        if (!parent) {
+          return result
+        }
+        const {data} = node
+        result.unshift(data)
+        return this.getNodeDetail(parent, result)
+      },
       ok() {
         if (!this.multi) {
           if (this.currentNode && this.currentNode.childNodes && this.currentNode.childNodes.length) {
             this.$message.warning('请选择最后一级节点!')
             return
           }
+          this.checkNodes = this.getNodeDetail(this.currentNode, [])
+          console.log(this.checkNodes)
         }
         this.$emit('ok', this.checkNodes, this.$refs.tree)
       },

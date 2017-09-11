@@ -26,6 +26,9 @@
       <el-table-column
         prop="startTime"
         label="创建时间">
+        <template scope="scope">
+          {{ scope.row.startTime | formatTime }}
+        </template>
       </el-table-column>
     </el-table>
     <div class="mt20">
@@ -44,9 +47,10 @@
 </template>
 
 <script>
-  import {procCode} from '@/core/consts'
+  import {procMap} from '@/core/consts'
   import Api from '@/api/process'
   import comLoading from '@/mixins/comLoading'
+  import {formatTime} from '@/filters/moment'
 
   export default {
     mixins: [comLoading],
@@ -56,7 +60,7 @@
         pageNumber: 0,
         pageSize: 10,
         totalPage: 0,
-        userId: '',
+        userId: '51006793',
         dataType: 'BACKLOG'
       }
     },
@@ -77,18 +81,26 @@
       },
       see(index, row) {
         console.log(row)
-        const {serialNumber, procCode} = row
+        const {procInstId, serialNumber, procCode} = row
         Api.getApproveNode({
-          operatorId: '',
+          operatorId: this.userId,
           serialNumber,
           procCode
         }).then((res) => {
-          const {approveInfo} = res.data.dataMap
+          const data = res.data.dataMap
+          const {actions, approveInfo} = data
           const {id} = approveInfo
+          const processData = JSON.stringify({
+            procInstId,
+            actions,
+            serialNumber,
+            procCode,
+            operatorId: this.userId
+          })
           let url = ''
           switch (procCode) {
-            case procCode['template']:
-              url = `/contemplate/see?id=${id}`
+            case procMap['template']:
+              url = `/contemplate/see?id=${id}&processData=${processData}`
               break
             default:
               return
@@ -107,6 +119,9 @@
     },
     created() {
       this.getProcess()
+    },
+    filters: {
+      formatTime
     }
   }
 </script>

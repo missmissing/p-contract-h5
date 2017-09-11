@@ -21,6 +21,12 @@
       border: 1px solid #ddd;
       min-height: 630px;
       word-wrap: break-word;
+      font-size: 11px;
+      .title {
+        text-align: center;
+        font-size: 18px;
+        margin-bottom: 20px;
+      }
       .header {
         margin-bottom: 20px;
         &:after {
@@ -79,6 +85,7 @@
           <el-col :span="12" :offset="1">
             <div class="mb20 pre-title">预览</div>
             <div class="preview">
+              <div class="title">合同</div>
               <div v-html="header" class="header"></div>
               <div v-html="form.content"></div>
               <div v-html="footer" class="footer"></div>
