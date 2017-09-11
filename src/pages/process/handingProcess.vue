@@ -26,6 +26,9 @@
       <el-table-column
         prop="startTime"
         label="创建时间">
+        <template scope="scope">
+          {{ scope.row.startTime | formatTime }}
+        </template>
       </el-table-column>
     </el-table>
     <div class="mt20">
@@ -47,6 +50,7 @@
   import {procMap} from '@/core/consts'
   import Api from '@/api/process'
   import comLoading from '@/mixins/comLoading'
+  import {formatTime} from '@/filters/moment'
 
   export default {
     mixins: [comLoading],
@@ -115,6 +119,9 @@
     },
     created() {
       this.getProcess()
+    },
+    filters: {
+      formatTime
     }
   }
 </script>

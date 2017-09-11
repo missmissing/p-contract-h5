@@ -48,6 +48,7 @@
           </el-form-item>
           <el-form-item label="收文人" v-if="visible">
             <el-input readonly :value="receiver" style="width:300px;"></el-input>
+            <SelectPerson @change="change"></SelectPerson>
           </el-form-item>
           <el-form-item label="审批意见">
             <el-input
@@ -71,6 +72,7 @@
   import Api from '@/api/process'
   import {routerNames} from '../core/consts'
   import {formatTime} from '@/filters/moment'
+  import {SelectPerson} from '@/components/selectPerson.vue'
 
   export default {
     data() {
@@ -90,6 +92,9 @@
       }
     },
     methods: {
+      change(value) {
+        console.log('person', value)
+      },
       submit() {
         if (!this.actionName) {
           this.$message.warning('请选择审批操作!')
@@ -127,6 +132,9 @@
       }).then((res) => {
         this.lists = res.data.dataMap.nodes
       })
+    },
+    components: {
+      SelectPerson
     },
     filters: {
       formatTime
