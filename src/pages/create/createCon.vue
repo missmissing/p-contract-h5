@@ -2511,7 +2511,7 @@
         let curForm = this.$refs[formName]
         curForm.validate((valid) => {
           if (valid) {
-            let arr = this.formNewThirdParty.thirdParties
+            let thirdParties = this.formNewThirdParty.thirdParties
             const key = this.formNewThirdParty.search
             let index = _.findIndex(this.cardContentInfoForm.thirdPartyInfo, function (chr) {
               return chr.code === key
@@ -2521,8 +2521,8 @@
               return false
             }
             this.cardContentInfoForm.thirdPartyInfo.push({
-              id: arr[i].companyCode,
-              name: arr[i].company,
+              code: thirdParties[0].companyCode,
+              name:thirdParties[0].company,
               type: 'add'
             })
             curForm.resetFields()
@@ -2612,8 +2612,6 @@
             serviceCheckMsg: ''
           }
         }
-        console.log('this.$refs.cardContentInfoForm',this.$refs.cardContentInfoForm);
-        console.log('this.$refs.cardContCheckInfoForm',this.$refs.cardContCheckInfoForm);
         this.$refs.cardContentInfoForm.validate((valid) => {
           if (valid) {
             const supplier = this.cardContentInfoForm.tableSupplierInfo
@@ -2651,8 +2649,10 @@
         this.cardContCheckInfoForm.errorCount = errors.cardContCheckInfoForm.errorCount
         this.cardContCheckInfoForm.serviceCheckMsg = errors.cardContCheckInfoForm.serviceCheckMsg
       },
-      handleSave(formName) {
-        console.log('save', formName)
+      handleSave() {
+        let startTime=this.cardContentInfoForm.startTime,endTime=this.cardContentInfoForm.endTime;
+        startTime=startTime.getFullYear()+'-'+(startTime.getMonth()+1)+'-'+startTime.getDate()
+        endTime=endTime.getFullYear()+'-'+(endTime.getMonth()+1)+'-'+endTime.getDate()
       },
       handleSubmit() {
         /* Api.getRelatedInfo({}).then((data)=> {
