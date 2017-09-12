@@ -92,9 +92,10 @@
                 v-model="baseInfoForm.businessOperator"
                 filterable
                 remote
-                placeholder="请输入业务经办人关键词"
+                placeholder="请输入业务经办人"
                 :remote-method="getRemotebusinessOperatorsByKeyWord"
-                :loading="baseInfoForm.loading">
+                :loading="baseInfoForm.loading"
+              @change="handleBusinessOperatorChange">
                 <el-option
                   v-for="item in baseInfoForm.businessOperators"
                   :key="item.userId"
@@ -107,7 +108,7 @@
             </el-form-item>
           </el-col>
           <el-col :span="8">
-            <el-form-item label="业务部门">
+            <el-form-item label="业务部门" prop="businessDept">
               <el-input :disabled="isEnabled" v-model="baseInfoForm.businessDept"
                         placeholder="请输入业务部门"></el-input>
             </el-form-item>
@@ -146,9 +147,9 @@
               <el-select :disabled="isEnabled1" v-model="baseInfoForm.templateId" placeholder="请选择合同模版">
                 <el-option
                   v-for="item in baseInfoForm.templateOptions"
-                  :key="item.id"
-                  :label="item.name"
-                  :value="item.id">
+                  :key="item.templateId"
+                  :label="item.templateName"
+                  :value="item.templateId">
                 </el-option>
               </el-select>
               {{conVersion}}
@@ -304,30 +305,30 @@
           </el-form>
         </el-tab-pane>
         <el-tab-pane label="合同财务信息" name="tabContFinanceInfo">
-          <el-form rel="cardFinanceInfoForm" :model="cardFinanceInfoForm" label-width="100px">
+          <el-form rel="cardFinanceInfoForm" :model="cardFinanceInfoForm" :rules="cardFinanceInfoForm.rules" label-width="100px">
             <el-row>
               <el-col :span="8">
                 <el-form-item label="是否涉及金额">
-                  <el-radio-group v-model="cardFinanceInfoForm.hasMoney"
+                  <el-radio-group v-model="cardFinanceInfoForm.moneyInvolved"
                                   :disabled="operateType==='query'">
                     <el-radio :label="1">是</el-radio>
                     <el-radio :label="0">否</el-radio>
                   </el-radio-group>
                 </el-form-item>
               </el-col>
-              <el-col :span="8" v-if="cardFinanceInfoForm.hasMoney===1">
+              <el-col :span="8" v-if="cardFinanceInfoForm.moneyInvolved===1">
                 <el-form-item label="是否一次性付款" label-width="120px">
-                  <el-radio-group v-model="cardFinanceInfoForm.onePayment" :disabled="operateType==='query'">
+                  <el-radio-group v-model="cardFinanceInfoForm.oneOffPay" :disabled="operateType==='query'">
                     <el-radio :label="1">是</el-radio>
                     <el-radio :label="0">否</el-radio>
                   </el-radio-group>
                 </el-form-item>
               </el-col>
             </el-row>
-            <el-card v-if="cardFinanceInfoForm.hasMoney===1">
+            <el-card v-if="cardFinanceInfoForm.moneyInvolved===1">
               <header slot="header">付款方式</header>
               <el-table :data="cardFinanceInfoForm.paymentMethods.advance"
-                        v-if="cardFinanceInfoForm.onePayment"
+                        v-if="!cardFinanceInfoForm.oneOffPay"
                         style="width: 100%"
               >
                 <el-table-column type="expand" v-if="cardFinanceInfoForm.paymentMethods.advance[0].seriousPayments">
@@ -426,7 +427,7 @@
                 <el-table-column
                   prop="money"
                   label="付款金额"
-                width="150px">
+                  width="150px">
                   <template scope="scope">
                     <el-input
                       :disabled="operateType==='query'"
@@ -484,7 +485,7 @@
                 </el-table-column>
               </el-table>
               <el-table :show-header="false" :data="cardFinanceInfoForm.paymentMethods.progress"
-                        v-if="cardFinanceInfoForm.onePayment" style="width: 100%">
+                        v-if="!cardFinanceInfoForm.oneOffPay" style="width: 100%">
                 <el-table-column type="expand" v-if="cardFinanceInfoForm.paymentMethods.progress[0].seriousPayments">
                   <template scope="props">
                     <el-button icon="plus" type="primary" class="mb10" v-if="operateType!=='query'"
@@ -637,7 +638,7 @@
                 </el-table-column>
               </el-table>
               <el-table :show-header="false" :data="cardFinanceInfoForm.paymentMethods.final"
-                        v-if="cardFinanceInfoForm.onePayment" style="width: 100%">
+                        v-if="!cardFinanceInfoForm.oneOffPay" style="width: 100%">
                 <el-table-column type="expand" v-if="cardFinanceInfoForm.paymentMethods.final[0].seriousPayments">
                   <template scope="props">
                     <el-button icon="plus" type="primary" class="mb10"
@@ -808,12 +809,12 @@
                   </el-form-item>
                 </el-col>
                 <el-col :span="8">
-                  <el-form-item label="开票类型" prop="billingType">
-                    <el-select v-model="cardFinanceInfoForm.billingType"
+                  <el-form-item label="开票类型" prop="invoiceType">
+                    <el-select v-model="cardFinanceInfoForm.invoiceType"
                                placeholder="请选择开票类型"
                                :disabled="operateType==='query'">
                       <el-option
-                        v-for="item in cardFinanceInfoForm.billingTypeOptions"
+                        v-for="item in cardFinanceInfoForm.invoiceTypeOptions"
                         :key="item.value"
                         :label="item.label"
                         :value="item.value">
@@ -831,39 +832,42 @@
               <el-row>
                 <el-col :span="8">
                   <el-form-item label="是否收取保证金" label-width="120px">
-                    <el-radio-group v-model="cardFinanceInfoForm.hasBond" :disabled="operateType==='query'">
+                    <el-radio-group v-model="cardFinanceInfoForm.depositFlag" :disabled="operateType==='query'">
                       <el-radio :label="1">是</el-radio>
                       <el-radio :label="0">否</el-radio>
                     </el-radio-group>
                   </el-form-item>
                 </el-col>
               </el-row>
-              <el-row v-if="cardFinanceInfoForm.hasBond">
+              <el-row v-if="cardFinanceInfoForm.depositFlag">
                 <el-col :span="8">
-                  <el-form-item label="保证金金额" prop="bondMoney">
-                    <el-input v-model="cardFinanceInfoForm.bondMoney" :disabled="operateType==='query'"
+                  <el-form-item label="保证金金额" prop="deposit">
+                    <el-input v-model="cardFinanceInfoForm.deposit" :disabled="operateType==='query'"
                               placeholder="请输入保证金金额"></el-input>
                   </el-form-item>
                 </el-col>
                 <el-col :span="8">
-                  <el-form-item label="付款时间" prop="paymentTime">
-                    <el-date-picker v-model="cardFinanceInfoForm.paymentTime"
+                  <el-form-item label="付款时间" prop="payTime">
+                    <el-date-picker v-model="cardFinanceInfoForm.payTime"
                                     placeholder="请输入付款时间"
                                     :disabled="operateType==='query'"
                                     type="date"></el-date-picker>
                   </el-form-item>
                 </el-col>
                 <el-col :span="8">
-                  <el-form-item label="保证金占比" prop="bondProportion">
-                    {{getProportion(cardFinanceInfoForm.bondMoney)}}
+                  <el-form-item label="保证金占比" prop="depositRatio">
+                    {{getProportion(cardFinanceInfoForm.deposit)}}
                   </el-form-item>
                 </el-col>
               </el-row>
             </el-card>
-            <el-card class="mt20" v-if="baseInfoForm.contractType===3&&cardFinanceInfoForm.hasMoney===1">
+            <el-card class="mt20" v-if="baseInfoForm.contractType===3&&cardFinanceInfoForm.moneyInvolved===1">
               <header slot="header">开票信息</header>
               <el-row>
-                <el-col :span="12" class="billingInfo">
+                <el-col v-if="cardContentInfoForm.conSubjctName.length>1" :span="12">
+                  <h4>甲方数据不只一条</h4>
+                </el-col>
+                <el-col  v-else :span="12" class="billingInfo">
                   <h4>甲方增值税专用开票信息：</h4>
                   <el-row>
                     <el-col :span="6">
@@ -1669,9 +1673,9 @@
           contractNo: '',//合同编号
           dialogNewSubjectVisible: false,
           rules: {
-            templateId: [
-              {required: true, message: '请选择模版名称', trigger: 'blur'}
-            ]
+            businessOperator:[{required: true, message: '请输入业务经办人', trigger: 'blur'}],
+            businessDept:[{required: true, message: '请输入业务部门', trigger: 'blur'}],
+            templateId: [{required: true, message: '请选择模版名称', trigger: 'blur'}],
           }
         },
         activeTabName: 'tabContInfo',
@@ -1683,14 +1687,10 @@
           thirdPartyInfo: [],
           conStandard: [],
 
-
           errorCount: 0,
           supplierErrorMsg: '',
           subjectsErrorMsg: '',
-
-
           ifFixedTerm: 1,//是否固定期限（仅在变更合同时显示）
-
           dialogAddContractSupplier: false,
           dialogNewThirdPartyVisible: false,
           rules: {
@@ -1711,17 +1711,58 @@
           }
         },
         cardFinanceInfoForm: {
-          hasMoney: 1,
-          onePayment: 1,
+          moneyInvolved: 1,
+          oneOffPay: 1,
+          currency: 1,//币种1：人民币；2：美元
+          currencyOptions: [
+            {
+              value: 1,
+              label: 'CNY 人民币'
+            },
+            {
+              value: 2,
+              label: 'USD 美元'
+            }
+          ],
+          invoiceType: null,//开票类型
+          invoiceTypeOptions: [
+            {
+              value: 1,
+              label: '增值税专用发票'
+            },
+            {
+              value: 2,
+              label: '增值税普通发票'
+            },
+            {
+              value: 3,
+              label: '普通发票'
+            }
+          ],
+          totalAmount:0,
+          depositFlag: 1,
+          deposit: 0,
+          depositRatio: '',
+          payTime: '',
+          jiaBillingInfo: {
+            companyName: '红星美凯龙家居集团股份有限公司',
+            creditCode: '913100006624816751',
+            registerAddress: '上海市浦东新区临御路518号6楼F801室',
+            managementAddress: '上海市普陀区怒江北路598号10楼',
+            phone: '021-22300563',
+            bankAccount: '0210 0141 7000 7578',
+            openBank: '中国民生银行上海市南支行'
+          },
+          yiBillingInfo: {
+            companyName: '上海史泰博股份有限公司',
+            contact: 'echo',
+            bankAccount: '0210 0141 7000 7578',
+            openBank: '中国民生银行上海市南支行',
+            address: '上海市浦东新区临御路518号6楼F801室',
+            phone: '021-22300563',
+            email: '134656343@qq.com'
+          },
           paymentMethods: {
-            /*id (integer, optional): ID,
-             paymentAmount (number, optional): 付款金额,
-             seriousPayments (boolean, optional): 是否多次付款1：是；0：否,
-             paymentTimePeriod (integer, optional): 付款时间段,
-             paymentTime (string, optional): 付款时间,
-             ratio (number, optional): 百分比,
-             remark (string, optional): 备注,
-             subItem (array[付款子项详情], optional): 付款子项详情*/
             advance: [{
               type: '预付款',
               seriousPayments: true,
@@ -1817,54 +1858,10 @@
               subItem: []
             }]
           },
-          currency: '',
-          currencyOptions: [
-            {
-              value: '1',
-              label: 'CNY 人民币'
-            },
-            {
-              value: '2',
-              label: 'USD 美元'
-            }
-          ],
-          billingType: '',
-          billingTypeOptions: [
-            {
-              value: '1',
-              label: '增值税专用发票'
-            },
-            {
-              value: '2',
-              label: '增值税普通发票'
-            },
-            {
-              value: '3',
-              label: '普通发票'
-            }
-          ],
-          hasBond: 1,
-          bondMoney: 0,
-          bondProportion: '',
-          paymentTime: '',
-          jiaBillingInfo: {
-            companyName: '红星美凯龙家居集团股份有限公司',
-            creditCode: '913100006624816751',
-            registerAddress: '上海市浦东新区临御路518号6楼F801室',
-            managementAddress: '上海市普陀区怒江北路598号10楼',
-            phone: '021-22300563',
-            bankAccount: '0210 0141 7000 7578',
-            openBank: '中国民生银行上海市南支行'
+          rules: {
+            deposit: [{required: true, message: '请输入保证金金额', trigger: 'blur'}],
+            payTime: [{required: true, message: '请输入付款时间', trigger: 'blur'}]
           },
-          yiBillingInfo: {
-            companyName: '上海史泰博股份有限公司',
-            contact: 'echo',
-            bankAccount: '0210 0141 7000 7578',
-            openBank: '中国民生银行上海市南支行',
-            address: '上海市浦东新区临御路518号6楼F801室',
-            phone: '021-22300563',
-            email: '134656343@qq.com'
-          }
         },
         cardContCheckInfoForm: {
           checkPerson: '',
@@ -2155,6 +2152,7 @@
         const advance = parseFloat(paymentMethods.advance[0].money ? paymentMethods.advance[0].money : 0)
         const progress = parseFloat(paymentMethods.progress[0].money ? paymentMethods.progress[0].money : 0)
         const final = parseFloat(paymentMethods.final[0].money ? paymentMethods.final[0].money : 0)
+        this.cardFinanceInfoForm.totalAmount=advance + progress + final
         return advance + progress + final
       },
       showMaterialItems: function () {
@@ -2755,10 +2753,23 @@
       handleContractTextTypeChange(val){
         const params={};
         params.bizTypeId=this.baseInfoForm.contractBusinessTypeThird
-        params.templateType=(val==='1'?'TEMPLATE':'TEXT')
+        params.templateType=(val===1?'TEMPLATE':'TEXT')
         Api.getTemplateByBizTypeId(params).then((data)=>{
           this.baseInfoForm.templateOptions=data.data.dataMap||[];
         });
+      },
+      handleBusinessOperatorChange(val){
+        console.log('val',val);
+        const businessOperators=this.baseInfoForm.businessOperators
+        if(businessOperators.length){
+          for(let i=0,len=businessOperators.length;i<len;i++){
+            if(val===businessOperators[i].userId){
+              this.baseInfoForm.businessDept=businessOperators[i].deptName
+            }
+          }
+        }
+
+        console.log('baseInfoForm.businessOperators',this.baseInfoForm.businessOperators);
       }
     },
     components:{
