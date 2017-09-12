@@ -47,7 +47,6 @@
             </el-radio-group>
           </el-form-item>
           <el-form-item label="收文人" v-if="visible">
-            <el-input readonly :value="receiver" style="width:300px;"></el-input>
             <SelectPerson @change="change"></SelectPerson>
           </el-form-item>
           <el-form-item label="审批意见">
@@ -72,7 +71,7 @@
   import Api from '@/api/process'
   import {routerNames} from '../core/consts'
   import {formatTime} from '@/filters/moment'
-  import {SelectPerson} from '@/components/selectPerson.vue'
+  import SelectPerson from '@/components/selectPerson.vue'
 
   export default {
     data() {

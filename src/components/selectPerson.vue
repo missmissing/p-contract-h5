@@ -1,3 +1,11 @@
+<style type="text/scss" lang="scss" scoped>
+  .select-person {
+    .el-select-dropdown__item {
+      height: auto
+    }
+  }
+</style>
+
 <template>
   <el-select
     v-model="value"
@@ -7,18 +15,28 @@
     placeholder="请输入关键词"
     :remote-method="remoteMethod"
     :loading="loading"
+    popper-class="select-person"
     @change="change">
     <el-option
       v-for="item in options"
-      :key="item.value"
-      :label="item.label"
-      :value="item.value">
+      :key="item.userId"
+      :label="item.userName"
+      :value="item.userId">
+      <div>
+        <div>
+          <span>{{item.userName}}</span><span>({{item.userId}})</span>
+        </div>
+        <div>{{item.deptName}}</div>
+      </div>
     </el-option>
   </el-select>
 </template>
 
 <script>
+  import Api from '@/api'
+
   export default {
+    name: 'SelectPerson',
     props: {
       multiple: {
         default: false
@@ -27,6 +45,7 @@
     data() {
       return {
         value: {},
+        options: [],
         loading: false
       }
     },
@@ -34,13 +53,12 @@
       remoteMethod(query) {
         if (query !== '') {
           this.loading = true
-          setTimeout(() => {
+          Api.selectPerson({keyword: query}).then(res => {
             this.loading = false
-            this.options = this.list.filter(item => {
-              return item.label.toLowerCase()
-                .indexOf(query.toLowerCase()) > -1
-            })
-          }, 200)
+            this.options = res.data.dataMap
+          }, () => {
+            this.options = []
+          })
         } else {
           this.options = []
         }

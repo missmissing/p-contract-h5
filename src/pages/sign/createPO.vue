@@ -443,32 +443,8 @@
         }
         this.prMap[prCode] = true
 
-        this.prData.push({
-          prNum: '1',
-          itemNum: 10,
-          companyCode: '2',
-          companyName: '红星美凯龙',
-          initiator: 'tester',
-          sponsDepart: 'hh',
-          prCreateTime: '2017-09-08',
-          prLink: 'baidu.com',
-          prGoods: [{
-            materielCode: 'abc',
-            materielName: '笔记本'
-          }]
-        }, {
-          prNum: '2',
-          itemNum: 20,
-          companyCode: '22',
-          companyName: '红星美凯龙',
-          initiator: 'tester',
-          sponsDepart: 'hh',
-          prCreateTime: '2017-09-08',
-          prLink: 'baidu.com',
-          prGoods: [{
-            materielCode: 'abcd',
-            materielName: '铅笔'
-          }]
+        signModel.getPr().then((res) => {
+          this.prData.push(res.data.dataMap)
         })
       },
       search() {
@@ -534,12 +510,12 @@
       },
       getSource(data) {
         const result = []
-        const goodMaps = {}
         const contractData = data
         this.prData.forEach((pr) => {
           const {prNum, itemNum, prGoods = []} = pr
           prGoods.forEach((prGood) => {
             const {materielName, materielCode = []} = prGood
+            const result1 = []
             contractData.forEach((contract) => {
               const {contractCode, supplier, supplierName, startDate, endDate, contractGoods = []} = contract
               contractGoods.forEach((contractGood) => {
@@ -555,32 +531,16 @@
                     taxPrice,
                     taxRate
                   }
-                  if (goodMaps[materielCode]) {
-                    goodMaps[materielCode]['data'].push({
-                      ...contractGoodData
-                    })
-                  } else {
-                    goodMaps[materielCode] = {
-                      prNum,
-                      itemNum,
-                      materielCode,
-                      materielName,
-                      data: [{
-                        ...contractGoodData
-                      }]
-                    }
-                  }
+                  result1.push(contractGoodData)
                 }
               })
             })
-          })
-        })
-
-        Object.keys(goodMaps).forEach((key) => {
-          const {prNum, itemNum, materielCode, materielName, data} = goodMaps[key]
-          result.push({prNum, itemNum, materielCode, materielName})
-          data.forEach((item) => {
-            result.push(item)
+            if (result1.length) {
+              result.push({prNum, itemNum, materielCode, materielName})
+              result1.forEach((item) => {
+                result.push(item)
+              })
+            }
           })
         })
         console.log(result)
