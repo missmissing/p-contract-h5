@@ -84,16 +84,6 @@ const router = new Router({
           }
         },
         {
-          path: '/conperf/conlist',
-          component: function (resolve) {
-            require(['../pages/create/conLIst.vue'], resolve)
-          },
-          name: routerNames.con_list,
-          meta: {
-            auth: true
-          }
-        },
-        {
           path: '/contract/agreementList',
           component: function (resolve) {
             require(['../pages/create/agreementList.vue'], resolve)
@@ -148,7 +138,7 @@ const router = new Router({
           name: routerNames.con_createSimpleContract
         },
         {
-          path: '/ConCreate/conCheck',// 查看合同
+          path: '/ConCreate/conCheck', // 查看合同
           component: function (resolve) {
             require(['../pages/create/createCon.vue'], resolve)
           },
@@ -240,16 +230,6 @@ const router = new Router({
       name: routerNames.con_support,
       children: [
         {
-          path: '/contemplate/list',
-          component: function (resolve) {
-            require(['../pages/support/list.vue'], resolve)
-          },
-          meta: {
-            auth: true
-          },
-          name: routerNames.con_tpl_list
-        },
-        {
           path: '/contemplate/see',
           component: function (resolve) {
             require(['../pages/support/see.vue'], resolve)
@@ -310,7 +290,67 @@ const router = new Router({
           require(['../pages/process/handingProcess.vue'], resolve)
         },
         name: routerNames.con_handing_process
+      }, {
+        path: '/conProcess/createProcess',
+        meta: {
+          auth: true
+        },
+        component: function (resolve) {
+          require(['../pages/process/handingProcess.vue'], resolve)
+        },
+        name: routerNames.con_create_process
+      }, {
+        path: '/conProcess/handleProcess',
+        meta: {
+          auth: true
+        },
+        component: function (resolve) {
+          require(['../pages/process/handingProcess.vue'], resolve)
+        },
+        name: routerNames.con_handle_process
       }],
+      meta: {
+        iconCls: 'stats-bars'
+      }
+    },
+    {
+      path: '/',
+      component: function (resolve) {
+        require(['../pages/home/home.vue'], resolve)
+      },
+      name: routerNames.con_search,
+      children: [
+        {
+          path: '/conperf/conlist',
+          component: function (resolve) {
+            require(['../pages/create/conLIst.vue'], resolve)
+          },
+          name: routerNames.con_list,
+          meta: {
+            auth: true
+          }
+        },
+        {
+          path: '/contemplate/list',
+          component: function (resolve) {
+            require(['../pages/support/list.vue'], resolve)
+          },
+          meta: {
+            auth: true
+          },
+          name: routerNames.con_tpl_list
+        },
+        {
+          path: '/contemplate/list',
+          component: function (resolve) {
+            require(['../pages/support/list.vue'], resolve)
+          },
+          meta: {
+            auth: true
+          },
+          name: routerNames.con_order_list
+        }
+      ],
       meta: {
         iconCls: 'stats-bars'
       }
