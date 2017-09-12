@@ -1635,6 +1635,8 @@
         },
         baseInfoForm: {
           id:'',//在更新合同是把合同id传入
+          procInstId:'',//流程编号
+          guid:'',//草稿箱编号
           businessOperator: '', // 业务经办人
           businessDept: '',
           contractType:'',//合同模式id
