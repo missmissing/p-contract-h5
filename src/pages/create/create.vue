@@ -362,12 +362,10 @@
                 routePath = '/ConCreate/CreateSimpleContract'
                 break
             }
-            console.log('curConModelId',this.conForm.curConModelId);
-            console.log('curConTypeId',this.conForm.conType);
             this.$router.push({
               path: routePath,
               query: {
-                currentPr: this.currentPr ? this.currentPr.folio : '',
+                currentFolio: this.currentPr ? this.currentPr.folio : '',
                 curConModelId: this.conForm.curConModelId,
                 curConTypeId: this.conForm.conType,
                 operateType: 'create'
@@ -455,7 +453,6 @@
         const ids=[],names=[];
         if(checkNodes.length){
           for(let i=0,len=checkNodes.length;i<len;i++){
-            console.log(checkNodes[i]);
             ids.push(checkNodes[i].id);
             names.push(checkNodes[i].businessName);
           }

@@ -122,7 +122,7 @@
           </el-col>
           <el-col :span="8">
             <el-form-item label="合同类型">
-              <el-input :disabled="isEnabled" v-model="baseInfoForm.contractBusinessTypeThirdName"
+              <el-input :disabled="isEnabled" v-model="baseInfoForm.contractBusinessTypeName"
                         placeholder="请输入合同类型"></el-input>
             </el-form-item>
           </el-col>
@@ -164,7 +164,7 @@
           </el-col>
           <el-col :span="8" v-if="operateType!=='create'&&updateForm.updateMode">
             <el-form-item label="合同编号">
-              <el-input v-model="baseInfoForm.conNumber" placeholder="请输入合同编号"
+              <el-input v-model="baseInfoForm.contractNo" placeholder="请输入合同编号"
                         :disabled="true"></el-input>
             </el-form-item>
           </el-col>
@@ -1633,16 +1633,15 @@
             remark: [{required: true, message: '请输入合同编号', trigger: 'blur'}]
           }
         },
-        currentPr: '',
         baseInfoForm: {
-          id:'',//??
+          id:'',//在更新合同是把合同id传入
           businessOperator: '', // 业务经办人
           businessDept: '',
           contractType:'',//合同模式id
           contractTypeName:'',//合同模式名称
           businessOperators:[],//业务操作人数组
           loading:false,//业务操作人
-          contractBusinessTypeThirdName:'',
+          contractBusinessTypeName:'',//业务类型名
           contractTextType: '1',
           contractTextTypeOptions: [
             {
@@ -1656,17 +1655,16 @@
           ],
           sealOrder: 1, // 0：我方先盖章 1：对方先盖章
           ourSealOpinion: '',
-          templateId: '',
+          templateId: '',//当前模版id
           templateOptions: [{
             id:'1',
             name:'模版1',
             version:'1'
           }],
           belongProject: '',
-
-          conNumber: '',
-
-
+          prFlag:1,//是否有比加单号 1：有 0：无
+          prNo:'',//pr号
+          contractNo: '',//合同编号
 
 
           dialogNewSubjectVisible: false,
@@ -2121,7 +2119,7 @@
       let query = this.$route.query
       if (JSON.stringify(query) !== '{}') {
         this.operateType = query.operateType
-        this.currentPr = query.currentPr
+        this.baseInfoForm.prNo = query.currentFolio//比加单号
         this.baseInfoForm.contractType = query.curConModelId
       }
     },
@@ -2224,18 +2222,16 @@
       },
     },
     mounted() {
-      let params={};
+      const params={};
       const query = this.$route.query,types=query.curConTypeId.split('-');
       if (JSON.stringify(query) !== '{}') {
-        params.folio=query.currentPr
+        params.folio=query.currentFolio
         params.contractType=query.curConModelId;//合同模式
         params.contractBusinessTypeFirst=types[0];
         params.contractBusinessTypeSecond=types[1];
         params.contractBusinessTypeThird=types[2];
       }
-      this.baseInfoForm.contractTypeName=this.getContractModelName(params.contractType);
-      this.baseInfoForm.contractBusinessTypeThird=types[types.length-1];
-      console.log('mounted-this.baseInfoForm.contractBusinessTypeThird',this.baseInfoForm.contractBusinessTypeThird);
+
 
       Api.getContractBaseInfo(params).then((data) => {
         Object.assign(this.baseInfoForm,data.data.dataMap.baseInfoForm);
@@ -2245,20 +2241,23 @@
         Object.assign(this.cardSealInfoForm,data.data.dataMap.cardSealInfoForm);
         Object.assign(this.cardRemarkInfoForm,data.data.dataMap.cardRemarkInfoForm);
         Object.assign(this.cardOtherInfo,data.data.dataMap.cardOtherInfo);
-
+        let baseInfo=data.data.dataMap.baseInfoForm;
+        this.baseInfoForm.contractBusinessTypeName=baseInfo.contractBusinessTypeFirstName+'-'+baseInfo.contractBusinessTypeSecondName+'-'+baseInfo.contractBusinessTypeThirdName
         const params={}
         params.bizTypeId=this.baseInfoForm.contractBusinessTypeThird;//业务类型
         params.templateType=(this.baseInfoForm.contractTextType==='1'?'TEMPLATE':'TEXT');
         Api.getTemplateByBizTypeId(params).then((data)=>{
           this.baseInfoForm.templateOptions=data.data.dataMap||[]
         });
-
-        /*
-        this.cardContentInfoForm.tableSupplierInfo = data.data.dataMap.cardContentInfoForm.tableSupplierInfo
-        this.cardContentInfoForm.conSubjctName = data.data.dataMap.cardContentInfoForm.conSubjctName
-        this.cardContentInfoForm.thirdPartyInfo = data.data.dataMap.cardContentInfoForm.thirdPartyInfo
-        this.cardContentInfoForm.conStandard = data.data.dataMap.cardContentInfoForm.conStandard*/
       })
+
+      this.baseInfoForm.contractTypeName=this.getContractModelName(params.contractType);
+      this.baseInfoForm.contractBusinessTypeThird=types[types.length-1];
+
+      if(query.currentFolio){
+        this.baseInfoForm.prNo=query.currentFolio
+        this.baseInfoForm.prFlag=1
+      }
     },
     methods: {
       getContractModelName(id){
