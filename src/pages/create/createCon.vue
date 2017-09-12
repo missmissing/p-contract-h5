@@ -131,7 +131,7 @@
           <el-col :span="8">
             <el-form-item label="合同文本类型">
               <el-select :disabled="isEnabled1" v-model="baseInfoForm.contractTextType"
-                         placeholder="请选择合同文本类型">
+                         placeholder="请选择合同文本类型" @change="handleContractTextTypeChange">
                 <el-option
                   v-for="item in baseInfoForm.contractTextTypeOptions"
                   :key="item.id"
@@ -145,7 +145,7 @@
             <el-form-item label="模版名称" prop="templateId">
               <el-select :disabled="isEnabled1" v-model="baseInfoForm.templateId" placeholder="请选择合同模版">
                 <el-option
-                  v-for="item in templateOptions"
+                  v-for="item in baseInfoForm.templateOptions"
                   :key="item.id"
                   :label="item.name"
                   :value="item.id">
@@ -1574,7 +1574,7 @@
       </el-col>
       <el-col :span="6">
         <el-button type="primary" @click="handlePreview" style="margin-left:33px"
-                   v-if="baseInfoForm.contractTextType===1">预览
+                   v-if="baseInfoForm.contractTextType==='1'">预览
         </el-button>
       </el-col>
       <el-col :span="4">
@@ -1643,14 +1643,14 @@
           businessOperators:[],//业务操作人数组
           loading:false,//业务操作人
           contractBusinessTypeThirdName:'',
-          contractTextType: 1,
+          contractTextType: '1',
           contractTextTypeOptions: [
             {
-              id:1,
+              id:'1',
               name:'模板合同'
             },
             {
-              id:2,
+              id:'2',
               name:'非模板合同'
             }
           ],
@@ -2123,7 +2123,6 @@
         this.operateType = query.operateType
         this.currentPr = query.currentPr
         this.baseInfoForm.contractType = query.curConModelId
-        this.baseInfoForm.contractBusinessTypeThird = query.curConTypeId
       }
     },
     computed: {
@@ -2223,27 +2222,20 @@
             return 'OrderTable'
         }
       },
-      templateOptions:function(){
-        if(this.baseInfoForm.contractTextType){
-          const params={}
-          params.bizTypeId=this.baseInfoForm.contractBusinessTypeThird;//业务类型
-          params.bizTypeId=(this.baseInfoForm.contractTextType===1?'TEMPLATE':'TEXT');//业务类型
-          Api.getTemplateByBizTypeId(params).then((data)=>{
-            return data.data.dataMap||[]
-          });
-        }
-      }
     },
     mounted() {
       let params={};
-      let query = this.$route.query
+      const query = this.$route.query,types=query.curConTypeId.split('-');
       if (JSON.stringify(query) !== '{}') {
         params.folio=query.currentPr
         params.contractType=query.curConModelId;//合同模式
-        params.contractBusinessTypeFirst=1;
-        params.contractBusinessTypeSecond=1;
-        params.contractBusinessTypeThird=1;
+        params.contractBusinessTypeFirst=types[0];
+        params.contractBusinessTypeSecond=types[1];
+        params.contractBusinessTypeThird=types[2];
       }
+      this.baseInfoForm.contractTypeName=this.getContractModelName(params.contractType);
+      this.baseInfoForm.contractBusinessTypeThird=types[types.length-1];
+      console.log('mounted-this.baseInfoForm.contractBusinessTypeThird',this.baseInfoForm.contractBusinessTypeThird);
 
       Api.getContractBaseInfo(params).then((data) => {
         Object.assign(this.baseInfoForm,data.data.dataMap.baseInfoForm);
@@ -2254,7 +2246,12 @@
         Object.assign(this.cardRemarkInfoForm,data.data.dataMap.cardRemarkInfoForm);
         Object.assign(this.cardOtherInfo,data.data.dataMap.cardOtherInfo);
 
-        this.baseInfoForm.contractTypeName=this.getContractModelName(data.data.dataMap.baseInfoForm.contractType);
+        const params={}
+        params.bizTypeId=this.baseInfoForm.contractBusinessTypeThird;//业务类型
+        params.templateType=(this.baseInfoForm.contractTextType==='1'?'TEMPLATE':'TEXT');
+        Api.getTemplateByBizTypeId(params).then((data)=>{
+          this.baseInfoForm.templateOptions=data.data.dataMap||[]
+        });
 
         /*
         this.cardContentInfoForm.tableSupplierInfo = data.data.dataMap.cardContentInfoForm.tableSupplierInfo
@@ -2756,12 +2753,13 @@
         }
       },
       handleContractTextTypeChange(val){
+        console.log('handleContractTextTypeChange',val);
         let params={};
         params.bizTypeId=this.baseInfoForm.contractBusinessTypeThird
         params.templateType=(val===1?'TEMPLATE':'TEXT')
 
-        Api.getTemplateByBizTypeId().then((data)=>{
-          this.baseInfoForm.templateOptions=data.data.dataMap;
+        Api.getTemplateByBizTypeId(params).then((data)=>{
+          this.baseInfoForm.templateOptions=data.data.dataMap||[];
         });
       }
     },

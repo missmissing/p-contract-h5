@@ -229,7 +229,7 @@
             {id: '3', name: '框架合同'},
             {id: '4', name: '框架意向合同'}
           ],
-          conType: [],
+          conType: '',
           conTypeName: '',
         },
         conFormRules: {
@@ -319,7 +319,7 @@
           this.conForm.strPC = ''
           this.conForm.curConModelId = ''
           this.conForm.conTypeName = ''
-          this.conForm.conType = []
+          this.conForm.conType = ''
         }
       },
       handleQuery() {
@@ -362,8 +362,8 @@
                 routePath = '/ConCreate/CreateSimpleContract'
                 break
             }
-
-            console.log('this.conForm.curConModelId',this.conForm.curConModelId);
+            console.log('curConModelId',this.conForm.curConModelId);
+            console.log('curConTypeId',this.conForm.conType);
             this.$router.push({
               path: routePath,
               query: {
@@ -451,9 +451,18 @@
        }
        })
        } */
-      setBusiType(checkNodes){
-        this.conForm.conType = checkNodes[0].id
-        this.conForm.conTypeName = checkNodes[0].businessName
+      setBusiType(checkNodes,tree){
+        const ids=[],names=[];
+        if(checkNodes.length){
+          for(let i=0,len=checkNodes.length;i<len;i++){
+            console.log(checkNodes[i]);
+            ids.push(checkNodes[i].id);
+            names.push(checkNodes[i].businessName);
+          }
+        }
+        this.conForm.conType = ids.join('-')
+        this.conForm.conTypeName = names.join('-')
+
         this.visible = false;
       },
       handleQueryPriceList(formName){
