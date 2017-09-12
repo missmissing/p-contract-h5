@@ -1,11 +1,11 @@
 import Http from '@/core/commonModel'
 const contract = '/api-contract'
- //const contract = ''
+//const contract = ''
 
 export default {
   //根据关键字获取创建人列表
   getRemoteCreatePersonsByKeyWord(params){
-    return Http.post(`${contract}/contract-web/contract/getRemoteCreatePersonsByKeyWord`, params)
+    return Http.get(`${contract}/contract-web/contract/user/list`, params)
   },
   // 获取比价单列表数据
   getQrList(params) {
@@ -20,11 +20,11 @@ export default {
   },
     // 获取供应商列表根据关键字
   getRemoteSuppliersByKeyWord(params) {
-    return Http.get(`/api/createContract/getRemoteSuppliersByKeyWord`, params)
+    return Http.post(`${contract}/contract-web/contract/party/second`, params)
   },
     // 获取合同我方主体列表根据关键字
   getRemoteSubjectsByKeyWord(params) {
-    return Http.get(`/api/createContract/getRemoteSubjectsByKeyWord`, params)
+    return Http.post(`${contract}/contract-web/contract/party/first`, params)
   },
     // 获取第三方信息列表根据关键字
   getRemoteThirdPartiesByKeyWord(params) {

@@ -1,5 +1,5 @@
 module.exports = function (api) {
-  api.use('/contract-web/contract/getRemoteCreatePersonsByKeyWord', function (req, res) {
+  api.use('/contract-web/contract/user/list', function (req, res) {
     res.status(200).json({
       code: 200,
       message: 'success',
@@ -116,38 +116,28 @@ module.exports = function (api) {
       message: 'success',
       dataMap: {
         baseInfoForm: {
-          businessPerson: '研发部三毛',
-          businessDepartment: '研发部',
-          conModelName: '框架合同',
-          conTypeName: '礼品类',
-          conTextType: [
-            {
-              id: 1,
-              name: '模版合同'
-            },
-            {
-              id: 2,
-              name: '非模版合同'
-            }
-          ],
-          templateName: [
-            {
-              id: 'template1',
-              name: '模版1',
-              version: '1.1'
-            },
-            {
-              id: 'template2',
-              name: '模版2',
-              version: '1.2'
-            },
-            {
-              id: 'template3',
-              name: '模版3',
-              version: '1.3'
-            }
-          ]
-
+          "id": null,
+          "prFlag": null,
+          "procInstId": null,
+          "guid": null,
+          "prNo": "XBJ1760945",
+          "contractType": 3,
+          "contractNo": null,
+          "contractBusinessTypeFirst": 1,
+          "contractBusinessTypeFirstName": '服务类',
+          "contractBusinessTypeSecond": 1,
+          "contractBusinessTypeSecondName": '企划',
+          "contractBusinessTypeThird":1,
+          "contractBusinessTypeThirdName":'文化营销',
+          "contractTextType": null,
+          "templateId": '1',
+          "sealOrder": 1,
+          "ourSealOpinion": null,
+          "startTime": null,
+          "endTime": null,
+          "remark": null,
+          "businessOperator": '王鹏飞',
+          "businessDept": '技术研发部'
         },
         contentInfo: {
           tableSupplierInfo: [
@@ -190,7 +180,7 @@ module.exports = function (api) {
       }
     })
   })
-  api.use('/api/createContract/getRemoteSuppliersByKeyWord', function (req, res) {
+  api.use('/contract-web/contract/party/second', function (req, res) {
     res.status(200).json({
       code: 200,
       message: 'success',
@@ -212,12 +202,11 @@ module.exports = function (api) {
       }
     });
   });
-  api.use('/api/createContract/getRemoteSubjectsByKeyWord', function (req, res) {
+  api.use('/contract-web/contract/party/first', function (req, res) {
     res.status(200).json({
       code: 200,
       message: 'success',
-      dataMap: {
-        list: [
+      dataMap: [
           {
             id: 'company001',
             name: '公司1'
@@ -231,7 +220,6 @@ module.exports = function (api) {
             name: '公司3'
           },
         ]
-      }
     });
   });
   api.use('/api/createContract/getRemoteThirdPartiesByKeyWord', function (req, res) {
@@ -374,7 +362,8 @@ module.exports = function (api) {
           name:'从协议1',
           createPerson:'wyy',
           createDepart:'development',
-          createTime:'2017-09-11'
+          createTime:'2017-09-11',
+          version:'1'
         }
       ]
     });

@@ -201,7 +201,7 @@
               </el-button>
               <el-table :data="cardContentInfoForm.tableSupplierInfo">
                 <el-table-column type="index"></el-table-column>
-                <el-table-column prop="id" label="供应商编号"></el-table-column>
+                <el-table-column prop="code" label="供应商编号"></el-table-column>
                 <el-table-column prop="name" label="供应商名称"></el-table-column>
                 <el-table-column
                   fixed="right"
@@ -223,7 +223,7 @@
                          icon="plus" class="mb10">新增
               </el-button>
               <el-table :data="cardContentInfoForm.conSubjctName">
-                <el-table-column prop="id" label="公司代码"></el-table-column>
+                <el-table-column prop="code" label="公司代码"></el-table-column>
                 <el-table-column prop="name" label="公司名称"></el-table-column>
                 <el-table-column
                   fixed="right"
@@ -245,7 +245,7 @@
                          icon="plus" class="mb10">新增
               </el-button>
               <el-table :data="cardContentInfoForm.thirdPartyInfo">
-                <el-table-column prop="id" label="供应商编号"></el-table-column>
+                <el-table-column prop="code" label="供应商编号"></el-table-column>
                 <el-table-column prop="name" label="供应商名称"></el-table-column>
                 <el-table-column
                   fixed="right"
@@ -265,12 +265,12 @@
               <header slot="header">合同标的</header>
               <el-table :data="cardContentInfoForm.conStandard">
                 <el-table-column type="index"></el-table-column>
-                <el-table-column prop="id" label="物料编码"></el-table-column>
-                <el-table-column prop="name" label="物料名称"></el-table-column>
-                <el-table-column prop="number" label="数量"></el-table-column>
+                <el-table-column prop="materialCode" label="物料编码"></el-table-column>
+                <el-table-column prop="materialName" label="物料名称"></el-table-column>
+                <el-table-column prop="total" label="数量"></el-table-column>
                 <el-table-column prop="taxRate" label="税率"></el-table-column>
               </el-table>
-              <el-row v-if="operateType==='update'">
+              <el-row class="mt20" v-if="operateType==='update'">
                 <el-col :span="8">
                   <el-form-item label="是否固定期限">
                     <el-radio-group v-model="cardContentInfoForm.ifFixedTerm">
@@ -280,11 +280,11 @@
                   </el-form-item>
                 </el-col>
               </el-row>
-              <el-row>
+              <el-row class="mt20">
                 <el-col :span="8">
                   <el-form-item label="合同生效日期"
-                                prop="effectiveDate">
-                    <el-date-picker v-model="cardContentInfoForm.effectiveDate"
+                                prop="startTime">
+                    <el-date-picker v-model="cardContentInfoForm.startTime"
                                     :disabled="operateType==='query'"
                                     placeholder="请输入合同生效期日期"
                                     type="date"></el-date-picker>
@@ -292,8 +292,8 @@
                 </el-col>
                 <el-col :span="8">
                   <el-form-item label="合同终止日期"
-                                prop="endDate">
-                    <el-date-picker v-model="cardContentInfoForm.endDate"
+                                prop="endTime">
+                    <el-date-picker v-model="cardContentInfoForm.endTime"
                                     :disabled="operateType==='query'"
                                     placeholder="请输入合同终止日期"
                                     type="date"></el-date-picker>
@@ -330,7 +330,7 @@
                         v-if="cardFinanceInfoForm.onePayment"
                         style="width: 100%"
               >
-                <el-table-column type="expand" v-if="cardFinanceInfoForm.paymentMethods.advance[0].ifMultiPayment">
+                <el-table-column type="expand" v-if="cardFinanceInfoForm.paymentMethods.advance[0].seriousPayments">
                   <template scope="props">
                     <el-button icon="plus" type="primary"
                                v-if="operateType!=='query'"
@@ -416,11 +416,11 @@
                   </template>
                 </el-table-column>
                 <el-table-column prop="type" label="类型" width="100px"></el-table-column>
-                <el-table-column width="90px" prop="ifMultiPayment" label="是否多次付款">
+                <el-table-column width="90px" prop="seriousPayments" label="是否多次付款">
                   <template scope="scope">
                     <el-checkbox
                       :disabled="operateType==='query'"
-                      v-model="cardFinanceInfoForm.paymentMethods.advance[scope.$index].ifMultiPayment"></el-checkbox>
+                      v-model="cardFinanceInfoForm.paymentMethods.advance[scope.$index].seriousPayments"></el-checkbox>
                   </template>
                 </el-table-column>
                 <el-table-column
@@ -485,7 +485,7 @@
               </el-table>
               <el-table :show-header="false" :data="cardFinanceInfoForm.paymentMethods.progress"
                         v-if="cardFinanceInfoForm.onePayment" style="width: 100%">
-                <el-table-column type="expand" v-if="cardFinanceInfoForm.paymentMethods.progress[0].ifMultiPayment">
+                <el-table-column type="expand" v-if="cardFinanceInfoForm.paymentMethods.progress[0].seriousPayments">
                   <template scope="props">
                     <el-button icon="plus" type="primary" class="mb10" v-if="operateType!=='query'"
                                @click="handleAddAdvanceItem(props.row.type)">
@@ -569,11 +569,11 @@
                   </template>
                 </el-table-column>
                 <el-table-column prop="type" label="类型" width="100px"></el-table-column>
-                <el-table-column width="90px" prop="ifMultiPayment" label="是否多次付款">
+                <el-table-column width="90px" prop="seriousPayments" label="是否多次付款">
                   <template scope="scope">
                     <el-checkbox
                       :disabled="operateType==='query'"
-                      v-model="cardFinanceInfoForm.paymentMethods.progress[scope.$index].ifMultiPayment"></el-checkbox>
+                      v-model="cardFinanceInfoForm.paymentMethods.progress[scope.$index].seriousPayments"></el-checkbox>
                   </template>
                 </el-table-column>
                 <el-table-column
@@ -638,7 +638,7 @@
               </el-table>
               <el-table :show-header="false" :data="cardFinanceInfoForm.paymentMethods.final"
                         v-if="cardFinanceInfoForm.onePayment" style="width: 100%">
-                <el-table-column type="expand" v-if="cardFinanceInfoForm.paymentMethods.final[0].ifMultiPayment">
+                <el-table-column type="expand" v-if="cardFinanceInfoForm.paymentMethods.final[0].seriousPayments">
                   <template scope="props">
                     <el-button icon="plus" type="primary" class="mb10"
                                v-if="operateType!=='query'"
@@ -725,12 +725,12 @@
                 <el-table-column prop="type" label="类型" width="100px"></el-table-column>
                 <el-table-column
                   width="90px"
-                  prop="ifMultiPayment"
+                  prop="seriousPayments"
                   label="是否多次付款">
                   <template scope="scope">
                     <el-checkbox
                       :disabled="operateType==='query'"
-                      v-model="cardFinanceInfoForm.paymentMethods.final[scope.$index].ifMultiPayment"></el-checkbox>
+                      v-model="cardFinanceInfoForm.paymentMethods.final[scope.$index].seriousPayments"></el-checkbox>
                   </template>
                 </el-table-column>
                 <el-table-column
@@ -1405,7 +1405,7 @@
     <el-dialog title="新增合同供应商信息" :visible.sync="cardContentInfoForm.dialogAddContractSupplier" size="small">
       <el-form :model="formContractSupplier" label-width="100px" ref="formContractSupplier"
                :rules="formContractSupplier.rules">
-        <el-form-item label="供应商名称" prop="search" label-width="150px">
+        <el-form-item label="供应商名称/编码" prop="search" label-width="150px">
           <el-select
             style="width:300px"
             size="small"
@@ -1417,9 +1417,9 @@
             :loading="formContractSupplier.loading">
             <el-option
               v-for="item in formContractSupplier.suppliers"
-              :key="item.id"
-              :label="item.name"
-              :value="item.id">
+              :key="item.companyCode"
+              :label="item.company"
+              :value="item.companyCode">
             </el-option>
           </el-select>
         </el-form-item>
@@ -1433,7 +1433,7 @@
     <el-dialog title="新增合同我方主体" :visible.sync="baseInfoForm.dialogNewSubjectVisible" size="small">
       <el-form :model="formNewSubject" label-width="100px" ref="formNewSubject"
                :rules="formNewSubject.rules">
-        <el-form-item label="公司名称" prop="search" label-width="150px">
+        <el-form-item label="公司名称/编码" prop="search" label-width="150px">
           <el-select
             style="width:300px"
             size="small"
@@ -1445,9 +1445,9 @@
             :loading="formNewSubject.loading">
             <el-option
               v-for="item in formNewSubject.subjects"
-              :key="item.id"
-              :label="item.name"
-              :value="item.id">
+              :key="item.companyCode"
+              :label="item.company"
+              :value="item.companyCode">
             </el-option>
           </el-select>
         </el-form-item>
@@ -1472,9 +1472,9 @@
             :loading="formNewThirdParty.loading">
             <el-option
               v-for="item in formNewThirdParty.thirdParties"
-              :key="item.id"
-              :label="item.name"
-              :value="item.id">
+              :key="item.companyCode"
+              :label="item.company"
+              :value="item.companyCode">
             </el-option>
           </el-select>
         </el-form-item>
@@ -1574,7 +1574,7 @@
       </el-col>
       <el-col :span="6">
         <el-button type="primary" @click="handlePreview" style="margin-left:33px"
-                   v-if="baseInfoForm.contractTextType==='1'">预览
+                   v-if="baseInfoForm.contractTextType===1">预览
         </el-button>
       </el-col>
       <el-col :span="4">
@@ -1592,18 +1592,18 @@
   export default {
     data() {
       let validateEffectiveDateRules = (rule, value, callback) => {
-        let endDate = this.cardContentInfoForm.endDate
-        if (endDate) {
-          if (new Date(value) > new Date(endDate)) {
+        let endTime = this.cardContentInfoForm.endTime
+        if (endTime) {
+          if (new Date(value) > new Date(endTime)) {
             callback(new Error('合同终止日期必须大于合同生效日期'))
           }
         }
         callback()
       }
       let validateEndDate = (rule, value, callback) => {
-        let effectiveDate = this.cardContentInfoForm.effectiveDate
-        if (effectiveDate) {
-          if (new Date(value) < new Date(effectiveDate)) {
+        let startTime = this.cardContentInfoForm.startTime
+        if (startTime) {
+          if (new Date(value) < new Date(startTime)) {
             callback(new Error('合同终止日期必须大于合同生效日期'))
           }
         }
@@ -1644,14 +1644,14 @@
           businessOperators:[],//业务操作人数组
           loading:false,//业务操作人
           contractBusinessTypeName:'',//业务类型名
-          contractTextType: '1',
+          contractTextType: null,
           contractTextTypeOptions: [
             {
-              id:'1',
+              id:1,
               name:'模板合同'
             },
             {
-              id:'2',
+              id:2,
               name:'非模板合同'
             }
           ],
@@ -1667,8 +1667,6 @@
           prFlag:1,//是否有比加单号 1：有 0：无
           prNo:'',//pr号
           contractNo: '',//合同编号
-
-
           dialogNewSubjectVisible: false,
           rules: {
             templateId: [
@@ -1678,27 +1676,32 @@
         },
         activeTabName: 'tabContInfo',
         cardContentInfoForm: {
+          startTime: '',
+          endTime: '',
           tableSupplierInfo: [],
-          errorCount: 0,
-          supplierErrorMsg: '',
-          subjectsErrorMsg: '',
           conSubjctName: [],
           thirdPartyInfo: [],
           conStandard: [],
-          ifFixedTerm: 1,
-          effectiveDate: '',
-          endDate: '',
+
+
+          errorCount: 0,
+          supplierErrorMsg: '',
+          subjectsErrorMsg: '',
+
+
+          ifFixedTerm: 1,//是否固定期限（仅在变更合同时显示）
+
           dialogAddContractSupplier: false,
           dialogNewThirdPartyVisible: false,
           rules: {
-            effectiveDate: [{
+            startTime: [{
               validator: validateEffectiveDateRules,
               trigger: 'change'
             }, {
               required: true,
               message: '请输入合同生效日期'
             }],
-            endDate: [{
+            endTime: [{
               validator: validateEndDate,
               trigger: 'change'
             }, {
@@ -1711,9 +1714,17 @@
           hasMoney: 1,
           onePayment: 1,
           paymentMethods: {
+            /*id (integer, optional): ID,
+             paymentAmount (number, optional): 付款金额,
+             seriousPayments (boolean, optional): 是否多次付款1：是；0：否,
+             paymentTimePeriod (integer, optional): 付款时间段,
+             paymentTime (string, optional): 付款时间,
+             ratio (number, optional): 百分比,
+             remark (string, optional): 备注,
+             subItem (array[付款子项详情], optional): 付款子项详情*/
             advance: [{
               type: '预付款',
-              ifMultiPayment: true,
+              seriousPayments: true,
               money: 0,
               curTime: '',
               exactDate: '',
@@ -1759,7 +1770,7 @@
             }],
             progress: [{
               type: '进度款',
-              ifMultiPayment: false,
+              seriousPayments: false,
               money: 0,
               curTime: '',
               exactDate: '',
@@ -1779,7 +1790,7 @@
             }],
             final: [{
               type: '尾款',
-              ifMultiPayment: true,
+              seriousPayments: true,
               money: 0,
               curTime: '',
               exactDate: '',
@@ -1992,7 +2003,7 @@
               label: '尾款'
             }
           ],
-          ifMultiPayment: 1,
+          seriousPayments: 1,
           money: '',
           time: '1',
           timeOptions: {
@@ -2238,7 +2249,7 @@
       Api.getContractBaseInfo(params).then((data) => {
         Object.assign(this.baseInfoForm,data.data.dataMap.baseInfoForm);
         Object.assign(this.cardContentInfoForm,data.data.dataMap.cardContentInfoForm);
-        Object.assign(this.cardFinanceInfoForm,data.data.dataMap.cardFinanceInfoForm);
+        //Object.assign(this.cardFinanceInfoForm,data.data.dataMap.cardFinanceInfoForm);
         Object.assign(this.cardContCheckInfoForm,data.data.dataMap.cardContCheckInfoForm);
         Object.assign(this.cardSealInfoForm,data.data.dataMap.cardSealInfoForm);
         Object.assign(this.cardRemarkInfoForm,data.data.dataMap.cardRemarkInfoForm);
@@ -2247,7 +2258,7 @@
         this.baseInfoForm.contractBusinessTypeName=baseInfo.contractBusinessTypeFirstName+'-'+baseInfo.contractBusinessTypeSecondName+'-'+baseInfo.contractBusinessTypeThirdName
         const params={}
         params.bizTypeId=this.baseInfoForm.contractBusinessTypeThird;//业务类型
-        params.templateType=(this.baseInfoForm.contractTextType==='1'?'TEMPLATE':'TEXT');
+        params.templateType=(this.baseInfoForm.contractTextType===1?'TEMPLATE':'TEXT');
         Api.getTemplateByBizTypeId(params).then((data)=>{
           this.baseInfoForm.templateOptions=data.data.dataMap||[]
         });
@@ -2390,24 +2401,20 @@
         let curForm = this.$refs[formName]
         curForm.validate((valid) => {
           if (valid) {
-            let arr = this.formNewSubject.subjects
+            const subjects = this.formNewSubject.subjects
             const key = this.formNewSubject.search
             let index = _.findIndex(this.cardContentInfoForm.conSubjctName, function (chr) {
-              return chr.id === key
+              return chr.code === key
             })
             if (index > -1) {
               this.$message.error('这条数据已存在咯！')
               return false
             }
-            for (let i = 0, len = arr.length; i < len; i++) {
-              if (arr[i].id === key) {
-                this.cardContentInfoForm.conSubjctName.push({
-                  id: arr[i].id,
-                  name: arr[i].name,
-                  type: 'add'
-                })
-              }
-            }
+            this.cardContentInfoForm.conSubjctName.push({
+              code: subjects[0].companyCode,
+              name: subjects[0].company,
+              type: 'add'
+            })
             curForm.resetFields()
             this.baseInfoForm.dialogNewSubjectVisible = false
             if (this.isSubmit) {
@@ -2425,6 +2432,7 @@
       },
       handleAddContractSupplier() {
         this.cardContentInfoForm.dialogAddContractSupplier = true
+        console.log('dialogAddContractSupplier',this.cardContentInfoForm.dialogAddContractSupplier);
       },
       getRemoteSuppliersByKeyWord(query) {
         if (query !== '') {
@@ -2432,7 +2440,7 @@
           Api.getRemoteSuppliersByKeyWord({key: query})
             .then((data) => {
               this.formContractSupplier.loading = false
-              this.formContractSupplier.suppliers = data.data.dataMap.list
+              this.formContractSupplier.suppliers = data.data.dataMap
             })
         } else {
           this.formContractSupplier.suppliers = []
@@ -2442,17 +2450,12 @@
         let curForm = this.$refs[formName]
         curForm.validate((valid) => {
           if (valid) {
-            let arr = this.formContractSupplier.suppliers
-            const key = this.formContractSupplier.search
-            for (let i = 0, len = arr.length; i < len; i++) {
-              if (arr[i].id === key) {
-                this.cardContentInfoForm.tableSupplierInfo = [{
-                  id: arr[i].id,
-                  name: arr[i].name,
-                  type: 'add'
-                }]
-              }
-            }
+            let suppliers = this.formContractSupplier.suppliers
+            this.cardContentInfoForm.tableSupplierInfo = [{
+              code: suppliers[0].companyCode,
+              name: suppliers[0].company,
+              type: 'add'
+            }]
             curForm.resetFields()
             this.cardContentInfoForm.dialogAddContractSupplier = false
             if (this.isSubmit) {
@@ -2477,7 +2480,7 @@
           Api.getRemoteSubjectsByKeyWord({key: query})
             .then((data) => {
               this.formNewSubject.loading = false
-              this.formNewSubject.subjects = data.data.dataMap.list
+              this.formNewSubject.subjects = data.data.dataMap||[];
             })
         } else {
           this.formNewSubject.subjects = []
@@ -2495,10 +2498,10 @@
       getRemoteThirdPartiesByKeyWord(query) {
         if (query !== '') {
           this.formNewThirdParty.loading = true
-          Api.getRemoteThirdPartiesByKeyWord({key: query})
+          Api.getRemoteSuppliersByKeyWord({key: query})
             .then((data) => {
               this.formNewThirdParty.loading = false
-              this.formNewThirdParty.thirdParties = data.data.dataMap.list
+              this.formNewThirdParty.thirdParties = data.data.dataMap
             })
         } else {
           this.formNewThirdParty.thirdParties = []
@@ -2511,21 +2514,17 @@
             let arr = this.formNewThirdParty.thirdParties
             const key = this.formNewThirdParty.search
             let index = _.findIndex(this.cardContentInfoForm.thirdPartyInfo, function (chr) {
-              return chr.id === key
+              return chr.code === key
             })
             if (index > -1) {
               this.$message.error('这条数据已存在咯！')
               return false
             }
-            for (let i = 0, len = arr.length; i < len; i++) {
-              if (arr[i].id === key) {
-                this.cardContentInfoForm.thirdPartyInfo.push({
-                  id: arr[i].id,
-                  name: arr[i].name,
-                  type: 'add'
-                })
-              }
-            }
+            this.cardContentInfoForm.thirdPartyInfo.push({
+              id: arr[i].companyCode,
+              name: arr[i].company,
+              type: 'add'
+            })
             curForm.resetFields()
             this.cardContentInfoForm.dialogNewThirdPartyVisible = false
           } else {
@@ -2744,7 +2743,7 @@
       getRemotebusinessOperatorsByKeyWord(query){
         if (query !== '') {
           this.baseInfoForm.loading = true
-          Api.getRemoteCreatePersonsByKeyWord({key: query})
+          Api.getRemoteCreatePersonsByKeyWord({keyword: query})
             .then((data) => {
               this.baseInfoForm.loading = false
               this.baseInfoForm.businessOperators = data.data.dataMap
@@ -2754,11 +2753,9 @@
         }
       },
       handleContractTextTypeChange(val){
-        console.log('handleContractTextTypeChange',val);
-        let params={};
+        const params={};
         params.bizTypeId=this.baseInfoForm.contractBusinessTypeThird
-        params.templateType=(val===1?'TEMPLATE':'TEXT')
-
+        params.templateType=(val==='1'?'TEMPLATE':'TEXT')
         Api.getTemplateByBizTypeId(params).then((data)=>{
           this.baseInfoForm.templateOptions=data.data.dataMap||[];
         });
