@@ -47,7 +47,7 @@
 </template>
 
 <script>
-  import {procMap} from '@/core/consts'
+  import {procMap, routerNames} from '@/core/consts'
   import Api from '@/api/process'
   import comLoading from '@/mixins/comLoading'
   import {formatTime} from '@/filters/moment'
@@ -61,7 +61,7 @@
         pageSize: 10,
         totalPage: 0,
         userId: '51006793',
-        dataType: 'BACKLOG'
+        dataType: ''
       }
     },
     methods: {
@@ -90,12 +90,14 @@
           const data = res.data.dataMap
           const {actions, approveInfo} = data
           const {id} = approveInfo
+          const show = this.dataType === 'BACKLOG'
           const processData = JSON.stringify({
             procInstId,
             actions,
             serialNumber,
             procCode,
-            operatorId: this.userId
+            operatorId: this.userId,
+            show
           })
           let url = ''
           switch (procCode) {
@@ -115,13 +117,34 @@
       handleCurrentChange(val) {
         console.log(`当前页: ${val}`)
         this.pageNumber = val
+      },
+      getDataType() {
+        const routeName = this.$route.name
+        switch (routeName) {
+          case routerNames.con_handing_process :
+            this.dataType = 'BACKLOG'
+            break
+          case routerNames.con_create_process :
+            this.dataType = 'STARTED'
+            break
+          case routerNames.con_handle_process :
+            this.dataType = 'FINISHED'
+            break
+        }
       }
     },
     created() {
+      this.getDataType()
       this.getProcess()
     },
     filters: {
       formatTime
+    },
+    watch: {
+      '$route'() {
+        this.getDataType()
+        this.getProcess()
+      }
     }
   }
 </script>

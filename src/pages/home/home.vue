@@ -121,7 +121,6 @@
             <template v-for="(item,index) in $router.options.routes" v-if="!item.meta.hidden">
               <el-submenu :index="item.name">
                 <template slot="title">
-                  <i class="el-icon-message"></i>
                   <span>{{item.name}}</span>
                 </template>
                 <template v-for="(child,childIndex) in item.children" v-if="!child.meta.hidden">

@@ -36,7 +36,6 @@ export const routerNames = {
   con_create: '合同管理',
   con_createIndex: '创建合同',
   con_createSlaveProtocol: '创建从协议',
-  con_list: '合同列表',
   con_agreementList: '从协议列表',
   con_update: '合同变更',
   con_createFrameContract: '框架合同创建',
@@ -55,14 +54,20 @@ export const routerNames = {
   con_stop: '合同中止',
 
   con_support: '合同支持',
-  con_tpl_list: '合同模板列表',
   con_tpl_see: '合同模板查看',
   con_tpl_create: '合同模板创建',
   con_tpl_update: '合同模板变更',
   con_tpl_abolish: '合同模板废除',
 
   con_process: '合同流程',
-  con_handing_process: '我的待办流程'
+  con_handing_process: '我待办的流程',
+  con_create_process: '我发起的流程',
+  con_handle_process: '已处理的流程',
+
+  con_search: '查询功能',
+  con_list: '合同查询',
+  con_tpl_list: '合同模板查询',
+  con_order_list: '采购订单查询'
 
 }
 
