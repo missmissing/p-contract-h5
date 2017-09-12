@@ -268,7 +268,8 @@
                 <el-table-column type="index"></el-table-column>
                 <el-table-column prop="materialCode" label="物料编码"></el-table-column>
                 <el-table-column prop="materialName" label="物料名称"></el-table-column>
-                <el-table-column prop="total" label="数量"></el-table-column>
+                <el-table-column v-if="baseInfoForm.contractType!==3" prop="total" label="数量"></el-table-column>
+                <el-table-column prop="price" label="价格"></el-table-column>
                 <el-table-column prop="taxRate" label="税率"></el-table-column>
               </el-table>
               <el-row class="mt20" v-if="operateType==='update'">
@@ -1003,14 +1004,14 @@
           <el-form ref="cardContCheckInfoForm" :model="cardContCheckInfoForm" label-width="100px">
             <el-row>
               <el-col :span="8">
-                <el-form-item prop="checkPerson" label="验收责任人">
-                  <el-input v-model="cardContCheckInfoForm.checkPerson" :disabled="isEnabled"
+                <el-form-item prop="responsible" label="验收责任人">
+                  <el-input v-model="cardContCheckInfoForm.responsible" :disabled="isEnabled"
                             placeholder="请输入验收责任人"></el-input>
                 </el-form-item>
               </el-col>
               <el-col :span="8">
-                <el-form-item prop="checkPersonDepart" label="验收责任人部门" label-width="120px">
-                  <el-input :disabled="isEnabled" v-model="cardContCheckInfoForm.checkPersonDepart"
+                <el-form-item prop="responsibleDept" label="验收责任人部门" label-width="120px">
+                  <el-input :disabled="isEnabled" v-model="cardContCheckInfoForm.responsibleDept"
                             placeholder="请输入验收责任人部门"></el-input>
                 </el-form-item>
               </el-col>
@@ -1864,8 +1865,8 @@
           },
         },
         cardContCheckInfoForm: {
-          checkPerson: '',
-          checkPersonDepart: '',
+          responsible: '',
+          responsibleDept: '',
           checkServiceMethod: '',
           checkServiceMethods: [
             {
