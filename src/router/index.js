@@ -11,17 +11,6 @@ Vue.use(Router)
 const router = new Router({
   routes: [
     {
-      path: '/login',
-      component: function (resolve) {
-        require(['../components/login.vue'], resolve)
-      },
-      name: routerNames.login,
-      meta: {
-        auth: false,
-        hidden: true
-      }
-    },
-    {
       path: '/404',
       component: function (resolve) {
         require(['../components/404.vue'], resolve)
@@ -41,7 +30,29 @@ const router = new Router({
       meta: {
         auth: true,
         hidden: true
-      }
+      },
+      redirect: {name: routerNames.con_index}
+    },
+    {
+      path: '/',
+      component: function (resolve) {
+        require(['../pages/home/home.vue'], resolve)
+      },
+      name: routerNames.home,
+      meta: {
+        auth: true,
+        hidden: true
+      },
+      children: [{
+        name: routerNames.con_index,
+        path: '/con/index',
+        meta: {
+          auth: true
+        },
+        component: function (resolve) {
+          require(['../pages/home/index.vue'], resolve)
+        }
+      }]
     },
     {
       path: '/',
@@ -356,6 +367,7 @@ const router = new Router({
       }
     },
     {
+      name: routerNames.redirect,
       path: '*',
       meta: {
         auth: true,

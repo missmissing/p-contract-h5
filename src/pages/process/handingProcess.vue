@@ -101,7 +101,7 @@
           })
           let url = ''
           switch (procCode) {
-            case procMap['template']:
+            case procMap[0]:
               url = `/contemplate/see?id=${id}&processData=${processData}`
               break
             default:

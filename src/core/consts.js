@@ -28,10 +28,11 @@ export default {
  * 获取所有的路由名称
  */
 export const routerNames = {
-  login: '登录',
   redirect: '重定向',
   error404: '404',
-  home: '首页',
+
+  home: '',
+  con_index: '首页',
 
   con_create: '合同管理',
   con_createIndex: '创建合同',
@@ -71,36 +72,6 @@ export const routerNames = {
 
 }
 
-export const procMap = {
-  template: 'CRS_Contract_CreateTemplate',
-  contract: ''
-}
+export const procMap = ['CRS_Contract_CreateTemplate']
 
-/** 审批按钮（新版本） */
-export const approvalAction = {
-  /** 同意 */
-  OK: 1000,
-  /** 拒绝 */
-  Reject: 1001,
-  /** 加签 */
-  Sign: 1002,
-  /** 转签 */
-  Transfer: 1003,
-  /** 驳回 */
-  // TurnedDown: 1004,
-  /** 不同意但继续 */
-  DisagreeContinue: 1005
-}
-
-/** k2系统相关 在待办中心注册的 系统编码 */
-export const k2RegistrationSystemCodes = ['k2', '8081', '8080']
-
-/** 任务状态 const */
-export const taskState = {
-  /** 待办 */
-  todo: 1,
-  /** 办理中 */
-  dong: 2,
-  /** 已办 */
-  done: 3
-}
+export const processListMap = ['BACKLOG', 'STARTED', 'FINISHED']

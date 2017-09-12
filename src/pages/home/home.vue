@@ -134,7 +134,7 @@
       <div :class="rightClass">
         <div class="breadcrumb">
           <el-breadcrumb separator="/">
-            <el-breadcrumb-item :to="{ path: '/' }">应用中心</el-breadcrumb-item>
+            <el-breadcrumb-item :to="{ path: '/con/index' }">应用中心</el-breadcrumb-item>
             <el-breadcrumb-item :to="{path :$route.path}">{{$route.name}}</el-breadcrumb-item>
           </el-breadcrumb>
         </div>
@@ -148,8 +148,7 @@
 
 <script>
   import store from 'store'
-  import {WebConfig} from '@/api/consts'
-  import stringFormat from '@/utils/stringFormat'
+  import Api from '@/api'
 
   const logo = require('../../assets/img/main-logo.png')
   const userPhoto = require('../../assets/img/user.jpg')
@@ -186,8 +185,12 @@
       },
       handleCommand(command) {
         if (command === 'logout') {
-          store.remove('user')
-          location.href = stringFormat.call(WebConfig.AppSetting.SSOLogoutUrl, WebConfig.AppSetting.AppCode, window.location.href)
+          Api.logout().then((res) => {
+            const {dataMap} = res.data
+            store.remove('user')
+            const currentUrl = encodeURIComponent(`${window.location.origin}/#/con/index`)
+            window.location.href = `${dataMap}${currentUrl}`
+          })
         }
       }
     }
