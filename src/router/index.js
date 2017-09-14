@@ -321,7 +321,8 @@ const router = new Router({
         name: routerNames.con_handle_process
       }],
       meta: {
-        iconCls: 'stats-bars'
+        iconCls: 'stats-bars',
+        hidden: true
       }
     },
     {
@@ -352,9 +353,9 @@ const router = new Router({
           name: routerNames.con_tpl_list
         },
         {
-          path: '/contemplate/list',
+          path: '/contemplate/orderList',
           component: function (resolve) {
-            require(['../pages/support/list.vue'], resolve)
+            require(['../pages/sign/list.vue'], resolve)
           },
           meta: {
             auth: true

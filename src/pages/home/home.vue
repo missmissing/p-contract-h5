@@ -5,6 +5,7 @@
     position: fixed;
     top: 0;
     z-index: 101;
+    border-bottom: 1px solid #eef1f6;
     .logo {
       display: inline-block;
       width: 200px;
@@ -53,7 +54,7 @@
     top: 60px;
     bottom: 0;
     width: 200px;
-    background-color: #293038;
+    background-color: #eef1f6;
     z-index: 102;
     overflow: hidden;
     overflow-y: auto;
@@ -70,7 +71,6 @@
     right: 0;
     bottom: 0;
     overflow: hidden;
-    background-color: #eaedf1;
     &.collapse {
       left: 0;
     }
@@ -117,7 +117,7 @@
     <div class="main">
       <div :class="leftClass">
         <div>
-          <el-menu theme="dark" :default-active="$route.path" unique-opened router>
+          <el-menu :default-active="$route.path" unique-opened router>
             <template v-for="(item,index) in $router.options.routes" v-if="!item.meta.hidden">
               <el-submenu :index="item.name">
                 <template slot="title">
@@ -189,6 +189,7 @@
             const {dataMap} = res.data
             store.remove('user')
             const currentUrl = encodeURIComponent(`${window.location.origin}/#/con/index`)
+            debugger
             window.location.href = `${dataMap}${currentUrl}`
           })
         }

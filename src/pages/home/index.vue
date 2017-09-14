@@ -33,7 +33,7 @@
               <label>{{item.procTitle}}</label>
               <span>{{item.startTime | formatTime}}</span>
             </div>
-            <template v-if="!!doingList.length">
+            <template v-if="!doingList.length">
               暂无数据
             </template>
           </div>
@@ -47,6 +47,9 @@
               <label>{{item.procTitle}}</label>
               <span>{{item.startTime | formatTime}}</span>
             </div>
+            <template v-if="!doneList.length">
+              暂无数据
+            </template>
           </div>
         </div>
         <div class="block">
@@ -56,6 +59,9 @@
               <label>{{item.procTitle}}</label>
               <span>{{item.startTime | formatTime}}</span>
             </div>
+            <template v-if="!todoList.length">
+              暂无数据
+            </template>
           </div>
         </div>
       </el-col>
@@ -67,6 +73,9 @@
   import Api from '@/api/process'
   import {processListMap} from '@/core/consts'
   import {formatTime} from '@/filters/moment'
+  import localStore from 'store'
+
+  const {userId} = localStore.get('user')
 
   export default {
     data() {
@@ -79,14 +88,14 @@
     methods: {
       getProcess(dataType, pageSize, list) {
         Api.getProcess({
-          userId: '51006793',
+          userId,
           pageNumber: 0,
           pageSize,
           dataType
         }).then((res) => {
-          const {procList = []} = res.data.dataMap
+          const {procList} = res.data.dataMap
           console.log(procList)
-          this[list] = procList
+          this[list] = procList || []
         })
       }
     },

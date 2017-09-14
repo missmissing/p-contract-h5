@@ -59,9 +59,9 @@
                 placeholder="请选择">
                 <el-option
                   v-for="item in options"
-                  :key="item.value"
-                  :label="item.label"
-                  :value="item.value">
+                  :key="item.id"
+                  :label="item.name"
+                  :value="item.id">
                 </el-option>
               </el-select>
             </div>
@@ -104,6 +104,7 @@
   import {routerNames} from '@/core/consts'
   import * as types from '../../store/consts'
   import getModules from '@/mixins/getModules'
+  import Api from '@/api/support'
 
   export default {
     mixins: [getModules],
@@ -147,14 +148,9 @@
     },
     methods: {
       getTmplTypes() {
-//        supportModel.getTmplTypes({}).then((res) => {
-//          this.options = res.data.dataMap;
-//        });
-        this.options = [{
-          value: '',
-          label: '自定义',
-          contentModule: ''
-        }]
+        Api.getTmplTypes({}).then((res) => {
+          this.options = res.data.dataMap
+        })
       },
       save() {
         if (!this.disabled) {
@@ -182,15 +178,21 @@
       ])
     },
     watch: {
+      modulesData() {
+        this.getTmplTypes()
+      },
+      options() {
+        this.tplType = this.options[0].id
+      },
       tplType() {
         const options = this.options
         if (!options.length) {
           return
         }
         const option = _.find(options, (o) => {
-          return o.value === this.form.tplType
+          return o.id === this.tplType
         })
-        this.form.contentModule = option.contentModule
+        this.form.contentModule = option.moduleIds
       },
       tplInfo() {
         const tplInfo = this.tplInfo
@@ -238,9 +240,6 @@
     },
     components: {
       quillEditor
-    },
-    created() {
-      this.getTmplTypes()
     },
     filters: {
       setItemDisabled(items, self) {
