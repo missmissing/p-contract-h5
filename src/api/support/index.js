@@ -5,7 +5,7 @@ const contract = '/api-contract'
 
 export default {
   getTmplTypes(params) {
-    return Http.get(`/api/support/tmpl/type`, params)
+    return Http.get(`${contract}/contract-web/module/findModuleTemplates`, params)
   },
   getModuleData(params) {
     return Http.get(`${contract}/contract-web/module/findDemoModule`, params)

@@ -1,13 +1,13 @@
 import Http from '@/core/commonModel'
 
-// const contract = '/api-contract'
-const contract = ''
+const contract = '/api-contract'
+// const contract = ''
 
 export default {
   getPr(params) {
-    return Http.post(`${contract}/contract-web/getPr/`, params)
+    return Http.get(`${contract}/contract-web/purchaseOrder/applyInfo`, params)
   },
-  getContract(params) {
-    return Http.post(`${contract}/contract-web/getContract/`, params)
+  getMatch(params) {
+    return Http.post(`${contract}/contract-web/purchaseOrder/getMatchData`, params)
   }
 }

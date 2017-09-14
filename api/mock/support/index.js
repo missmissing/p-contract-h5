@@ -6,11 +6,11 @@ module.exports = function (api) {
       dataMap: [{
         value: '',
         label: '自定义',
-        contentModule: ''
+        contentModule: []
       }, {
         value: '1',
         label: '模板一',
-        contentModule: '1,5'
+        contentModule: [1,5]
       }]
     });
   });

@@ -13,7 +13,7 @@ class support {
       this.modulesData = modules
       return
     }
-    supportModel.getModuleData({}).then((res) => {
+    supportModel.getModuleData().then((res) => {
       const modules = res.data.dataMap
       this.modulesData = modules
       store.commit(SET_MODULES, {

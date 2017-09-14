@@ -24,14 +24,7 @@
             <el-row>
               <el-col :span="8">
                 <el-form-item label="合同编号">
-                  <el-autocomplete
-                    class="wp100"
-                    icon="search"
-                    :fetch-suggestions="querySearch"
-                    @select="search"
-                    v-model="contractCode"
-                    :trigger-on-focus="false">
-                  </el-autocomplete>
+                  <el-input v-model.trim="contractCode"></el-input>
                 </el-form-item>
               </el-col>
               <el-button type="primary" @click="match" class="ml20">匹 配</el-button>
@@ -41,37 +34,44 @@
             <el-table
               :data="prData"
               border
-              style="width: 100%">
+              class="wp100">
               <el-table-column
-                prop="prNum"
-                label="采购申请号">
+                prop="pr"
+                label="采购申请号"
+                width="150">
               </el-table-column>
               <el-table-column
                 prop="companyCode"
-                label="公司编码">
+                label="公司编码"
+                width="100">
               </el-table-column>
               <el-table-column
                 prop="companyName"
                 label="公司名称">
               </el-table-column>
               <el-table-column
-                prop="initiator"
-                label="发起人">
+                prop="originatorName"
+                label="发起人"
+                width="100">
               </el-table-column>
               <el-table-column
-                prop="sponsDepart"
+                prop="originatorDepartmentName"
                 label="发起部门">
               </el-table-column>
               <el-table-column
-                prop="prCreateTime"
-                label="PR创建时间">
+                prop="createTime"
+                label="创建时间"
+                width="200">
+                <template scope="scope">
+                  {{scope.row.createTime | formatTime}}
+                </template>
               </el-table-column>
               <el-table-column
-                prop="prLink"
+                prop="processViewUrl"
                 label="PR申请链接">
               </el-table-column>
-              √
               <el-table-column
+                fixed="right"
                 label="操作">
                 <template scope="scope">
                   <el-button
@@ -313,73 +313,116 @@
       size="large"
       :visible.sync="dialogVisible">
       <div>
-        <el-table
-          :data="matchData"
-          border
-          max-height="450"
-          style="width: 100%">
-          <el-table-column
-            prop="prNum"
-            label="PR号"
-            width="100">
-          </el-table-column>
-          <el-table-column
-            prop="itemNum"
-            label="行项目"
-            width="100">
-          </el-table-column>
-          <el-table-column
-            prop="materielCode"
-            label="物料编码"
-            width="100">
-          </el-table-column>
-          <el-table-column
-            prop="materielName"
-            label="物料名称">
-            <template scope="scope">
-              <template v-if="!scope.row.materielName">
-                <el-radio v-model="radio" :label="scope.$index">{{''}}</el-radio>
-              </template>
-              <template v-else>
-                {{scope.row.materielName}}
-              </template>
-            </template>
-          </el-table-column>
-          <el-table-column
-            prop="contractCode"
-            label="合同号"
-            width="80">
-          </el-table-column>
-          <el-table-column
-            prop="supplier"
-            label="供应商"
-            width="100">
-          </el-table-column>
-          <el-table-column
-            prop="supplierName"
-            label="供应商名称">
-          </el-table-column>
-          <el-table-column
-            prop="startDate"
-            label="开始时间"
-            width="100">
-          </el-table-column>
-          <el-table-column
-            prop="endDate"
-            label="截止时间"
-            width="100">
-          </el-table-column>
-          <el-table-column
-            prop="taxPrice"
-            label="价格"
-            width="80">
-          </el-table-column>
-          <el-table-column
-            prop="taxRate"
-            label="税率"
-            width="80">
-          </el-table-column>
-        </el-table>
+        <el-tabs>
+          <el-tab-pane label="框架合同">
+            <el-table
+              :data="matchData"
+              border
+              max-height="450"
+              class="wp100">
+              <el-table-column
+                prop="prNum"
+                label="PR号"
+                width="100">
+              </el-table-column>
+              <el-table-column
+                prop="itemNum"
+                label="行项目"
+                width="100">
+              </el-table-column>
+              <el-table-column
+                prop="materielCode"
+                label="物料编码"
+                width="100">
+              </el-table-column>
+              <el-table-column
+                prop="materielName"
+                label="物料名称">
+                <template scope="scope">
+                  <template v-if="!scope.row.materielName">
+                    <el-radio v-model="radio" :label="scope.$index">{{''}}</el-radio>
+                  </template>
+                  <template v-else>
+                    {{scope.row.materielName}}
+                  </template>
+                </template>
+              </el-table-column>
+              <el-table-column
+                prop="contractCode"
+                label="合同号"
+                width="80">
+              </el-table-column>
+              <el-table-column
+                prop="supplier"
+                label="供应商"
+                width="100">
+              </el-table-column>
+              <el-table-column
+                prop="supplierName"
+                label="供应商名称">
+              </el-table-column>
+              <el-table-column
+                prop="startDate"
+                label="开始时间"
+                width="100">
+              </el-table-column>
+              <el-table-column
+                prop="endDate"
+                label="截止时间"
+                width="100">
+              </el-table-column>
+              <el-table-column
+                prop="taxPrice"
+                label="价格"
+                width="80">
+              </el-table-column>
+              <el-table-column
+                prop="taxRate"
+                label="税率"
+                width="80">
+              </el-table-column>
+            </el-table>
+          </el-tab-pane>
+          <el-tab-pane label="框架意向合同">
+            <el-table
+              :data="intentionData"
+              border
+              max-height="450"
+              class="wp100">
+              <el-table-column
+                label=""
+                width="80">
+                <template scope="scope">
+                  <el-radio v-model="radio1" :label="scope.$index">{{''}}</el-radio>
+                </template>
+              </el-table-column>
+              <el-table-column
+                prop="contractCode"
+                label="合同号"
+                width="80">
+              </el-table-column>
+              <el-table-column
+                prop="supplier"
+                label="供应商"
+                width="100">
+              </el-table-column>
+              <el-table-column
+                prop="supplierName"
+                label="供应商名称">
+              </el-table-column>
+              <el-table-column
+                prop="startDate"
+                label="开始时间"
+                width="100">
+              </el-table-column>
+              <el-table-column
+                prop="endDate"
+                label="截止时间"
+                width="100">
+              </el-table-column>
+            </el-table>
+          </el-tab-pane>
+        </el-tabs>
       </div>
       <div slot="footer">
         <el-button @click="dialogVisible = false">取 消</el-button>
@@ -391,17 +434,19 @@
 
 <script>
   import signModel from '@/api/sign'
+  import {formatTime} from '@/filters/moment'
 
   export default {
     data() {
       return {
         prCode: '',
         contractCode: '',
-        prMap: {},
         prData: [],
         contractData: [],
         matchData: [],
+        intentionData: [],
         radio: null,
+        radio1: null,
         orderData: [],
         serverData: [],
         serverDialogVisible: false,
@@ -433,80 +478,47 @@
     methods: {
       add() {
         const prCode = this.prCode
-        if (!prCode) {
-          this.$message.warning('请输入采购申请号！')
-          return
-        }
-        if (this.prMap[prCode]) {
+        const prData = this.prData
+        const exist = prData.some((item) => {
+          return item.procInstId === prCode
+        })
+        if (exist) {
           this.$message.warning('列表中已存在！')
           return
         }
-        this.prMap[prCode] = true
 
-        signModel.getPr().then((res) => {
-          this.prData.push(res.data.dataMap)
-        })
-      },
-      search() {
-        console.log(this.contractCode)
-      },
-      querySearch(queryString, cb) {
-        if (!queryString) {
-          return cb([])
-        }
-        signModel.getContract({
-          contractCode: queryString
+        signModel.getPr({
+          pr: prCode
         }).then((res) => {
-          const result = res.data.dataMap || []
-          cb(this.createFilter(result))
-        }, () => {
-          cb([])
-        })
-      },
-      createFilter(result) {
-        return result.map((item) => {
-          return {value: item, label: item}
+          const {data} = res
+          if (!data) {
+            this.$message.warning('采购申请号不存在！')
+            return
+          }
+          const {dataMap} = data
+          this.prData.push(dataMap)
         })
       },
       match() {
-        const contractCode = this.contractCode
-        if (!contractCode) {
-          this.$message.warning('请输入合同号！')
+        const prData = this.prData
+        if (!prData.length) {
+          this.$message.warning('请输入采购申请号！')
           return
         }
 
-        this.dialogVisible = true
-
-        const data = [{
-          contractCode: 1234,
-          supplier: 'ff',
-          supplierName: 'gg',
-          startDate: '2017-08-03',
-          endDate: '2017-09-04',
-          contractGoods: [{
-            contractGoodCode: 'abc',
-            taxPrice: '444',
-            taxRate: '10%'
-          }]
-        }, {
-          contractCode: 12345,
-          supplier: 'ff',
-          supplierName: 'gg',
-          startDate: '2017-08-03',
-          endDate: '2017-09-04',
-          contractGoods: [{
-            contractGoodCode: 'abc',
-            taxPrice: '44',
-            taxRate: '10%'
-          }, {
-            contractGoodCode: 'abcd',
-            taxPrice: '444',
-            taxRate: '10%'
-          }]
-        }]
-        this.contractData = data
-
-        this.matchData = this.getSource(data)
+        const pr = prData.map((item) => {
+          return item.pr
+        })
+        signModel.getMatch({
+          pr,
+          contractNo: this.contractCode
+        }).then((res) => {
+          debugger
+          const data = res.data.dataMap
+          this.dialogVisible = true
+          this.contractData = data
+          this.matchData = this.getSource(data)
+        })
       },
       getSource(data) {
         const result = []
@@ -579,6 +591,9 @@
           }
         })
       }
+    },
+    filters: {
+      formatTime
     }
   }
 </script>

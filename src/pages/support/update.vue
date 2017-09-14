@@ -170,6 +170,9 @@
   import comLoading from '@/mixins/comLoading'
   import {uploadUrl, downloadUrl} from '@/api/consts'
   import {formatTimeStamp, formatToDate} from '@/filters/moment'
+  import localStore from 'store'
+
+  const {userId} = localStore.get('user')
 
   const defaultData = {
     form: {
@@ -197,7 +200,7 @@
         action: uploadUrl,
         download: downloadUrl,
         endDate: '9999-12-31',
-        uploadData: {userId: '12'},
+        uploadData: {userId},
         pickerOptions: {
           disabledDate(time) {
             return time.getTime() < Date.now() - 8.64e7

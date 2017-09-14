@@ -9,7 +9,7 @@
         <el-col :span="21">
           <el-form-item label="查询条件">
             <el-input
-              placeholder="请输入模板名称,支持模糊搜索"
+              placeholder="请输入供应商名称，物料名称"
               v-model="form.keywords">
             </el-input>
           </el-form-item>
@@ -17,22 +17,6 @@
         <el-button type="primary" @click="search" class="ml20">搜 索</el-button>
       </el-row>
       <el-row>
-        <el-col :span="7">
-          <el-form-item label="模板类型">
-            <el-select
-              v-model="form.templateType"
-              class="wp100">
-              <el-option label="请选择" :value="null"></el-option>
-              <el-option label="合同模板" value="0"></el-option>
-              <el-option label="合同文本" value="1"></el-option>
-            </el-select>
-          </el-form-item>
-        </el-col>
-        <el-col :span="7">
-          <el-form-item label="文本编号">
-            <el-input v-model="form.templateCode"></el-input>
-          </el-form-item>
-        </el-col>
         <el-col :span="7">
           <el-form-item label="发起人">
             <el-input v-model="form.operatorName"></el-input>
@@ -52,11 +36,6 @@
             </el-date-picker>
           </el-form-item>
         </el-col>
-        <el-col :span="7">
-          <el-form-item label="有效文本">
-            <el-switch v-model="form.valid"></el-switch>
-          </el-form-item>
-        </el-col>
       </el-row>
     </el-form>
     <el-table
@@ -65,37 +44,18 @@
       highlight-current-row
       class="wp100">
       <el-table-column
-        prop="templateName"
-        min-width="150"
-        label="模板名称">
-        <template scope="scope">
-          <el-button type="text" @click.native.prevent="see(scope.$index,scope.row)">{{scope.row.templateName}}
-          </el-button>
-        </template>
-      </el-table-column>
-      <el-table-column
         prop="templateCode"
         min-width="150"
-        label="模板编号">
-      </el-table-column>
-      <el-table-column
-        prop="templateType"
-        min-width="120"
-        label="文本类型">
+        label="订单编号">
         <template scope="scope">
-          {{scope.row.templateType === 'TEXT' ? '合同文本' : '合同模板'}}
+          <el-button type="text" @click.native.prevent="see(scope.$index,scope.row)">{{scope.row.templateCode}}
+          </el-button>
         </template>
       </el-table-column>
       <el-table-column
         prop="creatorName"
         min-width="100"
         label="发起人">
-      </el-table-column>
-      <el-table-column
-        prop="departmentName"
-        min-width="100"
-        label="业务部门"
-      >
       </el-table-column>
       <el-table-column
         prop="createTime"
@@ -105,48 +65,37 @@
           {{scope.row.createTime | formatTime}}
         </template>
       </el-table-column>
-      <el-table-column
-        prop="startDate"
-        width="120"
-        label="生效日期">
-        <template scope="scope">
-          {{scope.row.startDate | formatDate}}
-        </template>
-      </el-table-column>
-      <el-table-column
-        prop="endDate"
-        width="120"
-        label="终止日期">
-        <template scope="scope">
-          {{scope.row.endDate | formatDate}}
-        </template>
-      </el-table-column>
-      <el-table-column
-        prop="usedCount"
-        width="100"
-        label="使用次数">
-      </el-table-column>
     </el-table>
+    <TreeModal
+      nodeKey="id"
+      title="选择业务类型"
+      :visible.sync="visible"
+      :defaultProps="defaultProps"
+      :regions="regions"
+      :initialKeys="form.bizTypes"
+      @ok="setBusiType">
+    </TreeModal>
   </div>
 </template>
 
 <script>
   import supportModel from '@/api/support'
+  import getBusiType from '@/mixins/getBusiType'
   import comLoading from '@/mixins/comLoading'
-  import {formatTime, formatDate} from '@/filters/moment'
+  import {formatTime} from '@/filters/moment'
+  import TreeModal from '@/components/treeModal.vue'
 
   export default {
-    mixins: [comLoading],
+    mixins: [getBusiType, comLoading],
     data() {
       return {
         form: {
           keywords: '',
-          templateType: null,
-          templateCode: '',
           startTime: '',
           endTime: '',
           operatorName: '',
-          valid: true
+          bizTypes: [],
+          busiTypeText: ''
         },
         daterange: [],
         pickerOptions: {
@@ -154,7 +103,12 @@
             return time.getTime() > Date.now()
           }
         },
-        tableData: []
+        tableData: [],
+        defaultProps: {
+          children: 'children',
+          label: 'businessName'
+        },
+        visible: false
       }
     },
     methods: {
@@ -172,9 +126,21 @@
           this.comLoading()
         })
       },
+      setBusiType(value, tree) {
+        const bizTypes = []
+        const busiTypeText = []
+        const leafs = tree.getCheckedNodes(true)
+        leafs.forEach((item) => {
+          bizTypes.push(item.id)
+          busiTypeText.push(item.businessName)
+        })
+        this.form.bizTypes = bizTypes
+        this.form.busiTypeText = busiTypeText.join(',')
+        this.visible = false
+      },
       see(index, row) {
         console.log(row)
-        this.$router.push(`/contemplate/see?id=${row.id}`)
+        // this.$router.push(`/contemplate/see?id=${row.id}`)
       },
       formatDateRange(value) {
         const daterange = value.split(' ')
@@ -183,12 +149,14 @@
         this.form.ednTime = daterange[1]
       }
     },
-    filters: {
-      formatDate,
-      formatTime
-    },
     created() {
       this.getList()
+    },
+    filters: {
+      formatTime
+    },
+    components: {
+      TreeModal
     }
   }
 </script>

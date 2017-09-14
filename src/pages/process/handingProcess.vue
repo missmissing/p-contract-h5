@@ -51,6 +51,9 @@
   import Api from '@/api/process'
   import comLoading from '@/mixins/comLoading'
   import {formatTime} from '@/filters/moment'
+  import localStore from 'store'
+
+  const {userId} = localStore.get('user')
 
   export default {
     mixins: [comLoading],
@@ -60,7 +63,6 @@
         pageNumber: 0,
         pageSize: 10,
         totalPage: 0,
-        userId: '51006793',
         dataType: ''
       }
     },
@@ -68,7 +70,7 @@
       getProcess() {
         this.comLoading(1)
         Api.getProcess({
-          userId: this.userId,
+          userId,
           pageNumber: this.pageNumber,
           pageSize: this.pageSize,
           dataType: this.dataType
@@ -83,7 +85,7 @@
         console.log(row)
         const {procInstId, serialNumber, procCode} = row
         Api.getApproveNode({
-          operatorId: this.userId,
+          operatorId: userId,
           serialNumber,
           procCode
         }).then((res) => {
@@ -96,7 +98,7 @@
             actions,
             serialNumber,
             procCode,
-            operatorId: this.userId,
+            operatorId: userId,
             show
           })
           let url = ''
