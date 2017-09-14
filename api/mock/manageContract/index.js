@@ -114,8 +114,8 @@ module.exports = function (api) {
     res.status(200).json({
       code: 200,
       message: 'success',
-      dataMap: {
-        baseInfoForm: {
+      "dataMap": {
+        "baseInfoForm": {
           "id": null,
           "prFlag": null,
           "procInstId": null,
@@ -123,60 +123,98 @@ module.exports = function (api) {
           "prNo": "XBJ1760945",
           "contractType": 3,
           "contractNo": null,
-          "contractBusinessTypeFirst": 1,
-          "contractBusinessTypeFirstName": '服务类',
-          "contractBusinessTypeSecond": 1,
-          "contractBusinessTypeSecondName": '企划',
-          "contractBusinessTypeThird":1,
-          "contractBusinessTypeThirdName":'文化营销',
-          "contractTextType": null,
-          "templateId": '1',
+          "contractBusinessTypeFirst": 3,
+          "contractBusinessTypeFirstName": "固定资产类",
+          "contractBusinessTypeSecond": 12,
+          "contractBusinessTypeSecondName": "动产",
+          "contractBusinessTypeThird": 40,
+          "contractBusinessTypeThirdName": "IT软硬件",
+          "contractTextType": 1,
+          "templateId": null,
+          "belongProject": null,
           "sealOrder": 1,
           "ourSealOpinion": null,
+          "businessOperator": null,
+          "businessDept": null
+        },
+        "cardContentInfoForm": {
           "startTime": null,
           "endTime": null,
-          "remark": null,
-          "businessOperator": '王鹏飞',
-          "businessDept": '技术研发部'
+          "tableSupplierInfo": [],
+          "conSubjctName": [],
+          "thirdPartyInfo": [],
+          "conStandard": []
         },
-        contentInfo: {
-          tableSupplierInfo: [
-            /*{
-              id: 'supplier1',
-              name: '供应商1',
-              bankAccount: '渣打银行'
-            }*/
-          ],
-          conSubjctName: [
-            {
-              id: 'subject1-4584358',
-              name: '红星美凯龙',
-            },
-          ],
-          thirdPartyInfo: [
-            {
-              id: 'supplier-4584358',
-              name: '红星美凯龙',
-            },
-            {
-              id: 'supplier-8495843085',
-              name: '悦家',
-            },
-          ],
-          conStandard: [
-            /*{
-              id: 'material-4584358',
-              name: '红星美凯龙',
-              number: 80,
-              taxRate: 0.8
-            }, {
-              id: 'material-8495843085',
-              name: '悦家',
-              number: 809,
-              taxRate: 0.18
-            }*/
-          ]
-        }
+        "cardFinanceInfoForm": {
+          "moneyInvolved": true,
+          "oneOffPay": true,
+          "currency": 1,
+          "invoiceType": null,
+          "totalAmount": null,
+          "depositFlag": true,
+          "deposit": null,
+          "payTime": null,
+          "depositRatio": null,
+          "paymentMethods": {
+            "advance": [
+              {
+                "id": null,
+                "paymentAmount": null,
+                "seriousPayments": null,
+                "paymentTimePeriod": null,
+                "paymentTime": null,
+                "ratio": null,
+                "remark": null,
+                "subItem": []
+              }
+            ],
+            "progress": [
+              {
+                "id": null,
+                "paymentAmount": null,
+                "seriousPayments": null,
+                "paymentTimePeriod": null,
+                "paymentTime": null,
+                "ratio": null,
+                "remark": null,
+                "subItem": []
+              }
+            ],
+            "_final": [
+              {
+                "id": null,
+                "paymentAmount": null,
+                "seriousPayments": null,
+                "paymentTimePeriod": null,
+                "paymentTime": null,
+                "ratio": null,
+                "remark": null,
+                "subItem": []
+              }
+            ]
+          },
+          "jiaBillingInfo": [],
+          "yiBillingInfo": []
+        },
+        "cardContCheckInfoForm": {
+          "id": null,
+          "responsible": null,
+          "responsibleDept": null,
+          "checkType": null,
+          "supervisor": null,
+          "supervisorDept": null,
+          "haveSample": true,
+          "unionCheckPersons": [],
+          "materialMatters": [],
+          "serviceMatters": []
+        },
+        "cardSealInfoForm": {
+          "sealAttachments": []
+        },
+        "cardRemarkInfoForm": {
+          "otherInstruction": null
+        },
+        "cardOtherInfo": null
       }
     })
   })

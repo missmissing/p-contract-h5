@@ -95,7 +95,7 @@
                 placeholder="请输入业务经办人"
                 :remote-method="getRemotebusinessOperatorsByKeyWord"
                 :loading="baseInfoForm.loading"
-              @change="handleBusinessOperatorChange">
+                @change="handleBusinessOperatorChange">
                 <el-option
                   v-for="item in baseInfoForm.businessOperators"
                   :key="item.userId"
@@ -306,27 +306,28 @@
           </el-form>
         </el-tab-pane>
         <el-tab-pane label="合同财务信息" name="tabContFinanceInfo">
-          <el-form rel="cardFinanceInfoForm" :model="cardFinanceInfoForm" :rules="cardFinanceInfoForm.rules" label-width="100px">
+          <el-form rel="cardFinanceInfoForm" :model="cardFinanceInfoForm" :rules="cardFinanceInfoForm.rules"
+                   label-width="100px">
             <el-row>
               <el-col :span="8">
                 <el-form-item label="是否涉及金额">
                   <el-radio-group v-model="cardFinanceInfoForm.moneyInvolved"
                                   :disabled="operateType==='query'">
-                    <el-radio :label="1">是</el-radio>
-                    <el-radio :label="0">否</el-radio>
+                    <el-radio :label="true">是</el-radio>
+                    <el-radio :label="false">否</el-radio>
                   </el-radio-group>
                 </el-form-item>
               </el-col>
-              <el-col :span="8" v-if="cardFinanceInfoForm.moneyInvolved===1">
+              <el-col :span="8" v-if="cardFinanceInfoForm.moneyInvolved===true">
                 <el-form-item label="是否一次性付款" label-width="120px">
                   <el-radio-group v-model="cardFinanceInfoForm.oneOffPay" :disabled="operateType==='query'">
-                    <el-radio :label="1">是</el-radio>
-                    <el-radio :label="0">否</el-radio>
+                    <el-radio :label="true">是</el-radio>
+                    <el-radio :label="false">否</el-radio>
                   </el-radio-group>
                 </el-form-item>
               </el-col>
             </el-row>
-            <el-card v-if="cardFinanceInfoForm.moneyInvolved===1">
+            <el-card v-if="cardFinanceInfoForm.moneyInvolved===true">
               <header slot="header">付款方式</header>
               <el-table :data="cardFinanceInfoForm.paymentMethods.advance"
                         v-if="!cardFinanceInfoForm.oneOffPay"
@@ -345,16 +346,16 @@
                         <template scope="scope">{{props.row.type}}{{scope.$index+1}}</template>
                       </el-table-column>
                       <el-table-column
-                        prop="money"
+                        prop="paymentAmount"
                         label="付款金额">
                         <template scope="scope">
                           <el-input
                             :disabled="operateType==='query'"
-                            v-model="props.row.subItem[scope.$index].money"></el-input>
+                            v-model="props.row.subItem[scope.$index].paymentAmount"></el-input>
                         </template>
                       </el-table-column>
                       <el-table-column
-                        prop="curTime"
+                        prop="paymentTimePeriod"
                         label="付款时间"
                         width="250px">
                         <template scope="scope">
@@ -362,10 +363,10 @@
                             <el-col>
                               <el-select
                                 class="select-curTime"
-                                @change="handleItemCurTimeChange(props.row.subItem[scope.$index].curTime,props.row.subItem[scope.$index])"
+                                @change="handleItemCurTimeChange(props.row.subItem[scope.$index].paymentTimePeriod,props.row.subItem[scope.$index])"
                                 :disabled="operateType==='query'"
                                 placeholder="请选择付款时间"
-                                v-model="props.row.subItem[scope.$index].curTime">
+                                v-model="props.row.subItem[scope.$index].paymentTimePeriod">
                                 <el-option
                                   v-for="item in props.row.subItem[scope.$index].times"
                                   :key="item.value"
@@ -376,8 +377,8 @@
                             </el-col>
                             <el-col>
                               <el-date-picker
-                                @change="handleItemExactDateChange(props.row.subItem[scope.$index].exactDate,props.row.subItem[scope.$index])"
-                                v-model="props.row.subItem[scope.$index].exactDate"
+                                @change="handleItemExactDateChange(props.row.subItem[scope.$index].paymentTime,props.row.subItem[scope.$index])"
+                                v-model="props.row.subItem[scope.$index].paymentTime"
                                 :disabled="operateType==='query'"
                                 placeholder="请输入具体付款日期"
                                 type="date"></el-date-picker>
@@ -397,9 +398,9 @@
                             v-model="props.row.subItem[scope.$index].remark"></el-input>
                         </template>
                       </el-table-column>
-                      <el-table-column prop="proportion" label="占比" width="80px">
+                      <el-table-column prop="ratio" label="占比" width="80px">
                         <template scope="scope">
-                          {{getProportion(props.row.subItem[scope.$index].money)}}
+                          {{getProportion(props.row.subItem[scope.$index].paymentAmount)}}
                         </template>
                       </el-table-column>
                       <el-table-column
@@ -426,17 +427,17 @@
                   </template>
                 </el-table-column>
                 <el-table-column
-                  prop="money"
+                  prop="paymentAmount"
                   label="付款金额"
                   width="150px">
                   <template scope="scope">
                     <el-input
                       :disabled="operateType==='query'"
-                      v-model="cardFinanceInfoForm.paymentMethods.advance[scope.$index].money"></el-input>
+                      v-model="cardFinanceInfoForm.paymentMethods.advance[scope.$index].paymentAmount"></el-input>
                   </template>
                 </el-table-column>
                 <el-table-column
-                  prop="curTime"
+                  prop="paymentTimePeriod"
                   label="付款时间"
                   width="250px">
                   <template scope="scope">
@@ -444,10 +445,10 @@
                       <el-col>
                         <el-select
                           class="select-curTime"
-                          v-model="cardFinanceInfoForm.paymentMethods.advance[scope.$index].curTime"
+                          v-model="cardFinanceInfoForm.paymentMethods.advance[scope.$index].paymentTimePeriod"
                           :disabled="operateType==='query'"
                           placeholder="请选择付款时间"
-                          @change="handleCurTimeChange(cardFinanceInfoForm.paymentMethods.advance[scope.$index].curTime,cardFinanceInfoForm.paymentMethods.advance[scope.$index])">
+                          @change="handleCurTimeChange(cardFinanceInfoForm.paymentMethods.advance[scope.$index].paymentTimePeriod,cardFinanceInfoForm.paymentMethods.advance[scope.$index])">
                           <el-option
                             v-for="item in cardFinanceInfoForm.paymentMethods.advance[scope.$index].times"
                             :key="item.value"
@@ -458,8 +459,8 @@
                       </el-col>
                       <el-col>
                         <el-date-picker
-                          @change="handleExactDateChange(cardFinanceInfoForm.paymentMethods.advance[scope.$index].exactDate,cardFinanceInfoForm.paymentMethods.advance[scope.$index])"
-                          v-model="cardFinanceInfoForm.paymentMethods.advance[scope.$index].exactDate"
+                          @change="handleExactDateChange(cardFinanceInfoForm.paymentMethods.advance[scope.$index].paymentTime,cardFinanceInfoForm.paymentMethods.advance[scope.$index])"
+                          v-model="cardFinanceInfoForm.paymentMethods.advance[scope.$index].paymentTime"
                           :disabled="operateType==='query'"
                           placeholder="请输入具体付款日期"
                           type="date"></el-date-picker>
@@ -479,9 +480,9 @@
                       v-model="cardFinanceInfoForm.paymentMethods.advance[scope.$index].remark"></el-input>
                   </template>
                 </el-table-column>
-                <el-table-column prop="proportion" label="占比" width="80px">
+                <el-table-column prop="ratio" label="占比" width="80px">
                   <template scope="scope">
-                    {{getProportion(cardFinanceInfoForm.paymentMethods.advance[scope.$index].money)}}
+                    {{getProportion(cardFinanceInfoForm.paymentMethods.advance[scope.$index].paymentAmount)}}
                   </template>
                 </el-table-column>
               </el-table>
@@ -498,16 +499,16 @@
                         <template scope="scope">{{props.row.type}}{{scope.$index+1}}</template>
                       </el-table-column>
                       <el-table-column
-                        prop="money"
+                        prop="monpaymentAmountey"
                         label="付款金额">
                         <template scope="scope">
                           <el-input
                             :disabled="operateType==='query'"
-                            v-model="props.row.subItem[scope.$index].money"></el-input>
+                            v-model="props.row.subItem[scope.$index].paymentAmount"></el-input>
                         </template>
                       </el-table-column>
                       <el-table-column
-                        prop="curTime"
+                        prop="paymentTimePeriod"
                         label="付款时间"
                         width="250px">
                         <template scope="scope">
@@ -515,10 +516,10 @@
                             <el-col>
                               <el-select
                                 class="select-curTime"
-                                @change="handleItemCurTimeChange(props.row.subItem[scope.$index].curTime,props.row.subItem[scope.$index])"
+                                @change="handleItemCurTimeChange(props.row.subItem[scope.$index].paymentTimePeriod,props.row.subItem[scope.$index])"
                                 :disabled="operateType==='query'"
                                 placeholder="请选择付款时间"
-                                v-model="props.row.subItem[scope.$index].curTime">
+                                v-model="props.row.subItem[scope.$index].paymentTimePeriod">
                                 <el-option
                                   v-for="item in props.row.subItem[scope.$index].times"
                                   :key="item.value"
@@ -529,8 +530,8 @@
                             </el-col>
                             <el-col>
                               <el-date-picker
-                                @change="handleItemExactDateChange(props.row.subItem[scope.$index].exactDate,props.row.subItem[scope.$index])"
-                                v-model="props.row.subItem[scope.$index].exactDate"
+                                @change="handleItemExactDateChange(props.row.subItem[scope.$index].paymentTime,props.row.subItem[scope.$index])"
+                                v-model="props.row.subItem[scope.$index].paymentTime"
                                 :disabled="operateType==='query'"
                                 placeholder="请输入具体付款日期"
                                 type="date"></el-date-picker>
@@ -550,9 +551,9 @@
                             v-model="props.row.subItem[scope.$index].remark"></el-input>
                         </template>
                       </el-table-column>
-                      <el-table-column prop="proportion" label="占比" width="80px">
+                      <el-table-column prop="ratio" label="占比" width="80px">
                         <template scope="scope">
-                          {{getProportion(props.row.subItem[scope.$index].money)}}
+                          {{getProportion(props.row.subItem[scope.$index].paymentAmount)}}
                         </template>
                       </el-table-column>
                       <el-table-column
@@ -579,17 +580,17 @@
                   </template>
                 </el-table-column>
                 <el-table-column
-                  prop="money"
+                  prop="paymentAmount"
                   label="付款金额"
                   width="150px">
                   <template scope="scope">
                     <el-input
                       :disabled="operateType==='query'"
-                      v-model="cardFinanceInfoForm.paymentMethods.progress[scope.$index].money"></el-input>
+                      v-model="cardFinanceInfoForm.paymentMethods.progress[scope.$index].paymentAmount"></el-input>
                   </template>
                 </el-table-column>
                 <el-table-column
-                  prop="curTime"
+                  prop="paymentTimePeriod"
                   label="付款时间"
                   width="250px">
                   <template scope="scope">
@@ -597,10 +598,10 @@
                       <el-col>
                         <el-select
                           class="select-curTime"
-                          v-model="cardFinanceInfoForm.paymentMethods.progress[scope.$index].curTime"
+                          v-model="cardFinanceInfoForm.paymentMethods.progress[scope.$index].paymentTimePeriod"
                           :disabled="operateType==='query'"
                           placeholder="请选择付款时间"
-                          @change="handleCurTimeChange(cardFinanceInfoForm.paymentMethods.progress[scope.$index].curTime,cardFinanceInfoForm.paymentMethods.progress[scope.$index])">
+                          @change="handleCurTimeChange(cardFinanceInfoForm.paymentMethods.progress[scope.$index].paymentTimePeriod,cardFinanceInfoForm.paymentMethods.progress[scope.$index])">
                           <el-option
                             v-for="item in cardFinanceInfoForm.paymentMethods.progress[scope.$index].times"
                             :key="item.value"
@@ -611,8 +612,8 @@
                       </el-col>
                       <el-col>
                         <el-date-picker
-                          @change="handleExactDateChange(cardFinanceInfoForm.paymentMethods.progress[scope.$index].exactDate,cardFinanceInfoForm.paymentMethods.progress[scope.$index])"
-                          v-model="cardFinanceInfoForm.paymentMethods.progress[scope.$index].exactDate"
+                          @change="handleExactDateChange(cardFinanceInfoForm.paymentMethods.progress[scope.$index].paymentTime,cardFinanceInfoForm.paymentMethods.progress[scope.$index])"
+                          v-model="cardFinanceInfoForm.paymentMethods.progress[scope.$index].paymentTime"
                           :disabled="operateType==='query'"
                           placeholder="请输入具体付款日期"
                           type="date"></el-date-picker>
@@ -632,15 +633,15 @@
                       v-model="cardFinanceInfoForm.paymentMethods.progress[scope.$index].remark"></el-input>
                   </template>
                 </el-table-column>
-                <el-table-column prop="proportion" label="占比"  width="80px">
+                <el-table-column prop="ratio" label="占比"  width="80px">
                   <template scope="scope">
-                    {{getProportion(cardFinanceInfoForm.paymentMethods.progress[scope.$index].money)}}
+                    {{getProportion(cardFinanceInfoForm.paymentMethods.progress[scope.$index].paymentAmount)}}
                   </template>
                 </el-table-column>
               </el-table>
-              <el-table :show-header="false" :data="cardFinanceInfoForm.paymentMethods.final"
+              <el-table :show-header="false" :data="cardFinanceInfoForm.paymentMethods._final"
                         v-if="!cardFinanceInfoForm.oneOffPay" style="width: 100%">
-                <el-table-column type="expand" v-if="cardFinanceInfoForm.paymentMethods.final[0].seriousPayments">
+                <el-table-column type="expand" v-if="cardFinanceInfoForm.paymentMethods._final[0].seriousPayments">
                   <template scope="props">
                     <el-button icon="plus" type="primary" class="mb10"
                                v-if="operateType!=='query'"
@@ -652,16 +653,16 @@
                         <template scope="scope">{{props.row.type}}{{scope.$index+1}}</template>
                       </el-table-column>
                       <el-table-column
-                        prop="money"
+                        prop="paymentAmount"
                         label="付款金额">
                         <template scope="scope">
                           <el-input
                             :disabled="operateType==='query'"
-                            v-model="props.row.subItem[scope.$index].money"></el-input>
+                            v-model="props.row.subItem[scope.$index].paymentAmount"></el-input>
                         </template>
                       </el-table-column>
                       <el-table-column
-                        prop="curTime"
+                        prop="paymentTimePeriod"
                         label="付款时间"
                         width="250px">
                         <template scope="scope">
@@ -669,10 +670,10 @@
                             <el-col>
                               <el-select
                                 class="select-curTime"
-                                @change="handleItemCurTimeChange(props.row.subItem[scope.$index].curTime,props.row.subItem[scope.$index])"
+                                @change="handleItemCurTimeChange(props.row.subItem[scope.$index].paymentTimePeriod,props.row.subItem[scope.$index])"
                                 :disabled="operateType==='query'"
                                 placeholder="请选择付款时间"
-                                v-model="props.row.subItem[scope.$index].curTime">
+                                v-model="props.row.subItem[scope.$index].paymentTimePeriod">
                                 <el-option
                                   v-for="item in props.row.subItem[scope.$index].times"
                                   :key="item.value"
@@ -683,8 +684,8 @@
                             </el-col>
                             <el-col>
                               <el-date-picker
-                                @change="handleItemExactDateChange(props.row.subItem[scope.$index].exactDate,props.row.subItem[scope.$index])"
-                                v-model="props.row.subItem[scope.$index].exactDate"
+                                @change="handleItemExactDateChange(props.row.subItem[scope.$index].paymentTime,props.row.subItem[scope.$index])"
+                                v-model="props.row.subItem[scope.$index].paymentTime"
                                 :disabled="operateType==='query'"
                                 placeholder="请输入具体付款日期"
                                 type="date"></el-date-picker>
@@ -704,9 +705,9 @@
                             v-model="props.row.subItem[scope.$index].remark"></el-input>
                         </template>
                       </el-table-column>
-                      <el-table-column prop="proportion" label="占比" width="80px">
+                      <el-table-column prop="ratio" label="占比" width="80px">
                         <template scope="scope">
-                          {{getProportion(props.row.subItem[scope.$index].money)}}
+                          {{getProportion(props.row.subItem[scope.$index].paymentAmount)}}
                         </template>
                       </el-table-column>
                       <el-table-column
@@ -732,21 +733,21 @@
                   <template scope="scope">
                     <el-checkbox
                       :disabled="operateType==='query'"
-                      v-model="cardFinanceInfoForm.paymentMethods.final[scope.$index].seriousPayments"></el-checkbox>
+                      v-model="cardFinanceInfoForm.paymentMethods._final[scope.$index].seriousPayments"></el-checkbox>
                   </template>
                 </el-table-column>
                 <el-table-column
-                  prop="money"
+                  prop="paymentAmount"
                   label="付款金额"
                   width="150px">
                   <template scope="scope">
                     <el-input
                       :disabled="operateType==='query'"
-                      v-model="cardFinanceInfoForm.paymentMethods.final[scope.$index].money"></el-input>
+                      v-model="cardFinanceInfoForm.paymentMethods._final[scope.$index].paymentAmount"></el-input>
                   </template>
                 </el-table-column>
                 <el-table-column
-                  prop="curTime"
+                  prop="paymentTimePeriod"
                   label="付款时间"
                   width="250px">
                   <template scope="scope">
@@ -754,12 +755,12 @@
                       <el-col>
                         <el-select
                           class="select-curTime"
-                          v-model="cardFinanceInfoForm.paymentMethods.final[scope.$index].curTime"
+                          v-model="cardFinanceInfoForm.paymentMethods._final[scope.$index].paymentTimePeriod"
                           :disabled="operateType==='query'"
                           placeholder="请选择付款时间"
-                          @change="handleCurTimeChange(cardFinanceInfoForm.paymentMethods.final[scope.$index].curTime,cardFinanceInfoForm.paymentMethods.final[scope.$index])">
+                          @change="handleCurTimeChange(cardFinanceInfoForm.paymentMethods._final[scope.$index].paymentTimePeriod,cardFinanceInfoForm.paymentMethods._final[scope.$index])">
                           <el-option
-                            v-for="item in cardFinanceInfoForm.paymentMethods.final[scope.$index].times"
+                            v-for="item in cardFinanceInfoForm.paymentMethods._final[scope.$index].times"
                             :key="item.value"
                             :label="item.label"
                             :value="item.value">
@@ -768,8 +769,8 @@
                       </el-col>
                       <el-col>
                         <el-date-picker
-                          @change="handleExactDateChange(cardFinanceInfoForm.paymentMethods.final[scope.$index].exactDate,cardFinanceInfoForm.paymentMethods.final[scope.$index])"
-                          v-model="cardFinanceInfoForm.paymentMethods.final[scope.$index].exactDate"
+                          @change="handleExactDateChange(cardFinanceInfoForm.paymentMethods._final[scope.$index].paymentTime,cardFinanceInfoForm.paymentMethods._final[scope.$index])"
+                          v-model="cardFinanceInfoForm.paymentMethods._final[scope.$index].paymentTime"
                           :disabled="operateType==='query'"
                           placeholder="请输入具体付款日期"
                           type="date"></el-date-picker>
@@ -786,12 +787,12 @@
                       type="textarea"
                       :rows="2"
                       :disabled="operateType==='query'"
-                      v-model="cardFinanceInfoForm.paymentMethods.final[scope.$index].remark"></el-input>
+                      v-model="cardFinanceInfoForm.paymentMethods._final[scope.$index].remark"></el-input>
                   </template>
                 </el-table-column>
-                <el-table-column prop="proportion" label="占比" width="80px">
+                <el-table-column prop="ratio" label="占比" width="80px">
                   <template scope="scope">
-                    {{getProportion(cardFinanceInfoForm.paymentMethods.final[scope.$index].money)}}
+                    {{getProportion(cardFinanceInfoForm.paymentMethods._final[scope.$index].paymentAmount)}}
                   </template>
                 </el-table-column>
               </el-table>
@@ -834,8 +835,8 @@
                 <el-col :span="8">
                   <el-form-item label="是否收取保证金" label-width="120px">
                     <el-radio-group v-model="cardFinanceInfoForm.depositFlag" :disabled="operateType==='query'">
-                      <el-radio :label="1">是</el-radio>
-                      <el-radio :label="0">否</el-radio>
+                      <el-radio :label="true">是</el-radio>
+                      <el-radio :label="false">否</el-radio>
                     </el-radio-group>
                   </el-form-item>
                 </el-col>
@@ -862,20 +863,20 @@
                 </el-col>
               </el-row>
             </el-card>
-            <el-card class="mt20" v-if="baseInfoForm.contractType===3&&cardFinanceInfoForm.moneyInvolved===1">
+            <el-card class="mt20" v-if="baseInfoForm.contractType===3&&cardFinanceInfoForm.moneyInvolved===true">
               <header slot="header">开票信息</header>
               <el-row>
                 <el-col v-if="cardContentInfoForm.conSubjctName.length>1" :span="12">
                   <h4>甲方数据不只一条</h4>
                 </el-col>
-                <el-col  v-else :span="12" class="billingInfo">
+                <el-col v-else :span="12" class="billingInfo">
                   <h4>甲方增值税专用开票信息：</h4>
                   <el-row>
                     <el-col :span="6">
                       公司名称:
                     </el-col>
                     <el-col :span="16">
-                      {{cardFinanceInfoForm.jiaBillingInfo.companyName}}
+                      {{jia.companyName}}
                     </el-col>
                   </el-row>
                   <el-row>
@@ -883,7 +884,7 @@
                       统一社会信用代码:
                     </el-col>
                     <el-col :span="16">
-                      {{cardFinanceInfoForm.jiaBillingInfo.creditCode}}
+                      {{jia.creditCode}}
                     </el-col>
                   </el-row>
                   <el-row>
@@ -891,7 +892,7 @@
                       注册地址:
                     </el-col>
                     <el-col :span="16">
-                      {{cardFinanceInfoForm.jiaBillingInfo.registerAddress}}
+                      {{jia.registerAddress}}
                     </el-col>
                   </el-row>
                   <el-row>
@@ -899,7 +900,7 @@
                       经营地址:
                     </el-col>
                     <el-col :span="16">
-                      {{cardFinanceInfoForm.jiaBillingInfo.managementAddress}}
+                      {{jia.managementAddress}}
                     </el-col>
                   </el-row>
                   <el-row>
@@ -907,7 +908,7 @@
                       联系电话:
                     </el-col>
                     <el-col :span="16">
-                      {{cardFinanceInfoForm.jiaBillingInfo.phone}}
+                      {{jia.phone}}
                     </el-col>
                   </el-row>
                   <el-row>
@@ -915,7 +916,7 @@
                       联系电话:
                     </el-col>
                     <el-col :span="16">
-                      {{cardFinanceInfoForm.jiaBillingInfo.phone}}
+                      {{jia.phone}}
                     </el-col>
                   </el-row>
                   <el-row>
@@ -923,7 +924,7 @@
                       银行账号:
                     </el-col>
                     <el-col :span="16">
-                      {{cardFinanceInfoForm.jiaBillingInfo.bankAccount}}
+                      {{jia.bankAccount}}
                     </el-col>
                   </el-row>
                   <el-row>
@@ -931,7 +932,7 @@
                       开 户 行:
                     </el-col>
                     <el-col :span="16">
-                      {{cardFinanceInfoForm.jiaBillingInfo.openBank}}
+                      {{jia.openBank}}
                     </el-col>
                   </el-row>
                 </el-col>
@@ -1016,11 +1017,11 @@
                 </el-form-item>
               </el-col>
               <el-col :span="8" v-if="!showMaterialItems">
-                <el-form-item :disabled="operateType==='query'" prop="checkServiceMethod" label="服务类验收方式"
+                <el-form-item :disabled="operateType==='query'" prop="checkType" label="服务类验收方式"
                               label-width="120px">
                   <el-select
                     size="small"
-                    v-model="cardContCheckInfoForm.checkServiceMethod"
+                    v-model="cardContCheckInfoForm.checkType"
                     placeholder="请选择服务类验收方式">
                     <el-option
                       v-for="item in cardContCheckInfoForm.checkServiceMethods"
@@ -1034,31 +1035,32 @@
             </el-row>
             <el-row>
               <el-col :span="8">
-                <el-form-item prop="checkSupervisor" label="验收监督人">
-                  <el-input :disabled="isEnabled" v-model="cardContCheckInfoForm.checkSupervisor"
+                <el-form-item prop="supervisor" label="验收监督人">
+                  <el-input :disabled="isEnabled" v-model="cardContCheckInfoForm.supervisor"
                             placeholder="请输入验收监督人"></el-input>
                 </el-form-item>
               </el-col>
               <el-col :span="8">
-                <el-form-item prop="checkSupervisorDepart" label="验收监督人部门" label-width="120px">
-                  <el-input :disabled="isEnabled" v-model="cardContCheckInfoForm.checkSupervisorDepart"
+                <el-form-item prop="supervisorDept" label="验收监督人部门" label-width="120px">
+                  <el-input :disabled="isEnabled" v-model="cardContCheckInfoForm.supervisorDept"
                             placeholder="请输入验收监督人部门"></el-input>
                 </el-form-item>
               </el-col>
             </el-row>
-            <el-button v-if="operateType!=='query'" @click="handleAddUnionCheck" icon="plus" type="primary" class="mb20">添加
+            <el-button v-if="operateType!=='query'" @click="handleAddUnionCheck" icon="plus" type="primary"
+                       class="mb20">添加
             </el-button>
             <el-table :data="cardContCheckInfoForm.unionCheckPersons">
-              <el-table-column prop="name" label="联合验收人"></el-table-column>
-              <el-table-column prop="depart" label="联合验收人部门"></el-table-column>
-              <el-table-column prop="ifMandatory" label="是否必选">
+              <el-table-column prop="personName" label="联合验收人"></el-table-column>
+              <el-table-column prop="personDept" label="联合验收人部门"></el-table-column>
+              <el-table-column prop="required" label="是否必选">
                 <template scope="scope">
-                  {{cardContCheckInfoForm.unionCheckPersons[scope.$index].ifRequired==='1'?'是':'否'}}
+                  {{cardContCheckInfoForm.unionCheckPersons[scope.$index].required===true?'是':'否'}}
                 </template>
               </el-table-column>
             </el-table>
-            <el-form-item prop="hasSample" label="是否有样品">
-              <el-radio-group v-model="cardContCheckInfoForm.hasSample" :disabled="operateType==='query'">
+            <el-form-item prop="haveSample" label="是否有样品">
+              <el-radio-group v-model="cardContCheckInfoForm.haveSample" :disabled="operateType==='query'">
                 <el-radio :label="1">是</el-radio>
                 <el-radio :label="0">否</el-radio>
               </el-radio-group>
@@ -1074,7 +1076,8 @@
             </el-card>
             <el-card v-if="!showMaterialItems">
               <header slot="header">服务验收事项<i class="errorMsg">{{cardContCheckInfoForm.serviceCheckMsg}}</i></header>
-              <el-button v-if="operateType!=='query'" type="primary" @click="handleAddServiceMatter" icon="plus" class="mb20">
+              <el-button v-if="operateType!=='query'" type="primary" @click="handleAddServiceMatter" icon="plus"
+                         class="mb20">
                 添加
               </el-button>
               <el-table :data="cardContCheckInfoForm.serviceMatters">
@@ -1100,7 +1103,9 @@
         </el-tab-pane>
         <el-tab-pane label="合同附件及盖章信息" name="tabSealInfo" v-if="baseInfoForm.contractType!==2">
           <el-form rel="cardSealInfoForm" :model="cardSealInfoForm" label-width="100px">
-            <el-button type="primary" @click="handleNewSealFile" icon="plus" v-if="operateType!=='query'" class="mb20">新增</el-button>
+            <el-button type="primary" @click="handleNewSealFile" icon="plus" v-if="operateType!=='query'" class="mb20">
+              新增
+            </el-button>
             <template v-for="(item,index) in cardSealInfoForm.sealAttachments">
               <template v-if="index===0">
                 <el-table :data="item">
@@ -1330,7 +1335,7 @@
                   <el-table-column
                     prop="remark"
                     label="备注"
-                  width="200px">
+                    width="200px">
                     <template scope="scope">
                       <el-input
                         :disabled="operateType==='query'||item[scope.$index].type===3"
@@ -1495,6 +1500,7 @@
                :rules="formAddUnionCheck.rules">
         <el-form-item prop="name" label="联合验收人">
           <el-input v-model="formAddUnionCheck.name" placeholder="请输入联合验收人"></el-input>
+
         </el-form-item>
         <el-form-item prop="depart" label="联合验收人部门">
           <el-input :disabled="true" v-model="formAddUnionCheck.depart" placeholder="请输入联合验收人部门"></el-input>
@@ -1615,7 +1621,7 @@
         callback()
       }
       return {
-        visible:false,//预览
+        visible: false,//预览
         operateType: 'create', // create:创建，update:变更，query:查询
         updateForm: {
           visible: false,
@@ -1639,43 +1645,43 @@
           }
         },
         baseInfoForm: {
-          id:'',//在更新合同是把合同id传入
-          procInstId:'',//流程编号
-          guid:'',//草稿箱编号
+          id: '',//在更新合同是把合同id传入
+          procInstId: '',//流程编号
+          guid: '',//草稿箱编号
           businessOperator: '', // 业务经办人
           businessDept: '',
-          contractType:'',//合同模式id
-          contractTypeName:'',//合同模式名称
-          businessOperators:[],//业务操作人数组
-          loading:false,//业务操作人
-          contractBusinessTypeName:'',//业务类型名
+          contractType: '',//合同模式id
+          contractTypeName: '',//合同模式名称
+          businessOperators: [],//业务操作人数组
+          loading: false,//业务操作人
+          contractBusinessTypeName: '',//业务类型名
           contractTextType: null,
           contractTextTypeOptions: [
             {
-              id:1,
-              name:'模板合同'
+              id: 1,
+              name: '模板合同'
             },
             {
-              id:2,
-              name:'非模板合同'
+              id: 2,
+              name: '非模板合同'
             }
           ],
           sealOrder: 1, // 0：我方先盖章 1：对方先盖章
           ourSealOpinion: '',
           templateId: '',//当前模版id
           templateOptions: [{
-            id:'1',
-            name:'模版1',
-            version:'1'
+            id: '1',
+            name: '模版1',
+            version: '1'
           }],
           belongProject: '',
-          prFlag:1,//是否有比加单号 1：有 0：无
-          prNo:'',//pr号
+          prFlag: 1,//是否有比加单号 1：有 0：无
+          prNo: '',//pr号
           contractNo: '',//合同编号
           dialogNewSubjectVisible: false,
           rules: {
-            businessOperator:[{required: true, message: '请输入业务经办人', trigger: 'blur'}],
-            businessDept:[{required: true, message: '请输入业务部门', trigger: 'blur'}],
+            businessOperator: [{required: true, message: '请输入业务经办人', trigger: 'blur'}],
+            businessDept: [{required: true, message: '请输入业务部门', trigger: 'blur'}],
             templateId: [{required: true, message: '请选择模版名称', trigger: 'blur'}],
           }
         },
@@ -1712,8 +1718,8 @@
           }
         },
         cardFinanceInfoForm: {
-          moneyInvolved: 1,
-          oneOffPay: 1,
+          moneyInvolved: true,
+          oneOffPay: true,
           currency: 1,//币种1：人民币；2：美元
           currencyOptions: [
             {
@@ -1740,8 +1746,8 @@
               label: '普通发票'
             }
           ],
-          totalAmount:0,
-          depositFlag: 1,
+          totalAmount: 0,
+          depositFlag: true,//是否收取保证金
           deposit: 0,
           depositRatio: '',
           payTime: '',
@@ -1766,96 +1772,96 @@
           paymentMethods: {
             advance: [{
               type: '预付款',
-              seriousPayments: true,
-              money: 0,
-              curTime: '',
-              exactDate: '',
+              seriousPayments: true,//是否多次付款
+              paymentAmount: 0,//付款金额
+              paymentTimePeriod: null,//付款方式
+              paymentTime: '',//付款时间
               times: [
                 {
-                  value: '1',
+                  value: 1,
                   label: '合同签约15天'
                 },
                 {
-                  value: '2',
+                  value: 2,
                   label: '合同签约30天'
                 },
                 {
-                  value: '3',
+                  value: 3,
                   label: '合同签约90天'
                 }
               ],
               remark: '',
-              proportion: '',
+              ratio: '',
               subItem: [
                 {
-                  money: 0,
-                  curTime: '',
-                  exactDate: '',
+                  paymentAmount: 0,
+                  paymentTimePeriod: null,
+                  paymentTime: '',
                   times: [
                     {
-                      value: 'subItem1',
+                      value: 1,
                       label: '合同签约15天'
                     },
                     {
-                      value: 'subItem2',
+                      value: 2,
                       label: '合同签约30天'
                     },
                     {
-                      value: 'subItem3',
+                      value: 3,
                       label: '合同签约90天'
                     }
                   ],
                   remark: '',
-                  proportion: ''
+                  ratio: ''
                 }
               ]
             }],
             progress: [{
               type: '进度款',
               seriousPayments: false,
-              money: 0,
-              curTime: '',
-              exactDate: '',
+              paymentAmount: 0,
+              paymentTimePeriod: null,
+              paymentTime: '',
               times: [
                 {
-                  value: '1',
+                  value: 1,
                   label: '验收后15天'
                 },
                 {
-                  value: '2',
+                  value: 2,
                   label: '验收后30天'
                 }
               ],
               remark: '',
-              proportion: '',
+              ratio: '',
               subItem: []
             }],
-            final: [{
+            _final: [{
               type: '尾款',
               seriousPayments: true,
-              money: 0,
-              curTime: '',
-              exactDate: '',
+              paymentAmount: 0,
+              paymentTimePeriod: null,
+              paymentTime: '',
               times: [
                 {
-                  value: '1',
+                  value: 1,
                   label: '合同结束后15天'
                 },
                 {
-                  value: '2',
+                  value: 2,
                   label: '合同结束后30天'
                 },
                 {
-                  value: '3',
+                  value: 3,
                   label: '合同结束后90天'
                 },
                 {
-                  value: '4',
+                  value: 4,
                   label: '合同结束后180天'
                 }
               ],
               remark: '',
-              proportion: '',
+              ratio: '',
               subItem: []
             }]
           },
@@ -1867,25 +1873,27 @@
         cardContCheckInfoForm: {
           responsible: '',
           responsibleDept: '',
-          checkServiceMethod: '',
+          checkType: '',
           checkServiceMethods: [
             {
-              id: 'check1',
+              id: '1',
               name: '验收方式1'
             },
             {
-              id: 'check2',
+              id: '2',
               name: '验收方式2'
             },
             {
-              id: 'check3',
+              id: '3',
               name: '验收方式3'
             }
           ],
-          checkSupervisor: '',
-          checkSupervisorDepart: '',
+          supervisor: '',
+          supervisorDept: '',
+          haveSample: 1,
           unionCheckPersons: [],
-          hasSample: 1,
+
+
           materialMatters: [],
           serviceMatters: [],
           serviceCheckMsg: '',
@@ -1946,17 +1954,17 @@
         cardRelatedInfoForm: {
           contractList: [
             /*{
-              contractCode: '0001001',
-              type: '类型',
-              status: '状态',
-              company: '公司',
-              startTime: '2018-09-11'
-            }*/
+             contractCode: '0001001',
+             type: '类型',
+             status: '状态',
+             company: '公司',
+             startTime: '2018-09-11'
+             }*/
           ]
         },
-        cardOtherInfo:{
-          condition:1,
-          conditionOptions:[
+        cardOtherInfo: {
+          condition: 1,
+          conditionOptions: [
             {
               value: 1,
               label: '采购申请'
@@ -1984,71 +1992,6 @@
           search: '',
           subjects: [],
           loading: false
-        },
-        formNewPayment: {
-          type: '1',
-          typeOptions: [
-            {
-              value: '1',
-              label: '预付款'
-            },
-            {
-              value: '2',
-              label: '进度款'
-            },
-            {
-              value: '3',
-              label: '尾款'
-            }
-          ],
-          seriousPayments: 1,
-          money: '',
-          time: '1',
-          timeOptions: {
-            1: [// 预付款
-              {
-                value: '1',
-                label: '合同签约15天'
-              },
-              {
-                value: '2',
-                label: '合同签约30天'
-              },
-              {
-                value: '3',
-                label: '合同签约90天'
-              }
-            ],
-            2: [
-              {
-                value: '1',
-                label: '验收后15天'
-              },
-              {
-                value: '2',
-                label: '验收后30天'
-              }
-            ],
-            3: [
-              {
-                value: '1',
-                label: '合同结束后15天'
-              },
-              {
-                value: '2',
-                label: '合同结束后30天'
-              },
-              {
-                value: '3',
-                label: '合同结束后90天'
-              },
-              {
-                value: '4',
-                label: '合同结束后180天'
-              }
-            ]
-          },
-          remark: ''
         },
         formAddUnionCheck: {
           name: '',
@@ -2123,7 +2066,8 @@
     },
     created() {
       let path = this.$route.path
-      if (path && path === '/conperf/conupdate') {;
+      if (path && path === '/conperf/conupdate') {
+        ;
         this.operateType = 'update'
       }
 
@@ -2150,11 +2094,11 @@
       },
       totalConMoney: function () {
         const paymentMethods = this.cardFinanceInfoForm.paymentMethods
-        const advance = parseFloat(paymentMethods.advance[0].money ? paymentMethods.advance[0].money : 0)
-        const progress = parseFloat(paymentMethods.progress[0].money ? paymentMethods.progress[0].money : 0)
-        const final = parseFloat(paymentMethods.final[0].money ? paymentMethods.final[0].money : 0)
-        this.cardFinanceInfoForm.totalAmount=advance + progress + final
-        return advance + progress + final
+        const advance = parseFloat(paymentMethods.advance[0].paymentAmount ? paymentMethods.advance[0].paymentAmount : 0)
+        const progress = parseFloat(paymentMethods.progress[0].paymentAmount ? paymentMethods.progress[0].paymentAmount : 0)
+        const _final = parseFloat(paymentMethods._final[0].paymentAmount ? paymentMethods._final[0].paymentAmount : 0)
+        this.cardFinanceInfoForm.totalAmount = advance + progress + _final
+        return advance + progress + _final
       },
       showMaterialItems: function () {
         let result = false
@@ -2187,40 +2131,40 @@
         return visible
       },
       //查询及创建操作时不可用，变更操作选择原合同作废时可用，选择原合同有效时不可用，否则都是可用的状态
-      isEnabled:function(){
-        let enabled=false;
-        if(this.operateType==='update'){
-          this.updateForm.updateMode?enabled=true:enabled=false;
+      isEnabled: function () {
+        let enabled = false;
+        if (this.operateType === 'update') {
+          this.updateForm.updateMode ? enabled = true : enabled = false;
         }
-        if(this.operateType==='query'||this.operateType==='create'){
-          enabled=true;
+        if (this.operateType === 'query' || this.operateType === 'create') {
+          enabled = true;
         }
         return enabled;
       },
       //查询操作不可用，创建操作可用，变更操作选择原合同作废时可用，选择原合同有效时不可用，否则都是可用的状态
-      isEnabled1:function(){
-        let enabled=false;
-        if(this.operateType==='update'){
-          this.updateForm.updateMode?enabled=true:enabled=false;
+      isEnabled1: function () {
+        let enabled = false;
+        if (this.operateType === 'update') {
+          this.updateForm.updateMode ? enabled = true : enabled = false;
         }
-        if(this.operateType==='query'){
-          enabled=true;
+        if (this.operateType === 'query') {
+          enabled = true;
         }
-        if(this.operateType==='create'){
-          enabled=false;
+        if (this.operateType === 'create') {
+          enabled = false;
         }
         return enabled;
       },
-      isVisibleNewSupplierBtn:function(){
-       let visible=false;
-        if(this.operateType==='query'){
-          visible=false;
-        }else if(this.cardContentInfoForm.tableSupplierInfo.length<=0){
-          visible=true;
+      isVisibleNewSupplierBtn: function () {
+        let visible = false;
+        if (this.operateType === 'query') {
+          visible = false;
+        } else if (this.cardContentInfoForm.tableSupplierInfo.length <= 0) {
+          visible = true;
         }
         return visible;
       },
-      tabs:function(){
+      tabs: function () {
         switch (this.cardOtherInfo.condition) {
           case 1:
             return 'PrTable'
@@ -2234,46 +2178,52 @@
       },
     },
     mounted() {
-      const params={};
-      const query = this.$route.query,types=query.curConTypeId.split('-');
+      const params = {};
+      const query = this.$route.query, types = query.curConTypeId.split('-');
       if (JSON.stringify(query) !== '{}') {
-        params.folio=query.currentFolio
-        params.contractType=query.curConModelId;//合同模式
-        params.contractBusinessTypeFirst=types[0];
-        params.contractBusinessTypeSecond=types[1];
-        params.contractBusinessTypeThird=types[2];
+        params.folio = query.currentFolio
+        params.contractType = query.curConModelId;//合同模式
+        params.contractBusinessTypeFirst = types[0];
+        params.contractBusinessTypeSecond = types[1];
+        params.contractBusinessTypeThird = types[2];
       }
 
 
       Api.getContractBaseInfo(params).then((data) => {
-        Object.assign(this.baseInfoForm,data.data.dataMap.baseInfoForm);
-        Object.assign(this.cardContentInfoForm,data.data.dataMap.cardContentInfoForm);
-        //Object.assign(this.cardFinanceInfoForm,data.data.dataMap.cardFinanceInfoForm);
-        Object.assign(this.cardContCheckInfoForm,data.data.dataMap.cardContCheckInfoForm);
-        Object.assign(this.cardSealInfoForm,data.data.dataMap.cardSealInfoForm);
-        Object.assign(this.cardRemarkInfoForm,data.data.dataMap.cardRemarkInfoForm);
-        Object.assign(this.cardOtherInfo,data.data.dataMap.cardOtherInfo);
-        let baseInfo=data.data.dataMap.baseInfoForm;
-        this.baseInfoForm.contractBusinessTypeName=baseInfo.contractBusinessTypeFirstName+'-'+baseInfo.contractBusinessTypeSecondName+'-'+baseInfo.contractBusinessTypeThirdName
-        const params={}
-        params.bizTypeId=this.baseInfoForm.contractBusinessTypeThird;//业务类型
-        params.templateType=(this.baseInfoForm.contractTextType===1?'TEMPLATE':'TEXT');
-        Api.getTemplateByBizTypeId(params).then((data)=>{
-          this.baseInfoForm.templateOptions=data.data.dataMap||[]
+        Object.assign(this.baseInfoForm, data.data.dataMap.baseInfoForm);
+        Object.assign(this.cardContentInfoForm, data.data.dataMap.cardContentInfoForm);
+        Object.assign(this.cardFinanceInfoForm, data.data.dataMap.cardFinanceInfoForm);
+        Object.assign(this.cardContCheckInfoForm, data.data.dataMap.cardContCheckInfoForm);
+        Object.assign(this.cardSealInfoForm, data.data.dataMap.cardSealInfoForm);
+        Object.assign(this.cardRemarkInfoForm, data.data.dataMap.cardRemarkInfoForm);
+        Object.assign(this.cardOtherInfo, data.data.dataMap.cardOtherInfo);
+        const baseInfo = data.data.dataMap.baseInfoForm;
+        this.baseInfoForm.contractBusinessTypeName = baseInfo.contractBusinessTypeFirstName + '-' + baseInfo.contractBusinessTypeSecondName + '-' + baseInfo.contractBusinessTypeThirdName
+        const params = {}
+        params.bizTypeId = this.baseInfoForm.contractBusinessTypeThird;//业务类型
+        params.templateType = (this.baseInfoForm.contractTextType === 1 ? 'TEMPLATE' : 'TEXT');
+        Api.getTemplateByBizTypeId(params).then((data)=> {
+          this.baseInfoForm.templateOptions = data.data.dataMap || []
         });
+        console.log('Api.getContractBaseInfo');
+
+        const paymentMethods=this.cardFinanceInfoForm.paymentMethods;
+        paymentMethods.advance[0].type="预付款"
+        paymentMethods.progress[0].type="进度款"
+        paymentMethods._final[0].type="尾款"
       })
 
-      this.baseInfoForm.contractTypeName=this.getContractModelName(params.contractType);
-      this.baseInfoForm.contractBusinessTypeThird=types[types.length-1];
+      this.baseInfoForm.contractTypeName = this.getContractModelName(params.contractType);
+      this.baseInfoForm.contractBusinessTypeThird = types[types.length - 1];
 
-      if(query.currentFolio){
-        this.baseInfoForm.prNo=query.currentFolio
-        this.baseInfoForm.prFlag=1
+      if (query.currentFolio) {
+        this.baseInfoForm.prNo = query.currentFolio
+        this.baseInfoForm.prFlag = 1
       }
     },
     methods: {
       getContractModelName(id){
-        switch(id){
+        switch (id) {
           case '1':
             return '单一合同'
           case '2':
@@ -2286,7 +2236,7 @@
         }
       },
       handlePreview() {
-        this.visible=true;
+        this.visible = true;
       },
       handleTabClick(tab, event) {
         console.log('handleTabClick')
@@ -2303,11 +2253,11 @@
       handleAddUnionCheckItem(formName) {
         this.$refs[formName].validate((valid) => {
           if (valid) {
-            this.cardContCheckInfoForm.unionCheckPersons.push({
-              name: this.formAddUnionCheck.name,
-              ifRequired: this.formAddUnionCheck.ifRequired,
-              depart: this.formAddUnionCheck.depart
-            })
+            /*Api.getRemoteCreatePersonsByKeyWord({key: query})
+             .then((data) => {
+             this.cardContCheckInfoForm.loading = false
+             this.cardContCheckInfoForm.unionCheckPersons = data.data.dataMap
+             })*/
             this.$refs[formName].resetFields()
             this.cardContCheckInfoForm.dialogAddUnionCheckVisible = false
           } else {
@@ -2431,7 +2381,6 @@
       },
       handleAddContractSupplier() {
         this.cardContentInfoForm.dialogAddContractSupplier = true
-        console.log('dialogAddContractSupplier',this.cardContentInfoForm.dialogAddContractSupplier);
       },
       getRemoteSuppliersByKeyWord(query) {
         if (query !== '') {
@@ -2479,7 +2428,7 @@
           Api.getRemoteSubjectsByKeyWord({key: query})
             .then((data) => {
               this.formNewSubject.loading = false
-              this.formNewSubject.subjects = data.data.dataMap||[];
+              this.formNewSubject.subjects = data.data.dataMap || [];
             })
         } else {
           this.formNewSubject.subjects = []
@@ -2521,7 +2470,7 @@
             }
             this.cardContentInfoForm.thirdPartyInfo.push({
               code: thirdParties[0].companyCode,
-              name:thirdParties[0].company,
+              name: thirdParties[0].company,
               type: 'add'
             })
             curForm.resetFields()
@@ -2539,25 +2488,25 @@
       handleAddAdvanceItem(type) {
         let paymentMethods = this.cardFinanceInfoForm.paymentMethods
         const item = {
-          money: 0,
-          curTime: '',
-          exactDate: '',
+          paymentAmount: 0,
+          paymentTimePeriod: null,
+          paymentTime: '',
           times: [
             {
-              value: 'subItem1',
+              value: 1,
               label: '合同签约15天'
             },
             {
-              value: 'subItem2',
+              value: 2,
               label: '合同签约30天'
             },
             {
-              value: 'subItem3',
+              value: 3,
               label: '合同签约90天'
             }
           ],
           remark: '',
-          proportion: ''
+          ratio: ''
         }
         _.forIn(paymentMethods, function (value, key) {
           let cur = paymentMethods[key]
@@ -2628,7 +2577,7 @@
             return false
           }
         })
-        if(this.$refs.cardContCheckInfoForm){
+        if (this.$refs.cardContCheckInfoForm) {
           this.$refs.cardContCheckInfoForm.validate((valid) => {
             if (valid) {
               const service = this.cardContCheckInfoForm.serviceMatters
@@ -2649,9 +2598,9 @@
         this.cardContCheckInfoForm.serviceCheckMsg = errors.cardContCheckInfoForm.serviceCheckMsg
       },
       handleSave() {
-        let startTime=this.cardContentInfoForm.startTime,endTime=this.cardContentInfoForm.endTime;
-        startTime=startTime.getFullYear()+'-'+(startTime.getMonth()+1)+'-'+startTime.getDate()
-        endTime=endTime.getFullYear()+'-'+(endTime.getMonth()+1)+'-'+endTime.getDate()
+        let startTime = this.cardContentInfoForm.startTime, endTime = this.cardContentInfoForm.endTime;
+        startTime = startTime.getFullYear() + '-' + (startTime.getMonth() + 1) + '-' + startTime.getDate()
+        endTime = endTime.getFullYear() + '-' + (endTime.getMonth() + 1) + '-' + endTime.getDate()
       },
       handleSubmit() {
         /* Api.getRelatedInfo({}).then((data)=> {
@@ -2662,22 +2611,22 @@
       },
       handleCurTimeChange(value, row) {
         if (value) {
-          row.exactDate = ''
+          row.paymentTime = ''
         }
       },
       handleExactDateChange(value, row) {
         if (value) {
-          row.curTime = ''
+          row.paymentTimePeriod = null
         }
       },
       handleItemCurTimeChange(value, row) {
         if (value) {
-          row.exactDate = ''
+          row.paymentTime = ''
         }
       },
       handleItemExactDateChange(value, row) {
         if (value) {
-          row.curTime = ''
+          row.paymentTimePeriod = null
         }
       },
       handleNewSealFile() {
@@ -2732,11 +2681,11 @@
         console.log('id', id)
       },
       handleChangeType(index, row) {
-        index===2?row.isSeal = false:row.isSeal = true;
+        index === 2 ? row.isSeal = false : row.isSeal = true;
       },
       handleRemoveSealItem(index, rows) {
-        console.log('index',index);
-        console.log('rows',rows);
+        console.log('index', index);
+        console.log('rows', rows);
         rows.splice(index, 1)
       },
       getRemotebusinessOperatorsByKeyWord(query){
@@ -2752,28 +2701,25 @@
         }
       },
       handleContractTextTypeChange(val){
-        const params={};
-        params.bizTypeId=this.baseInfoForm.contractBusinessTypeThird
-        params.templateType=(val===1?'TEMPLATE':'TEXT')
-        Api.getTemplateByBizTypeId(params).then((data)=>{
-          this.baseInfoForm.templateOptions=data.data.dataMap||[];
+        const params = {};
+        params.bizTypeId = this.baseInfoForm.contractBusinessTypeThird
+        params.templateType = (val === 1 ? 'TEMPLATE' : 'TEXT')
+        Api.getTemplateByBizTypeId(params).then((data)=> {
+          this.baseInfoForm.templateOptions = data.data.dataMap || [];
         });
       },
       handleBusinessOperatorChange(val){
-        console.log('val',val);
-        const businessOperators=this.baseInfoForm.businessOperators
-        if(businessOperators.length){
-          for(let i=0,len=businessOperators.length;i<len;i++){
-            if(val===businessOperators[i].userId){
-              this.baseInfoForm.businessDept=businessOperators[i].deptName
+        const businessOperators = this.baseInfoForm.businessOperators
+        if (businessOperators.length) {
+          for (let i = 0, len = businessOperators.length; i < len; i++) {
+            if (val === businessOperators[i].userId) {
+              this.baseInfoForm.businessDept = businessOperators[i].deptName
             }
           }
         }
-
-        console.log('baseInfoForm.businessOperators',this.baseInfoForm.businessOperators);
       }
     },
-    components:{
+    components: {
       Preview,
       PrTable: (resolve) => {
         require(['./components/tables/prTable'], resolve)
@@ -2789,7 +2735,8 @@
       }
     },
     watch: {
-      '$route'(to, from) {console.log('watch');
+      '$route'(to, from) {
+        console.log('watch');
         // 刷新参数放到这里里面去触发就可以刷新相同界面了
         let path = this.$route.path
         if (path && path === '/conperf/conupdate') {
