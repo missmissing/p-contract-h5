@@ -11,8 +11,9 @@ function checkStatus(response) {
   const {data} = response
   const {code, dataMap} = data
   if (code === 911) {
-    const currentUrl = encodeURIComponent(window.location.href)
-    window.location.href = `${dataMap}${currentUrl}`
+    // debugger
+    // const currentUrl = encodeURIComponent(window.location.href)
+    // window.location.href = `${dataMap}${currentUrl}`
     return false
   }
   if (code >= 200 && code < 300) {
