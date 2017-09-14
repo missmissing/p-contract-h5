@@ -152,7 +152,7 @@
         action: uploadUrl,
         download: downloadUrl,
         endDate: '9999-12-31',
-        uploadData: {userId,
+        uploadData: {userId},
         pickerOptions: {
           disabledDate(time) {
             return time.getTime() < Date.now() - 8.64e7
