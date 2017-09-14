@@ -38,6 +38,14 @@ export default {
   getTemplateByBizTypeId(params){
     return Http.get(`${contract}/contract-web/template/getTemplateByBizTypeId`, params)
   },
+  //根据选中定的模版id，获取附件信息
+  getSealAttachments(params){
+    return Http.get(`/api/createContract/getSealAttachments`, params)
+  },
+  //保存合同
+  saveContract(params){
+    return Http.post(`${contract}/contract-web/contract/save`, params)
+  },
     /** ***标签页****/
   getPrTableData(params) {
     return Http.get(`/api/createContract/getPrTableData`, params)
@@ -50,10 +58,6 @@ export default {
   },
   getOrderTableData(params) {
     return Http.get(`/api/createContract/getOrderTableData`, params)
-  },
-  //根据选中定的模版id，获取附件信息
-  getSealAttachments(params){
-    return Http.get(`/api/createContract/getSealAttachments`, params)
   },
     /** ***标签页****/
     /** ****变更合同接口start******/

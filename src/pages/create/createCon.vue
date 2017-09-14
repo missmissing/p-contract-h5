@@ -38,7 +38,7 @@
   }
 </style>
 <template>
-  <div class="createCon">
+  <div class="createCon" v-loading="loadingFlag" :element-loading-text="loadingText">
     <el-card v-if="operateType==='update'">
       <header slot="header">变更原因</header>
       <el-form ref="updateForm" :model="updateForm" label-width="100px" :rules="updateForm.rules">
@@ -147,7 +147,8 @@
           </el-col>
           <el-col :span="16">
             <el-form-item label="模版名称" prop="templateId">
-              <el-select :disabled="isEnabled1" v-model="baseInfoForm.templateId" placeholder="请选择合同模版" @change="handleTemplateChange">
+              <el-select :disabled="isEnabled1" v-model="baseInfoForm.templateId" placeholder="请选择合同模版"
+                         @change="handleTemplateChange">
                 <el-option
                   v-for="item in baseInfoForm.templateOptions"
                   :key="item.templateId"
@@ -1295,8 +1296,10 @@
                   </el-table-column>
                   <el-table-column prop="code" label="从协议编号" width="150px">
                     <template scope="scope">
-                      <el-input :disabled="operateType==='query'||item[scope.$index].type===3" icon="search" @keyup.enter.native="handleCodeBlur(item[scope.$index].code)"
-                                v-model="item[scope.$index].code" @blur="handleCodeBlur(item[scope.$index].code)"></el-input>
+                      <el-input :disabled="operateType==='query'||item[scope.$index].type===3" icon="search"
+                                @keyup.enter.native="handleCodeBlur(item[scope.$index].code)"
+                                v-model="item[scope.$index].code"
+                                @blur="handleCodeBlur(item[scope.$index].code)"></el-input>
                     </template>
                   </el-table-column>
                   <el-table-column prop="name" label="文件名称" width="200px">
@@ -1532,7 +1535,8 @@
     </el-dialog>
     <el-dialog title="添加服务验收事项" :visible.sync="cardContCheckInfoForm.dialogAddServiceVisible"
                size="small">
-      <el-form ref="formAddServiceCheck" :model="formAddServiceCheck" :rules="formAddServiceCheck.rules" label-width="100px">
+      <el-form ref="formAddServiceCheck" :model="formAddServiceCheck" :rules="formAddServiceCheck.rules"
+               label-width="100px">
         <el-form-item prop="name" label="服务名称">
           <el-input v-model="formAddServiceCheck.name" placeholder="请输入服务名称"></el-input>
         </el-form-item>
@@ -1612,10 +1616,12 @@
   import Api from '../../api/manageContract'
   import _ from 'lodash'
   import Preview from './components/preview.vue';
+  import comLoading from '@/mixins/comLoading'
 
   document.cookie = 'sys=FMM21KGIJLHOGHNKHGGLLOFMMKFNKKE'
 
   export default {
+    mixins: [comLoading],
     data() {
       let validateEffectiveDateRules = (rule, value, callback) => {
         let endTime = this.cardContentInfoForm.endTime
@@ -2009,9 +2015,9 @@
           loading: false
         },
         formAddUnionCheck: {
-          id:'',
+          id: '',
           name: '',
-          userName:'',
+          userName: '',
           depart: '',
           ifRequired: true,
           loading: false,
@@ -2200,15 +2206,15 @@
         }
       },
       jia: function () {
-        const jiaBillingInfo=this.cardFinanceInfoForm.jiaBillingInfo
+        const jiaBillingInfo = this.cardFinanceInfoForm.jiaBillingInfo
         let result = {}
         if (jiaBillingInfo.length === 1) {
-            result = jiaBillingInfo[0] || {}
+          result = jiaBillingInfo[0] || {}
         }
         return result
       },
       yi: function () {
-        const yiBillingInfo=this.cardFinanceInfoForm.yiBillingInfo
+        const yiBillingInfo = this.cardFinanceInfoForm.yiBillingInfo
         let result = {}
         if (yiBillingInfo.length === 1) {
           result = yiBillingInfo[0] || {}
@@ -2302,10 +2308,10 @@
             }
 
             this.cardContCheckInfoForm.unionCheckPersons.push({
-              id:this.formAddUnionCheck.id,
-              personName:this.formAddUnionCheck.userName,
-              personDept:this.formAddUnionCheck.depart,
-              required:this.formAddUnionCheck.ifRequired
+              id: this.formAddUnionCheck.id,
+              personName: this.formAddUnionCheck.userName,
+              personDept: this.formAddUnionCheck.depart,
+              required: this.formAddUnionCheck.ifRequired
             })
             curForm.resetFields()
             this.cardContCheckInfoForm.dialogAddUnionCheckVisible = false
@@ -2340,7 +2346,11 @@
             curForm.resetFields()
             this.cardContCheckInfoForm.dialogAddServiceVisible = false
             if (this.isSubmit) {
-              this.validateForms()
+              this.validateForms().then(()=>{
+                console.log('handleAddServiceCheckItem-validate-success');
+              }).catch(()=>{
+                console.log('handleAddServiceCheckItem-validate-fail');
+              })
             }
           } else {
             console.log('error submit!!')
@@ -2408,9 +2418,9 @@
               this.$message.error('这条数据已存在咯！')
               return false
             }
-            if(subjects.length){
-              for(let i=0,len=subjects.length;i<len;i++){
-                if(key===subjects[i].companyCode){
+            if (subjects.length) {
+              for (let i = 0, len = subjects.length; i < len; i++) {
+                if (key === subjects[i].companyCode) {
                   this.cardFinanceInfoForm.jiaBillingInfo.push(subjects[i]);
                 }
               }
@@ -2458,14 +2468,14 @@
           if (valid) {
             let suppliers = this.formContractSupplier.suppliers
             const key = this.formContractSupplier.search
-            if(suppliers.length){
-              for(let i=0,len=suppliers.length;i<len;i++){
-                if(key===suppliers[i].companyCode){
-                  this.cardFinanceInfoForm.yiBillingInfo=suppliers;
+            if (suppliers.length) {
+              for (let i = 0, len = suppliers.length; i < len; i++) {
+                if (key === suppliers[i].companyCode) {
+                  this.cardFinanceInfoForm.yiBillingInfo = suppliers;
                 }
               }
             }
-            console.log('add-yi',this.cardFinanceInfoForm.yiBillingInfo);
+            console.log('add-yi', this.cardFinanceInfoForm.yiBillingInfo);
             this.cardContentInfoForm.tableSupplierInfo = [{
               code: suppliers[0].companyCode,
               name: suppliers[0].company,
@@ -2616,65 +2626,109 @@
         console.log('fileList', fileList)
       },
       validateForms() {
-        let errors = {
-          cardContentInfoForm: {
-            errorCount: 0,
-            supplierErrorMsg: '',
-            subjectsErrorMsg: ''
-          },
-          cardContCheckInfoForm: {
-            errorCount: 0,
-            serviceCheckMsg: ''
+        return new Promise((resolve, reject)=> {
+          const errors = {
+            cardContentInfoForm: {
+              errorCount: 0,
+              supplierErrorMsg: '',
+              subjectsErrorMsg: ''
+            },
+            cardContCheckInfoForm: {
+              errorCount: 0,
+              serviceCheckMsg: ''
+            },
+            baseInfoForm:false
           }
-        }
-        this.$refs.cardContentInfoForm.validate((valid) => {
-          if (valid) {
-            const supplier = this.cardContentInfoForm.tableSupplierInfo
-            const subjects = this.cardContentInfoForm.conSubjctName
-            if (supplier.length === 0) {
-              errors.cardContentInfoForm.errorCount += 1
-              errors.cardContentInfoForm.supplierErrorMsg = '合同供应商信息不能为空'
+          this.$refs.baseInfoForm.validate((valid)=>{
+            if(!valid){
+              this.$message.error('请填写完整合同基本信息再提交！')
+            }else{
+              errors.baseInfoForm=true
             }
-            if (subjects.length === 0) {
-              errors.cardContentInfoForm.errorCount += 1
-              errors.cardContentInfoForm.subjectsErrorMsg = '我方主体信息不能为空'
-            }
-          } else {
-            this.$message.error('请填写完整信息再提交！')
-            return false
-          }
-        })
-        if (this.$refs.cardContCheckInfoForm) {
-          this.$refs.cardContCheckInfoForm.validate((valid) => {
+          })
+          this.$refs.cardContentInfoForm.validate((valid) => {
             if (valid) {
-              const service = this.cardContCheckInfoForm.serviceMatters
-              if (service.length === 0) {
-                errors.cardContCheckInfoForm.errorCount += 1
-                errors.cardContCheckInfoForm.serviceCheckMsg = '服务验收事项不能为空'
+              const supplier = this.cardContentInfoForm.tableSupplierInfo
+              const subjects = this.cardContentInfoForm.conSubjctName
+              if (supplier.length === 0) {
+                errors.cardContentInfoForm.errorCount += 1
+                errors.cardContentInfoForm.supplierErrorMsg = '合同供应商信息不能为空'
+              }
+              if (subjects.length === 0) {
+                errors.cardContentInfoForm.errorCount += 1
+                errors.cardContentInfoForm.subjectsErrorMsg = '我方主体信息不能为空'
               }
             } else {
-              this.$message.error('请填写完整信息再提交！')
+              this.$message.error('请填写完整合同内容信息再提交！')
               return false
             }
           })
-        }
-        this.cardContentInfoForm.errorCount = errors.cardContentInfoForm.errorCount
-        this.cardContentInfoForm.supplierErrorMsg = errors.cardContentInfoForm.supplierErrorMsg
-        this.cardContentInfoForm.subjectsErrorMsg = errors.cardContentInfoForm.subjectsErrorMsg
-        this.cardContCheckInfoForm.errorCount = errors.cardContCheckInfoForm.errorCount
-        this.cardContCheckInfoForm.serviceCheckMsg = errors.cardContCheckInfoForm.serviceCheckMsg
+          if (this.$refs.cardContCheckInfoForm) {
+            this.$refs.cardContCheckInfoForm.validate((valid) => {
+              if (valid) {
+                const service = this.cardContCheckInfoForm.serviceMatters
+                if (service.length === 0) {
+                  errors.cardContCheckInfoForm.errorCount += 1
+                  errors.cardContCheckInfoForm.serviceCheckMsg = '服务验收事项不能为空'
+                }
+              } else {
+                this.$message.error('请填写完整信息再提交！')
+                return false
+              }
+            })
+          }
+
+          this.cardContentInfoForm.errorCount = errors.cardContentInfoForm.errorCount
+          this.cardContentInfoForm.supplierErrorMsg = errors.cardContentInfoForm.supplierErrorMsg
+          this.cardContentInfoForm.subjectsErrorMsg = errors.cardContentInfoForm.subjectsErrorMsg
+          this.cardContCheckInfoForm.errorCount = errors.cardContCheckInfoForm.errorCount
+          this.cardContCheckInfoForm.serviceCheckMsg = errors.cardContCheckInfoForm.serviceCheckMsg
+          console.log('errors.baseInfoForm',errors.baseInfoForm);
+          if (!this.cardContentInfoForm.errorCount && !this.cardContCheckInfoForm.errorCount&&errors.baseInfoForm) {
+            console.log('resolve');
+            resolve()
+          } else {
+            console.log('reject');
+            reject()
+          }
+        })
+
       },
       handleSave() {
-        let startTime = this.cardContentInfoForm.startTime, endTime = this.cardContentInfoForm.endTime;
-        startTime = startTime.getFullYear() + '-' + (startTime.getMonth() + 1) + '-' + startTime.getDate()
-        endTime = endTime.getFullYear() + '-' + (endTime.getMonth() + 1) + '-' + endTime.getDate()
+        /*let startTime = this.cardContentInfoForm.startTime, endTime = this.cardContentInfoForm.endTime;
+         startTime = startTime.getFullYear() + '-' + (startTime.getMonth() + 1) + '-' + startTime.getDate()
+         endTime = endTime.getFullYear() + '-' + (endTime.getMonth() + 1) + '-' + endTime.getDate()*/
+        this.isSubmit = true
+        this.comLoading(1)
+        this.validateForms().then(()=>{
+          const paras = {};
+          paras.baseInfoForm = this.baseInfoForm
+          paras.cardContentInfoForm = this.cardContentInfoForm
+          paras.cardFinanceInfoForm = this.cardFinanceInfoForm
+          paras.cardContCheckInfoForm = this.cardContCheckInfoForm
+          //paras.cardSealInfoForm = this.cardSealInfoForm
+          paras.cardRemarkInfoForm = this.cardRemarkInfoForm
+          paras.cardOtherInfo = this.cardOtherInfo
+          Api.saveContract(paras).then((data)=> {
+            if(data.data.dataMap.id){
+                this.$message.success('保存成功！')
+            }
+            this.comLoading()
+          })
+        }).catch(()=>{
+          this.$message.error('请填写完整信息再提交！')
+          this.comLoading()
+        })
       },
       handleSubmit() {
         /* Api.getRelatedInfo({}).then((data)=> {
          this.cardRelatedInfoForm.contractList = data.data.dataMap.contractList;
          }); */
         this.isSubmit = true
-        this.validateForms()
+        this.validateForms().then(()=>{
+          console.log('validate success');
+        })
+
       },
       handleCurTimeChange(value, row) {
         if (value) {
@@ -2810,16 +2864,16 @@
         }
       },
       handleTemplateChange(val){
-        if(val){
-          Api.getSealAttachments({kay:val}).then((data)=>{
-            if(data.data.dataMap&&data.data.dataMap.length){
-              this.cardSealInfoForm.sealAttachments=[data.data.dataMap];
+        if (val) {
+          Api.getSealAttachments({kay: val}).then((data)=> {
+            if (data.data.dataMap && data.data.dataMap.length) {
+              this.cardSealInfoForm.sealAttachments = [data.data.dataMap];
             }
           })
         }
       },
       handleCodeBlur(val){
-        console.log('handleCodeBlur',val);
+        console.log('handleCodeBlur', val);
       }
     },
     components: {
