@@ -869,8 +869,8 @@
             <el-card class="mt20" v-if="baseInfoForm.contractType===3&&cardFinanceInfoForm.moneyInvolved===true">
               <header slot="header">开票信息</header>
               <el-row>
-                <el-col v-if="cardContentInfoForm.conSubjctName.length>1" :span="12">
-                  <h4>甲方数据不只一条</h4>
+                <el-col v-if="cardFinanceInfoForm.jiaBillingInfo.length>1" :span="12">
+                  <h4>具体开票信息以采购提供为准</h4>
                 </el-col>
                 <el-col v-else :span="12" class="billingInfo">
                   <h4>甲方增值税专用开票信息：</h4>
@@ -879,7 +879,7 @@
                       公司名称:
                     </el-col>
                     <el-col :span="16">
-                      {{jia.companyName}}
+                      {{jia.company}}
                     </el-col>
                   </el-row>
                   <el-row>
@@ -887,7 +887,7 @@
                       统一社会信用代码:
                     </el-col>
                     <el-col :span="16">
-                      {{jia.creditCode}}
+                      {{jia.unifiedSocialCreditCode}}
                     </el-col>
                   </el-row>
                   <el-row>
@@ -895,7 +895,7 @@
                       注册地址:
                     </el-col>
                     <el-col :span="16">
-                      {{jia.registerAddress}}
+                      {{jia.registeredAddress}}
                     </el-col>
                   </el-row>
                   <el-row>
@@ -903,7 +903,7 @@
                       经营地址:
                     </el-col>
                     <el-col :span="16">
-                      {{jia.managementAddress}}
+                      {{jia.businessAddress}}
                     </el-col>
                   </el-row>
                   <el-row>
@@ -911,15 +911,7 @@
                       联系电话:
                     </el-col>
                     <el-col :span="16">
-                      {{jia.phone}}
-                    </el-col>
-                  </el-row>
-                  <el-row>
-                    <el-col :span="6">
-                      联系电话:
-                    </el-col>
-                    <el-col :span="16">
-                      {{jia.phone}}
+                      {{jia.contacts}}
                     </el-col>
                   </el-row>
                   <el-row>
@@ -935,7 +927,7 @@
                       开 户 行:
                     </el-col>
                     <el-col :span="16">
-                      {{jia.openBank}}
+                      {{jia.depositBank}}
                     </el-col>
                   </el-row>
                 </el-col>
@@ -946,7 +938,7 @@
                       乙方:
                     </el-col>
                     <el-col :span="16">
-                      {{cardFinanceInfoForm.yiBillingInfo.companyName}}
+                      {{yi.company}}
                     </el-col>
                   </el-row>
                   <el-row>
@@ -954,7 +946,7 @@
                       银行账号:
                     </el-col>
                     <el-col :span="16">
-                      {{cardFinanceInfoForm.yiBillingInfo.bankAccount}}
+                      {{yi.bankAccount}}
                     </el-col>
                   </el-row>
                   <el-row>
@@ -962,7 +954,7 @@
                       开 户 行:
                     </el-col>
                     <el-col :span="16">
-                      {{cardFinanceInfoForm.yiBillingInfo.openBank}}
+                      {{yi.depositBank}}
                     </el-col>
                   </el-row>
                   <el-row>
@@ -970,7 +962,7 @@
                       联系人:
                     </el-col>
                     <el-col :span="16">
-                      {{cardFinanceInfoForm.yiBillingInfo.contact}}
+                      {{yi.contacts}}
                     </el-col>
                   </el-row>
                   <el-row>
@@ -978,7 +970,7 @@
                       注册地址:
                     </el-col>
                     <el-col :span="16">
-                      {{cardFinanceInfoForm.yiBillingInfo.address}}
+                      {{yi.registeredAddress}}
                     </el-col>
                   </el-row>
                   <el-row>
@@ -986,7 +978,7 @@
                       联系电话:
                     </el-col>
                     <el-col :span="16">
-                      {{cardFinanceInfoForm.yiBillingInfo.phone}}
+                      {{yi.contactNumber}}
                     </el-col>
                   </el-row>
                   <el-row>
@@ -994,7 +986,7 @@
                       E-mail:
                     </el-col>
                     <el-col :span="16">
-                      {{cardFinanceInfoForm.yiBillingInfo.email}}
+                      {{yi.email}}
                     </el-col>
                   </el-row>
                 </el-col>
@@ -2207,13 +2199,22 @@
         }
       },
       jia: function () {
-        const conSubjctName = this.cardContentInfoForm.conSubjctName;
+        const jiaBillingInfo=this.cardFinanceInfoForm.jiaBillingInfo
         let result = {}
-        if (conSubjctName && conSubjctName.length === 1) {
-          result = conSubjctName[0]
+        if (jiaBillingInfo.length === 1) {
+            result = jiaBillingInfo[0] || {}
         }
         return result
-      }
+      },
+      yi: function () {
+        const yiBillingInfo=this.cardFinanceInfoForm.yiBillingInfo
+        let result = {}
+        if (yiBillingInfo.length === 1) {
+          result = yiBillingInfo[0] || {}
+        }
+        return result
+      },
+
     },
     mounted() {
       const params = {};
@@ -2407,11 +2408,20 @@
               this.$message.error('这条数据已存在咯！')
               return false
             }
+            if(subjects.length){
+              for(let i=0,len=subjects.length;i<len;i++){
+                if(key===subjects[i].companyCode){
+                  this.cardFinanceInfoForm.jiaBillingInfo.push(subjects[i]);
+                }
+              }
+            }
             this.cardContentInfoForm.conSubjctName.push({
               code: subjects[0].companyCode,
               name: subjects[0].company,
               type: 'add'
             })
+
+
             curForm.resetFields()
             this.baseInfoForm.dialogNewSubjectVisible = false
             if (this.isSubmit) {
@@ -2447,6 +2457,15 @@
         curForm.validate((valid) => {
           if (valid) {
             let suppliers = this.formContractSupplier.suppliers
+            const key = this.formContractSupplier.search
+            if(suppliers.length){
+              for(let i=0,len=suppliers.length;i<len;i++){
+                if(key===suppliers[i].companyCode){
+                  this.cardFinanceInfoForm.yiBillingInfo=suppliers;
+                }
+              }
+            }
+            console.log('add-yi',this.cardFinanceInfoForm.yiBillingInfo);
             this.cardContentInfoForm.tableSupplierInfo = [{
               code: suppliers[0].companyCode,
               name: suppliers[0].company,
