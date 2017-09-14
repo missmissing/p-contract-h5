@@ -1539,7 +1539,7 @@
     </el-dialog>
     <el-dialog title="添加服务验收事项" :visible.sync="cardContCheckInfoForm.dialogAddServiceVisible"
                size="small">
-      <el-form ref="formAddServiceCheck" :model="formAddServiceCheck" label-width="100px">
+      <el-form ref="formAddServiceCheck" :model="formAddServiceCheck" :rules="formAddServiceCheck.rules" label-width="100px">
         <el-form-item prop="name" label="服务名称">
           <el-input v-model="formAddServiceCheck.name" placeholder="请输入服务名称"></el-input>
         </el-form-item>
@@ -2032,7 +2032,11 @@
         formAddServiceCheck: {
           name: '',
           requirement: '',
-          remark: ''
+          remark: '',
+          rules: {
+            name: [{required: true, message: '请输入服务名称', trigger: 'blur'}],
+            requirement: [{required: true, message: '请输入验收要求', trigger: 'blur'}]
+          }
         },
         formAddContract: {
           name: '',
