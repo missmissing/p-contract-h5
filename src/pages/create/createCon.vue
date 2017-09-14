@@ -147,7 +147,7 @@
           </el-col>
           <el-col :span="16">
             <el-form-item label="模版名称" prop="templateId">
-              <el-select :disabled="isEnabled1" v-model="baseInfoForm.templateId" placeholder="请选择合同模版">
+              <el-select :disabled="isEnabled1" v-model="baseInfoForm.templateId" placeholder="请选择合同模版" @change="handleTemplateChange">
                 <el-option
                   v-for="item in baseInfoForm.templateOptions"
                   :key="item.templateId"
@@ -1097,7 +1097,7 @@
           </el-form>
         </el-tab-pane>
         <el-tab-pane label="合同附件及盖章信息" name="tabSealInfo" v-if="baseInfoForm.contractType!==2">
-          <el-form rel="cardSealInfoForm" :model="cardSealInfoForm" label-width="100px">
+          <el-form rel="cardSealInfoForm" :model="cardSealInfoForm" label-width="100px" v-if="baseInfoForm.templateId">
             <el-button type="primary" @click="handleNewSealFile" icon="plus" v-if="operateType!=='query'" class="mb20">
               新增
             </el-button>
@@ -1295,8 +1295,8 @@
                   </el-table-column>
                   <el-table-column prop="code" label="从协议编号" width="150px">
                     <template scope="scope">
-                      <el-input :disabled="operateType==='query'||item[scope.$index].type===3"
-                                v-model="item[scope.$index].code"></el-input>
+                      <el-input :disabled="operateType==='query'||item[scope.$index].type===3" icon="search" @keyup.enter.native="handleCodeBlur(item[scope.$index].code)"
+                                v-model="item[scope.$index].code" @blur="handleCodeBlur(item[scope.$index].code)"></el-input>
                     </template>
                   </el-table-column>
                   <el-table-column prop="name" label="文件名称" width="200px">
@@ -1350,6 +1350,7 @@
               </template>
             </template>
           </el-form>
+          <h4 v-else>请选择合同基本信息的模版名称！</h4>
         </el-tab-pane>
         <el-tab-pane label="备注" name="tabRemark">
           <el-form rel="cardRemarkInfoForm" :model="cardRemarkInfoForm" label-width="100px">
@@ -2244,7 +2245,6 @@
         Api.getTemplateByBizTypeId(params).then((data)=> {
           this.baseInfoForm.templateOptions = data.data.dataMap || []
         });
-        console.log('Api.getContractBaseInfo');
 
         const paymentMethods = this.cardFinanceInfoForm.paymentMethods;
         paymentMethods.advance[0].type = "预付款"
@@ -2808,6 +2808,18 @@
             }
           }
         }
+      },
+      handleTemplateChange(val){
+        if(val){
+          Api.getSealAttachments({kay:val}).then((data)=>{
+            if(data.data.dataMap&&data.data.dataMap.length){
+              this.cardSealInfoForm.sealAttachments=[data.data.dataMap];
+            }
+          })
+        }
+      },
+      handleCodeBlur(val){
+        console.log('handleCodeBlur',val);
       }
     },
     components: {

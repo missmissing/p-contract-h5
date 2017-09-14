@@ -51,6 +51,10 @@ export default {
   getOrderTableData(params) {
     return Http.get(`/api/createContract/getOrderTableData`, params)
   },
+  //根据选中定的模版id，获取附件信息
+  getSealAttachments(params){
+    return Http.get(`/api/createContract/getSealAttachments`, params)
+  },
     /** ***标签页****/
     /** ****变更合同接口start******/
     // 根据合同编号获取变更合同的数据
