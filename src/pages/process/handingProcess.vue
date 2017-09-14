@@ -15,7 +15,7 @@
         prop="procTitle"
         label="流程名称">
         <template scope="scope">
-          <el-button type="text" @click.native.prevent="see(scope.$index,scope.row)">{{scope.row.procTitle}}
+          <el-button type="text" @click.native.prevent="see(scope.row)">{{scope.row.procTitle}}
           </el-button>
         </template>
       </el-table-column>
@@ -53,7 +53,7 @@
   import {formatTime} from '@/filters/moment'
   import localStore from 'store'
 
-  const {userId} = localStore.get('user')
+  const {userId} = localStore.get('user') || {}
 
   export default {
     mixins: [comLoading],
@@ -70,7 +70,6 @@
       getProcess() {
         this.comLoading(1)
         Api.getProcess({
-          userId,
           pageNumber: this.pageNumber,
           pageSize: this.pageSize,
           dataType: this.dataType
@@ -81,36 +80,50 @@
           this.totalPage = totalPage
         })
       },
-      see(index, row) {
+      see(row) {
         console.log(row)
         const {procInstId, serialNumber, procCode} = row
-        Api.getApproveNode({
-          operatorId: userId,
-          serialNumber,
-          procCode
-        }).then((res) => {
-          const data = res.data.dataMap
-          const {actions, approveInfo} = data
-          const {id} = approveInfo
-          const show = this.dataType === 'BACKLOG'
-          const processData = JSON.stringify({
-            procInstId,
-            actions,
-            serialNumber,
-            procCode,
+        if (this.dataType === 'BACKLOG') {
+          Api.getApproveNode({
             operatorId: userId,
-            show
+            serialNumber,
+            procCode
+          }).then((res) => {
+            const data = res.data.dataMap
+            this.toPage(row, data)
           })
-          let url = ''
-          switch (procCode) {
-            case procMap[0]:
-              url = `/contemplate/see?id=${id}&processData=${processData}`
-              break
-            default:
-              return
-          }
-          this.$router.push(url)
+        } else {
+          Api.getStartedProcNodes({
+            procInstId,
+            procCode
+          }).then((res) => {
+            const data = res.data.dataMap
+            this.toPage(row, data)
+          })
+        }
+      },
+      toPage(row, data) {
+        const {procInstId, serialNumber, procCode} = row
+        const {actions, approveInfo} = data
+        const {id} = approveInfo
+        const show = this.dataType === 'BACKLOG'
+        const processData = JSON.stringify({
+          procInstId,
+          actions,
+          serialNumber,
+          procCode,
+          operatorId: userId,
+          show
         })
+        let url = ''
+        switch (procCode) {
+          case procMap[0]:
+            url = `/contemplate/see?id=${id}&processData=${processData}`
+            break
+          default:
+            return
+        }
+        this.$router.push(url)
       },
       handleSizeChange(val) {
         console.log(`每页 ${val} 条`)

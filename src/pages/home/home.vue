@@ -186,11 +186,10 @@
       handleCommand(command) {
         if (command === 'logout') {
           Api.logout().then((res) => {
-            const {dataMap} = res.data
-            store.remove('user')
-            const currentUrl = encodeURIComponent(`${window.location.origin}/#/con/index`)
-            debugger
-            window.location.href = `${dataMap}${currentUrl}`
+//            const {dataMap} = res.data
+//            store.remove('user')
+//            const currentUrl = encodeURIComponent(`${window.location.origin}/#/con/index`)
+//            window.location.href = `${dataMap}${currentUrl}`
           })
         }
       }

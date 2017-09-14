@@ -172,7 +172,7 @@
   import {formatTimeStamp, formatToDate} from '@/filters/moment'
   import localStore from 'store'
 
-  const {userId} = localStore.get('user')
+  const {userId} = localStore.get('user') || {}
 
   const defaultData = {
     form: {

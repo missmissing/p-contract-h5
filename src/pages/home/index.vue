@@ -10,9 +10,12 @@
     }
     .item {
       display: flex;
+      margin-bottom: 5px;
       label {
         flex: 1;
         margin-right: 10px;
+        color: #20a0ff;
+        cursor: pointer;
       }
       span {
         width: 150px;
@@ -27,11 +30,11 @@
     <el-row :gutter="20">
       <el-col :span="12">
         <div class="block">
-          <div class="title">待办任务<span class="fr">更多</span></div>
+          <div class="title">待办任务<span class="fr" @click="toDetailPage(0)">更多</span></div>
           <div class="content">
-            <div class="item" v-for="item in doingList">
+            <div class="item" v-for="item in doingList" @click="see(0,item)">
               <label>{{item.procTitle}}</label>
-              <span>{{item.startTime | formatTime}}</span>
+              <span>{{item.startTime | formatDate}}</span>
             </div>
             <template v-if="!doingList.length">
               暂无数据
@@ -41,11 +44,11 @@
       </el-col>
       <el-col :span="12">
         <div class="block">
-          <div class="title">已办任务<span class="fr">更多</span></div>
+          <div class="title">已办任务<span class="fr" @click="toDetailPage(1)">更多</span></div>
           <div class="content">
-            <div class="item" v-for="item in doneList">
+            <div class="item" v-for="item in doneList" @click="see(1,item)">
               <label>{{item.procTitle}}</label>
-              <span>{{item.startTime | formatTime}}</span>
+              <span>{{item.startTime | formatDate}}</span>
             </div>
             <template v-if="!doneList.length">
               暂无数据
@@ -53,11 +56,11 @@
           </div>
         </div>
         <div class="block">
-          <div class="title">我的发起<span class="fr">更多</span></div>
+          <div class="title">我的发起<span class="fr" @click="toDetailPage(2)">更多</span></div>
           <div class="content">
-            <div class="item" v-for="item in todoList">
+            <div class="item" v-for="item in todoList" @click="see(2,item)">
               <label>{{item.procTitle}}</label>
-              <span>{{item.startTime | formatTime}}</span>
+              <span>{{item.startTime | formatDate}}</span>
             </div>
             <template v-if="!todoList.length">
               暂无数据
@@ -71,11 +74,11 @@
 
 <script>
   import Api from '@/api/process'
-  import {processListMap} from '@/core/consts'
-  import {formatTime} from '@/filters/moment'
+  import {procMap, processListMap} from '@/core/consts'
+  import {formatDate} from '@/filters/moment'
   import localStore from 'store'
 
-  const {userId} = localStore.get('user')
+  const {userId} = localStore.get('user') || {}
 
   export default {
     data() {
@@ -97,6 +100,55 @@
           console.log(procList)
           this[list] = procList || []
         })
+      },
+      toDetailPage(type) {
+        console.log(processListMap[type])
+      },
+      see(type, row) {
+        console.log(row)
+        const actualType = processListMap[type]
+        const {procInstId, serialNumber, procCode} = row
+        if (actualType === 'BACKLOG') {
+          Api.getApproveNode({
+            operatorId: userId,
+            serialNumber,
+            procCode
+          }).then((res) => {
+            const data = res.data.dataMap
+            this.toPage(actualType, row, data)
+          })
+        } else {
+          Api.getStartedProcNodes({
+            procInstId,
+            procCode
+          }).then((res) => {
+            const data = res.data.dataMap
+            this.toPage(actualType, row, data)
+          })
+        }
+      },
+      toPage(type, row, data) {
+        const {procInstId, serialNumber, procCode} = row
+        const {actions, approveInfo} = data
+        const {id} = approveInfo
+        const show = type === 'BACKLOG'
+        const processData = JSON.stringify({
+          procInstId,
+          actions,
+          serialNumber,
+          procCode,
+          operatorId: userId,
+          show
+        })
+        let url = ''
+        switch (procCode) {
+          case procMap[0]:
+            url = `/contemplate/see?id=${id}&processData=${processData}`
+            break
+          default:
+            return
+        }
+        this.$router.push(url)
       }
     },
     created() {
@@ -105,7 +157,7 @@
       this.getProcess(processListMap[2], 2, 'doneList')
     },
     filters: {
-      formatTime
+      formatDate
     }
   }
 </script>

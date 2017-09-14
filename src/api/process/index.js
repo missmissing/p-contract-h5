@@ -13,6 +13,9 @@ export default {
   getApproveNode(params) {
     return Http.get(`${contract}/contract-web/process/getApproveNode`, params)
   },
+  getStartedProcNodes(params) {
+    return Http.get(`${contract}/contract-web/process/getStartedProcNodes`, params)
+  },
   submitProcess(params) {
     return Http.post(`${contract}/contract-web/process/nodeAudit`, params)
   }
