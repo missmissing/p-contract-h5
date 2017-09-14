@@ -214,7 +214,7 @@
   import getBusiType from '@/mixins/getBusiType'
   import comLoading from '@/mixins/comLoading'
   import TreeModal from '@/components/treeModal.vue'
-
+  document.cookie='sys=FMM21KGIJLHOGHNKHGGLLOFMMKFNKKE'
   export default {
     mixins: [getBusiType, comLoading],
     data() {
@@ -513,7 +513,7 @@
       getRemoteCreatePersonsByKeyWord(query){
         if (query !== '') {
           this.prForm.loading = true
-          Api.getRemoteCreatePersonsByKeyWord({key: query})
+          Api.getRemoteCreatePersonsByKeyWord({keyword: query})
             .then((data) => {
               this.prForm.loading = false
               this.prForm.createPersons = data.data.dataMap

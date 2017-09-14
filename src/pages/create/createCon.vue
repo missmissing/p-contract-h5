@@ -23,15 +23,18 @@
     font-size: 12px;
     margin-left: 20px;
   }
-  .createCon .select-money{
-    padding-top:5px;
-    padding-bottom:5px;
+
+  .createCon .select-money {
+    padding-top: 5px;
+    padding-bottom: 5px;
   }
-  .createCon .select-curTime{
-    margin-bottom:5px;
+
+  .createCon .select-curTime {
+    margin-bottom: 5px;
   }
-  .createCon table{
-    width: 100%!important;
+
+  .createCon table {
+    width: 100% !important;
   }
 </style>
 <template>
@@ -471,7 +474,7 @@
                 <el-table-column
                   prop="remark"
                   label="备注"
-                width="250px">
+                  width="250px">
                   <template scope="scope">
                     <el-input
                       type="textarea"
@@ -633,7 +636,7 @@
                       v-model="cardFinanceInfoForm.paymentMethods.progress[scope.$index].remark"></el-input>
                   </template>
                 </el-table-column>
-                <el-table-column prop="ratio" label="占比"  width="80px">
+                <el-table-column prop="ratio" label="占比" width="80px">
                   <template scope="scope">
                     {{getProportion(cardFinanceInfoForm.paymentMethods.progress[scope.$index].paymentAmount)}}
                   </template>
@@ -1061,16 +1064,16 @@
             </el-table>
             <el-form-item prop="haveSample" label="是否有样品">
               <el-radio-group v-model="cardContCheckInfoForm.haveSample" :disabled="operateType==='query'">
-                <el-radio :label="1">是</el-radio>
-                <el-radio :label="0">否</el-radio>
+                <el-radio :label="true">是</el-radio>
+                <el-radio :label="false">否</el-radio>
               </el-radio-group>
             </el-form-item>
             <el-card v-if="showMaterialItems">
               <header slot="header">物资验收事项</header>
               <el-table :data="cardContCheckInfoForm.materialMatters">
                 <el-table-column type="index" label="序号" width="100px"></el-table-column>
-                <el-table-column prop="number" label="物料编码"></el-table-column>
-                <el-table-column prop="description" label="物料描述"></el-table-column>
+                <el-table-column prop="sampleCode" label="物料编码"></el-table-column>
+                <el-table-column prop="sampleDesc" label="物料描述"></el-table-column>
                 <el-table-column prop="remark" label="备注"></el-table-column>
               </el-table>
             </el-card>
@@ -1082,8 +1085,8 @@
               </el-button>
               <el-table :data="cardContCheckInfoForm.serviceMatters">
                 <el-table-column type="index" label="序号" width="100px"></el-table-column>
-                <el-table-column prop="name" label="服务名称"></el-table-column>
-                <el-table-column prop="requirement" label="验收要求"></el-table-column>
+                <el-table-column prop="serviceName" label="服务名称"></el-table-column>
+                <el-table-column prop="serviceRequire" label="验收要求"></el-table-column>
                 <el-table-column prop="remark" label="备注"></el-table-column>
                 <el-table-column
                   fixed="right"
@@ -1498,17 +1501,34 @@
                size="small">
       <el-form ref="formAddUnionCheck" :model="formAddUnionCheck" label-width="120px"
                :rules="formAddUnionCheck.rules">
-        <el-form-item prop="name" label="联合验收人">
-          <el-input v-model="formAddUnionCheck.name" placeholder="请输入联合验收人"></el-input>
-
+        <el-form-item label="联合验收人" prop="name">
+          <el-select
+            style="width:300px"
+            size="small"
+            v-model="formAddUnionCheck.name"
+            filterable
+            remote
+            placeholder="请输入联合验收人"
+            :remote-method="getRemoteCheckPersonsByKeyWord"
+            :loading="formAddUnionCheck.loading"
+            @change="handleCheckPersonsChange">
+            <el-option
+              v-for="item in formAddUnionCheck.checkPersons"
+              :key="item.userId"
+              :label="item.userName"
+              :value="item.userId">
+              <span style="float: left">{{ item.userName }}</span>
+              <span style="float: right; color: #8492a6; font-size: 13px">{{ item.deptName }}</span>
+            </el-option>
+          </el-select>
         </el-form-item>
         <el-form-item prop="depart" label="联合验收人部门">
           <el-input :disabled="true" v-model="formAddUnionCheck.depart" placeholder="请输入联合验收人部门"></el-input>
         </el-form-item>
         <el-form-item label="是否必选" prop="ifRequired">
           <el-radio-group v-model="formAddUnionCheck.ifRequired">
-            <el-radio :label="1">是</el-radio>
-            <el-radio :label="0">否</el-radio>
+            <el-radio :label="true">是</el-radio>
+            <el-radio :label="false">否</el-radio>
           </el-radio-group>
         </el-form-item>
       </el-form>
@@ -1599,6 +1619,8 @@
   import Api from '../../api/manageContract'
   import _ from 'lodash'
   import Preview from './components/preview.vue';
+
+  document.cookie = 'sys=FMM21KGIJLHOGHNKHGGLLOFMMKFNKKE'
 
   export default {
     data() {
@@ -1890,11 +1912,11 @@
           ],
           supervisor: '',
           supervisorDept: '',
-          haveSample: 1,
+          haveSample: true,
           unionCheckPersons: [],
-
-
           materialMatters: [],
+
+
           serviceMatters: [],
           serviceCheckMsg: '',
           errorCount: 0,
@@ -1994,9 +2016,13 @@
           loading: false
         },
         formAddUnionCheck: {
+          id:'',
           name: '',
+          userName:'',
           depart: '',
-          ifRequired: 1,
+          ifRequired: true,
+          loading: false,
+          checkPersons: [],
           rules: {
             name: [
               {required: true, message: '请输入验收人', trigger: 'blur'}
@@ -2176,6 +2202,14 @@
             return 'OrderTable'
         }
       },
+      jia: function () {
+        const conSubjctName = this.cardContentInfoForm.conSubjctName;
+        let result = {}
+        if (conSubjctName && conSubjctName.length === 1) {
+          result = conSubjctName[0]
+        }
+        return result
+      }
     },
     mounted() {
       const params = {};
@@ -2207,10 +2241,10 @@
         });
         console.log('Api.getContractBaseInfo');
 
-        const paymentMethods=this.cardFinanceInfoForm.paymentMethods;
-        paymentMethods.advance[0].type="预付款"
-        paymentMethods.progress[0].type="进度款"
-        paymentMethods._final[0].type="尾款"
+        const paymentMethods = this.cardFinanceInfoForm.paymentMethods;
+        paymentMethods.advance[0].type = "预付款"
+        paymentMethods.progress[0].type = "进度款"
+        paymentMethods._final[0].type = "尾款"
       })
 
       this.baseInfoForm.contractTypeName = this.getContractModelName(params.contractType);
@@ -2251,14 +2285,24 @@
         this.cardContCheckInfoForm.dialogAddServiceVisible = true
       },
       handleAddUnionCheckItem(formName) {
-        this.$refs[formName].validate((valid) => {
+        const curForm = this.$refs[formName]
+        curForm.validate((valid) => {
           if (valid) {
-            /*Api.getRemoteCreatePersonsByKeyWord({key: query})
-             .then((data) => {
-             this.cardContCheckInfoForm.loading = false
-             this.cardContCheckInfoForm.unionCheckPersons = data.data.dataMap
-             })*/
-            this.$refs[formName].resetFields()
+            let index = _.findIndex(this.cardContCheckInfoForm.unionCheckPersons, function (chr) {
+              return chr.id === curForm.model.id
+            })
+            if (index > -1) {
+              this.$message.error('这条数据已存在咯！')
+              return false
+            }
+
+            this.cardContCheckInfoForm.unionCheckPersons.push({
+              id:this.formAddUnionCheck.id,
+              personName:this.formAddUnionCheck.userName,
+              personDept:this.formAddUnionCheck.depart,
+              required:this.formAddUnionCheck.ifRequired
+            })
+            curForm.resetFields()
             this.cardContCheckInfoForm.dialogAddUnionCheckVisible = false
           } else {
             console.log('error submit!!')
@@ -2283,8 +2327,8 @@
               return false
             }
             this.cardContCheckInfoForm.serviceMatters.push({
-              requirement: curForm.model.requirement,
-              name: curForm.model.name,
+              serviceRequire: curForm.model.requirement,
+              serviceName: curForm.model.name,
               remark: curForm.model.remark,
               type: 'add'
             })
@@ -2714,6 +2758,30 @@
           for (let i = 0, len = businessOperators.length; i < len; i++) {
             if (val === businessOperators[i].userId) {
               this.baseInfoForm.businessDept = businessOperators[i].deptName
+            }
+          }
+        }
+      },
+      getRemoteCheckPersonsByKeyWord(query){
+        if (query !== '') {
+          this.formAddUnionCheck.loading = true
+          Api.getRemoteCreatePersonsByKeyWord({keyword: query})
+            .then((data) => {
+              this.formAddUnionCheck.loading = false
+              this.formAddUnionCheck.checkPersons = data.data.dataMap
+            })
+        } else {
+          this.formAddUnionCheck.checkPersons = []
+        }
+      },
+      handleCheckPersonsChange(val){
+        const checkPersons = this.formAddUnionCheck.checkPersons
+        if (checkPersons.length) {
+          for (let i = 0, len = checkPersons.length; i < len; i++) {
+            if (val === checkPersons[i].userId) {
+              this.formAddUnionCheck.depart = checkPersons[i].deptName
+              this.formAddUnionCheck.id = checkPersons[i].userId
+              this.formAddUnionCheck.userName = checkPersons[i].userName
             }
           }
         }
