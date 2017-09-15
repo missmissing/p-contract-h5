@@ -1098,262 +1098,180 @@
           </el-form>
         </el-tab-pane>
         <el-tab-pane label="合同附件及盖章信息" name="tabSealInfo" v-if="baseInfoForm.contractType!==2">
-          <el-form rel="cardSealInfoForm" :model="cardSealInfoForm" label-width="100px" v-if="baseInfoForm.templateId">
+          <el-form rel="cardSealInfoForm" :model="cardSealInfoForm" label-width="100px" :rules="cardSealInfoForm.rules">
+            <!--v-if="baseInfoForm.templateId"-->
             <el-button type="primary" @click="handleNewSealFile" icon="plus" v-if="operateType!=='query'" class="mb20">
               新增
             </el-button>
             <template v-for="(item,index) in cardSealInfoForm.sealAttachments">
-              <template v-if="index===0">
-                <el-table :data="item">
-                  <el-table-column type="expand" v-if="item[0].isSeal">
-                    <template scope="props">
-                      <el-row>
-                        <el-col :span="6">
-                          <el-form-item label="用章次数" prop="sealTimes">
-                            <el-input :disabled="operateType==='query'" v-model="props.row.sealTimes"></el-input>
-                          </el-form-item>
-                        </el-col>
-                        <el-col :span="6">
-                          <el-form-item label="打印份数" prop="printTimes">
-                            <el-input :disabled="operateType==='query'"
-                                      v-model="props.row.printTimes"></el-input>
-                          </el-form-item>
-                        </el-col>
-                        <el-col :span="6">
-                          <el-form-item label="我方留存份数" prop="retainFileNumber">
-                            <el-input :disabled="operateType==='query'"
-                                      v-model="props.row.retainFileNumber"></el-input>
-                          </el-form-item>
-                        </el-col>
-                        <el-col :span="6">
-                          <el-form-item label="用印后上传">
-                            <el-upload
-                              ref="uploadFileAfterSeal"
-                              action="https://jsonplaceholder.typicode.com/posts/"
-                              :with-credentials="true"
-                              :on-success="handleUploadFileAfterSealSuccess"
-                              :on-error="handleUploadFileAfterSealError"
-                            >
-                              <el-button :disabled="operateType==='query'" size="small" type="primary">上传
-                              </el-button>
-                              </el-button>
-                            </el-upload>
-                          </el-form-item>
-                        </el-col>
-                      </el-row>
-                      <el-row>
-                        <el-col :span="12">
-                          <el-form-item prop="useSeal">
-                            <el-checkbox-group v-model="props.row.useSeal">
-                              <el-checkbox
-                                :disabled="operateType==='query'"
-                                v-for="item in props.row.useSeals"
-                                :label="item.id"
-                                :key="item.id">
-                                {{item.name}}
-                              </el-checkbox>
-                            </el-checkbox-group>
-                          </el-form-item>
-                        </el-col>
-                      </el-row>
-                    </template>
-                  </el-table-column>
-                  <el-table-column prop="type" label="附件类型" width="150px">
-                    <template scope="scope">
-                      <el-select
-                        :disabled="item[scope.$index].type===3"
-                        size="small"
-                        v-model="item[scope.$index].type">
-                        <el-option
-                          v-for="item in item[scope.$index].types"
-                          :key="item.id"
-                          :label="item.name"
-                          :value="item.id">
-                        </el-option>
-                      </el-select>
-                    </template>
-                  </el-table-column>
-                  <el-table-column prop="code" label="从协议编号" width="150px">
-                    <template scope="scope">
-                      <el-input :disabled="item[scope.$index].type===3"
-                                v-model="item[scope.$index].code"></el-input>
-                    </template>
-                  </el-table-column>
-                  <el-table-column prop="name" label="文件名称" width="200px">
-                    <template scope="scope">
-                      <el-input :disabled="item[scope.$index].type===3"
-                                v-model="item[scope.$index].name"></el-input>
-                    </template>
-                  </el-table-column>
-                  <el-table-column prop="upload" label="上传" width="100px">
-                    <template scope="scope">
-                      <el-upload
-                        ref="uploadSealFile"
-                        action="https://jsonplaceholder.typicode.com/posts/"
-                        :with-credentials="true"
-                        :on-success="handleUploadSealFileSuccess"
-                        :on-error="handleUploadSealFileError"
+              <el-table :data="item" class="mb20">
+                <el-table-column type="expand" v-if="item[0].isSeal">
+                  <template scope="props">
+                    <el-table :data="props.row.filesSealed" class="mb20"
+                              v-if="props.row.filesSealed&&props.row.filesSealed.length">
+                      <el-table-column label="文件名" prop="filename">
+                        <template scope="scope">
+                          <a href="props.row.filesSealed[scope.$index].url">{{props.row.filesSealed[scope.$index].filename}}</a>
+                        </template>
+                      </el-table-column>
+                      <el-table-column label="上传人" prop="username"></el-table-column>
+                      <el-table-column label="上传时间" prop="uploadTime"></el-table-column>
+                      <el-table-column
+                        fixed="right"
+                        label="操作"
+                        v-if="props.row.filesSealed[0].operate"
                       >
-                        <el-button :disabled="item[scope.$index].type===3"
-                                   size="small" type="primary">上传
-                        </el-button>
-                      </el-upload>
-                    </template>
-                  </el-table-column>
-                  <el-table-column prop="isSeal" label="是否盖章" width="70px">
-                    <template scope="scope">
-                      <el-checkbox
-                        :disabled="item[scope.$index].type===3||item[scope.$index].type==2"
-                        v-model="item[scope.$index].isSeal"></el-checkbox>
-                    </template>
-                  </el-table-column>
-                  <el-table-column
-                    prop="remark"
-                    label="备注"
-                    width="200px">
-                    <template scope="scope">
-                      <el-input
-                        :disabled="item[scope.$index].type===3"
-                        v-model="item[scope.$index].remark"></el-input>
-                    </template>
-                  </el-table-column>
-                  <el-table-column fixed="right" label="操作"></el-table-column>
-                </el-table>
-              </template>
-              <template v-else>
-                <el-table :show-header="false" :data="item">
-                  <el-table-column type="expand" v-if="item[0].isSeal">
-                    <template scope="props">
-                      <el-row>
-                        <el-col :span="6">
-                          <el-form-item label="用章次数" prop="sealTimes">
-                            <el-input :disabled="operateType==='query'||props.row.type!==1"
-                                      v-model="props.row.sealTimes">
-                            </el-input>
-                          </el-form-item>
-                        </el-col>
-                        <el-col :span="6">
-                          <el-form-item label="打印份数" prop="printTimes">
-                            <el-input :disabled="operateType==='query'||props.row.type!==1"
-                                      v-model="props.row.printTimes"></el-input>
-                          </el-form-item>
-                        </el-col>
-                        <el-col :span="6">
-                          <el-form-item label="我方留存份数" prop="retainFileNumber">
-                            <el-input :disabled="operateType==='query'||props.row.type!==1"
-                                      v-model="props.row.retainFileNumber"></el-input>
-                          </el-form-item>
-                        </el-col>
-                        <el-col :span="6">
-                          <el-form-item label="用印后上传">
-                            <el-upload
-                              ref="uploadFileAfterSeal"
-                              action="https://jsonplaceholder.typicode.com/posts/"
-                              :with-credentials="true"
-                              :on-success="handleUploadFileAfterSealSuccess"
-                              :on-error="handleUploadFileAfterSealError"
-                            >
-                              <el-button :disabled="operateType==='query'||props.row.type!==1" size="small"
-                                         type="primary">上传
-                              </el-button>
-                              </el-button>
-                            </el-upload>
-                          </el-form-item>
-                        </el-col>
-                      </el-row>
-                      <el-row>
-                        <el-col :span="12">
-                          <el-form-item prop="useSeal">
-                            <el-checkbox-group v-model="props.row.useSeal">
-                              <el-checkbox
-                                disabled
-                                v-for="item in props.row.useSeals"
-                                :label="item.id"
-                                :key="item.id">
-                                {{item.name}}
-                              </el-checkbox>
-                            </el-checkbox-group>
-                          </el-form-item>
-                        </el-col>
-                      </el-row>
-                    </template>
-                  </el-table-column>
-                  <el-table-column prop="type" label="附件类型" width="150px">
-                    <template scope="scope">
-                      <el-select
-                        size="small"
-                        v-model="item[scope.$index].type"
-                        :disabled="operateType==='query'"
-                        @change="handleChangeType(item[scope.$index].type,item[scope.$index])">
-                        <el-option
-                          v-for="item in item[scope.$index].types"
-                          :key="item.id"
-                          :label="item.name"
-                          :value="item.id">
-                        </el-option>
-                      </el-select>
-                    </template>
-                  </el-table-column>
-                  <el-table-column prop="code" label="从协议编号" width="150px">
-                    <template scope="scope">
+                        <template scope="scope">
+                          <el-button @click="handleRemoveFilesSealedItem(index, props.row.filesSealed)"
+                                     type="text" size="small">移除
+                          </el-button>
+                        </template>
+                      </el-table-column>
+                    </el-table>
+                    <el-row>
+                      <el-col :span="6">
+                        <el-form-item label="用章次数" prop="sealTimes">
+                          <el-input :disabled="operateType==='query'"
+                                    v-model="props.row.sealTimes">
+                          </el-input>
+                        </el-form-item>
+                      </el-col>
+                      <el-col :span="6">
+                        <el-form-item label="打印份数" prop="printTimes">
+                          <el-input :disabled="operateType==='query'"
+                                    v-model="props.row.printTimes"></el-input>
+                        </el-form-item>
+                      </el-col>
+                      <el-col :span="6">
+                        <el-form-item label="我方留存份数" prop="retainFileNumber">
+                          <el-input :disabled="operateType==='query'"
+                                    v-model="props.row.retainFileNumber"></el-input>
+                        </el-form-item>
+                      </el-col>
+                      <el-col :span="6">
+                        <el-form-item label="用印后上传">
+                          <el-upload
+                            ref="uploadFileAfterSeal"
+                            :data="{userId:users.userId}"
+                            :show-file-list="false"
+                            :action="uploadUrl"
+                            :with-credentials="true"
+                            :on-success="handleUploadFileAfterSealSuccess"
+                            :on-error="handleUploadFileAfterSealError"
+                          >
+                            <el-button :disabled="operateType==='query'" size="small"
+                                       type="primary">上传
+                            </el-button>
+                            </el-button>
+                          </el-upload>
+                        </el-form-item>
+                      </el-col>
+                    </el-row>
+                    <el-row>
+                      <el-col :span="12">
+                        <el-form-item prop="useSeal">
+                          <el-checkbox-group v-model="props.row.useSeal">
+                            <el-checkbox
+                              v-for="item in props.row.useSeals"
+                              :label="item.id"
+                              :key="item.id">
+                              {{item.name}}
+                            </el-checkbox>
+                          </el-checkbox-group>
+                        </el-form-item>
+                      </el-col>
+                    </el-row>
+                  </template>
+                </el-table-column>
+                <el-table-column prop="type" label="附件类型" width="150px">
+                  <template scope="scope">
+                    <el-select
+                      size="small"
+                      v-model="item[scope.$index].type"
+                      :disabled="item[scope.$index].type===3||operateType==='query'"
+                      @change="handleChangeType(item[scope.$index].type,item[scope.$index])">
+                      <el-option
+                        v-for="item in item[scope.$index].types"
+                        :key="item.id"
+                        :label="item.name"
+                        :value="item.id">
+                      </el-option>
+                    </el-select>
+                  </template>
+                </el-table-column>
+                <el-table-column prop="code" label="从协议编号" width="150px" v-if="item[0].type===2">
+                  <template scope="scope">
+                    <a v-if="item[scope.$index].agreementUrl" v-model="item[scope.$index].agreementUrl"
+                       href="item[scope.$index].agreementUrl">{{item[scope.$index].code}}</a>
+                    <el-form-item v-else prop="code"
+                                  :rules="[{validator: (rule, value, callback)=>{if(value&&value.length!==10){callback(new Error('error'))}callback();},trigger: 'blur'},
+                                             { required: true, message: '请输入从协议编号'}
+                                             ]">
                       <el-input :disabled="operateType==='query'||item[scope.$index].type===3" icon="search"
-                                @keyup.enter.native="handleCodeBlur(item[scope.$index].code)"
+                                @keyup.enter.native="handleCodeBlur(item[scope.$index],item[scope.$index].code)"
+                                @blur="handleCodeBlur(item[scope.$index],item[scope.$index].code)"
                                 v-model="item[scope.$index].code"
-                                @blur="handleCodeBlur(item[scope.$index].code)"></el-input>
-                    </template>
-                  </el-table-column>
-                  <el-table-column prop="name" label="文件名称" width="200px">
-                    <template scope="scope">
-                      <el-input :disabled="operateType==='query'||item[scope.$index].type===3"
-                                v-model="item[scope.$index].name"></el-input>
-                    </template>
-                  </el-table-column>
-                  <el-table-column prop="upload" label="上传" width="100px">
-                    <template scope="scope">
-                      <el-upload
-                        ref="uploadSealFile"
-                        action="https://jsonplaceholder.typicode.com/posts/"
-                        :with-credentials="true"
-                        :on-success="handleUploadSealFileSuccess"
-                        :on-error="handleUploadSealFileError"
-                      >
-                        <el-button :disabled="operateType==='query'||item[scope.$index].type===3"
-                                   size="small" type="primary">上传
-                        </el-button>
-                      </el-upload>
-                    </template>
-                  </el-table-column>
-                  <el-table-column prop="isSeal" label="是否盖章" width="70px">
-                    <template scope="scope">
-                      <el-checkbox
-                        :disabled="operateType==='query'||item[scope.$index].type!==1"
-                        v-model="item[scope.$index].isSeal"></el-checkbox>
-                    </template>
-                  </el-table-column>
-                  <el-table-column
-                    prop="remark"
-                    label="备注"
-                    width="200px">
-                    <template scope="scope">
-                      <el-input
-                        :disabled="operateType==='query'||item[scope.$index].type===3"
-                        v-model="item[scope.$index].remark"></el-input>
-                    </template>
-                  </el-table-column>
-                  <el-table-column
-                    fixed="right"
-                    label="操作">
-                    <template v-if="item[scope.$index].operate==='add'" scope="scope">
-                      <el-button @click="handleRemoveSealItem(index, cardSealInfoForm.sealAttachments)"
-                                 type="text" size="small">移除
+                      ></el-input>
+                    </el-form-item>
+                  </template>
+                </el-table-column>
+                <el-table-column prop="name" label="文件名称" width="200px" v-if="item[0].type!==2">
+                  <template scope="scope">
+                    <el-input v-if="baseInfoForm.contractTextType===1"
+                              :disabled="operateType==='query'||item[scope.$index].type===3"
+                              v-model="item[scope.$index].name"></el-input>
+                    <a v-else href="item[scope.$index].url">{{item[scope.$index].name}}</a>
+                  </template>
+                </el-table-column>
+                <el-table-column prop="upload" label="上传" width="100px" v-if="item[0].type===1">
+                  <template scope="scope">
+                    <el-upload
+                      :data="{userId:users.userId}"
+                      :show-file-list="false"
+                      :action="uploadUrl"
+                      ref="uploadSealFile"
+                      :with-credentials="true"
+                      :on-success="handleUploadSealFileSuccess"
+                      :on-error="handleUploadSealFileError"
+                    >
+                      <el-button :disabled="operateType==='query'||item[scope.$index].type===3"
+                                 size="small" type="primary">上传
                       </el-button>
-                    </template>
-                  </el-table-column>
-                </el-table>
-              </template>
+                    </el-upload>
+                  </template>
+                </el-table-column>
+                <el-table-column prop="isSeal" label="是否盖章" width="70px" v-if="item[0].type!==2">
+                  <template scope="scope">
+                    <el-checkbox
+                      :disabled="operateType==='query'||item[scope.$index].type!==1"
+                      v-model="item[scope.$index].isSeal"></el-checkbox>
+                  </template>
+                </el-table-column>
+                <el-table-column
+                  prop="remark"
+                  label="备注"
+                  width="200px"
+                  v-if="item[0].type!==2">
+                  <template scope="scope">
+                    <el-input
+                      :disabled="operateType==='query'||item[scope.$index].type===3"
+                      v-model="item[scope.$index].remark"></el-input>
+                  </template>
+                </el-table-column>
+                <el-table-column
+                  fixed="right"
+                  label="操作"
+                  v-if="item[0].operate">
+                  <template scope="scope">
+                    <el-button @click="handleRemoveSealItem(index, cardSealInfoForm.sealAttachments)"
+                               type="text" size="small">移除
+                    </el-button>
+                  </template>
+                </el-table-column>
+              </el-table>
             </template>
           </el-form>
-          <h4 v-else>请选择合同基本信息的模版名称！</h4>
+          <!--<h4 v-else>请选择合同基本信息的模版名称！</h4>-->
         </el-tab-pane>
         <el-tab-pane label="备注" name="tabRemark">
           <el-form rel="cardRemarkInfoForm" :model="cardRemarkInfoForm" label-width="100px">
@@ -1577,8 +1495,10 @@
         </el-form-item>
         <el-form-item label="上传" prop="uploadFile">
           <el-upload
+            :data="{userId:users.userId}"
+            :show-file-list="false"
+            :action="uploadUrl"
             ref="upload"
-            action="https://jsonplaceholder.typicode.com/posts/"
             :file-list="formAddAttachment.fileList"
             :with-credentials="true"
             :auto-upload="false"
@@ -1617,13 +1537,17 @@
   import _ from 'lodash'
   import Preview from './components/preview.vue';
   import comLoading from '@/mixins/comLoading'
+  import {downloadUrl, uploadUrl} from '@/api/consts'
+  import store from 'store'
 
-  document.cookie = 'sys=FMM21KGIJLHOGHNKHGGLLOFMMKFNKKE'
+
+  //document.cookie = 'sys=FMM21KGIJLHOGHNKHGGLLOFMMKFNKKE'
+  const user=store.get('user')
 
   export default {
     mixins: [comLoading],
     data() {
-      let validateEffectiveDateRules = (rule, value, callback) => {
+      const validateEffectiveDateRules = (rule, value, callback) => {
         let endTime = this.cardContentInfoForm.endTime
         if (endTime) {
           if (new Date(value) > new Date(endTime)) {
@@ -1632,7 +1556,7 @@
         }
         callback()
       }
-      let validateEndDate = (rule, value, callback) => {
+      const validateEndDate = (rule, value, callback) => {
         let startTime = this.cardContentInfoForm.startTime
         if (startTime) {
           if (new Date(value) < new Date(startTime)) {
@@ -1641,8 +1565,18 @@
         }
         callback()
       }
+      const validateAgreenmentCode = (rule, value, callback)=> {
+        if (value && value.length !== 10) {
+          callback(new Error('error'))
+        }
+        callback()
+      }
+
       return {
         visible: false,//预览
+        users:user,
+        downloadUrl: downloadUrl,
+        uploadUrl: uploadUrl,
         operateType: 'create', // create:创建，update:变更，query:查询
         updateForm: {
           visible: false,
@@ -1927,8 +1861,9 @@
             [{
               id: '',
               name: '文件名',
-              type: 3,
-              code: '0011001',
+              url: '',//合同文本类型为非模版合同时，附件类型的合同的文件下载地址
+              type: 3,//附件类型
+              code: '0011001',//从协议编号
               types: [
                 {
                   id: 1,
@@ -1942,15 +1877,13 @@
                   id: 3,
                   name: '合同'
                 }
-              ],
-              isSeal: true,
+              ],//附件类型集合
+              isSeal: true,//是否用章
               remark: '',
-              sealTimes: '',
-              printTimes: '',
-              retainFileNumber: '',
-              sealName: '',
-              ifPrint: '',
-              useSeal: ['seal1', 'seal2'],
+              sealTimes: '',//用章次数
+              printTimes: '',//打印份数
+              retainFileNumber: '',//我方留存份数
+              useSeal: ['seal1', 'seal2'],//当前选中的张
               useSeals: [
                 {
                   id: 'seal1',
@@ -1964,10 +1897,29 @@
                   id: 'seal3',
                   name: '人事章'
                 }
+              ],//章列表
+              filesSealed: [//上传的盖章后的文件信息
+                {
+                  filename: 'filename',//文件名
+                  username: 'wyy',//上传人
+                  url: '',
+                  uploadTime: '2017-09-15',//上传时间
+                  operate: 'add'
+                }
               ]
-
             }]
-          ]
+          ],
+          rules: {
+            /*code: [{
+             validator: (rule, value, callback)=>{console.log('value',value);
+             callback();
+             },
+             trigger: 'blur'
+             }, {
+             required: true,
+             message: '请输入从协议编号'
+             }]*/
+          }
         },
         cardRemarkInfoForm: {
           otherInstruction: ''
@@ -2042,9 +1994,7 @@
           sealTimes: '',
           printTimes: '',
           retainFileNumber: '',
-          sealName: '',
-          remark: '',
-          ifPrint: 1
+          remark: ''
         },
         formAddAttachment: {
           type: '1',
@@ -2096,7 +2046,7 @@
     created() {
       let path = this.$route.path
       if (path && path === '/conperf/conupdate') {
-        ;
+
         this.operateType = 'update'
       }
 
@@ -2106,6 +2056,11 @@
         this.baseInfoForm.prNo = query.currentFolio//比加单号
         this.baseInfoForm.contractType = query.curConModelId
       }
+      /*
+      * user == {userId: "51033730", userName: "王圆圆", deptCode: "70000213", deptName: "CMS组", companyCode: " ", …}
+       loglevel == INFO
+       jfVersion == 0.5.6*/
+
     },
     computed: {
       conVersion: function () {
@@ -2134,7 +2089,7 @@
         let arrConStandard = this.cardContentInfoForm.conStandard
         if (arrConStandard && arrConStandard.length > 0) {
           for (let i = 0, len = arrConStandard.length; i < len; i++) {
-            if (arrConStandard[i].id) {
+            if (arrConStandard[i].materialCode) {
               result = true
             }
           }
@@ -2240,7 +2195,7 @@
         Object.assign(this.cardContentInfoForm, data.data.dataMap.cardContentInfoForm);
         Object.assign(this.cardFinanceInfoForm, data.data.dataMap.cardFinanceInfoForm);
         Object.assign(this.cardContCheckInfoForm, data.data.dataMap.cardContCheckInfoForm);
-        Object.assign(this.cardSealInfoForm, data.data.dataMap.cardSealInfoForm);
+        //Object.assign(this.cardSealInfoForm, data.data.dataMap.cardSealInfoForm);
         Object.assign(this.cardRemarkInfoForm, data.data.dataMap.cardRemarkInfoForm);
         Object.assign(this.cardOtherInfo, data.data.dataMap.cardOtherInfo);
         const baseInfo = data.data.dataMap.baseInfoForm;
@@ -2260,6 +2215,7 @@
 
       this.baseInfoForm.contractTypeName = this.getContractModelName(params.contractType);
       this.baseInfoForm.contractBusinessTypeThird = types[types.length - 1];
+      //this.baseInfoForm.businessOperator = user.userId;
 
       if (query.currentFolio) {
         this.baseInfoForm.prNo = query.currentFolio
@@ -2346,9 +2302,9 @@
             curForm.resetFields()
             this.cardContCheckInfoForm.dialogAddServiceVisible = false
             if (this.isSubmit) {
-              this.validateForms().then(()=>{
+              this.validateForms().then(()=> {
                 console.log('handleAddServiceCheckItem-validate-success');
-              }).catch(()=>{
+              }).catch(()=> {
                 console.log('handleAddServiceCheckItem-validate-fail');
               })
             }
@@ -2609,16 +2565,19 @@
         console.log('res', res)
         console.log('file', file)
         console.log('fileList', fileList)
+        if(res.dataMap.fileId){
+          this.$message.success('文件上传成功')
+        }
       },
       handleUploadSealFileError(err, file, fileList) {
         console.log('error', err)
         console.log('file', file)
         console.log('fileList', fileList)
       },
-      handleUploadFileAfterSealSuccess(res, file, fileList) {
-        console.log('res', res)
-        console.log('file', file)
-        console.log('fileList', fileList)
+      handleUploadFileAfterSealSuccess(res,file,fileList) {
+        if(res.dataMap.fileId){
+          this.$message.success('文件上传成功')
+        }
       },
       handleUploadFileAfterSealError(err, file, fileList) {
         console.log('error', err)
@@ -2637,13 +2596,13 @@
               errorCount: 0,
               serviceCheckMsg: ''
             },
-            baseInfoForm:false
+            baseInfoForm: false
           }
-          this.$refs.baseInfoForm.validate((valid)=>{
-            if(!valid){
+          this.$refs.baseInfoForm.validate((valid)=> {
+            if (!valid) {
               this.$message.error('请填写完整合同基本信息再提交！')
-            }else{
-              errors.baseInfoForm=true
+            } else {
+              errors.baseInfoForm = true
             }
           })
           this.$refs.cardContentInfoForm.validate((valid) => {
@@ -2683,8 +2642,8 @@
           this.cardContentInfoForm.subjectsErrorMsg = errors.cardContentInfoForm.subjectsErrorMsg
           this.cardContCheckInfoForm.errorCount = errors.cardContCheckInfoForm.errorCount
           this.cardContCheckInfoForm.serviceCheckMsg = errors.cardContCheckInfoForm.serviceCheckMsg
-          console.log('errors.baseInfoForm',errors.baseInfoForm);
-          if (!this.cardContentInfoForm.errorCount && !this.cardContCheckInfoForm.errorCount&&errors.baseInfoForm) {
+          console.log('errors.baseInfoForm', errors.baseInfoForm);
+          if (!this.cardContentInfoForm.errorCount && !this.cardContCheckInfoForm.errorCount && errors.baseInfoForm) {
             console.log('resolve');
             resolve()
           } else {
@@ -2700,7 +2659,7 @@
          endTime = endTime.getFullYear() + '-' + (endTime.getMonth() + 1) + '-' + endTime.getDate()*/
         this.isSubmit = true
         this.comLoading(1)
-        this.validateForms().then(()=>{
+        this.validateForms().then(()=> {
           const paras = {};
           paras.baseInfoForm = this.baseInfoForm
           paras.cardContentInfoForm = this.cardContentInfoForm
@@ -2709,13 +2668,14 @@
           //paras.cardSealInfoForm = this.cardSealInfoForm
           paras.cardRemarkInfoForm = this.cardRemarkInfoForm
           paras.cardOtherInfo = this.cardOtherInfo
+
           Api.saveContract(paras).then((data)=> {
-            if(data.data.dataMap.id){
-                this.$message.success('保存成功！')
+            if (data.data.dataMap.id) {
+              this.$message.success('保存成功！')
             }
             this.comLoading()
           })
-        }).catch(()=>{
+        }).catch(()=> {
           this.$message.error('请填写完整信息再提交！')
           this.comLoading()
         })
@@ -2725,7 +2685,7 @@
          this.cardRelatedInfoForm.contractList = data.data.dataMap.contractList;
          }); */
         this.isSubmit = true
-        this.validateForms().then(()=>{
+        this.validateForms().then(()=> {
           console.log('validate success');
         })
 
@@ -2756,6 +2716,7 @@
           name: '',
           type: 1,
           code: '',
+          agreementUrl: '',
           types: [
             {
               id: 1,
@@ -2767,27 +2728,8 @@
             }
           ],
           isSeal: true,
-          remark: ''
-          /* sealTimes: '',
-           printTimes: '',
-           retainFileNumber: '',
-           sealName: '',
-           ifPrint: '',
-           useSeal: ['seal1', 'seal2'],
-           useSeals: [
-           {
-           id: 'seal1',
-           name: '公章'
-           },
-           {
-           id: 'seal2',
-           name: '法人章'
-           },
-           {
-           id: 'seal3',
-           name: '人事章'
-           },
-           ], */
+          remark: '',
+          filesSealed: []//上传的盖章后的文件信息
 
         }]
         this.cardSealInfoForm.sealAttachments.push(item)
@@ -2872,8 +2814,14 @@
           })
         }
       },
-      handleCodeBlur(val){
-        console.log('handleCodeBlur', val);
+      handleCodeBlur(item, val){
+        console.log('handleCodeBlur-val', val);
+        if (val) {
+          item.agreementUrl = '从协议页面的链接'
+        }
+      },
+      handleRemoveFilesSealedItem(index, rows){
+        rows.splice(index, 1)
       }
     },
     components: {

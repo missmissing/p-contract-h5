@@ -68,10 +68,6 @@
           label="发起时间">
         </el-table-column>
         <el-table-column
-          property="processStatus"
-          label="流程状态">
-        </el-table-column>
-        <el-table-column
           property="finishTime"
           label="结束时间">
         </el-table-column>

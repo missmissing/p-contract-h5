@@ -385,7 +385,43 @@ module.exports = function (api) {
           createPerson:'wyy',
           createDepart:'development',
           createTime:'2017-09-11'
-        }
+        },
+        {
+          contractId:'002',
+          id:'001002',
+          name:'从协议2',
+          createPerson:'wyy',
+          createDepart:'development',
+          createTime:'2017-09-11',
+          version:'1'
+        },
+        {
+          contractId:'003',
+          id:'001003',
+          name:'从协议3',
+          createPerson:'wyy',
+          createDepart:'development',
+          createTime:'2017-09-11',
+          version:'1'
+        },
+        {
+          contractId:'004',
+          id:'001004',
+          name:'从协议4',
+          createPerson:'wyy',
+          createDepart:'development',
+          createTime:'2017-09-11',
+          version:'1'
+        },
+        {
+          contractId:'005',
+          id:'001005',
+          name:'从协议5',
+          createPerson:'wyy',
+          createDepart:'development',
+          createTime:'2017-09-11',
+          version:'1'
+        },
       ]
     });
   });
