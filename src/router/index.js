@@ -322,7 +322,7 @@ const router = new Router({
       }],
       meta: {
         iconCls: 'stats-bars',
-        // hidden: true
+        hidden: true
       }
     },
     {

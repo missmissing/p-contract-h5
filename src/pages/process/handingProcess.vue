@@ -15,8 +15,7 @@
         prop="procTitle"
         label="流程名称">
         <template scope="scope">
-          <el-button type="text" @click.native.prevent="see(scope.row)">{{scope.row.procTitle}}
-          </el-button>
+          <el-button type="text" @click.native.prevent="see(scope.row)">{{scope.row.procTitle}}</el-button>
         </template>
       </el-table-column>
       <el-table-column
@@ -47,23 +46,21 @@
 </template>
 
 <script>
-  import {procMap, routerNames} from '@/core/consts'
+  import {processListMap, routerNames} from '@/core/consts'
   import Api from '@/api/process'
   import comLoading from '@/mixins/comLoading'
   import {formatTime} from '@/filters/moment'
-  import localStore from 'store'
-
-  const {userId} = localStore.get('user') || {}
+  import redirect from '@/mixins/redirect'
 
   export default {
-    mixins: [comLoading],
+    mixins: [comLoading, redirect],
     data() {
       return {
         tableData: [],
         pageNumber: 0,
         pageSize: 10,
         totalPage: 0,
-        dataType: ''
+        dataType: processListMap[0]
       }
     },
     methods: {
@@ -80,70 +77,27 @@
           this.totalPage = totalPage
         })
       },
-      see(row) {
-        console.log(row)
-        const {procInstId, serialNumber, procCode} = row
-        if (this.dataType === 'BACKLOG') {
-          Api.getApproveNode({
-            operatorId: userId,
-            serialNumber,
-            procCode
-          }).then((res) => {
-            const data = res.data.dataMap
-            this.toPage(row, data)
-          })
-        } else {
-          Api.getStartedProcNodes({
-            procInstId,
-            procCode
-          }).then((res) => {
-            const data = res.data.dataMap
-            this.toPage(row, data)
-          })
-        }
-      },
-      toPage(row, data) {
-        const {procInstId, serialNumber, procCode} = row
-        const {actions, approveInfo} = data
-        const {id} = approveInfo
-        const show = this.dataType === 'BACKLOG'
-        const processData = JSON.stringify({
-          procInstId,
-          actions,
-          serialNumber,
-          procCode,
-          operatorId: userId,
-          show
-        })
-        let url = ''
-        switch (procCode) {
-          case procMap[0]:
-            url = `/contemplate/see?id=${id}&processData=${processData}`
-            break
-          default:
-            return
-        }
-        this.$router.push(url)
-      },
       handleSizeChange(val) {
         console.log(`每页 ${val} 条`)
         this.pageSize = val
+        this.getProcess()
       },
       handleCurrentChange(val) {
         console.log(`当前页: ${val}`)
         this.pageNumber = val
+        this.getProcess()
       },
       getDataType() {
         const routeName = this.$route.name
         switch (routeName) {
           case routerNames.con_handing_process :
-            this.dataType = 'BACKLOG'
+            this.dataType = processListMap[0]
             break
           case routerNames.con_create_process :
-            this.dataType = 'STARTED'
+            this.dataType = processListMap[1]
             break
           case routerNames.con_handle_process :
-            this.dataType = 'FINISHED'
+            this.dataType = processListMap[2]
             break
         }
       }
