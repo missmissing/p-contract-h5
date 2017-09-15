@@ -11,6 +11,6 @@ export default {
     return Http.get(`${contract}/contract-web/process/logout`, params)
   },
   selectPerson(params) {
-    return Http.post(`${contract}/contract/user/list`, params)
+    return Http.get(`${contract}/contract/user/list`, params)
   }
 }

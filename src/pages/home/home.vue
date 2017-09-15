@@ -147,9 +147,10 @@
 </template>
 
 <script>
-  import store from 'store'
+  import localStore from 'store'
   import Api from '@/api'
 
+  const {user = {}} = localStore.get('user') || {}
   const logo = require('../../assets/img/main-logo.png')
   const userPhoto = require('../../assets/img/user.jpg')
 
@@ -158,7 +159,7 @@
       return {
         logo,
         userPhoto,
-        username: 'test',
+        username: user.userName,
         isCollapse: false
       }
     },

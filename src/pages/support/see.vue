@@ -52,21 +52,32 @@
                   {{form.endDate}}
                 </el-form-item>
               </el-col>
-            </el-row>
-            <el-row>
+              <el-col :span="8">
+                <el-form-item label="版本">
+                  <span v-if="showProcess">{{form.version}}</span>
+                  <el-select @change="changeVersion" v-model="templateId" style="width:90px;" v-else>
+                    <el-option
+                      v-for="item in versions"
+                      :key="item.id"
+                      :label="`V${item.version}`"
+                      :value="item.id">
+                    </el-option>
+                  </el-select>
+                </el-form-item>
+              </el-col>
               <el-col :span="8">
                 <el-form-item label="创建人">
                   {{form.creatorName}}
                 </el-form-item>
               </el-col>
               <el-col :span="8">
-                <el-form-item label="最新版本">
-                  {{form.version}}
+                <el-form-item label="最近更新人">
+                  {{form.operatorName}}
                 </el-form-item>
               </el-col>
               <el-col :span="8">
-                <el-form-item label="最近更新人">
-                  {{form.operatorName}}
+                <el-form-item label="更新时间">
+                  {{form.updateTime}}
                 </el-form-item>
               </el-col>
             </el-row>
@@ -121,6 +132,7 @@
       creatorName: '',
       version: ''
     },
+    versions: [],
     tplInfo: {},
     fileList: []
   }
@@ -132,12 +144,13 @@
         action: uploadUrl,
         download: downloadUrl,
         showTmpl: false,
-        showProcess: false
+        showProcess: false,
+        templateId: this.$route.query.id
       }, _.cloneDeep(defaultData))
     },
     methods: {
       setData(tplInfo) {
-        const {templateCode, templateName, templateType, bizTypes, startDate, endDate, version, operatorName, creatorName, description, files} = tplInfo
+        const {templateCode, templateName, templateType, bizTypes, startDate, endDate, updateTime, version, operatorName, creatorName, description, files} = tplInfo
         this.tplInfo = tplInfo
         this.form['templateCode'] = templateCode
         this.form['templateName'] = templateName
@@ -145,6 +158,7 @@
         this.form['busiTypeText'] = bizTypes.map(item => item.businessName).join(',')
         this.form['startDate'] = formatDate(startDate)
         this.form['endDate'] = formatDate(endDate)
+        this.form['updateTime'] = formatDate(updateTime)
         this.form['version'] = `V${version}`
         this.form['operatorName'] = operatorName
         this.form['creatorName'] = creatorName
@@ -159,11 +173,7 @@
           })
         }
       },
-      getTplData() {
-        const {id, processData} = this.$route.query
-        if (processData) {
-          this.showProcess = true
-        }
+      getTplData(id) {
         this.comLoading(1)
         supportModel.getTplData({
           templateId: id
@@ -173,6 +183,15 @@
           this.setData(tplInfo)
           this.comLoading()
         })
+      },
+      getAllVersions() {
+        const {templateCode} = this.form
+        supportModel.getAllTemplateByCode({templateCode}).then((res) => {
+          this.versions = res.data.dataMap
+        })
+      },
+      changeVersion(val) {
+        this.getTplData(val)
       }
     },
     components: {
@@ -181,11 +200,24 @@
       Process
     },
     created() {
-      this.getTplData()
+      const {id, processData} = this.$route.query
+      if (processData) {
+        this.showProcess = true
+      }
+      this.getTplData(id)
     },
     computed: {
       tplTypeShow() {
         return this.form.templateType === 'TEXT'
+      }
+    },
+    watch: {
+      'form.templateCode'() {
+        this.getAllVersions()
+      },
+      versions() {
+        const {id} = this.$route.query
+        this.templateId = id
       }
     }
   }
