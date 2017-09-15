@@ -19,8 +19,12 @@
         </template>
       </el-table-column>
       <el-table-column
-        prop="procCode"
-        label="流程编号">
+        prop="procTitle"
+        label="流程标题">
+      </el-table-column>
+      <el-table-column
+        prop="applicantName"
+        label="发起人">
       </el-table-column>
       <el-table-column
         prop="startTime"

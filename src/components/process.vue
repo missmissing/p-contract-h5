@@ -73,6 +73,7 @@
   import Api from '@/api/process'
   import {formatTime} from '@/filters/moment'
   import SelectPerson from '@/components/selectPerson.vue'
+  import {routerNames} from '@/core/consts'
 
   export default {
     data() {
@@ -112,6 +113,7 @@
           approveRemark: this.approveRemark
         }).then((res) => {
           console.log(res)
+          this.$router.push({name: routerNames.con_handing_process})
         })
       }
     },

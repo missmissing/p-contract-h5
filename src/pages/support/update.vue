@@ -277,9 +277,11 @@
         }
       },
       getResult() {
+        const {id} = this.tplInfo
         const {info} = this.$store.state.support.create
         const {startDate, description, bizTypes} = this.form
         const result = Object.assign({
+          id,
           startDate: formatTimeStamp(startDate),
           description,
           bizTypes

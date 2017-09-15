@@ -19,6 +19,9 @@ export default {
   getTplData(params) {
     return Http.get(`${contract}/contract-web/template/getTemplateById`, params)
   },
+  getAllTemplateByCode(params) {
+    return Http.get(`${contract}/contract-web/template/getAllTemplateByCode`, params)
+  },
   addTpl(params) {
     return Http.post(`${contract}/contract-web/template/addTemplate`, params)
   },
