@@ -435,6 +435,7 @@
 <script>
   import signModel from '@/api/sign'
   import {formatTime} from '@/filters/moment'
+  import fillZero from '@/util/fillZero'
 
   export default {
     data() {
@@ -480,8 +481,7 @@
         const prCode = this.prCode
         const prData = this.prData
         const exist = prData.some((item) => {
-          debugger
-          return item.procInstId === prCode
+          return item.pr === fillZero(prCode, 10)
         })
         if (exist) {
           this.$message.warning('列表中已存在！')

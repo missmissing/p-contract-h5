@@ -1,6 +1,6 @@
 import {routerNames, processListMap} from '@/core/consts'
 
-export default function (row) {
+export default (row) => {
   const {procInstId, serialNumber, procCode} = row
   const query = {
     procInstId,
