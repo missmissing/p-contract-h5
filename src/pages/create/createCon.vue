@@ -1560,10 +1560,10 @@
           <el-input v-model="formAddConStandard.materialCode" :disabled="formAddConStandard.conStandardType===1" placeholder="请输入物料编码"></el-input>
         </el-form-item>
         <el-form-item prop="price" label="价格">
-          <el-input v-model="formAddConStandard.price" :disabled="formAddConStandard.conStandardType===1" placeholder="请输入物料价格"></el-input>
+          <el-input v-model="formAddConStandard.price" placeholder="请输入物料价格"></el-input>
         </el-form-item>
         <el-form-item label="税率" prop="taxRate">
-          <el-input v-model="formAddConStandard.taxRate" :disabled="formAddConStandard.conStandardType===1" placeholder="请输入物料税率"></el-input>
+          <el-input v-model="formAddConStandard.taxRate" placeholder="请输入物料税率"></el-input>
         </el-form-item>
       </el-form>
       <footer slot="footer">

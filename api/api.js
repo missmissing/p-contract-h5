@@ -13,7 +13,7 @@ require('./mock')(api);
 
 //测试服务器地址
 const contract = 'http://cm.dev.rs.com';
-// const contract = '10.11.28.145:56101';
+//const contract = '10.11.29.67:56101';
 
 api.use('/api-contract/**', proxyWeb(contract, {
   proxyReqPathResolver: function (req, res) {
