@@ -9,8 +9,5 @@ export default {
   },
   logout(params) {
     return Http.get(`${contract}/contract-web/process/logout`, params)
-  },
-  selectPerson(params) {
-    return Http.get(`${contract}/contract/user/list`, params)
   }
 }

@@ -96,6 +96,7 @@
     methods: {
       change(value) {
         console.log('person', value)
+        this.receiver = value
       },
       submit() {
         if (!this.actionName) {

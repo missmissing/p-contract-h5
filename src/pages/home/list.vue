@@ -72,7 +72,7 @@
     methods: {
       getProcess() {
         Api.getProcess({
-          pageNumber: 0,
+          pageNumber: 1,
           pageSize: this.pageSize,
           dataType: this.dataType
         }).then((res) => {

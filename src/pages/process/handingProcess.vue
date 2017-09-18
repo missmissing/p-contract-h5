@@ -61,7 +61,7 @@
     data() {
       return {
         tableData: [],
-        pageNumber: 0,
+        pageNumber: 1,
         pageSize: 10,
         totalPage: 0,
         dataType: ''
