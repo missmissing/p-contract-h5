@@ -12,7 +12,7 @@
       border
       class="wp100">
       <el-table-column
-        prop="procTitle"
+        prop="procName"
         label="流程名称">
         <template scope="scope">
           <el-button type="text" @click.native.prevent="toPage(scope.row)">{{scope.row.procTitle}}</el-button>
