@@ -480,6 +480,7 @@
         const prCode = this.prCode
         const prData = this.prData
         const exist = prData.some((item) => {
+          debugger
           return item.procInstId === prCode
         })
         if (exist) {
