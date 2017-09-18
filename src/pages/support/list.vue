@@ -131,6 +131,7 @@
 </template>
 
 <script>
+  import {routerNames} from '@/core/consts'
   import supportModel from '@/api/support'
   import comLoading from '@/mixins/comLoading'
   import {formatTime, formatDate} from '@/filters/moment'
@@ -174,7 +175,12 @@
       },
       see(index, row) {
         console.log(row)
-        this.$router.push(`/contemplate/see?id=${row.id}`)
+        this.$router.push({
+          name: routerNames.con_tpl_see,
+          query: {
+            id: row.id
+          }
+        })
       },
       formatDateRange(value) {
         const daterange = value.split(' ')

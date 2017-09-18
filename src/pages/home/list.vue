@@ -35,7 +35,7 @@
   <div class="block">
     <div class="title">{{title}}<span class="fr" @click="toDetailPage">更多</span></div>
     <div class="content">
-      <div class="item" v-for="item in items" @click="see(item)">
+      <div class="item" v-for="item in items" @click="toPage(item)">
         <label>{{item.procTitle}}</label>
         <span>{{item.startTime | formatDate}}</span>
       </div>
@@ -50,10 +50,9 @@
   import Api from '@/api/process'
   import {routerNames, processListMap} from '@/core/consts'
   import {formatDate} from '@/filters/moment'
-  import redirect from '@/mixins/redirect'
+  import toPage from '@/assets/js/toPage'
 
   export default {
-    mixins: [redirect],
     props: {
       title: {
         default: ''
@@ -96,6 +95,9 @@
             break
         }
         this.$router.push({name: routerName})
+      },
+      toPage(row) {
+        toPage.call(this, row)
       }
     },
     created() {

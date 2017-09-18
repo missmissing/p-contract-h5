@@ -1,7 +1,10 @@
-import {procMap, processListMap} from '@/core/consts'
+import {routerNames, procMap, processListMap} from '@/core/consts'
 import Api from '@/api/process'
 
 export default {
+  data() {
+    return {dataType: ''}
+  },
   methods: {
     see(row) {
       console.log(row)
@@ -36,15 +39,21 @@ export default {
         procCode,
         show
       })
-      let url = ''
+      let name = ''
       switch (procCode) {
         case procMap[0]:
-          url = `/contemplate/see?id=${id}&processData=${processData}`
+          name = routerNames.con_tpl_see
           break
         default:
           return
       }
-      this.$router.push(url)
+      this.$router.push({
+        name,
+        query: {
+          id,
+          processData
+        }
+      })
     }
   }
 }
