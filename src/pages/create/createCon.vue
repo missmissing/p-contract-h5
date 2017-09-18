@@ -1098,8 +1098,7 @@
           </el-form>
         </el-tab-pane>
         <el-tab-pane label="合同附件及盖章信息" name="tabSealInfo" v-if="baseInfoForm.contractType!==2">
-          <el-form rel="cardSealInfoForm" :model="cardSealInfoForm" label-width="100px" :rules="cardSealInfoForm.rules">
-            <!--v-if="baseInfoForm.templateId"-->
+          <el-form v-if="baseInfoForm.templateId" rel="cardSealInfoForm" :model="cardSealInfoForm" label-width="100px" :rules="cardSealInfoForm.rules">
             <el-button type="primary" @click="handleNewSealFile" icon="plus" v-if="operateType!=='query'" class="mb20">
               新增
             </el-button>
@@ -1271,7 +1270,7 @@
               </el-table>
             </template>
           </el-form>
-          <!--<h4 v-else>请选择合同基本信息的模版名称！</h4>-->
+          <h4 v-else>请选择合同基本信息的模版名称！</h4>
         </el-tab-pane>
         <el-tab-pane label="备注" name="tabRemark">
           <el-form rel="cardRemarkInfoForm" :model="cardRemarkInfoForm" label-width="100px">
@@ -1866,23 +1865,22 @@
               saleTime: null,//用章次数
               printTime: null,//打印份数
               remainTime: null,//我方留存份数
-              saleInfos: ['seal1', 'seal2'],//当前选中的张
+              saleInfos: [1, 2],//当前选中的张
               useSeals: [
                 {
-                  id: 'seal1',
+                  id: 1,
                   name: '公章'
                 },
                 {
-                  id: 'seal2',
+                  id: 2,
                   name: '法人章'
                 },
                 {
-                  id: 'seal3',
+                  id: 3,
                   name: '人事章'
                 }
               ],//章列表
               remark: '',
-
               filesSealed: [//上传的盖章后的文件信息
                 {
                   sealFileId:'',
@@ -2574,6 +2572,7 @@
                 errors.cardContentInfoForm.subjectsErrorMsg = '我方主体信息不能为空'
               }
             } else {
+              errors.cardContentInfoForm.errorCount += 2
               this.$message.error('请填写完整合同内容信息再提交！')
               return false
             }
@@ -2612,9 +2611,6 @@
 
       },
       handleSave() {
-        /*let startTime = this.cardContentInfoForm.startTime, endTime = this.cardContentInfoForm.endTime;
-         startTime = startTime.getFullYear() + '-' + (startTime.getMonth() + 1) + '-' + startTime.getDate()
-         endTime = endTime.getFullYear() + '-' + (endTime.getMonth() + 1) + '-' + endTime.getDate()*/
         this.isSubmit = true
         this.comLoading(1)
         this.validateForms().then(()=> {
@@ -2623,7 +2619,7 @@
           paras.cardContentInfoForm = this.cardContentInfoForm
           paras.cardFinanceInfoForm = this.cardFinanceInfoForm
           paras.cardContCheckInfoForm = this.cardContCheckInfoForm
-          //paras.cardSealInfoForm = this.cardSealInfoForm
+          paras.cardSealInfoForm = this.cardSealInfoForm
           paras.cardRemarkInfoForm = this.cardRemarkInfoForm
           paras.cardOtherInfo = this.cardOtherInfo
 
@@ -2690,18 +2686,19 @@
           saleTime: '',//用章次数
           printTime: '',//打印份数
           remainTime: '',//我方留存份数
-          saleInfos: ['seal1', 'seal2'],//当前选中的张
+          saleInfos: ['1', '2'],//当前选中的张
           useSeals: [
             {
               id: 'seal1',
+              id: '1',
               name: '公章'
             },
             {
-              id: 'seal2',
+              id: '2',
               name: '法人章'
             },
             {
-              id: 'seal3',
+              id: '3',
               name: '人事章'
             }
           ],//章列表
