@@ -8,7 +8,7 @@
         <el-row>
           <el-col :span="8">
             <el-form-item label="比价单" v-if="conForm.isPr" prop="strPC">
-              <el-input v-model="conForm.strPC" placeholder="请输入比价单号"></el-input>
+              <el-input v-model="conForm.strPC"  @keyup.enter.native="handleQuery" placeholder="请输入比价单号"></el-input>
             </el-form-item>
           </el-col>
           <el-col :span="8" v-if="conForm.isPr">
@@ -275,9 +275,9 @@
             ]
           },
           rules: {
-            createPerson: [
+            /*createPerson: [
               {required: true, message: '请输入搜索关键字', trigger: 'blur'}
-            ]
+            ]*/
           },
         },
         priceList: [],
@@ -318,7 +318,7 @@
           this.conForm.conType = ''
         }
       },
-      handleQuery() {
+      handleQuery(e) {
         this.comLoading(1)
         Api.getQrDetail({
           folio: this.conForm.strPC,

@@ -39,6 +39,31 @@
 </style>
 <template>
   <div class="createCon" v-loading="loadingFlag" :element-loading-text="loadingText">
+    <!--<div class="test">
+      <el-table :data="tableData">
+        <el-table-column prop="id" label="id"></el-table-column>
+        <el-table-column prop="selects" label="selects">
+          <template scope="scope">
+            index:{{scope.$index}}
+            sel:{{tableData[scope.$index].sel}}
+            <el-select v-model="tableData[scope.$index].sel" @change="handleChangeTest(scope.$index,tableData)">
+              <el-option
+                v-for="item in selects"
+                :key="item.id"
+                :label="item.name"
+                :value="item.id">
+              </el-option>
+            </el-select>
+          </template>
+        </el-table-column>
+        <el-table-column prop="name" label="name"></el-table-column>
+        <el-table-column fixed="right" label="操作">
+          <template scope="scope">
+            <el-button @click="handleRemoveTestData(scope.$index,tableData[scope.$index])">移除</el-button>
+          </template>
+        </el-table-column>
+      </el-table>
+    </div>-->
     <el-card v-if="operateType==='update'">
       <header slot="header">变更原因</header>
       <el-form ref="updateForm" :model="updateForm" label-width="100px" :rules="updateForm.rules">
@@ -268,6 +293,10 @@
             </el-card>
             <el-card v-if="baseInfoForm.contractType!==4" class="mt20">
               <header slot="header">合同标的</header>
+              <el-button v-if="baseInfoForm.contractType===3&&!baseInfoForm.prNo"
+                         @click="handleAddConStandard" icon="plus" class="mb10"
+                         type="primary">新增
+              </el-button>
               <el-table :data="cardContentInfoForm.conStandard">
                 <el-table-column type="index"></el-table-column>
                 <el-table-column prop="materialCode" label="物料编码"></el-table-column>
@@ -275,6 +304,18 @@
                 <el-table-column v-if="baseInfoForm.contractType!==3" prop="total" label="数量"></el-table-column>
                 <el-table-column prop="price" label="价格"></el-table-column>
                 <el-table-column prop="taxRate" label="税率"></el-table-column>
+                <el-table-column
+                  fixed="right"
+                  label="操作"
+                  width="100">
+                  <template scope="scope">
+                    <el-button
+                      v-if="cardContentInfoForm.conStandard[scope.$index].operate"
+                      @click="handleRemoveConStandard(scope.$index,cardContentInfoForm.conStandard)"
+                      type="text" size="small">移除
+                    </el-button>
+                  </template>
+                </el-table-column>
               </el-table>
               <el-row class="mt20" v-if="operateType==='update'">
                 <el-col :span="8">
@@ -830,7 +871,7 @@
                 </el-col>
                 <el-col :span="8">
                   <el-form-item label="合同总金额" prop="totalConMoney">
-                    <el-input :disabled="true" v-model="totalConMoney"
+                    <el-input :disabled="!cardFinanceInfoForm.oneOffPay" v-model="totalConMoney"
                               placeholder="根据上表累加(含税价)"></el-input>
                   </el-form-item>
                 </el-col>
@@ -996,7 +1037,7 @@
           </el-form>
         </el-tab-pane>
         <el-tab-pane name="tabContCheckInfo"
-                     v-if="baseInfoForm.contractType===3">
+                     v-if="baseInfoForm.contractType===3||baseInfoForm.contractType===1">
           <span slot="label" class="title"><i v-if="cardContCheckInfoForm.errorCount" class="errorCount">{{cardContCheckInfoForm.errorCount}}</i>合同验收与样品信息</span>
           <el-form ref="cardContCheckInfoForm" :model="cardContCheckInfoForm" label-width="100px">
             <el-row>
@@ -1054,6 +1095,18 @@
                   {{cardContCheckInfoForm.unionCheckPersons[scope.$index].required===true?'是':'否'}}
                 </template>
               </el-table-column>
+              <el-table-column
+                fixed="right"
+                label="操作"
+                width="100">
+                <template scope="scope">
+                  <el-button
+                    v-if="cardContCheckInfoForm.unionCheckPersons[scope.$index].operate"
+                    @click="handleRemoveUnionCheckPerson(scope.$index,cardContCheckInfoForm.unionCheckPersons)"
+                    type="text" size="small">移除
+                  </el-button>
+                </template>
+              </el-table-column>
             </el-table>
             <el-form-item prop="haveSample" label="是否有样品">
               <el-radio-group v-model="cardContCheckInfoForm.haveSample" :disabled="operateType==='query'">
@@ -1098,7 +1151,8 @@
           </el-form>
         </el-tab-pane>
         <el-tab-pane label="合同附件及盖章信息" name="tabSealInfo" v-if="baseInfoForm.contractType!==2">
-          <el-form v-if="baseInfoForm.templateId" rel="cardSealInfoForm" :model="cardSealInfoForm" label-width="100px" :rules="cardSealInfoForm.rules">
+          <el-form v-if="baseInfoForm.templateId" rel="cardSealInfoForm" :model="cardSealInfoForm" label-width="100px"
+                   :rules="cardSealInfoForm.rules">
             <el-button type="primary" @click="handleNewSealFile" icon="plus" v-if="operateType!=='query'" class="mb20">
               新增
             </el-button>
@@ -1188,7 +1242,7 @@
                       size="small"
                       v-model="item[scope.$index].attachType"
                       :disabled="item[scope.$index].attachType===3||operateType==='query'"
-                      v-on:change="handleChangeType(index,item[scope.$index])">
+                      v-on:change="handleChangeType(index,item[scope.$index],cardSealInfoForm.sealAttachments)">
                       <el-option
                         v-for="item in item[scope.$index].types"
                         :key="item.id"
@@ -1410,7 +1464,7 @@
         <el-button type="primary" @click="handleCancelAddNewThirdParty('formNewThirdParty')">取消</el-button>
       </footer>
     </el-dialog>
-    <el-dialog title="添加联合验收人" :visible.sync="cardContCheckInfoForm.dialogAddUnionCheckVisible"
+    <el-dialog title="新增联合验收人" :visible.sync="cardContCheckInfoForm.dialogAddUnionCheckVisible"
                size="small">
       <el-form ref="formAddUnionCheck" :model="formAddUnionCheck" label-width="120px"
                :rules="formAddUnionCheck.rules">
@@ -1450,7 +1504,7 @@
         <el-button type="primary" @click="handleCancelAddUnionCheck('formAddUnionCheck')">取消</el-button>
       </footer>
     </el-dialog>
-    <el-dialog title="添加服务验收事项" :visible.sync="cardContCheckInfoForm.dialogAddServiceVisible"
+    <el-dialog title="新增服务验收事项" :visible.sync="cardContCheckInfoForm.dialogAddServiceVisible"
                size="small">
       <el-form ref="formAddServiceCheck" :model="formAddServiceCheck" :rules="formAddServiceCheck.rules"
                label-width="100px">
@@ -1467,6 +1521,54 @@
       <footer slot="footer">
         <el-button type="primary" @click="handleAddServiceCheckItem('formAddServiceCheck')">确定</el-button>
         <el-button type="primary" @click="handleCancelAddServiceCheck('formAddServiceCheck')">取消</el-button>
+      </footer>
+    </el-dialog>
+    <el-dialog title="新增合同标的" :visible.sync="cardContentInfoForm.dialogAddConStandard"
+               size="small">
+      <el-form ref="formAddConStandard" :model="formAddConStandard" :rules="formAddConStandard.rules"
+               label-width="130px">
+        <el-form-item label="类型">
+          <el-radio-group v-model="formAddConStandard.conStandardType"
+                          :disabled="operateType==='query'||!!formAddConStandard.firstAddType">
+            <el-radio :label="1">一般物资类</el-radio>
+            <el-radio :label="2">服务类</el-radio>
+          </el-radio-group>
+        </el-form-item>
+        <el-form-item v-if="formAddConStandard.conStandardType===1" label="物料名称/编码" prop="search">
+          <el-select
+            style="width:300px"
+            size="small"
+            v-model="formAddConStandard.search"
+            filterable
+            remote
+            placeholder="请输入关键词搜索"
+            :remote-method="getRemoteMaterialsByKeyWord"
+            :loading="formAddConStandard.loading"
+            @change="handleMaterialChange">
+            <el-option
+              v-for="item in formAddConStandard.materials"
+              :key="item.materialCode"
+              :label="item.materialName"
+              :value="item.materialCode">
+            </el-option>
+          </el-select>
+        </el-form-item>
+        <el-form-item v-else label="物料名称" prop="materialName">
+          <el-input v-model="formAddConStandard.materialName" placeholder="请输入物料名称"></el-input>
+        </el-form-item>
+        <el-form-item prop="materialCode" label="物料编码">
+          <el-input v-model="formAddConStandard.materialCode" :disabled="formAddConStandard.conStandardType===1" placeholder="请输入物料编码"></el-input>
+        </el-form-item>
+        <el-form-item prop="price" label="价格">
+          <el-input v-model="formAddConStandard.price" :disabled="formAddConStandard.conStandardType===1" placeholder="请输入物料价格"></el-input>
+        </el-form-item>
+        <el-form-item label="税率" prop="taxRate">
+          <el-input v-model="formAddConStandard.taxRate" :disabled="formAddConStandard.conStandardType===1" placeholder="请输入物料税率"></el-input>
+        </el-form-item>
+      </el-form>
+      <footer slot="footer">
+        <el-button type="primary" @click="handleAddConStandardItem('formAddConStandard')">确定</el-button>
+        <el-button type="primary" @click="handleCancelAddConStandard('formAddConStandard')">取消</el-button>
       </footer>
     </el-dialog>
     <el-row class="mt20">
@@ -1495,7 +1597,7 @@
 
 
   //document.cookie = 'sys=FMM21KGIJLHOGHNKHGGLLOFMMKFNKKE'
-  const user=store.get('user')
+  const user = store.get('user')
 
   export default {
     mixins: [comLoading],
@@ -1526,8 +1628,35 @@
       }
 
       return {
+        selects: [
+          {
+            id: 11,
+            name: '11'
+          },
+          {
+            id: 22,
+            name: '22'
+          },
+        ],
+        tableData: [
+          {
+            sel: '',
+            id: '1',
+            name: 'name1'
+          },
+          {
+            sel: '',
+            id: '2',
+            name: 'name2'
+          },
+          {
+            sel: '',
+            id: '3',
+            name: 'name2'
+          },
+        ],
         visible: false,//预览
-        users:user,
+        users: user,
         downloadUrl: downloadUrl,
         uploadUrl: uploadUrl,
         operateType: 'create', // create:创建，update:变更，query:查询
@@ -1601,13 +1730,13 @@
           conSubjctName: [],
           thirdPartyInfo: [],
           conStandard: [],
-
           errorCount: 0,
           supplierErrorMsg: '',
           subjectsErrorMsg: '',
           ifFixedTerm: 1,//是否固定期限（仅在变更合同时显示）
           dialogAddContractSupplier: false,
           dialogNewThirdPartyVisible: false,
+          dialogAddConStandard: false,
           rules: {
             startTime: [{
               validator: validateEffectiveDateRules,
@@ -1809,34 +1938,34 @@
           dialogAddUnionCheckVisible: false,
           dialogAddServiceVisible: false
         },
-         /*cardSealInfoForm: {
-            sealAttachments: [
-             [{
-               id: 14,
-               fileId: 15,
-               attachType: 0,
-               fileName: '微信图片_20170720155622.png',
-               fileUrl: 'http://img1.dev.rs.com/g1/M00/00/D4/wKh6ylmSYd-ALQThAAEK0Tz4M9k650.png',
-               slaveProtocolNo: 0,
-               haveSale: true,
-               saleTime: 0,
-               printTime: 0,
-               remainTime: 0,
-               saleInfos: null,
-               remark: '澳洲0',
+        /*cardSealInfoForm: {
+         sealAttachments: [
+         [{
+         id: 14,
+         fileId: 15,
+         attachType: 0,
+         fileName: '微信图片_20170720155622.png',
+         fileUrl: 'http://img1.dev.rs.com/g1/M00/00/D4/wKh6ylmSYd-ALQThAAEK0Tz4M9k650.png',
+         slaveProtocolNo: 0,
+         haveSale: true,
+         saleTime: 0,
+         printTime: 0,
+         remainTime: 0,
+         saleInfos: null,
+         remark: '澳洲0',
 
-               filesSealed: [
-                 {
-                   sealFileId: 16,
-                   sealFileName: '状态汇总.xlsx',
-                   sealFileUrl: 'http://img1.dev.rs.com/g1/M00/00/D4/wKh6ylmSwZSAIaJcAAA6LUFeJFY65.xlsx',
-                   sealFileCreatorName: null,
+         filesSealed: [
+         {
+         sealFileId: 16,
+         sealFileName: '状态汇总.xlsx',
+         sealFileUrl: 'http://img1.dev.rs.com/g1/M00/00/D4/wKh6ylmSwZSAIaJcAAA6LUFeJFY65.xlsx',
+         sealFileCreatorName: null,
 
-                   sealFileCreateTime: 1502790027000
-                 }
-               ]
-           }]
-           ]
+         sealFileCreateTime: 1502790027000
+         }
+         ]
+         }]
+         ]
          },*/
         cardSealInfoForm: {
           sealAttachments: [
@@ -1883,7 +2012,7 @@
               remark: '',
               filesSealed: [//上传的盖章后的文件信息
                 {
-                  sealFileId:'',
+                  sealFileId: '',
                   sealFileName: 'filename',//文件名
                   sealFileUrl: '',
                   sealFileCreatorName: 'wyy',//上传人
@@ -1892,7 +2021,7 @@
               ]
             }]
           ],
-          current:0,//当前所在附件列表的索引
+          current: 0,//当前所在附件列表的索引
           rules: {
             /*slaveProtocolNo: [{
              validator: (rule, value, callback)=>{console.log('value',value);
@@ -1993,6 +2122,19 @@
           thirdParties: [],
           loading: false
         },
+        formAddConStandard: {
+          search:'',
+          conStandardType: 1,
+          firstAddType:'',
+          name: '',
+          loading: false,
+          materials: [],
+          id: '',
+          code: '',
+          price: null,
+          taxRate: null,
+          rules: {}
+        },
         isSubmit: false
       }
     },
@@ -2010,7 +2152,7 @@
         this.baseInfoForm.contractType = query.curConModelId
       }
       /*
-      * user == {userId: "51033730", userName: "王圆圆", deptCode: "70000213", deptName: "CMS组", companyCode: " ", …}
+       * user == {userId: "51033730", userName: "王圆圆", deptCode: "70000213", deptName: "CMS组", companyCode: " ", …}
        loglevel == INFO
        jfVersion == 0.5.6*/
 
@@ -2220,7 +2362,8 @@
               id: this.formAddUnionCheck.id,
               personName: this.formAddUnionCheck.userName,
               personDept: this.formAddUnionCheck.depart,
-              required: this.formAddUnionCheck.ifRequired
+              required: this.formAddUnionCheck.ifRequired,
+              operate: 'add'
             })
             curForm.resetFields()
             this.cardContCheckInfoForm.dialogAddUnionCheckVisible = false
@@ -2502,13 +2645,13 @@
         rows.splice(index, 1)
       },
       handleUploadSealFileSuccess(res, file, fileList) {
-        const dataMap=res.dataMap
-        if(dataMap.fileId){
-          const index =this.cardSealInfoForm.current;
-          const curentFile=this.cardSealInfoForm.sealAttachments[index]
-          curentFile[0].fileId=dataMap.fileId
-          curentFile[0].fileName=dataMap.fileName
-          curentFile[0].fileUrl=dataMap.url
+        const dataMap = res.dataMap
+        if (dataMap.fileId) {
+          const index = this.cardSealInfoForm.current;
+          const curentFile = this.cardSealInfoForm.sealAttachments[index]
+          curentFile[0].fileId = dataMap.fileId
+          curentFile[0].fileName = dataMap.fileName
+          curentFile[0].fileUrl = dataMap.url
           this.$message.success('文件上传成功')
         }
       },
@@ -2517,18 +2660,18 @@
         console.log('file', file)
         console.log('fileList', fileList)
       },
-      handleUploadFileAfterSealSuccess(res,file,fileList) {
-        const dataMap=res.dataMap
-        if(dataMap.fileId){
-          const index =this.cardSealInfoForm.current;
-          const curentFile=this.cardSealInfoForm.sealAttachments[index]
-          curentFile[0].filesSealed=[{
-            sealFileId:dataMap.fileId,
-            sealFileName:dataMap.fileName,
-            sealFileUrl:dataMap.url,
-            sealFileCreatorName:dataMap.username,
-            sealFileCreateTime:dataMap.uploadTime,
-            operate:'add'
+      handleUploadFileAfterSealSuccess(res, file, fileList) {
+        const dataMap = res.dataMap
+        if (dataMap.fileId) {
+          const index = this.cardSealInfoForm.current;
+          const curentFile = this.cardSealInfoForm.sealAttachments[index]
+          curentFile[0].filesSealed = [{
+            sealFileId: dataMap.fileId,
+            sealFileName: dataMap.fileName,
+            sealFileUrl: dataMap.url,
+            sealFileCreatorName: dataMap.username,
+            sealFileCreateTime: dataMap.uploadTime,
+            operate: 'add'
           }]
           this.$message.success('文件上传成功')
         }
@@ -2577,7 +2720,7 @@
               return false
             }
           })
-          if(!this.showMaterialItems){
+          if (!this.showMaterialItems) {
             if (this.$refs.cardContCheckInfoForm) {
               this.$refs.cardContCheckInfoForm.validate((valid) => {
                 if (valid) {
@@ -2665,7 +2808,8 @@
         }
       },
       handleNewSealFile() {
-        const file=[{
+        const file = [{
+          operate: 'add',
           id: '',
           fileName: '文件名',
           fileUrl: '',//合同文本类型为非模版合同时，附件类型的合同的文件下载地址
@@ -2704,20 +2848,20 @@
           ],//章列表
           filesSealed: []//上传的盖章后的文件信息
         }]
-        const sealAttachments=this.cardSealInfoForm.sealAttachments
+        const sealAttachments = this.cardSealInfoForm.sealAttachments
 
-        if(sealAttachments.length){
-          for(let i=sealAttachments.length-1;i>=0;i--){
-            const item=sealAttachments[i];
-            if(item[0].attachType!==2){
-              sealAttachments.splice(i+1,0,file)
-              console.log('sealAttachments',sealAttachments)
+        if (sealAttachments.length) {
+          for (let i = sealAttachments.length - 1; i >= 0; i--) {
+            const item = sealAttachments[i];
+            if (item[0].attachType !== 2) {
+              sealAttachments.splice(i + 1, 0, file)
+              console.log('sealAttachments', sealAttachments)
               return
             }
           }
         }
         /*const sealAttachments=this.cardSealInfoForm.sealAttachments
-        sealAttachments.push(file);*/
+         sealAttachments.push(file);*/
 
       },
       handleQuery(id) {
@@ -2729,26 +2873,25 @@
       handleDetail(id) {
         console.log('id', id)
       },
-      handleChangeType(index, row){
-        console.log('handleChangeType',index);
-        const currentType=row.attachType;
-        currentType===2?row.haveSale=false:row.haveSale=true
-        const file=[row];
-        const sealAttachments=this.cardSealInfoForm.sealAttachments
-
-        //sealAttachments.splice(index,2)
+      handleChangeType(index, row, rows){
+        console.log('handleChangeType', index);
+        const currentType = row.attachType;
+        currentType === 2 ? row.haveSale = false : row.haveSale = true
+        const file = [row]
+//rows.splice(index, 1)
+//        sealAttachments.splice(index,1)
 
         /*if(currentType===2){
-          sealAttachments.push(file);
-        }else{
-          for(let i=sealAttachments.length;i>0;i--){
-            const item=sealAttachments[i]
-            if(item[0].attachType!==2){
-              sealAttachments.splice(i,0,file)
-              return
-            }
-          }
-        }*/
+         sealAttachments.push(file);
+         }else{
+         for(let i=sealAttachments.length;i>0;i--){
+         const item=sealAttachments[i]
+         if(item[0].attachType!==2){
+         sealAttachments.splice(i,0,file)
+         return
+         }
+         }
+         }*/
 
       },
       handleRemoveSealItem(index, rows) {
@@ -2812,19 +2955,19 @@
       },
       handleTemplateChange(val){
         if (val) {
-          const contractTextType=this.baseInfoForm.contractTextType
-          const templateOptions=this.baseInfoForm.templateOptions
-          let templateName=''
-          for(let i=0,len=templateOptions.length;i<len;i++){
-            if(templateOptions[i].templateId===val){
-              templateName=templateOptions[i].templateName
+          const contractTextType = this.baseInfoForm.contractTextType
+          const templateOptions = this.baseInfoForm.templateOptions
+          let templateName = ''
+          for (let i = 0, len = templateOptions.length; i < len; i++) {
+            if (templateOptions[i].templateId === val) {
+              templateName = templateOptions[i].templateName
             }
           }
-          const params={templateId:val,templateName:templateName,contractTextType:contractTextType}
+          const params = {templateId: val, templateName: templateName, contractTextType: contractTextType}
           Api.getSealAttachments(params).then((data)=> {
             if (data.data.dataMap && data.data.dataMap.length) {
               this.cardSealInfoForm.sealAttachments = [data.data.dataMap];
-              data.data.dataMap[0].filesSealed=[]///???????????接口调试完删除
+              data.data.dataMap[0].filesSealed = []///???????????接口调试完删除
             }
           })
         }
@@ -2839,11 +2982,82 @@
         rows.splice(index, 1)
       },
       handleUpload(index){
-        this.cardSealInfoForm.current=index
+        this.cardSealInfoForm.current = index
       },
       handleUploadOuter(index){
-        this.cardSealInfoForm.current=index
-      }
+        this.cardSealInfoForm.current = index
+      },
+      handleRemoveUnionCheckPerson(index, rows){
+        rows.splice(index, 1)
+      },
+      handleAddConStandard(){
+        this.cardContentInfoForm.dialogAddConStandard = true
+      },
+      handleAddConStandardItem(formName){
+        const curFormName=this.$refs[formName]
+        if(curFormName.model.firstAddType===''){
+          this.formAddConStandard.firstAddType=curFormName.model.conStandardType
+        }
+        const conStandard=this.cardContentInfoForm.conStandard
+        const item={};
+        item.id=curFormName.model.id
+        item.materialCode=curFormName.model.materialCode
+        item.materialName=curFormName.model.materialName
+        item.total=curFormName.model.total
+        item.price=curFormName.model.price
+        item.taxRate=curFormName.model.taxRate
+        item.operate='add'
+        conStandard.push(item);
+
+        this.cardContentInfoForm.dialogAddConStandard = false
+        this.$refs[formName].resetFields()
+      },
+      handleCancelAddConStandard(formName){
+        this.$refs[formName].resetFields()
+        this.cardContentInfoForm.dialogAddConStandard = false
+      },
+      getRemoteMaterialsByKeyWord(query){
+        if (query !== '') {
+          this.formAddConStandard.loading = true
+          Api.getRemoteMaterialsByKeyWord({keyword: query})
+            .then((data) => {
+              this.formAddConStandard.loading = false
+              this.formAddConStandard.materials = data.data.dataMap
+            })
+        } else {
+          console.log('getRemoteMaterialsByKeyWord-null');
+          this.formAddConStandard.materials = []
+        }
+      },
+      handleMaterialChange(val){
+        const materials = this.formAddConStandard.materials
+
+        if (materials.length) {
+          for (let i = 0, len = materials.length; i < len; i++) {
+            if (val === materials[i].materialCode) {
+              this.formAddConStandard.id = materials[i].id
+              this.formAddConStandard.materialCode = materials[i].materialCode
+              this.formAddConStandard.materialName = materials[i].materialName
+              this.formAddConStandard.price = materials[i].price
+              this.formAddConStandard.taxRate = materials[i].taxRate
+            }
+          }
+        }
+      },
+      handleRemoveConStandard(index,rows){
+        rows.splice(index,1);
+      },
+      handleRemoveTestData(index, row){
+        console.log('index', index);
+        console.log('row', row);
+        this.tableData.splice(index, 1)
+      },
+      handleChangeTest(index, rows){
+        console.log('handleChangeTest-index', index);
+        console.log('handleChangeTest-rows', rows);
+        //rows.splice(index,1)
+      },
+
     },
     components: {
       Preview,
@@ -2868,6 +3082,11 @@
         if (path && path === '/conperf/conupdate') {
           console.log('request');
           this.operateType = 'update'
+        }
+      },
+      'formAddConStandard.conStandardType':function(val,oldVal){
+        if(val!==oldVal){
+          this.$refs['formAddConStandard'].resetFields()
         }
       }
 

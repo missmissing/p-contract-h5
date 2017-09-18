@@ -447,48 +447,57 @@ module.exports = function (api) {
       code: 200,
       message: 'success',
       dataMap: [
-          {
-            id: '',
-            name: '文件名',
-            type: 3,
-            code: '0011001',
-            types: [
-              {
-                id: 1,
-                name: '其他'
-              },
-              {
-                id: 2,
-                name: '从协议'
-              },
-              {
-                id: 3,
-                name: '合同'
-              }
-            ],
-            isSeal: true,
-            remark: '',
-            sealTimes: '',
-            printTimes: '',
-            retainFileNumber: '',
-            sealName: '',
-            ifPrint: '',
-            useSeal: ['seal1', 'seal2'],
-            useSeals: [
-              {
-                id: 'seal1',
-                name: '公章'
-              },
-              {
-                id: 'seal2',
-                name: '法人章'
-              },
-              {
-                id: 'seal3',
-                name: '人事章'
-              }
-            ]
-          }
+        {
+          id: '',
+          fileId: 15,//附件类型为其他时，上传的文件的id
+          attachType: 3,//附件类型
+          types: [
+            {
+              id: 1,
+              name: '其他'
+            },
+            {
+              id: 2,
+              name: '从协议'
+            },
+            {
+              id: 3,
+              name: '合同'
+            }
+          ],//附件类型集合
+          fileName: '文件名',
+          fileUrl: '',//合同文本类型为非模版合同时，附件类型的合同的文件下载地址
+          slaveProtocolNo: '',//从协议编号
+          haveSale: true,//是否用章
+          saleTime: null,//用章次数
+          printTime: null,//打印份数
+          remainTime: null,//我方留存份数
+          saleInfos: ['seal1', 'seal2'],//当前选中的张
+          useSeals: [
+            {
+              id: 'seal1',
+              name: '公章'
+            },
+            {
+              id: 'seal2',
+              name: '法人章'
+            },
+            {
+              id: 'seal3',
+              name: '人事章'
+            }
+          ],//章列表
+          remark: '',
+          filesSealed: [//上传的盖章后的文件信息
+            {
+              sealFileId:'',
+              sealFileName: 'filename',//文件名
+              sealFileUrl: '',
+              sealFileCreatorName: 'wyy',//上传人
+              sealFileCreateTime: '2017-09-15',//上传时间
+            }
+          ]
+        }
       ]
     });
   });
@@ -538,6 +547,38 @@ module.exports = function (api) {
               name: '人事章'
             }
           ]
+        }
+      ]
+    });
+  });
+  api.use('/contract-web/contract/materials',function(req,res){
+    res.status(200).json({
+      code: 200,
+      message: 'success',
+      dataMap: [
+        {
+          id: 'material1',
+          materialName: '物料1',
+          materialCode:'material111111',
+          total:20,
+          price:200,
+          taxRate:5
+        },
+        {
+          id: 'material2',
+          materialName: '物料2',
+          materialCode:'material22222',
+          total:20,
+          price:3000,
+          taxRate:10
+        },
+        {
+          id: 'material3',
+          materialName: '物料3',
+          materialCode:'material33333',
+          total:20,
+          price:400,
+          taxRate:20
         }
       ]
     });

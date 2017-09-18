@@ -42,6 +42,10 @@ export default {
   getSealAttachments(params){
     return Http.get(`/api/createContract/getSealAttachments`, params)
   },
+  //根据关键字搜索合同标的数据
+  getRemoteMaterialsByKeyWord(params){
+    return Http.get(`/contract-web/contract/materials`, params)
+  },
   //保存合同
   saveContract(params){
     return Http.post(`${contract}/contract-web/contract/save`, params)
