@@ -26,7 +26,7 @@
 </style>
 
 <template>
-  <div>
+  <div v-if="processData">
     <div>
       <div class="title">审批意见</div>
       <div class="main">
@@ -78,7 +78,7 @@
   export default {
     data() {
       return {
-        processData: {},
+        processData: null,
         lists: [],
         btns: [],
         commonBtns: ['加签', '转签'],
@@ -96,6 +96,7 @@
     methods: {
       change(value) {
         console.log('person', value)
+        this.receiver = value
       },
       submit() {
         if (!this.actionName) {

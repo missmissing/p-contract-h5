@@ -33,7 +33,7 @@
 </template>
 
 <script>
-  import Api from '@/api'
+  import Api from '@/api/manageContract'
 
   export default {
     name: 'SelectPerson',
@@ -53,7 +53,7 @@
       remoteMethod(query) {
         if (query !== '') {
           this.loading = true
-          Api.selectPerson({keyword: query}).then(res => {
+          Api.getRemoteCreatePersonsByKeyWord({keyword: query}).then(res => {
             this.loading = false
             this.options = res.data.dataMap
           }, () => {

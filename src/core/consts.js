@@ -64,6 +64,8 @@ export const routerNames = {
   con_handing_process: '我待办的流程',
   con_create_process: '我发起的流程',
   con_handle_process: '已处理的流程',
+  con_process_see: '查看流程',
+  con_process_approve: '审批流程',
 
   con_search: '查询功能',
   con_list: '合同查询',

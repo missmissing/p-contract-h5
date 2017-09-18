@@ -15,7 +15,7 @@
         prop="procTitle"
         label="流程名称">
         <template scope="scope">
-          <el-button type="text" @click.native.prevent="see(scope.row)">{{scope.row.procTitle}}</el-button>
+          <el-button type="text" @click.native.prevent="toPage(scope.row)">{{scope.row.procTitle}}</el-button>
         </template>
       </el-table-column>
       <el-table-column
@@ -52,19 +52,19 @@
 <script>
   import {processListMap, routerNames} from '@/core/consts'
   import Api from '@/api/process'
-  import comLoading from '@/mixins/comLoading'
   import {formatTime} from '@/filters/moment'
-  import redirect from '@/mixins/redirect'
+  import comLoading from '@/mixins/comLoading'
+  import toPage from '@/assets/js/toPage'
 
   export default {
-    mixins: [comLoading, redirect],
+    mixins: [comLoading],
     data() {
       return {
         tableData: [],
-        pageNumber: 0,
+        pageNumber: 1,
         pageSize: 10,
         totalPage: 0,
-        dataType: processListMap[0]
+        dataType: ''
       }
     },
     methods: {
@@ -90,6 +90,9 @@
         console.log(`当前页: ${val}`)
         this.pageNumber = val
         this.getProcess()
+      },
+      toPage(row) {
+        toPage.call(this, row)
       },
       getDataType() {
         const routeName = this.$route.name

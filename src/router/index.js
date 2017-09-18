@@ -292,6 +292,10 @@ const router = new Router({
         require(['../pages/home/home.vue'], resolve)
       },
       name: routerNames.con_process,
+      meta: {
+        iconCls: 'stats-bars',
+        hidden: true
+      },
       children: [{
         path: '/conProcess/handingProcess',
         meta: {
@@ -319,11 +323,27 @@ const router = new Router({
           require(['../pages/process/handingProcess.vue'], resolve)
         },
         name: routerNames.con_handle_process
-      }],
-      meta: {
-        iconCls: 'stats-bars',
-        hidden: true
-      }
+      }, {
+        path: '/conProcess/see',
+        meta: {
+          auth: true,
+          hidden: true
+        },
+        component: function (resolve) {
+          require(['../pages/process/toPage.vue'], resolve)
+        },
+        name: routerNames.con_process_see
+      }, {
+        path: '/conProcess/approve',
+        meta: {
+          auth: true,
+          hidden: true
+        },
+        component: function (resolve) {
+          require(['../pages/process/toPage.vue'], resolve)
+        },
+        name: routerNames.con_process_approve
+      }]
     },
     {
       path: '/',

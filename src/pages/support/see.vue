@@ -54,7 +54,7 @@
               </el-col>
               <el-col :span="8">
                 <el-form-item label="版本">
-                  <span v-if="showProcess">{{form.version}}</span>
+                  <span v-if="$route.query.processData">{{form.version}}</span>
                   <el-select @change="changeVersion" v-model="templateId" style="width:90px;" v-else>
                     <el-option
                       v-for="item in versions"
@@ -99,7 +99,7 @@
             </el-form-item>
           </el-form>
         </el-card>
-        <Process v-if="showProcess"></Process>
+        <Process></Process>
       </div>
     </transition>
     <transition name="component-fade" mode="out-in">
@@ -144,7 +144,6 @@
         action: uploadUrl,
         download: downloadUrl,
         showTmpl: false,
-        showProcess: false,
         templateId: this.$route.query.id
       }, _.cloneDeep(defaultData))
     },
@@ -200,10 +199,7 @@
       Process
     },
     created() {
-      const {id, processData} = this.$route.query
-      if (processData) {
-        this.showProcess = true
-      }
+      const {id} = this.$route.query
       this.getTplData(id)
     },
     computed: {
