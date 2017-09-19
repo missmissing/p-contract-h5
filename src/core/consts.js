@@ -71,9 +71,8 @@ export const routerNames = {
   con_list: '合同查询',
   con_tpl_list: '合同模板查询',
   con_order_list: '采购订单查询'
-
 }
 
-export const procMap = ['CRS_Contract_CreateTemplate']
+export const tplMap = ['CRS_Contract_CreateTemplate', 'CRS_Contract_UpdateTemplate', 'CRS_Contract_DeleteTemplate']
 
 export const processListMap = ['BACKLOG', 'STARTED', 'FINISHED']

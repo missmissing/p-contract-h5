@@ -7,7 +7,7 @@
 </template>
 
 <script>
-  import {routerNames, procMap, processListMap} from '@/core/consts'
+  import {routerNames, tplMap, processListMap} from '@/core/consts'
   import Api from '@/api/process'
 
   export default {
@@ -55,19 +55,11 @@
           show
         })
         let name = ''
-        console.log(procCode, procMap[0])
-        if (procCode.toLowerCase().indexOf('template') > -1) {
+        if (tplMap.indexOf(procCode) > -1) {
           name = routerNames.con_tpl_see
         } else {
           return
         }
-//        switch (procCode) {
-//          case procMap[0]:
-//            name = routerNames.con_tpl_see
-//            break
-//          default:
-//            return
-//        }
         this.$router.push({
           name,
           query: {
