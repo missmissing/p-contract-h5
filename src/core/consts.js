@@ -77,4 +77,4 @@ export const tplMap = ['CRS_Contract_CreateTemplate', 'CRS_Contract_UpdateTempla
 
 export const processListMap = ['BACKLOG', 'STARTED', 'FINISHED']
 
-export const contractModelRoutes={1:routerNames.con_createSingleContract,2:routerNames.con_createSimpleContract,3:con_createFrameContract,4:con_createIntentionContract}
+export const contractModelRoutes={1:routerNames.con_createSingleContract,2:routerNames.con_createSimpleContract,3:routerNames.con_createFrameContract,4:routerNames.con_createIntentionContract}
