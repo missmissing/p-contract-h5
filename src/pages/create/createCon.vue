@@ -39,7 +39,7 @@
 </style>
 <template>
   <div class="createCon" v-loading="loadingFlag" :element-loading-text="loadingText">
-    <div class="test">
+    <!--<div class="test">
       <el-select v-model="city" placeholder="请选择" @change="handleChangeTest1">
         <el-option
           v-for="item in cities"
@@ -67,13 +67,13 @@
           </template>
         </el-table-column>
         <el-table-column prop="name" label="name"></el-table-column>
-        <!--<el-table-column fixed="right" label="操作">
+        &lt;!&ndash;<el-table-column fixed="right" label="操作">
           <template scope="scope">
             <el-button @click="handleRemoveTestData(scope.$index,tableData[scope.$index])">移除</el-button>
           </template>
-        </el-table-column>-->
+        </el-table-column>&ndash;&gt;
       </el-table>
-    </div>
+    </div>-->
     <el-card v-if="operateType==='update'">
       <header slot="header">变更原因</header>
       <el-form ref="updateForm" :model="updateForm" label-width="100px" :rules="updateForm.rules">
@@ -346,6 +346,7 @@
                   <el-form-item label="合同生效日期"
                                 prop="startTime">
                     <el-date-picker v-model="cardContentInfoForm.startTime"
+                                    format="yyyy-MM-dd"
                                     :disabled="operateType==='query'"
                                     placeholder="请输入合同生效期日期"
                                     type="date"></el-date-picker>
@@ -355,6 +356,7 @@
                   <el-form-item label="合同终止日期"
                                 prop="endTime">
                     <el-date-picker v-model="cardContentInfoForm.endTime"
+                                    format="yyyy-MM-dd"
                                     :disabled="operateType==='query'"
                                     placeholder="请输入合同终止日期"
                                     type="date"></el-date-picker>
@@ -1165,7 +1167,7 @@
           </el-form>
         </el-tab-pane>
         <el-tab-pane label="合同附件及盖章信息" name="tabSealInfo" v-if="baseInfoForm.contractType!==2">
-          <el-form  rel="cardSealInfoForm" :model="cardSealInfoForm" label-width="100px"
+          <el-form v-if="baseInfoForm.templateId" rel="cardSealInfoForm" :model="cardSealInfoForm" label-width="100px"
                    :rules="cardSealInfoForm.rules">
             <el-button type="primary" @click="handleNewSealFile" icon="plus" v-if="operateType!=='query'" class="mb20">
               新增
@@ -1287,7 +1289,7 @@
                     <el-input v-if="item[scope.$index].attachType!==1&&baseInfoForm.contractTextType===1"
                               :disabled="operateType==='query'||item[scope.$index].attachType===3"
                               v-model="item[scope.$index].fileName"></el-input>
-                    <a v-else href="item[scope.$index].fileUrl">{{item[scope.$index].fileName}}</a>
+                    <a v-else :href="item[scope.$index].fileUrl">{{item[scope.$index].fileName}}</a>
                   </template>
                 </el-table-column>
                 <el-table-column prop="upload" label="上传" width="100px" v-if="item[0].attachType===1">
@@ -1338,8 +1340,7 @@
               </el-table>
             </template>
           </el-form>
-          <!--v-if="baseInfoForm.templateId"-->
-          <!--<h4 v-else>请选择合同基本信息的模版名称！</h4>-->
+          <h4 v-else>请选择合同基本信息的模版名称！</h4>
         </el-tab-pane>
         <el-tab-pane label="备注" name="tabRemark">
           <el-form rel="cardRemarkInfoForm" :model="cardRemarkInfoForm" label-width="100px">
@@ -2366,7 +2367,7 @@
         Object.assign(this.cardContentInfoForm, data.data.dataMap.cardContentInfoForm);
         Object.assign(this.cardFinanceInfoForm, data.data.dataMap.cardFinanceInfoForm);
         Object.assign(this.cardContCheckInfoForm, data.data.dataMap.cardContCheckInfoForm);
-        //Object.assign(this.cardSealInfoForm, data.data.dataMap.cardSealInfoForm);
+        Object.assign(this.cardSealInfoForm, data.data.dataMap.cardSealInfoForm);
         Object.assign(this.cardRemarkInfoForm, data.data.dataMap.cardRemarkInfoForm);
         Object.assign(this.cardOtherInfo, data.data.dataMap.cardOtherInfo);
         const baseInfo = data.data.dataMap.baseInfoForm;
@@ -2854,12 +2855,28 @@
         })
       },
       handleSubmit() {
-        /* Api.getRelatedInfo({}).then((data)=> {
-         this.cardRelatedInfoForm.contractList = data.data.dataMap.contractList;
-         }); */
         this.isSubmit = true
+        this.comLoading(1)
         this.validateForms().then(()=> {
-          console.log('validate success');
+          const paras = {};
+          paras.baseInfoForm = this.baseInfoForm
+          paras.cardContentInfoForm = this.cardContentInfoForm
+          paras.cardFinanceInfoForm = this.cardFinanceInfoForm
+          paras.cardContCheckInfoForm = this.cardContCheckInfoForm
+          paras.cardSealInfoForm = this.cardSealInfoForm
+          paras.cardRemarkInfoForm = this.cardRemarkInfoForm
+          paras.cardOtherInfo = this.cardOtherInfo
+
+          Api.submit(paras).then((data)=> {
+            if (data.data.dataMap.id) {
+              this.$message.success('提交成功！')
+              this.operateType = 'query'
+            }
+            this.comLoading()
+          })
+        }).catch(()=> {
+          this.$message.error('请填写完整信息再提交！')
+          this.comLoading()
         })
 
       },
@@ -2906,19 +2923,18 @@
           saleTime: '',//用章次数
           printTime: '',//打印份数
           remainTime: '',//我方留存份数
-          saleInfos: ['1', '2'],//当前选中的张
+          saleInfos: [1, 2],//当前选中的张
           useSeals: [
             {
-              id: 'seal1',
-              id: '1',
+              id: 1,
               name: '公章'
             },
             {
-              id: '2',
+              id: 2,
               name: '法人章'
             },
             {
-              id: '3',
+              id: 3,
               name: '人事章'
             }
           ],//章列表
@@ -2956,7 +2972,7 @@
         const file = [row]
 //        rows.splice(index, 1)
         const sealAttachments=this.cardSealInfoForm.sealAttachments
-        sealAttachments.splice(index,1)
+        //sealAttachments.splice(index,1)
 
         /*if(currentType===2){
          sealAttachments.push(file);
@@ -3042,9 +3058,9 @@
           }
           const params = {templateId: val, templateName: templateName, contractTextType: contractTextType}
           Api.getSealAttachments(params).then((data)=> {
-            if (data.data.dataMap && data.data.dataMap.length) {
-              this.cardSealInfoForm.sealAttachments = [data.data.dataMap];
-              data.data.dataMap[0].filesSealed = []///???????????接口调试完删除
+            if (data.data.dataMap) {
+              const item=[data.data.dataMap]
+              this.cardSealInfoForm.sealAttachments =[item]
             }
           })
         }

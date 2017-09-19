@@ -30,17 +30,13 @@ export default {
   getRemoteThirdPartiesByKeyWord(params) {
     return Http.get(`/api/createContract/getRemoteThirdPartiesByKeyWord`, params)
   },
-    // 获取其他信息
-  getRelatedInfo(params) {
-    return Http.get(`/api/createContract/getRelatedInfo`, params)
-  },
   //获取模版名称（合同文本类型，合同类型）
   getTemplateByBizTypeId(params){
     return Http.get(`${contract}/contract-web/template/getTemplateByBizTypeId`, params)
   },
   //根据选中定的模版id，获取附件信息
   getSealAttachments(params){
-    return Http.get(`/api/createContract/getSealAttachments`, params)
+    return Http.get(`${contract}/contract-web/contract/template/attach`, params)
   },
   //根据关键字搜索合同标的数据
   getRemoteMaterialsByKeyWord(params){
@@ -49,6 +45,10 @@ export default {
   //保存合同
   saveContract(params){
     return Http.post(`${contract}/contract-web/contract/save`, params)
+  },
+  // 提交
+  submit(params) {
+    return Http.post(`${contract}/contract-web/contract/commit`, params)
   },
     /** ***标签页****/
   getPrTableData(params) {

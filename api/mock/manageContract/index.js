@@ -282,7 +282,7 @@ module.exports = function (api) {
       }
     });
   });
-  api.use('/api/createContract/getRelatedInfo', function (req, res) {
+  api.use('/contract-web/contract/commit', function (req, res) {
     res.status(200).json({
       code: 200,
       message: 'success',
@@ -442,7 +442,7 @@ module.exports = function (api) {
       ]
     });
   });
-  api.use('/api/createContract/getSealAttachments',function(req,res){
+  api.use('/contract-web/contract/template/attach',function(req,res){
     res.status(200).json({
       code: 200,
       message: 'success',
@@ -562,7 +562,7 @@ module.exports = function (api) {
           materialCode:'material111111',
           total:20,
           price:200,
-          taxRate:5
+          taxRate:3
         },
         {
           id: 'material2',
@@ -570,7 +570,7 @@ module.exports = function (api) {
           materialCode:'material22222',
           total:20,
           price:3000,
-          taxRate:10
+          taxRate:6
         },
         {
           id: 'material3',
@@ -578,7 +578,7 @@ module.exports = function (api) {
           materialCode:'material33333',
           total:20,
           price:400,
-          taxRate:20
+          taxRate:17
         }
       ]
     });
