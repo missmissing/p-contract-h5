@@ -39,31 +39,41 @@
 </style>
 <template>
   <div class="createCon" v-loading="loadingFlag" :element-loading-text="loadingText">
-    <!--<div class="test">
+    <div class="test">
+      <el-select v-model="city" placeholder="请选择" @change="handleChangeTest1">
+        <el-option
+          v-for="item in cities"
+          :key="item.value"
+          :label="item.label"
+          :value="item.value">
+          <span style="float: left">{{ item.label }}</span>
+          <span style="float: right; color: #8492a6; font-size: 13px">{{ item.value }}</span>
+        </el-option>
+      </el-select>
       <el-table :data="tableData">
         <el-table-column prop="id" label="id"></el-table-column>
-        <el-table-column prop="selects" label="selects">
+        <el-table-column prop="city" label="cities">
           <template scope="scope">
-            index:{{scope.$index}}
-            sel:{{tableData[scope.$index].sel}}
-            <el-select v-model="tableData[scope.$index].sel" @change="handleChangeTest(scope.$index,tableData)">
+            <el-select v-model="tableData[scope.$index].city" placeholder="请选择" @change="handleChangeTest(scope.$index,tableData)">
               <el-option
-                v-for="item in selects"
-                :key="item.id"
-                :label="item.name"
-                :value="item.id">
+                v-for="item in cities"
+                :key="item.value"
+                :label="item.label"
+                :value="item.value">
+                <span style="float: left">{{ item.label }}</span>
+                <span style="float: right; color: #8492a6; font-size: 13px">{{ item.value }}</span>
               </el-option>
             </el-select>
           </template>
         </el-table-column>
         <el-table-column prop="name" label="name"></el-table-column>
-        <el-table-column fixed="right" label="操作">
+        <!--<el-table-column fixed="right" label="操作">
           <template scope="scope">
             <el-button @click="handleRemoveTestData(scope.$index,tableData[scope.$index])">移除</el-button>
           </template>
-        </el-table-column>
+        </el-table-column>-->
       </el-table>
-    </div>-->
+    </div>
     <el-card v-if="operateType==='update'">
       <header slot="header">变更原因</header>
       <el-form ref="updateForm" :model="updateForm" label-width="100px" :rules="updateForm.rules">
@@ -303,7 +313,11 @@
                 <el-table-column prop="materialName" label="物料名称"></el-table-column>
                 <el-table-column v-if="baseInfoForm.contractType!==3" prop="total" label="数量"></el-table-column>
                 <el-table-column prop="price" label="价格"></el-table-column>
-                <el-table-column prop="taxRate" label="税率"></el-table-column>
+                <el-table-column prop="taxRate" label="税率">
+                  <template scope="scope">
+                    {{cardContentInfoForm.conStandard[scope.$index].taxRate}}%
+                  </template>
+                </el-table-column>
                 <el-table-column
                   fixed="right"
                   label="操作"
@@ -1151,7 +1165,7 @@
           </el-form>
         </el-tab-pane>
         <el-tab-pane label="合同附件及盖章信息" name="tabSealInfo" v-if="baseInfoForm.contractType!==2">
-          <el-form v-if="baseInfoForm.templateId" rel="cardSealInfoForm" :model="cardSealInfoForm" label-width="100px"
+          <el-form  rel="cardSealInfoForm" :model="cardSealInfoForm" label-width="100px"
                    :rules="cardSealInfoForm.rules">
             <el-button type="primary" @click="handleNewSealFile" icon="plus" v-if="operateType!=='query'" class="mb20">
               新增
@@ -1324,7 +1338,8 @@
               </el-table>
             </template>
           </el-form>
-          <h4 v-else>请选择合同基本信息的模版名称！</h4>
+          <!--v-if="baseInfoForm.templateId"-->
+          <!--<h4 v-else>请选择合同基本信息的模版名称！</h4>-->
         </el-tab-pane>
         <el-tab-pane label="备注" name="tabRemark">
           <el-form rel="cardRemarkInfoForm" :model="cardRemarkInfoForm" label-width="100px">
@@ -1556,14 +1571,26 @@
         <el-form-item v-else label="物料名称" prop="materialName">
           <el-input v-model="formAddConStandard.materialName" placeholder="请输入物料名称"></el-input>
         </el-form-item>
-        <el-form-item prop="materialCode" label="物料编码">
-          <el-input v-model="formAddConStandard.materialCode" :disabled="formAddConStandard.conStandardType===1" placeholder="请输入物料编码"></el-input>
+        <el-form-item prop="materialCode" label="物料编码" v-if="formAddConStandard.conStandardType===1">
+          <el-input v-model="formAddConStandard.materialCode" :disabled="formAddConStandard.conStandardType===1"
+                    placeholder="请输入物料编码"></el-input>
         </el-form-item>
         <el-form-item prop="price" label="价格">
           <el-input v-model="formAddConStandard.price" placeholder="请输入物料价格"></el-input>
         </el-form-item>
         <el-form-item label="税率" prop="taxRate">
-          <el-input v-model="formAddConStandard.taxRate" placeholder="请输入物料税率"></el-input>
+          <el-select
+            size="small"
+            v-model="formAddConStandard.taxRate">
+            <el-option
+              v-for="item in formAddConStandard.taxRates"
+              :key="item.value"
+              :label="item.code"
+              :value="item.value">
+              <span style="float: left">{{ item.value}}</span>
+              <span style="float: right; color: #8492a6; font-size: 13px">{{ item.desc }}</span>
+            </el-option>
+          </el-select>
         </el-form-item>
       </el-form>
       <footer slot="footer">
@@ -1628,31 +1655,43 @@
       }
 
       return {
-        selects: [
+        city: null,
+        cities: [
           {
-            id: 11,
-            name: '11'
-          },
-          {
-            id: 22,
-            name: '22'
-          },
+            value: 'Beijing',
+            label: '北京'
+          }, {
+            value: 'Shanghai',
+            label: '上海'
+          }, {
+            value: 'Nanjing',
+            label: '南京'
+          }, {
+            value: 'Chengdu',
+            label: '成都'
+          }, {
+            value: 'Shenzhen',
+            label: '深圳'
+          }, {
+            value: 'Guangzhou',
+            label: '广州'
+          }
         ],
         tableData: [
           {
-            sel: '',
+            city: null,
             id: '1',
             name: 'name1'
           },
           {
-            sel: '',
+            city: null,
             id: '2',
             name: 'name2'
           },
           {
-            sel: '',
+            city: null,
             id: '3',
-            name: 'name2'
+            name: 'name3'
           },
         ],
         visible: false,//预览
@@ -2123,9 +2162,9 @@
           loading: false
         },
         formAddConStandard: {
-          search:'',
+          search: '',
           conStandardType: 1,
-          firstAddType:'',
+          firstAddType: '',
           name: '',
           loading: false,
           materials: [],
@@ -2133,6 +2172,43 @@
           code: '',
           price: null,
           taxRate: null,
+          taxRates: [
+            {
+              code: 'JO',
+              value: 0,
+              desc: '0%进税项'
+            },
+            {
+              code: 'J1',
+              value: 3,
+              desc: '3%进税项'
+            },
+            {
+              code: 'J2',
+              value: 6,
+              desc: '6%进税项'
+            },
+            {
+              code: 'J3',
+              value: 11,
+              desc: '11%进税项'
+            },
+            {
+              code: 'J4',
+              value: 17,
+              desc: '17%进税项'
+            },
+            {
+              code: 'J5',
+              value: '13',
+              desc: '13%进税项'
+            },
+            {
+              code: 'J6',
+              value: 5,
+              desc: '5%进税项'
+            },
+          ],
           rules: {}
         },
         isSubmit: false
@@ -2878,8 +2954,9 @@
         const currentType = row.attachType;
         currentType === 2 ? row.haveSale = false : row.haveSale = true
         const file = [row]
-//rows.splice(index, 1)
-//        sealAttachments.splice(index,1)
+//        rows.splice(index, 1)
+        const sealAttachments=this.cardSealInfoForm.sealAttachments
+        sealAttachments.splice(index,1)
 
         /*if(currentType===2){
          sealAttachments.push(file);
@@ -2994,19 +3071,19 @@
         this.cardContentInfoForm.dialogAddConStandard = true
       },
       handleAddConStandardItem(formName){
-        const curFormName=this.$refs[formName]
-        if(curFormName.model.firstAddType===''){
-          this.formAddConStandard.firstAddType=curFormName.model.conStandardType
+        const curFormName = this.$refs[formName]
+        if (curFormName.model.firstAddType === '') {
+          this.formAddConStandard.firstAddType = curFormName.model.conStandardType
         }
-        const conStandard=this.cardContentInfoForm.conStandard
-        const item={};
-        item.id=curFormName.model.id
-        item.materialCode=curFormName.model.materialCode
-        item.materialName=curFormName.model.materialName
-        item.total=curFormName.model.total
-        item.price=curFormName.model.price
-        item.taxRate=curFormName.model.taxRate
-        item.operate='add'
+        const conStandard = this.cardContentInfoForm.conStandard
+        const item = {};
+        item.id = curFormName.model.id
+        item.materialCode = curFormName.model.materialCode
+        item.materialName = curFormName.model.materialName
+        item.total = curFormName.model.total
+        item.price = curFormName.model.price
+        item.taxRate = curFormName.model.taxRate
+        item.operate = 'add'
         conStandard.push(item);
 
         this.cardContentInfoForm.dialogAddConStandard = false
@@ -3044,18 +3121,22 @@
           }
         }
       },
-      handleRemoveConStandard(index,rows){
-        rows.splice(index,1);
+      handleRemoveConStandard(index, rows){
+        rows.splice(index, 1);
       },
       handleRemoveTestData(index, row){
         console.log('index', index);
         console.log('row', row);
         this.tableData.splice(index, 1)
       },
-      handleChangeTest(index, rows){
+      handleChangeTest(index,rows){
+        //console.log('handleChangeTest-val', val);
         console.log('handleChangeTest-index', index);
         console.log('handleChangeTest-rows', rows);
-        //rows.splice(index,1)
+        rows.splice(index,1)
+      },
+      handleChangeTest1(val){
+        console.log('handleChangeTest1-val', val);
       },
 
     },
@@ -3084,8 +3165,8 @@
           this.operateType = 'update'
         }
       },
-      'formAddConStandard.conStandardType':function(val,oldVal){
-        if(val!==oldVal){
+      'formAddConStandard.conStandardType': function (val, oldVal) {
+        if (val !== oldVal) {
           this.$refs['formAddConStandard'].resetFields()
         }
       }
