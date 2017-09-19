@@ -503,14 +503,13 @@
         signModel.getPr({
           pr: prCode
         }).then((res) => {
-          const {data} = res
-          if (!data) {
-            this.$message.warning('采购申请号不存在！')
+          const data = res.data.dataMap
+          console.log(data)
+          if (this.prData.length && this.prData[0].companyCode !== data.companyCode) {
+            this.$message.warning('采购申请号所属公司编码不同!')
             return
           }
-          const {dataMap} = data
-          this.prData.push(dataMap)
-          console.log(this.prData)
+          this.prData.push(data)
         })
       },
       match() {
@@ -561,9 +560,11 @@
           const {materialCode} = material
           if (code === materialCode) {
             const {contVos} = material
-            contVos.forEach((item) => {
-              result.push(item)
-            })
+            if (contVos) {
+              contVos.forEach((item) => {
+                result.push(item)
+              })
+            }
             return true
           }
           return false

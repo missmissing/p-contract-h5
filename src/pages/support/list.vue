@@ -134,7 +134,7 @@
   import {routerNames} from '@/core/consts'
   import supportModel from '@/api/support'
   import comLoading from '@/mixins/comLoading'
-  import {formatTime, formatDate} from '@/filters/moment'
+  import {formatTime, formatDate, formatTimeStamp} from '@/filters/moment'
 
   export default {
     mixins: [comLoading],
@@ -185,8 +185,8 @@
       formatDateRange(value) {
         const daterange = value.split(' ')
         this.daterange = [daterange[0], daterange[2]]
-        this.form.startTime = daterange[0]
-        this.form.ednTime = daterange[1]
+        this.form.startTime = formatTimeStamp(daterange[0])
+        this.form.endTime = formatTimeStamp(daterange[2])
       }
     },
     filters: {
