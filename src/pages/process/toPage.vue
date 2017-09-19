@@ -7,17 +7,74 @@
 </template>
 
 <script>
-  import {routerNames, processListMap} from '@/core/consts'
-  import redirect from '@/mixins/redirect'
+  import {routerNames, procMap, processListMap} from '@/core/consts'
+  import Api from '@/api/process'
 
   export default {
-    mixins: [redirect],
+    data() {
+      return {dataType: ''}
+    },
     methods: {
       getDataType() {
         const routeName = this.$route.name
         if (routeName === routerNames.con_process_approve) {
           this.dataType = processListMap[0]
         }
+      },
+      see(row) {
+        console.log(row)
+        const {procInstId, serialNumber, procCode} = row
+        if (this.dataType === processListMap[0]) {
+          Api.getApproveNode({
+            serialNumber,
+            procCode
+          }).then((res) => {
+            const data = res.data.dataMap
+            this.toPage(row, data)
+          })
+        } else {
+          Api.getStartedProcNodes({
+            procInstId,
+            procCode
+          }).then((res) => {
+            const data = res.data.dataMap
+            this.toPage(row, data)
+          })
+        }
+      },
+      toPage(row, data) {
+        const {procInstId, serialNumber, procCode} = row
+        const {actions, approveInfo} = data
+        const {id} = approveInfo
+        const show = this.dataType === processListMap[0]
+        const processData = JSON.stringify({
+          procInstId,
+          actions,
+          serialNumber,
+          procCode,
+          show
+        })
+        let name = ''
+        console.log(procCode, procMap[0])
+        if (procCode.toLowerCase().indexOf('template') > -1) {
+          name = routerNames.con_tpl_see
+        } else {
+          return
+        }
+//        switch (procCode) {
+//          case procMap[0]:
+//            name = routerNames.con_tpl_see
+//            break
+//          default:
+//            return
+//        }
+        this.$router.push({
+          name,
+          query: {
+            id,
+            processData
+          }
+        })
       }
     },
     created() {
