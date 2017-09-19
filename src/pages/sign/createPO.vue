@@ -321,39 +321,39 @@
               max-height="450"
               class="wp100">
               <el-table-column
-                prop="prNum"
+                prop="pr"
                 label="PR号"
                 width="100">
               </el-table-column>
               <el-table-column
-                prop="itemNum"
+                prop="itemNo"
                 label="行项目"
                 width="100">
               </el-table-column>
               <el-table-column
-                prop="materielCode"
+                prop="materialCode"
                 label="物料编码"
                 width="100">
               </el-table-column>
               <el-table-column
-                prop="materielName"
+                prop="materialName"
                 label="物料名称">
                 <template scope="scope">
-                  <template v-if="!scope.row.materielName">
+                  <template v-if="!scope.row.materialName">
                     <el-radio v-model="radio" :label="scope.$index">{{''}}</el-radio>
                   </template>
                   <template v-else>
-                    {{scope.row.materielName}}
+                    {{scope.row.materialName}}
                   </template>
                 </template>
               </el-table-column>
               <el-table-column
-                prop="contractCode"
+                prop="contractNo"
                 label="合同号"
                 width="80">
               </el-table-column>
               <el-table-column
-                prop="supplier"
+                prop="supplierCode"
                 label="供应商"
                 width="100">
               </el-table-column>
@@ -362,17 +362,17 @@
                 label="供应商名称">
               </el-table-column>
               <el-table-column
-                prop="startDate"
+                prop="startTime"
                 label="开始时间"
                 width="100">
               </el-table-column>
               <el-table-column
-                prop="endDate"
+                prop="endTime"
                 label="截止时间"
                 width="100">
               </el-table-column>
               <el-table-column
-                prop="taxPrice"
+                prop="totalAmount"
                 label="价格"
                 width="80">
               </el-table-column>
@@ -397,12 +397,12 @@
                 </template>
               </el-table-column>
               <el-table-column
-                prop="contractCode"
+                prop="contractNo"
                 label="合同号"
                 width="80">
               </el-table-column>
               <el-table-column
-                prop="supplier"
+                prop="supplierCode"
                 label="供应商"
                 width="100">
               </el-table-column>
@@ -411,12 +411,12 @@
                 label="供应商名称">
               </el-table-column>
               <el-table-column
-                prop="startDate"
+                prop="startTime"
                 label="开始时间"
                 width="100">
               </el-table-column>
               <el-table-column
-                prop="endDate"
+                prop="endTime"
                 label="截止时间"
                 width="100">
               </el-table-column>
@@ -498,6 +498,7 @@
           }
           const {dataMap} = data
           this.prData.push(dataMap)
+          console.log(this.prData)
         })
       },
       match() {
@@ -514,42 +515,25 @@
           pr,
           contractNo: this.contractCode
         }).then((res) => {
-          debugger
+          console.log(res)
           const data = res.data.dataMap
+          const {intentionContVos, materialsMatchVoList} = data
+          this.intentionData = intentionContVos
           this.dialogVisible = true
-          this.contractData = data
-          this.matchData = this.getSource(data)
+          this.contractData = materialsMatchVoList
+          this.matchData = this.getSource(materialsMatchVoList)
         })
       },
       getSource(data) {
         const result = []
-        const contractData = data
-        this.prData.forEach((pr) => {
-          const {prNum, itemNum, prGoods = []} = pr
-          prGoods.forEach((prGood) => {
-            const {materielName, materielCode = []} = prGood
-            const result1 = []
-            contractData.forEach((contract) => {
-              const {contractCode, supplier, supplierName, startDate, endDate, contractGoods = []} = contract
-              contractGoods.forEach((contractGood) => {
-                const {contractGoodCode, taxPrice, taxRate} = contractGood
-                if (materielCode === contractGoodCode) {
-                  const contractGoodData = {
-                    contractCode,
-                    contractGoodCode,
-                    supplier,
-                    supplierName,
-                    startDate,
-                    endDate,
-                    taxPrice,
-                    taxRate
-                  }
-                  result1.push(contractGoodData)
-                }
-              })
-            })
+        const materialList = data
+        this.prData.forEach((singlePr) => {
+          const {pr, purOrderMaterialsList = []} = singlePr
+          purOrderMaterialsList.forEach((prGood) => {
+            const {itemNo, materialName, materialCode} = prGood
+            const result1 = this.matchCode(materialCode, materialList)
             if (result1.length) {
-              result.push({prNum, itemNum, materielCode, materielName})
+              result.push({pr, itemNo, materialCode, materialName})
               result1.forEach((item) => {
                 result.push(item)
               })
@@ -557,6 +541,21 @@
           })
         })
         console.log(result)
+        return result
+      },
+      matchCode(code, materialList) {
+        const result = []
+        materialList.some((material) => {
+          const {materialCode} = material
+          if (code === materialCode) {
+            const {contVos} = material
+            contVos.forEach((item) => {
+              result.push(item)
+            })
+            return true
+          }
+          return false
+        })
         return result
       },
       getInfo() {
