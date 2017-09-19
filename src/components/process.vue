@@ -120,6 +120,9 @@
     },
     created() {
       let {processData} = this.$route.query
+      if (!processData) {
+        return
+      }
       processData = JSON.parse(processData)
       console.log(processData)
       const {procInstId, procCode, operatorId, actions, show} = processData

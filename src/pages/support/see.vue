@@ -94,6 +94,14 @@
                 <!--<div class="el-upload__tip" slot="tip">文件不超过10M</div>-->
               </Upload>
             </el-form-item>
+            <div v-if="showAbolish">
+              <el-form-item label="废除日期">
+                {{form.updateTime}}
+              </el-form-item>
+              <el-form-item label="废除原因">
+                {{form.updateReason}}
+              </el-form-item>
+            </div>
             <el-form-item v-show="!tplTypeShow">
               <el-button type="primary" @click="showTmpl=true">模板信息</el-button>
             </el-form-item>
@@ -117,6 +125,7 @@
   import comLoading from '@/mixins/comLoading'
   import {uploadUrl, downloadUrl} from '@/api/consts'
   import {formatDate} from '@/filters/moment'
+  import {tplMap} from '@/core/consts'
 
   const defaultData = {
     form: {
@@ -144,12 +153,13 @@
         action: uploadUrl,
         download: downloadUrl,
         showTmpl: false,
-        templateId: this.$route.query.id
+        templateId: this.$route.query.id,
+        showAbolish: false
       }, _.cloneDeep(defaultData))
     },
     methods: {
       setData(tplInfo) {
-        const {templateCode, templateName, templateType, bizTypes, startDate, endDate, updateTime, version, operatorName, creatorName, description, files} = tplInfo
+        const {templateCode, templateName, templateType, bizTypes, startDate, endDate, updateTime, updateReason, version, operatorName, creatorName, description, files} = tplInfo
         this.tplInfo = tplInfo
         this.form['templateCode'] = templateCode
         this.form['templateName'] = templateName
@@ -158,6 +168,7 @@
         this.form['startDate'] = formatDate(startDate)
         this.form['endDate'] = formatDate(endDate)
         this.form['updateTime'] = formatDate(updateTime)
+        this.form['updateReason'] = updateReason
         this.form['version'] = `V${version}`
         this.form['operatorName'] = operatorName
         this.form['creatorName'] = creatorName
@@ -199,8 +210,11 @@
       Process
     },
     created() {
-      const {id} = this.$route.query
+      const {id, processData} = this.$route.query
       this.getTplData(id)
+      if (processData) {
+        this.showAbolish = JSON.parse(processData).procCode === tplMap[2]
+      }
     },
     computed: {
       tplTypeShow() {
