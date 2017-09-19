@@ -1613,6 +1613,7 @@
       </el-col>
     </el-row>
     <Preview :visible.sync="visible"></Preview>
+    <Process></Process>
   </div>
 </template>
 <script>
@@ -1622,6 +1623,7 @@
   import comLoading from '@/mixins/comLoading'
   import {downloadUrl, uploadUrl} from '@/api/consts'
   import store from 'store'
+  import Process from '@/components/process'
 
 
   //document.cookie = 'sys=FMM21KGIJLHOGHNKHGGLLOFMMKFNKKE'
