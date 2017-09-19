@@ -6,7 +6,9 @@
 
 <template>
   <div class="form-container">
-    <div>
+    <div
+      v-loading="loadingFlag"
+      :element-loading-text="loadingText">
       <el-card>
         <div slot="header">
           <span class="common-title">基本信息</span>
@@ -61,9 +63,9 @@
               <el-table-column
                 prop="createTime"
                 label="创建时间"
-                width="200">
+                width="150">
                 <template scope="scope">
-                  {{scope.row.createTime | formatTime}}
+                  {{scope.row.createTime | formatDate}}
                 </template>
               </el-table-column>
               <el-table-column
@@ -71,8 +73,8 @@
                 label="PR申请链接">
               </el-table-column>
               <el-table-column
-                fixed="right"
-                label="操作">
+                label="操作"
+                min-width="80">
                 <template scope="scope">
                   <el-button
                     @click.native.prevent="deleteRow(scope.$index, prData)"
@@ -313,8 +315,8 @@
       size="large"
       :visible.sync="dialogVisible">
       <div>
-        <el-tabs>
-          <el-tab-pane label="框架合同">
+        <el-tabs v-model="activeName">
+          <el-tab-pane label="框架合同" name="1">
             <el-table
               :data="matchData"
               border
@@ -322,18 +324,16 @@
               class="wp100">
               <el-table-column
                 prop="pr"
-                label="PR号"
-                width="100">
+                label="PR号">
               </el-table-column>
               <el-table-column
                 prop="itemNo"
                 label="行项目"
-                width="100">
+                width="80">
               </el-table-column>
               <el-table-column
                 prop="materialCode"
-                label="物料编码"
-                width="100">
+                label="物料编码">
               </el-table-column>
               <el-table-column
                 prop="materialName"
@@ -349,8 +349,7 @@
               </el-table-column>
               <el-table-column
                 prop="contractNo"
-                label="合同号"
-                width="80">
+                label="合同号">
               </el-table-column>
               <el-table-column
                 prop="supplierCode"
@@ -364,12 +363,18 @@
               <el-table-column
                 prop="startTime"
                 label="开始时间"
-                width="100">
+                width="120">
+                <template scope="scope">
+                  {{scope.row.startTime | formatDate}}
+                </template>
               </el-table-column>
               <el-table-column
                 prop="endTime"
                 label="截止时间"
-                width="100">
+                width="120">
+                <template scope="scope">
+                  {{scope.row.endTime | formatDate}}
+                </template>
               </el-table-column>
               <el-table-column
                 prop="totalAmount"
@@ -383,7 +388,7 @@
               </el-table-column>
             </el-table>
           </el-tab-pane>
-          <el-tab-pane label="框架意向合同">
+          <el-tab-pane label="框架意向合同" name="2">
             <el-table
               :data="intentionData"
               border
@@ -398,13 +403,11 @@
               </el-table-column>
               <el-table-column
                 prop="contractNo"
-                label="合同号"
-                width="80">
+                label="合同号">
               </el-table-column>
               <el-table-column
                 prop="supplierCode"
-                label="供应商"
-                width="100">
+                label="供应商">
               </el-table-column>
               <el-table-column
                 prop="supplierName"
@@ -413,12 +416,18 @@
               <el-table-column
                 prop="startTime"
                 label="开始时间"
-                width="100">
+                width="120">
+                <template scope="scope">
+                  {{scope.row.startTime | formatDate}}
+                </template>
               </el-table-column>
               <el-table-column
                 prop="endTime"
                 label="截止时间"
-                width="100">
+                width="120">
+                <template scope="scope">
+                  {{scope.row.endTime | formatDate}}
+                </template>
               </el-table-column>
             </el-table>
           </el-tab-pane>
@@ -434,16 +443,19 @@
 
 <script>
   import signModel from '@/api/sign'
-  import {formatTime} from '@/filters/moment'
+  import {formatTime, formatDate} from '@/filters/moment'
   import fillZero from '@/util/fillZero'
+  import comLoading from '@/mixins/comLoading'
 
   export default {
+    mixins: [comLoading],
     data() {
       return {
         prCode: '',
         contractCode: '',
         prData: [],
         contractData: [],
+        activeName: '1',
         matchData: [],
         intentionData: [],
         radio: null,
@@ -559,13 +571,17 @@
         return result
       },
       getInfo() {
-        if (!this.radio) {
+        if (!this.radio && !this.radio1) {
           this.$message.warning('请选择一项！')
           return
         }
         this.dialogVisible = false
-        const {contractCode} = this.matchData[this.radio]
-        console.log(contractCode, this.prData)
+        console.log(this.activeName)
+        if (this.activeName === '1') {
+          console.log(this.matchData[this.radio])
+          return
+        }
+        console.log(this.intentionData[this.radio1])
       },
       addService() {
         this.serverDialogVisible = true
@@ -593,7 +609,20 @@
       }
     },
     filters: {
-      formatTime
+      formatTime,
+      formatDate
+    },
+    watch: {
+      radio() {
+        if (this.activeName === '1') {
+          this.radio1 = null
+        }
+      },
+      radio1() {
+        if (this.activeName === '2') {
+          this.radio = null
+        }
+      }
     }
   }
 </script>
