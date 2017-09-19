@@ -85,7 +85,6 @@
     },
     created() {
       this.getDataType()
-
       const {procInstId, serialNumber, procCode} = this.$route.query
       this.see({procInstId, serialNumber, procCode})
     }

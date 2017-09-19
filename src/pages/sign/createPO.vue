@@ -530,9 +530,9 @@
           const data = res.data.dataMap
           const {intentionContVos, materialsMatchVoList} = data
           this.intentionData = intentionContVos
-          this.dialogVisible = true
           this.contractData = materialsMatchVoList
           this.matchData = this.getSource(materialsMatchVoList)
+          this.dialogVisible = true
         })
       },
       getSource(data) {
