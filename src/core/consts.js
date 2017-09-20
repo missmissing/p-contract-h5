@@ -47,6 +47,7 @@ export const routerNames = {
 
   con_sign: '合同签订',
   con_purchase_order: '创建采购订单',
+  con_purchase_see: '采购订单查看',
 
   con_performance: '合同履约',
   con_performanceIndex: '履约合同',

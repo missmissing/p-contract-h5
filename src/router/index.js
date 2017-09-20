@@ -176,6 +176,16 @@ const router = new Router({
           require(['../pages/sign/createPO.vue'], resolve)
         },
         name: routerNames.con_purchase_order
+      }, {
+        path: '/consign/see',
+        meta: {
+          auth: true,
+          hidden: true
+        },
+        component: function (resolve) {
+          require(['../pages/sign/see.vue'], resolve)
+        },
+        name: routerNames.con_purchase_see
       }],
       meta: {
         iconCls: 'stats-bars'

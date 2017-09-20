@@ -80,13 +80,13 @@ export default {
   /** ***根据合同编号获取详情接口****/
   getContractDetailByCode(params) {
     const {id} = params
-    return Http.get(`${contract}/contract-web/contract/no/${id}`, params)
+    return Http.get(`${contract}/contract-web/contract/no/${id}`)
   },
   /** ***根据合同编号获取详情接口****/
 
   /** ***合同中止提交****/
   contractSuspendSubmit(params) {
-    return Http.get(`${contract}/contract-web/contract/suspend`, params)
+    return Http.post(`${contract}/contract-web/contract/suspend`, params)
   }
   /** ***合同中止提交****/
 }

@@ -1,85 +1,82 @@
 <style type="text/scss" lang="scss" scoped>
-  .form-container {
 
-  }
 </style>
 
 <template>
-  <div class="form-container">
-    <div>
-      <el-card>
-        <div slot="header">
-          <span class="common-title">基本信息</span>
-        </div>
-        <div class="basic-info">
-          <el-form label-width="120px">
-            <el-row>
-              <el-col :span="8">
-                <el-form-item label="合同编号">
-                  <el-input v-model="contractCode" icon="search" :on-icon-click="search"></el-input>
-                </el-form-item>
-              </el-col>
-              <el-button type="info" class="ml20">详 情</el-button>
-            </el-row>
-            <el-row>
-              <el-col :span="8">
-                <el-form-item label="合同签署日期">
-                  <el-input :value="signDate | formatDate" disabled></el-input>
-                </el-form-item>
-              </el-col>
-              <el-col :span="8" :offset="1">
-                <el-form-item label="合同状态">
-                  <el-input :value="contractStatus" disabled></el-input>
-                </el-form-item>
-              </el-col>
-              <el-col :span="8">
-                <el-form-item label="合同生效日期">
-                  <el-input :value="startTime | formatDate" disabled></el-input>
-                </el-form-item>
-              </el-col>
-              <el-col :span="8" :offset="1">
-                <el-form-item label="合同截止日期">
-                  <el-input :value="endTime | formatDate" disabled></el-input>
-                </el-form-item>
-              </el-col>
-              <el-col :span="8">
-                <el-form-item label="合同中止原因">
-                  <el-select
-                    class="wp100"
-                    v-model="suspendReason"
-                    placeholder="请选择">
-                    <el-option
-                      v-for="item in options"
-                      :key="item"
-                      :label="item"
-                      :value="item">
-                    </el-option>
-                  </el-select>
-                </el-form-item>
-              </el-col>
-              <el-col :span="8" :offset="1">
-                <el-form-item label="实际中止日期">
-                  <el-date-picker
-                    style="width:100%;"
-                    v-model="suspendTime"
-                    type="date"
-                    placeholder="选择日期">
-                  </el-date-picker>
-                </el-form-item>
-              </el-col>
-            </el-row>
-            <el-form-item label="原因说明">
+  <div class="pd20"
+       v-loading="loadingFlag"
+       :element-loading-text="loadingText">
+    <div class="basic-info">
+      <el-form :model="form" :rules="rules" ref="form" label-width="120px">
+        <el-row>
+          <el-col :span="8">
+            <el-form-item label="合同编号">
               <el-input
-                type="textarea"
-                :maxlength="300"
-                :autosize="{ minRows: 2 }"
-                resize="none"
-                v-model="suspendRemark">
+                v-model="contractCode"
+                icon="search"
+                :on-icon-click="search"
+                @keyup.enter.native="search">
               </el-input>
             </el-form-item>
-          </el-form>
-        </div>
-      </el-card>
+          </el-col>
+          <el-button type="info" class="ml20" @click="toDetail">详 情</el-button>
+        </el-row>
+        <el-row>
+          <el-col :span="8">
+            <el-form-item label="合同签署日期">
+              <el-input :value="signDate | formatDate" disabled></el-input>
+            </el-form-item>
+          </el-col>
+          <el-col :span="8" :offset="1">
+            <el-form-item label="合同状态">
+              <el-input :value="contractStatus" disabled></el-input>
+            </el-form-item>
+          </el-col>
+          <el-col :span="8">
+            <el-form-item label="合同生效日期">
+              <el-input :value="startTime | formatDate" disabled></el-input>
+            </el-form-item>
+          </el-col>
+          <el-col :span="8" :offset="1">
+            <el-form-item label="合同截止日期">
+              <el-input :value="endTime | formatDate" disabled></el-input>
+            </el-form-item>
+          </el-col>
+          <el-col :span="8">
+            <el-form-item label="合同中止原因" prop="suspendReason">
+              <el-select
+                class="wp100"
+                v-model="form.suspendReason"
+                placeholder="请选择">
+                <el-option
+                  v-for="item in options"
+                  :key="item.value"
+                  :label="item.label"
+                  :value="item.value">
+                </el-option>
+              </el-select>
+            </el-form-item>
+          </el-col>
+          <el-col :span="8" :offset="1">
+            <el-form-item label="实际中止日期" prop="suspendTime">
+              <el-date-picker
+                style="width:100%;"
+                v-model="form.suspendTime"
+                type="date"
+                placeholder="选择日期">
+              </el-date-picker>
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-form-item label="原因说明" prop="suspendRemark">
+          <el-input
+            type="textarea"
+            :autosize="{ minRows: 2 }"
+            resize="none"
+            v-model.trim="form.suspendRemark">
+          </el-input>
+        </el-form-item>
+      </el-form>
     </div>
     <div class="mt20 mb20 ml20">
       <!--<el-button>保 存</el-button>-->
@@ -91,25 +88,42 @@
 <script>
   import Api from '@/api/manageContract'
   import {formatDate} from '@/filters/moment'
+  import comLoading from '@/mixins/comLoading'
 
   export default {
+    mixins: [comLoading],
     data() {
       return {
+        form: {
+          suspendReason: '',
+          suspendTime: '',
+          suspendRemark: ''
+        },
+        rules: {
+          suspendReason: [
+            {required: true, message: '请选择中止原因'}
+          ],
+          suspendTime: [
+            {type: 'date', required: true, message: '请选择中止时间', trigger: 'change'}
+          ],
+          suspendRemark: [
+            {required: true, message: '请填写原因说明', trigger: 'change'},
+            {max: 300, message: '长度不超过300个字符', trigger: 'change'}
+          ]
+        },
         contractCode: '',
         signDate: '',
         contractStatus: '',
         startTime: '',
         endTime: '',
-        suspendTime: '',
-        suspendReason: '',
-        suspendRemark: '',
-        options: ['合同违约中止', '合同变更后中止', '固定期限合同正常履行完成后中止'],
-        info: {}
+        options: [{value: 1, label: '合同违约中止'}, {value: 2, label: '合同变更后中止'}, {value: 3, label: '固定期限合同正常履行完成后中止'}],
+        info: null
       }
     },
     methods: {
       search() {
         console.log(this.contractCode)
+        this.comLoading(1)
         Api.getContractDetailByCode({id: this.contractCode}).then((res) => {
           const data = res.data.dataMap
           console.log(data)
@@ -118,21 +132,38 @@
           const {startTime, endTime} = cardContentInfoForm
           this.startTime = startTime
           this.endTime = endTime
+          this.comLoading()
         })
       },
-      submit() {
-        const {baseInfoForm} = this.info
-        const {id} = baseInfoForm
-        const result = {
-          id,
-          suspendTime: formatDate(this.suspendTime),
-          suspendReason: this.suspendReason,
-          suspendRemark: this.suspendRemark
+      toDetail() {
+        if (!this.info) {
+          this.$message.warning('请输入合同编号查询')
         }
-        console.log(result)
-//        Api.contractSuspendSubmit(result).then((res) => {
-//          console.log(res)
-//        })
+      },
+      submit() {
+        this.$refs['form'].validate((valid) => {
+          if (valid) {
+            if (!this.info) {
+              this.$message.warning('请输入合同编号查询')
+              return
+            }
+            const {baseInfoForm} = this.info
+            const {id} = baseInfoForm
+            const result = {
+              id,
+              suspendTime: formatDate(this.suspendTime),
+              suspendReason: this.suspendReason,
+              suspendRemark: this.suspendRemark
+            }
+            console.log(result)
+            Api.contractSuspendSubmit(result).then((res) => {
+              console.log(res)
+            })
+          } else {
+            console.log('error submit!!')
+            return false
+          }
+        })
       }
     },
     filters: {
