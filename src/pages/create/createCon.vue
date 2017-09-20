@@ -39,41 +39,6 @@
 </style>
 <template>
   <div class="createCon" v-loading="loadingFlag" :element-loading-text="loadingText">
-    <!--<div class="test">
-      <el-select v-model="city" placeholder="请选择" @change="handleChangeTest1">
-        <el-option
-          v-for="item in cities"
-          :key="item.value"
-          :label="item.label"
-          :value="item.value">
-          <span style="float: left">{{ item.label }}</span>
-          <span style="float: right; color: #8492a6; font-size: 13px">{{ item.value }}</span>
-        </el-option>
-      </el-select>
-      <el-table :data="tableData">
-        <el-table-column prop="id" label="id"></el-table-column>
-        <el-table-column prop="city" label="cities">
-          <template scope="scope">
-            <el-select v-model="tableData[scope.$index].city" placeholder="请选择" @change="handleChangeTest(scope.$index,tableData)">
-              <el-option
-                v-for="item in cities"
-                :key="item.value"
-                :label="item.label"
-                :value="item.value">
-                <span style="float: left">{{ item.label }}</span>
-                <span style="float: right; color: #8492a6; font-size: 13px">{{ item.value }}</span>
-              </el-option>
-            </el-select>
-          </template>
-        </el-table-column>
-        <el-table-column prop="name" label="name"></el-table-column>
-        &lt;!&ndash;<el-table-column fixed="right" label="操作">
-          <template scope="scope">
-            <el-button @click="handleRemoveTestData(scope.$index,tableData[scope.$index])">移除</el-button>
-          </template>
-        </el-table-column>&ndash;&gt;
-      </el-table>
-    </div>-->
     <el-card v-if="operateType==='update'">
       <header slot="header">变更原因</header>
       <el-form ref="updateForm" :model="updateForm" label-width="100px" :rules="updateForm.rules">
@@ -1059,7 +1024,7 @@
             <el-row>
               <el-col :span="8">
                 <el-form-item prop="responsible" label="验收责任人">
-                  <el-input v-model="cardContCheckInfoForm.responsible" :disabled="isEnabled"
+                  <el-input v-model="cardContCheckInfoForm.responsible" :disabled="operateType==='query'"
                             placeholder="请输入验收责任人"></el-input>
                 </el-form-item>
               </el-col>
@@ -1169,18 +1134,134 @@
         <el-tab-pane label="合同附件及盖章信息" name="tabSealInfo" v-if="baseInfoForm.contractType!==2">
           <el-form v-if="baseInfoForm.templateId" rel="cardSealInfoForm" :model="cardSealInfoForm" label-width="100px"
                    :rules="cardSealInfoForm.rules">
-            <el-button type="primary" @click="handleNewSealFile" icon="plus" v-if="operateType!=='query'" class="mb20">
-              新增
+            <el-button type="primary" @click="handleNewOtherSealFile" icon="plus" v-if="operateType!=='query'"
+                       class="mb20">
+              新增其他附件
             </el-button>
-            <template v-for="(item,index) in cardSealInfoForm.sealAttachments">
-              <el-table :data="item" class="mb20">
+            <el-button type="primary" @click="handleNewAgreenmentSealFile" icon="plus" v-if="operateType!=='query'"
+                       class="mb20">
+              新增从协议
+            </el-button>
+            <el-table v-if="cardSealInfoForm.contract.length" :data="cardSealInfoForm.contract" class="mb20">
+              <el-table-column type="expand"
+                               v-if="cardSealInfoForm.contract.length&&cardSealInfoForm.contract[0].haveSale">
+                <template scope="props">
+                  <el-table :data="props.row.filesSealed" class="mb20"
+                            v-if="props.row.filesSealed&&props.row.filesSealed.length">
+                    <el-table-column label="文件名" prop="sealFileName">
+                      <template scope="scope">
+                        <a :href="props.row.filesSealed[scope.$index].sealFileUrl">{{props.row.filesSealed[scope.$index].sealFileName}}</a>
+                      </template>
+                    </el-table-column>
+                    <el-table-column label="上传人" prop="sealFileCreatorName"></el-table-column>
+                    <el-table-column label="上传时间" prop="sealFileCreateTime"></el-table-column>
+                    <el-table-column
+                      fixed="right"
+                      label="操作"
+                      v-if="props.row.filesSealed[0].operate"
+                    >
+                      <template scope="scope">
+                        <el-button @click="handleRemoveFilesSealedItem(index, props.row.filesSealed)"
+                                   type="text" size="small">移除
+                        </el-button>
+                      </template>
+                    </el-table-column>
+                  </el-table>
+                  <el-row>
+                    <el-col :span="6">
+                      <el-form-item label="用章次数" prop="saleTime">
+                        <el-input :disabled="operateType==='query'"
+                                  v-model="props.row.saleTime">
+                        </el-input>
+                      </el-form-item>
+                    </el-col>
+                    <el-col :span="6">
+                      <el-form-item label="打印份数" prop="printTime">
+                        <el-input :disabled="operateType==='query'"
+                                  v-model="props.row.printTime"></el-input>
+                      </el-form-item>
+                    </el-col>
+                    <el-col :span="6">
+                      <el-form-item label="我方留存份数" prop="remainTime">
+                        <el-input :disabled="operateType==='query'"
+                                  v-model="props.row.remainTime"></el-input>
+                      </el-form-item>
+                    </el-col>
+                    <el-col :span="6">
+                      <el-form-item label="用印后上传">
+                        <el-upload
+                          ref="uploadFileAfterSeal"
+                          :data="{userId:users.userId}"
+                          :show-file-list="false"
+                          :action="uploadUrl"
+                          :with-credentials="true"
+                          :on-success="handleUploadFileAfterSealSuccess"
+                          :on-error="handleUploadFileAfterSealError"
+                        >
+                          <el-button :disabled="operateType==='query'||!!props.row.filesSealed.length" size="small"
+                                     type="primary" @click="handleUpload(cardSealInfoForm.contract[0].attachType)">上传
+                          </el-button>
+                          </el-button>
+                        </el-upload>
+                      </el-form-item>
+                    </el-col>
+                  </el-row>
+                  <el-row>
+                    <el-col :span="12">
+                      <el-form-item prop="saleInfos">
+                        <el-checkbox-group v-model="props.row.saleInfos">
+                          <el-checkbox
+                            v-for="item in props.row.useSeals"
+                            :label="item.id"
+                            :key="item.id">
+                            {{item.name}}
+                          </el-checkbox>
+                        </el-checkbox-group>
+                      </el-form-item>
+                    </el-col>
+                  </el-row>
+                </template>
+              </el-table-column>
+              <el-table-column prop="attachType" label="附件类型" width="150px">
+                <template scope="scope">
+                  {{getContractAgreenmentName(cardSealInfoForm.contract[scope.$index].attachType)}}
+                </template>
+              </el-table-column>
+              <el-table-column prop="fileName" label="文件名称" width="200px">
+                <template scope="scope">
+                  <el-input v-if="baseInfoForm.contractTextType===1"
+                            :disabled="true"
+                            v-model="cardSealInfoForm.contract[scope.$index].fileName"></el-input>
+                  <a v-else :href="cardSealInfoForm.contract[scope.$index].fileUrl">{{cardSealInfoForm.contract[scope.$index].fileName}}</a>
+                </template>
+              </el-table-column>
+              <el-table-column prop="haveSale" label="是否盖章" width="70px">
+                <template scope="scope">
+                  <el-checkbox
+                    :disabled="true"
+                    v-model="cardSealInfoForm.contract[scope.$index].haveSale"></el-checkbox>
+                </template>
+              </el-table-column>
+              <el-table-column
+                prop="remark"
+                label="备注"
+                width="200px">
+                <template scope="scope">
+                  <el-input
+                    :disabled="true"
+                    v-model="cardSealInfoForm.contract[scope.$index].remark"></el-input>
+                </template>
+              </el-table-column>
+            </el-table>
+            <template v-if="cardSealInfoForm.others.length" v-for="(item,index) in cardSealInfoForm.others">
+              <el-table :data="item" :show-header="index===0?true:false">
                 <el-table-column type="expand" v-if="item[0].haveSale">
                   <template scope="props">
                     <el-table :data="props.row.filesSealed" class="mb20"
                               v-if="props.row.filesSealed&&props.row.filesSealed.length">
                       <el-table-column label="文件名" prop="sealFileName">
                         <template scope="scope">
-                          <a href="props.row.filesSealed[scope.$index].sealFileUrl">{{props.row.filesSealed[scope.$index].sealFileName}}</a>
+                          <a :href="props.row.filesSealed[scope.$index].sealFileUrl">{{props.row.filesSealed[scope.$index].sealFileName}}</a>
                         </template>
                       </el-table-column>
                       <el-table-column label="上传人" prop="sealFileCreatorName"></el-table-column>
@@ -1229,7 +1310,7 @@
                             :on-error="handleUploadFileAfterSealError"
                           >
                             <el-button :disabled="operateType==='query'||!!props.row.filesSealed.length" size="small"
-                                       type="primary" @click="handleUpload(index)">上传
+                                       type="primary" @click="handleUpload(item[props.$index].attachType,index)">上传
                             </el-button>
                             </el-button>
                           </el-upload>
@@ -1254,45 +1335,15 @@
                 </el-table-column>
                 <el-table-column prop="attachType" label="附件类型" width="150px">
                   <template scope="scope">
-                    <el-select
-                      size="small"
-                      v-model="item[scope.$index].attachType"
-                      :disabled="item[scope.$index].attachType===3||operateType==='query'"
-                      v-on:change="handleChangeType(index,item[scope.$index],cardSealInfoForm.sealAttachments)">
-                      <el-option
-                        v-for="item in item[scope.$index].types"
-                        :key="item.id"
-                        :label="item.name"
-                        :value="item.id">
-                      </el-option>
-                    </el-select>
+                    {{getContractAgreenmentName(item[scope.$index].attachType)}}
                   </template>
                 </el-table-column>
-                <el-table-column prop="slaveProtocolNo" label="从协议编号" width="150px" v-if="item[0].attachType===2">
+                <el-table-column prop="fileName" label="文件名称" width="200px">
                   <template scope="scope">
-                    <a v-if="item[scope.$index].agreementUrl" v-model="item[scope.$index].agreementUrl"
-                       href="item[scope.$index].agreementUrl">{{item[scope.$index].slaveProtocolNo}}</a>
-                    <el-form-item v-else prop="slaveProtocolNo"
-                                  :rules="[{validator: (rule, value, callback)=>{if(value&&value.length!==10){callback(new Error('error'))}callback();},trigger: 'blur'},
-                                             { required: true, message: '请输入从协议编号'}
-                                             ]">
-                      <el-input :disabled="operateType==='query'||item[scope.$index].type===3" icon="search"
-                                @keyup.enter.native="handleCodeBlur(item[scope.$index],item[scope.$index].slaveProtocolNo)"
-                                @blur="handleCodeBlur(item[scope.$index],item[scope.$index].slaveProtocolNo)"
-                                v-model="item[scope.$index].slaveProtocolNo"
-                      ></el-input>
-                    </el-form-item>
+                    <a :href="item[scope.$index].fileUrl">{{item[scope.$index].fileName}}</a>
                   </template>
                 </el-table-column>
-                <el-table-column prop="fileName" label="文件名称" width="200px" v-if="item[0].attachType!==2">
-                  <template scope="scope">
-                    <el-input v-if="item[scope.$index].attachType!==1&&baseInfoForm.contractTextType===1"
-                              :disabled="operateType==='query'||item[scope.$index].attachType===3"
-                              v-model="item[scope.$index].fileName"></el-input>
-                    <a v-else :href="item[scope.$index].fileUrl">{{item[scope.$index].fileName}}</a>
-                  </template>
-                </el-table-column>
-                <el-table-column prop="upload" label="上传" width="100px" v-if="item[0].attachType===1">
+                <el-table-column prop="upload" label="上传" width="100px">
                   <template scope="scope">
                     <el-upload
                       :data="{userId:users.userId}"
@@ -1303,42 +1354,72 @@
                       :on-success="handleUploadSealFileSuccess"
                       :on-error="handleUploadSealFileError"
                     >
-                      <el-button :disabled="operateType==='query'||item[scope.$index].attachType===3"
+                      <el-button :disabled="operateType==='query'"
                                  size="small" type="primary" @click="handleUploadOuter(index)">上传
                       </el-button>
                     </el-upload>
                   </template>
                 </el-table-column>
-                <el-table-column prop="haveSale" label="是否盖章" width="70px" v-if="item[0].attachType!==2">
+                <el-table-column prop="haveSale" label="是否盖章" width="70px">
                   <template scope="scope">
                     <el-checkbox
-                      :disabled="operateType==='query'||item[scope.$index].attachType!==1"
+                      :disabled="operateType==='query'"
                       v-model="item[scope.$index].haveSale"></el-checkbox>
                   </template>
                 </el-table-column>
-                <el-table-column
-                  prop="remark"
-                  label="备注"
-                  width="200px"
-                  v-if="item[0].attachType!==2">
+                <el-table-column prop="remark" label="备注" width="200px">
                   <template scope="scope">
                     <el-input
-                      :disabled="operateType==='query'||item[scope.$index].attachType===3"
+                      :disabled="operateType==='query'"
                       v-model="item[scope.$index].remark"></el-input>
                   </template>
                 </el-table-column>
                 <el-table-column
                   fixed="right"
-                  label="操作"
-                  v-if="item[0].operate">
+                  label="操作">
                   <template scope="scope">
-                    <el-button @click="handleRemoveSealItem(index, cardSealInfoForm.sealAttachments)"
+                    <el-button v-if="item[scope.$index].operate"
+                               @click="handleRemoveOthersItem(index, cardSealInfoForm.others)"
                                type="text" size="small">移除
                     </el-button>
                   </template>
                 </el-table-column>
               </el-table>
             </template>
+            <el-table v-if="cardSealInfoForm.agreenments.length" :data="cardSealInfoForm.agreenments" class="mt20">
+              <el-table-column prop="attachType" label="附件类型" width="150px">
+                <template scope="scope">
+                  {{getContractAgreenmentName(cardSealInfoForm.agreenments[scope.$index].attachType)}}
+                </template>
+              </el-table-column>
+              <el-table-column prop="slaveProtocolNo" label="从协议编号" width="150px">
+                <template scope="scope">
+                  <a v-if="cardSealInfoForm.agreenments[scope.$index].agreementUrl"
+                     v-model="cardSealInfoForm.agreenments[scope.$index].agreementUrl"
+                     href="cardSealInfoForm.agreenments[scope.$index].agreementUrl">{{cardSealInfoForm.agreenments[scope.$index].slaveProtocolNo}}</a>
+                  <el-form-item style="margin-left: -100px" v-else prop="slaveProtocolNo"
+                                :rules="[{validator: (rule, value, callback)=>{if(value&&value.length!==10){callback(new Error('error'))}callback();},trigger: 'blur'},
+                                             { required: true, message: '请输入从协议编号'}
+                                             ]">
+                    <el-input :disabled="operateType==='query'" icon="search"
+                              @keyup.enter.native="handleCodeBlur(cardSealInfoForm.agreenments[scope.$index],cardSealInfoForm.agreenments[scope.$index].slaveProtocolNo)"
+                              @blur="handleCodeBlur(cardSealInfoForm.agreenments[scope.$index],cardSealInfoForm.agreenments[scope.$index].slaveProtocolNo)"
+                              v-model="cardSealInfoForm.agreenments[scope.$index].slaveProtocolNo"
+                    ></el-input>
+                  </el-form-item>
+                </template>
+              </el-table-column>
+              <el-table-column
+                fixed="right"
+                label="操作">
+                <template scope="scope">
+                  <el-button v-if="cardSealInfoForm.agreenments[scope.$index].operate"
+                             @click="handleRemoveAgreenmentsItem(scope.$index, cardSealInfoForm.agreenments)"
+                             type="text" size="small">移除
+                  </el-button>
+                </template>
+              </el-table-column>
+            </el-table>
           </el-form>
           <h4 v-else>请选择合同基本信息的模版名称！</h4>
         </el-tab-pane>
@@ -1623,7 +1704,7 @@
   import comLoading from '@/mixins/comLoading'
   import {downloadUrl, uploadUrl} from '@/api/consts'
   import store from 'store'
-  import Process from '@/components/process'
+  import Process from '@/components/process.vue'
 
 
   //document.cookie = 'sys=FMM21KGIJLHOGHNKHGGLLOFMMKFNKKE'
@@ -1760,7 +1841,6 @@
           dialogNewSubjectVisible: false,
           rules: {
             businessOperator: [{required: true, message: '请输入业务经办人', trigger: 'blur'}],
-            businessDept: [{required: true, message: '请输入业务部门', trigger: 'blur'}],
             templateId: [{required: true, message: '请选择模版名称', trigger: 'blur'}],
           }
         },
@@ -1980,90 +2060,115 @@
           dialogAddUnionCheckVisible: false,
           dialogAddServiceVisible: false
         },
-        /*cardSealInfoForm: {
-         sealAttachments: [
-         [{
-         id: 14,
-         fileId: 15,
-         attachType: 0,
-         fileName: '微信图片_20170720155622.png',
-         fileUrl: 'http://img1.dev.rs.com/g1/M00/00/D4/wKh6ylmSYd-ALQThAAEK0Tz4M9k650.png',
-         slaveProtocolNo: 0,
-         haveSale: true,
-         saleTime: 0,
-         printTime: 0,
-         remainTime: 0,
-         saleInfos: null,
-         remark: '澳洲0',
-
-         filesSealed: [
-         {
-         sealFileId: 16,
-         sealFileName: '状态汇总.xlsx',
-         sealFileUrl: 'http://img1.dev.rs.com/g1/M00/00/D4/wKh6ylmSwZSAIaJcAAA6LUFeJFY65.xlsx',
-         sealFileCreatorName: null,
-
-         sealFileCreateTime: 1502790027000
-         }
-         ]
-         }]
-         ]
-         },*/
         cardSealInfoForm: {
           sealAttachments: [
-            [{
-              id: '',
-              fileId: 15,//附件类型为其他时，上传的文件的id
-              attachType: 3,//附件类型
-              types: [
-                {
-                  id: 1,
-                  name: '其他'
-                },
-                {
-                  id: 2,
-                  name: '从协议'
-                },
-                {
-                  id: 3,
-                  name: '合同'
-                }
-              ],//附件类型集合
-              fileName: '文件名',
-              fileUrl: '',//合同文本类型为非模版合同时，附件类型的合同的文件下载地址
-              slaveProtocolNo: '',//从协议编号
-              haveSale: true,//是否用章
-              saleTime: null,//用章次数
-              printTime: null,//打印份数
-              remainTime: null,//我方留存份数
-              saleInfos: [1, 2],//当前选中的张
-              useSeals: [
-                {
-                  id: 1,
-                  name: '公章'
-                },
-                {
-                  id: 2,
-                  name: '法人章'
-                },
-                {
-                  id: 3,
-                  name: '人事章'
-                }
-              ],//章列表
-              remark: '',
-              filesSealed: [//上传的盖章后的文件信息
-                {
-                  sealFileId: '',
-                  sealFileName: 'filename',//文件名
-                  sealFileUrl: '',
-                  sealFileCreatorName: 'wyy',//上传人
-                  sealFileCreateTime: '2017-09-15',//上传时间
-                }
-              ]
-            }]
+            /*[{
+             id: '',
+             fileId: 15,//附件类型为其他时，上传的文件的id
+             attachType: 3,//附件类型
+             types: [
+             {
+             id: 1,
+             name: '其他'
+             },
+             {
+             id: 2,
+             name: '从协议'
+             },
+             {
+             id: 3,
+             name: '合同'
+             }
+             ],//附件类型集合
+             fileName: '文件名',
+             fileUrl: '',//合同文本类型为非模版合同时，附件类型的合同的文件下载地址
+             slaveProtocolNo: '',//从协议编号
+             haveSale: true,//是否用章
+             saleTime: null,//用章次数
+             printTime: null,//打印份数
+             remainTime: null,//我方留存份数
+             saleInfos: [1, 2],//当前选中的张
+             useSeals: [
+             {
+             id: 1,
+             name: '公章'
+             },
+             {
+             id: 2,
+             name: '法人章'
+             },
+             {
+             id: 3,
+             name: '人事章'
+             }
+             ],//章列表
+             remark: '',
+             filesSealed: [//上传的盖章后的文件信息
+             {
+             sealFileId: '',
+             sealFileName: 'filename',//文件名
+             sealFileUrl: '',
+             sealFileCreatorName: 'wyy',//上传人
+             sealFileCreateTime: '2017-09-15',//上传时间
+             }
+             ]
+             }]*/
           ],
-          current: 0,//当前所在附件列表的索引
+          contract: [{//合同
+            id: '',
+            fileId: 15,//附件类型为其他时，上传的文件的id
+            attachType: 3,//附件类型
+            types: [
+              {
+                id: 1,
+                name: '其他'
+              },
+              {
+                id: 2,
+                name: '从协议'
+              },
+              {
+                id: 3,
+                name: '合同'
+              }
+            ],//附件类型集合
+            fileName: '文件名',
+            fileUrl: '',//合同文本类型为非模版合同时，附件类型的合同的文件下载地址
+            slaveProtocolNo: '',//从协议编号
+            haveSale: true,//是否用章
+            saleTime: 1,//用章次数
+            printTime: 2,//打印份数
+            remainTime: 3,//我方留存份数
+            saleInfos: [1, 2],//当前选中的张
+            useSeals: [
+              {
+                id: 1,
+                name: '公章'
+              },
+              {
+                id: 2,
+                name: '法人章'
+              },
+              {
+                id: 3,
+                name: '人事章'
+              }
+            ],//章列表
+            remark: '',
+            filesSealed: [//上传的盖章后的文件信息
+              {
+                sealFileId: '',
+                sealFileName: 'filename',//文件名
+                sealFileUrl: '',
+                sealFileCreatorName: 'wyy',//上传人
+                sealFileCreateTime: '2017-09-15',//上传时间
+              }
+            ]
+          }],
+          others: [],
+          agreenments: [],
+          current: null,//为上传功能保存当前所在附件列表的索引
+          type: null,//为上传功能保存当前附件类型
           rules: {
             /*slaveProtocolNo: [{
              validator: (rule, value, callback)=>{console.log('value',value);
@@ -2177,7 +2282,7 @@
           taxRate: null,
           taxRates: [
             {
-              code: 'JO',
+              code: 'J0',
               value: 0,
               desc: '0%进税项'
             },
@@ -2349,8 +2454,7 @@
           result = yiBillingInfo[0] || {}
         }
         return result
-      },
-
+      }
     },
     mounted() {
       const params = {};
@@ -2727,10 +2831,10 @@
         const dataMap = res.dataMap
         if (dataMap.fileId) {
           const index = this.cardSealInfoForm.current;
-          const curentFile = this.cardSealInfoForm.sealAttachments[index]
+          const curentFile = this.cardSealInfoForm.others[index]
           curentFile[0].fileId = dataMap.fileId
           curentFile[0].fileName = dataMap.fileName
-          curentFile[0].fileUrl = dataMap.url
+          curentFile[0].fileUrl = downloadUrl+dataMap.fileId
           this.$message.success('文件上传成功')
         }
       },
@@ -2739,15 +2843,27 @@
         console.log('file', file)
         console.log('fileList', fileList)
       },
+      getAgreenmentFieldName(id){
+        switch (id) {
+          case 1:
+            return 'others'
+          case 2:
+            return 'agreenments'
+          case 3:
+            return 'contract'
+        }
+      },
       handleUploadFileAfterSealSuccess(res, file, fileList) {
         const dataMap = res.dataMap
         if (dataMap.fileId) {
+          const type = this.cardSealInfoForm.type;
           const index = this.cardSealInfoForm.current;
-          const curentFile = this.cardSealInfoForm.sealAttachments[index]
-          curentFile[0].filesSealed = [{
+          let curentFile = this.cardSealInfoForm[this.getAgreenmentFieldName(type)]
+          type === 1 ? curentFile = curentFile[index][0] : curentFile = curentFile[index]
+          curentFile.filesSealed = [{
             sealFileId: dataMap.fileId,
             sealFileName: dataMap.fileName,
-            sealFileUrl: dataMap.url,
+            sealFileUrl: downloadUrl+dataMap.fileId,
             sealFileCreatorName: dataMap.username,
             sealFileCreateTime: dataMap.uploadTime,
             operate: 'add'
@@ -2903,6 +3019,61 @@
         }
       },
       handleNewSealFile() {
+        const file = {
+          operate: 'add',
+          id: '',
+          fileName: '文件名',
+          fileUrl: '',//合同文本类型为非模版合同时，附件类型的合同的文件下载地址
+          attachType: 1,//附件类型
+          slaveProtocolNo: '0011001',//从协议编号
+          types: [
+            {
+              id: 1,
+              name: '其他'
+            },
+            {
+              id: 2,
+              name: '从协议'
+            }
+          ],//附件类型集合
+          haveSale: true,//是否用章
+          remark: '',
+          saleTime: '',//用章次数
+          printTime: '',//打印份数
+          remainTime: '',//我方留存份数
+          saleInfos: [1, 2],//当前选中的张
+          useSeals: [
+            {
+              id: 1,
+              name: '公章'
+            },
+            {
+              id: 2,
+              name: '法人章'
+            },
+            {
+              id: 3,
+              name: '人事章'
+            }
+          ],//章列表
+          filesSealed: []//上传的盖章后的文件信息
+        }
+        const sealAttachments = this.cardSealInfoForm.sealAttachments
+
+        if (sealAttachments.length) {
+          for (let i = sealAttachments.length - 1; i >= 0; i--) {
+            const item = sealAttachments[i];
+            if (item[0].attachType !== 2) {
+              sealAttachments.splice(i + 1, 0, [file])
+              return
+            }
+          }
+        }
+        /*const sealAttachments=this.cardSealInfoForm.sealAttachments
+         sealAttachments.push(file);*/
+
+      },
+      handleNewOtherSealFile(){
         const file = [{
           operate: 'add',
           id: '',
@@ -2942,21 +3113,51 @@
           ],//章列表
           filesSealed: []//上传的盖章后的文件信息
         }]
-        const sealAttachments = this.cardSealInfoForm.sealAttachments
-
-        if (sealAttachments.length) {
-          for (let i = sealAttachments.length - 1; i >= 0; i--) {
-            const item = sealAttachments[i];
-            if (item[0].attachType !== 2) {
-              sealAttachments.splice(i + 1, 0, file)
-              console.log('sealAttachments', sealAttachments)
-              return
+        this.cardSealInfoForm.others.push(file)
+        console.log('this.cardSealInfoForm.others', this.cardSealInfoForm.others);
+      },
+      handleNewAgreenmentSealFile(){
+        const file = {
+          operate: 'add',
+          id: '',
+          fileName: '文件名',
+          fileUrl: '',//合同文本类型为非模版合同时，附件类型的合同的文件下载地址
+          attachType: 2,//附件类型
+          slaveProtocolNo: '',//从协议编号
+          types: [
+            {
+              id: 1,
+              name: '其他'
+            },
+            {
+              id: 2,
+              name: '从协议'
             }
-          }
+          ],//附件类型集合
+          haveSale: true,//是否用章
+          remark: '',
+          saleTime: '',//用章次数
+          printTime: '',//打印份数
+          remainTime: '',//我方留存份数
+          saleInfos: [1, 2],//当前选中的张
+          useSeals: [
+            {
+              id: 1,
+              name: '公章'
+            },
+            {
+              id: 2,
+              name: '法人章'
+            },
+            {
+              id: 3,
+              name: '人事章'
+            }
+          ],//章列表
+          filesSealed: []//上传的盖章后的文件信息
         }
-        /*const sealAttachments=this.cardSealInfoForm.sealAttachments
-         sealAttachments.push(file);*/
-
+        this.cardSealInfoForm.agreenments.push(file)
+        console.log('this.cardSealInfoForm.agreenments',this.cardSealInfoForm.agreenments);
       },
       handleQuery(id) {
         console.log('handleQuery', id)
@@ -2968,12 +3169,11 @@
         console.log('id', id)
       },
       handleChangeType(index, row, rows){
-        console.log('handleChangeType', index);
         const currentType = row.attachType;
         currentType === 2 ? row.haveSale = false : row.haveSale = true
         const file = [row]
 //        rows.splice(index, 1)
-        const sealAttachments=this.cardSealInfoForm.sealAttachments
+        const sealAttachments = this.cardSealInfoForm.sealAttachments
         //sealAttachments.splice(index,1)
 
         /*if(currentType===2){
@@ -3061,8 +3261,9 @@
           const params = {templateId: val, templateName: templateName, contractTextType: contractTextType}
           Api.getSealAttachments(params).then((data)=> {
             if (data.data.dataMap) {
-              const item=[data.data.dataMap]
-              this.cardSealInfoForm.sealAttachments =[item]
+              const item = [data.data.dataMap]
+              this.cardSealInfoForm.sealAttachments = [item]
+              this.cardSealInfoForm.contract = item
             }
           })
         }
@@ -3076,8 +3277,9 @@
       handleRemoveFilesSealedItem(index, rows){
         rows.splice(index, 1)
       },
-      handleUpload(index){
-        this.cardSealInfoForm.current = index
+      handleUpload(type, index){
+        this.cardSealInfoForm.type = type
+        this.cardSealInfoForm.current = index || 0
       },
       handleUploadOuter(index){
         this.cardSealInfoForm.current = index
@@ -3142,24 +3344,26 @@
       handleRemoveConStandard(index, rows){
         rows.splice(index, 1);
       },
-      handleRemoveTestData(index, row){
-        console.log('index', index);
-        console.log('row', row);
-        this.tableData.splice(index, 1)
+      getContractAgreenmentName(id){
+        switch (id) {
+          case 1:
+            return '其他'
+          case 2:
+            return '从协议'
+          case 3:
+            return '合同'
+        }
       },
-      handleChangeTest(index,rows){
-        //console.log('handleChangeTest-val', val);
-        console.log('handleChangeTest-index', index);
-        console.log('handleChangeTest-rows', rows);
-        rows.splice(index,1)
+      handleRemoveOthersItem(index, rows){
+        rows.splice(index, 1);
       },
-      handleChangeTest1(val){
-        console.log('handleChangeTest1-val', val);
-      },
-
+      handleRemoveAgreenmentsItem(index, rows){
+        rows.splice(index, 1);
+      }
     },
     components: {
       Preview,
+      Process,
       PrTable: (resolve) => {
         require(['./components/tables/prTable'], resolve)
       },
