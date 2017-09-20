@@ -1784,7 +1784,7 @@
         uploadUrl: uploadUrl,
         operateType: 'create', // create:创建，update:变更，query:查询
         updateForm: {
-          visible: false,
+          visible: false,//在变更合同中控制合同页面数据的显示与否
           code: '',
           updateMode: 1,
           updateModes: [
@@ -2325,21 +2325,14 @@
     created() {
       let path = this.$route.path
       if (path && path === '/conperf/conupdate') {
-
         this.operateType = 'update'
       }
-
       let query = this.$route.query
       if (JSON.stringify(query) !== '{}') {
         this.operateType = query.operateType
         this.baseInfoForm.prNo = query.currentFolio//比加单号
         this.baseInfoForm.contractType = query.curConModelId
       }
-      /*
-       * user == {userId: "51033730", userName: "王圆圆", deptCode: "70000213", deptName: "CMS组", companyCode: " ", …}
-       loglevel == INFO
-       jfVersion == 0.5.6*/
-
     },
     computed: {
       conVersion: function () {
@@ -2458,49 +2451,60 @@
     },
     mounted() {
       const params = {};
-      const query = this.$route.query, types = query.curConTypeId.split('-');
+      const query = this.$route.query
+      let types = []
       if (JSON.stringify(query) !== '{}') {
+        types=query.curConTypeId.split('-');
         params.folio = query.currentFolio
         params.contractType = query.curConModelId;//合同模式
         params.contractBusinessTypeFirst = types[0];
         params.contractBusinessTypeSecond = types[1];
         params.contractBusinessTypeThird = types[2];
       }
+      console.log('mounted-this.operateType',this.operateType);
+      if(this.operateType==='create'){
+        Api.getContractBaseInfo(params).then((data) => {
+          const dataMap=data.data.dataMap
+          if(dataMap){
+            this.initData(dataMap,params)
+          }
+        })
 
-
-      Api.getContractBaseInfo(params).then((data) => {
-        Object.assign(this.baseInfoForm, data.data.dataMap.baseInfoForm);
-        Object.assign(this.cardContentInfoForm, data.data.dataMap.cardContentInfoForm);
-        Object.assign(this.cardFinanceInfoForm, data.data.dataMap.cardFinanceInfoForm);
-        Object.assign(this.cardContCheckInfoForm, data.data.dataMap.cardContCheckInfoForm);
-        Object.assign(this.cardSealInfoForm, data.data.dataMap.cardSealInfoForm);
-        Object.assign(this.cardRemarkInfoForm, data.data.dataMap.cardRemarkInfoForm);
-        Object.assign(this.cardOtherInfo, data.data.dataMap.cardOtherInfo);
-        const baseInfo = data.data.dataMap.baseInfoForm;
+        if (query.currentFolio) {
+          this.baseInfoForm.prNo = query.currentFolio
+          this.baseInfoForm.prFlag = 1
+        }
+      }
+    },
+    methods: {
+      initData(data,params){
+        Object.assign(this.baseInfoForm, data.baseInfoForm);
+        Object.assign(this.cardContentInfoForm, data.cardContentInfoForm);
+        Object.assign(this.cardFinanceInfoForm, data.cardFinanceInfoForm);
+        Object.assign(this.cardContCheckInfoForm, data.cardContCheckInfoForm);
+        Object.assign(this.cardSealInfoForm, data.cardSealInfoForm);
+        Object.assign(this.cardRemarkInfoForm, data.cardRemarkInfoForm);
+        Object.assign(this.cardOtherInfo, data.cardOtherInfo);
+        const baseInfo = data.baseInfoForm;
         this.baseInfoForm.contractBusinessTypeName = baseInfo.contractBusinessTypeFirstName + '-' + baseInfo.contractBusinessTypeSecondName + '-' + baseInfo.contractBusinessTypeThirdName
-        const params = {}
-        params.bizTypeId = this.baseInfoForm.contractBusinessTypeThird;//业务类型
-        params.templateType = (this.baseInfoForm.contractTextType === 1 ? 'TEMPLATE' : 'TEXT');
-        Api.getTemplateByBizTypeId(params).then((data)=> {
-          this.baseInfoForm.templateOptions = data.data.dataMap || []
+        const param = {}
+        param.bizTypeId = this.baseInfoForm.contractBusinessTypeThird;//业务类型
+        param.templateType = (this.baseInfoForm.contractTextType === 1 ? 'TEMPLATE' : 'TEXT');
+        Api.getTemplateByBizTypeId(param).then((result)=> {
+          this.baseInfoForm.templateOptions = result.data.dataMap || []
         });
 
         const paymentMethods = this.cardFinanceInfoForm.paymentMethods;
         paymentMethods.advance[0].type = "预付款"
         paymentMethods.progress[0].type = "进度款"
         paymentMethods._final[0].type = "尾款"
-      })
 
-      this.baseInfoForm.contractTypeName = this.getContractModelName(params.contractType);
-      this.baseInfoForm.contractBusinessTypeThird = types[types.length - 1];
-      //this.baseInfoForm.businessOperator = user.userId;
-
-      if (query.currentFolio) {
-        this.baseInfoForm.prNo = query.currentFolio
-        this.baseInfoForm.prFlag = 1
-      }
-    },
-    methods: {
+        if(this.operateType!=='create'){
+          this.baseInfoForm.contractTypeName=data.baseInfoForm.contractType
+        }else{
+          this.baseInfoForm.contractTypeName = this.getContractModelName(params.contractType);//初始化合同模式
+        }
+      },
       getContractModelName(id){
         switch (id) {
           case '1':
@@ -2937,7 +2941,6 @@
           this.cardContentInfoForm.subjectsErrorMsg = errors.cardContentInfoForm.subjectsErrorMsg
           this.cardContCheckInfoForm.errorCount = errors.cardContCheckInfoForm.errorCount
           this.cardContCheckInfoForm.serviceCheckMsg = errors.cardContCheckInfoForm.serviceCheckMsg
-          console.log('errors.baseInfoForm', errors.baseInfoForm);
           if (!this.cardContentInfoForm.errorCount && !this.cardContCheckInfoForm.errorCount && errors.baseInfoForm) {
             console.log('resolve');
             resolve()
@@ -3157,13 +3160,19 @@
           filesSealed: []//上传的盖章后的文件信息
         }
         this.cardSealInfoForm.agreenments.push(file)
-        console.log('this.cardSealInfoForm.agreenments',this.cardSealInfoForm.agreenments);
       },
-      handleQuery(id) {
-        console.log('handleQuery', id)
-        this.updateForm.visible = true
+      handleQuery(code) {
         //根据合同编号获取合同模式设置当前合同模式及合同类型
-        // Api.getUpdateInfo()
+        Api.getUpdateInfo(code).then((data)=>{
+          const dataMap=data.data.dataMap
+          if(dataMap&&dataMap.baseInfoForm.id){
+            const dataMap=data.data.dataMap
+            if(dataMap){
+              this.updateForm.visible = true
+              this.initData(dataMap);
+            }
+          }
+        })
       },
       handleDetail(id) {
         console.log('id', id)
@@ -3383,7 +3392,6 @@
         // 刷新参数放到这里里面去触发就可以刷新相同界面了
         let path = this.$route.path
         if (path && path === '/conperf/conupdate') {
-          console.log('request');
           this.operateType = 'update'
         }
       },
