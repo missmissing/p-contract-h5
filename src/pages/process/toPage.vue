@@ -7,7 +7,7 @@
 </template>
 
 <script>
-  import {routerNames, tplMap, processListMap, contractModelRoutes} from '@/core/consts'
+  import {routerNames, tplMap, contractMap, processListMap, contractModelRoutes} from '@/core/consts'
   import Api from '@/api/process'
 
   export default {
@@ -63,7 +63,7 @@
               processData
             }
           })
-        } else {
+        } else if (contractMap.indexOf(procCode) > -1) {
           const {baseInfoForm} = approveInfo
           const {prNo, contractType, contractBusinessTypeFirst, contractBusinessTypeSecond, contractBusinessTypeThird} = baseInfoForm
           const param = {
@@ -80,6 +80,8 @@
               processData
             }
           })
+        } else {
+          console.log('找不到相应类型')
         }
       }
     },
