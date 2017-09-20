@@ -22,8 +22,6 @@
             <el-input v-model="form.operatorName"></el-input>
           </el-form-item>
         </el-col>
-      </el-row>
-      <el-row>
         <el-col :span="7">
           <el-form-item label="创建时间">
             <el-date-picker

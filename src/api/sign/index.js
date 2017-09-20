@@ -9,5 +9,8 @@ export default {
   },
   getMatch(params) {
     return Http.post(`${contract}/contract-web/purchaseOrder/getMatchData`, params)
+  },
+  submit(params) {
+    return Http.post(`${contract}/contract-web/purchaseOrder/submit`, params)
   }
 }

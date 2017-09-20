@@ -95,11 +95,11 @@ const router = new Router({
           }
         },
         {
-          path: '/contract/agreementList',
+          path: '/conperf/conrepeal',
           component: function (resolve) {
-            require(['../pages/create/agreementList.vue'], resolve)
+            require(['../pages/performance/conRepeal.vue'], resolve)
           },
-          name: routerNames.con_agreementList,
+          name: routerNames.con_stop,
           meta: {
             auth: true
           }
@@ -191,32 +191,12 @@ const router = new Router({
         iconCls: 'stats-bars'
       },
       children: [
-        // {
-        //  path: '/conperf/inspection',
-        //  component: function (resolve) {
-        //    require(['../pages/performance/inspection.vue'], resolve);
-        //  },
-        //  name: routerNames.con_performanceIndex,
-        //  meta: {
-        //    auth: true
-        //  },
-        // },
         {
           path: '/conperf/inspectionreject',
           component: function (resolve) {
             require(['../pages/performance/inspectionReject.vue'], resolve)
           },
           name: routerNames.con_check_reject,
-          meta: {
-            auth: true
-          }
-        },
-        {
-          path: '/conperf/conrepeal',
-          component: function (resolve) {
-            require(['../pages/performance/conRepeal.vue'], resolve)
-          },
-          name: routerNames.con_stop,
           meta: {
             auth: true
           }
@@ -358,6 +338,16 @@ const router = new Router({
             require(['../pages/create/conLIst.vue'], resolve)
           },
           name: routerNames.con_list,
+          meta: {
+            auth: true
+          }
+        },
+        {
+          path: '/contract/agreementList',
+          component: function (resolve) {
+            require(['../pages/create/agreementList.vue'], resolve)
+          },
+          name: routerNames.con_agreementList,
           meta: {
             auth: true
           }

@@ -7,7 +7,7 @@
 </template>
 
 <script>
-  import {routerNames, tplMap, processListMap} from '@/core/consts'
+  import {routerNames, tplMap, processListMap, contractModelRoutes} from '@/core/consts'
   import Api from '@/api/process'
 
   export default {
@@ -45,7 +45,6 @@
       toPage(row, data) {
         const {procInstId, serialNumber, procCode} = row
         const {actions, approveInfo} = data
-        const {id} = approveInfo
         const show = this.dataType === processListMap[0]
         const processData = JSON.stringify({
           procInstId,
@@ -54,24 +53,38 @@
           procCode,
           show
         })
-        let name = ''
         if (tplMap.indexOf(procCode) > -1) {
-          name = routerNames.con_tpl_see
+          const {id} = approveInfo
+          const name = routerNames.con_tpl_see
+          this.$router.push({
+            name,
+            query: {
+              id,
+              processData
+            }
+          })
         } else {
-          return
-        }
-        this.$router.push({
-          name,
-          query: {
-            id,
-            processData
+          const {baseInfoForm} = approveInfo
+          const {prNo, contractType, contractBusinessTypeFirst, contractBusinessTypeSecond, contractBusinessTypeThird} = baseInfoForm
+          const param = {
+            operateType: 'query',
+            currentPr: prNo,
+            curConModelId: contractType,
+            curConTypeId: `${contractBusinessTypeFirst}-${contractBusinessTypeSecond}-${contractBusinessTypeThird}`
           }
-        })
+          const name = contractModelRoutes[contractType]
+          this.$router.push({
+            name,
+            query: {
+              ...param,
+              processData
+            }
+          })
+        }
       }
     },
     created() {
       this.getDataType()
-
       const {procInstId, serialNumber, procCode} = this.$route.query
       this.see({procInstId, serialNumber, procCode})
     }
