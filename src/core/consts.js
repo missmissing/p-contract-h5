@@ -37,7 +37,7 @@ export const routerNames = {
   con_create: '合同管理',
   con_createIndex: '创建合同',
   con_createSlaveProtocol: '创建从协议',
-  con_agreementList: '从协议列表',
+  con_agreementList: '从协议查询',
   con_update: '合同变更',
   con_createFrameContract: '框架合同创建',
   con_createIntentionContract: '意向合同创建',
@@ -74,6 +74,8 @@ export const routerNames = {
 }
 
 export const tplMap = ['CRS_Contract_CreateTemplate', 'CRS_Contract_UpdateTemplate', 'CRS_Contract_DeleteTemplate']
+
+export const contractMap = ['CRS_Contract_Create', 'CRS_Contract_Update', 'CRS_Contract_Delete]']
 
 export const processListMap = ['BACKLOG', 'STARTED', 'FINISHED']
 

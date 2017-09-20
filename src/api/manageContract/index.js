@@ -1,56 +1,57 @@
 import Http from '@/core/commonModel'
+
 const contract = '/api-contract'
-//const contract = ''
+// const contract = ''
 
 export default {
-  //根据关键字获取创建人列表
-  getRemoteCreatePersonsByKeyWord(params){
+  // 根据关键字获取创建人列表
+  getRemoteCreatePersonsByKeyWord(params) {
     return Http.get(`${contract}/contract-web/contract/user/list`, params)
   },
   // 获取比价单列表数据
   getQrList(params) {
     return Http.post(`${contract}/contract-web/contract/folio/list`, params)
   },
-  getQrDetail(params){
+  getQrDetail(params) {
     return Http.get(`${contract}/contract-web/contract/folio`, params)
   },
-    // 获取合同基本信息
+  // 获取合同基本信息
   getContractBaseInfo(params) {
     return Http.get(`${contract}/contract-web/contract/pre`, params)
   },
-    // 获取供应商列表根据关键字
+  // 获取供应商列表根据关键字
   getRemoteSuppliersByKeyWord(params) {
     return Http.post(`${contract}/contract-web/contract/party/second`, params)
   },
-    // 获取合同我方主体列表根据关键字
+  // 获取合同我方主体列表根据关键字
   getRemoteSubjectsByKeyWord(params) {
     return Http.post(`${contract}/contract-web/contract/party/first`, params)
   },
-    // 获取第三方信息列表根据关键字
+  // 获取第三方信息列表根据关键字
   getRemoteThirdPartiesByKeyWord(params) {
     return Http.get(`/api/createContract/getRemoteThirdPartiesByKeyWord`, params)
   },
-  //获取模版名称（合同文本类型，合同类型）
-  getTemplateByBizTypeId(params){
+  // 获取模版名称（合同文本类型，合同类型）
+  getTemplateByBizTypeId(params) {
     return Http.get(`${contract}/contract-web/template/getTemplateByBizTypeId`, params)
   },
-  //根据选中定的模版id，获取附件信息
-  getSealAttachments(params){
+  // 根据选中定的模版id，获取附件信息
+  getSealAttachments(params) {
     return Http.get(`${contract}/contract-web/contract/template/attach`, params)
   },
-  //根据关键字搜索合同标的数据
-  getRemoteMaterialsByKeyWord(params){
+  // 根据关键字搜索合同标的数据
+  getRemoteMaterialsByKeyWord(params) {
     return Http.get(`/contract-web/contract/materials`, params)
   },
-  //保存合同
-  saveContract(params){
+  // 保存合同
+  saveContract(params) {
     return Http.post(`${contract}/contract-web/contract/save`, params)
   },
   // 提交
   submit(params) {
     return Http.post(`${contract}/contract-web/contract/commit`, params)
   },
-    /** ***标签页****/
+  /** ***标签页****/
   getPrTableData(params) {
     return Http.get(`/api/createContract/getPrTableData`, params)
   },
@@ -63,16 +64,29 @@ export default {
   getOrderTableData(params) {
     return Http.get(`/api/createContract/getOrderTableData`, params)
   },
-    /** ***标签页****/
-    /** ****变更合同接口start******/
-    // 根据合同编号获取变更合同的数据
+  /** ***标签页****/
+  /** ****变更合同接口start******/
+  // 根据合同编号获取变更合同的数据
   getUpdateInfo(params) {
     return Http.get(`/api/updateContract/getUpdateInfo`, params)
   },
-    /** ****变更合同接口end******/
+  /** ****变更合同接口end******/
   /** ***从协议列表接口****/
-    getAgreementList(params){
-      return Http.get(`/api/agreeement/getAgreementList`, params)
-    }
+  getAgreementList(params) {
+    return Http.get(`/api/agreeement/getAgreementList`, params)
+  },
   /** ***从协议列表接口****/
+
+  /** ***根据合同编号获取详情接口****/
+  getContractDetailByCode(params) {
+    const {id} = params
+    return Http.get(`${contract}/contract-web/contract/no/${id}`, params)
+  },
+  /** ***根据合同编号获取详情接口****/
+
+  /** ***合同中止提交****/
+  contractSuspendSubmit(params) {
+    return Http.get(`${contract}/contract-web/contract/suspend`, params)
+  }
+  /** ***合同中止提交****/
 }

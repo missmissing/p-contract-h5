@@ -96,7 +96,7 @@
                 <el-row>
                   <el-col :span="8">
                     <el-form-item label="合同编号">
-                      <el-input disabled></el-input>
+                      <el-input :value="contractForm.contractNo" disabled></el-input>
                     </el-form-item>
                   </el-col>
                   <el-button type="primary" class="ml20">详 情</el-button>
@@ -104,36 +104,32 @@
                 <el-row>
                   <el-col :span="8">
                     <el-form-item label="合同版本">
-                      <el-input disabled></el-input>
+                      <el-input :value="contractForm.version?`V${contractForm.version}`:''" disabled></el-input>
                     </el-form-item>
                   </el-col>
-                </el-row>
-                <el-row>
                   <el-col :span="8">
                     <el-form-item label="合同模式">
-                      <el-input disabled></el-input>
+                      <el-input :value="contractForm.curConModelId" disabled></el-input>
                     </el-form-item>
                   </el-col>
                   <el-col :span="8">
                     <el-form-item label="合同类型">
-                      <el-input disabled></el-input>
+                      <el-input :value="contractForm.contractType" disabled></el-input>
                     </el-form-item>
                   </el-col>
                   <el-col :span="8">
                     <el-form-item label="所属项目">
-                      <el-input disabled></el-input>
+                      <el-input :value="contractForm.belongProject" disabled></el-input>
                     </el-form-item>
                   </el-col>
-                </el-row>
-                <el-row>
                   <el-col :span="8">
                     <el-form-item label="生效日期">
-                      <el-input disabled></el-input>
+                      <el-input :value="contractForm.startTime | formatDate" disabled></el-input>
                     </el-form-item>
                   </el-col>
                   <el-col :span="8">
                     <el-form-item label="终止日期">
-                      <el-input disabled></el-input>
+                      <el-input :value="contractForm.endTime | formatDate" disabled></el-input>
                     </el-form-item>
                   </el-col>
                 </el-row>
@@ -146,17 +142,17 @@
                 <el-row>
                   <el-col :span="7">
                     <el-form-item label="供应商">
-                      <el-input disabled></el-input>
+                      <el-input :value="orderForm.supplierName" disabled></el-input>
                     </el-form-item>
                   </el-col>
                   <el-col :span="7">
                     <el-form-item label="订单类型">
-                      <el-input disabled></el-input>
+                      <el-input :value="orderForm.type" disabled></el-input>
                     </el-form-item>
                   </el-col>
                   <el-col :span="7">
                     <el-form-item label="公司编码">
-                      <el-input disabled></el-input>
+                      <el-input :value="orderForm.companyCode" disabled></el-input>
                     </el-form-item>
                   </el-col>
                 </el-row>
@@ -176,16 +172,16 @@
                   width="100">
                 </el-table-column>
                 <el-table-column
-                  prop="materielCode"
+                  prop="materialCode"
                   label="物料编码"
                   width="100">
                 </el-table-column>
                 <el-table-column
-                  prop="materielName"
+                  prop="materialName"
                   label="物料名称">
                 </el-table-column>
                 <el-table-column
-                  prop="materielCode"
+                  prop="totalAmount"
                   label="数量"
                   width="80">
                 </el-table-column>
@@ -193,11 +189,23 @@
                   prop="taxPrice"
                   label="含税价"
                   width="80">
+                  <template scope="scope">
+                    <div v-if="radio">{{scope.row.taxPrice}}</div>
+                    <div v-else>
+                      <el-input v-model="scope.row.taxPrice"></el-input>
+                    </div>
+                  </template>
                 </el-table-column>
                 <el-table-column
                   prop="taxRate"
                   label="税率"
                   width="80">
+                  <template scope="scope">
+                    <div v-if="radio">{{scope.row.taxRate}}</div>
+                    <div v-else>
+                      <el-input v-model="scope.row.taxRate"></el-input>
+                    </div>
+                  </template>
                 </el-table-column>
                 <el-table-column
                   prop="deliveryDate"
@@ -210,7 +218,7 @@
                   width="100">
                 </el-table-column>
                 <el-table-column
-                  prop="itemNum"
+                  prop="itemNo"
                   label="行项目号"
                   width="100">
                 </el-table-column>
@@ -245,7 +253,7 @@
                   width="80">
                 </el-table-column>
                 <el-table-column
-                  prop="serviceName"
+                  prop="serverName"
                   label="服务名称">
                 </el-table-column>
                 <el-table-column
@@ -274,10 +282,10 @@
           </el-tab-pane>
         </el-tabs>
       </el-card>
-    </div>
-    <div class="mt20 mb20 ml20">
-      <!--<el-button>保 存</el-button>-->
-      <el-button type="primary">提 交</el-button>
+      <div class="mt20 mb20 ml20">
+        <!--<el-button>保 存</el-button>-->
+        <el-button type="primary" @click="submit">提 交</el-button>
+      </div>
     </div>
     <el-dialog
       title="新增服务验收信息"
@@ -321,6 +329,7 @@
               :data="matchData"
               border
               max-height="450"
+              @row-click="rowClick"
               class="wp100">
               <el-table-column
                 prop="pr"
@@ -393,6 +402,7 @@
               :data="intentionData"
               border
               max-height="450"
+              @row-click="rowClick"
               class="wp100">
               <el-table-column
                 label=""
@@ -435,7 +445,7 @@
       </div>
       <div slot="footer">
         <el-button @click="dialogVisible = false">取 消</el-button>
-        <el-button type="primary" @click="getInfo">确 定</el-button>
+        <el-button type="primary" @click="setInfo">确 定</el-button>
       </div>
     </el-dialog>
   </div>
@@ -443,6 +453,7 @@
 
 <script>
   import signModel from '@/api/sign'
+  import {routerNames} from '@/core/consts'
   import {formatTime, formatDate} from '@/filters/moment'
   import fillZero from '@/util/fillZero'
   import comLoading from '@/mixins/comLoading'
@@ -454,7 +465,7 @@
         prCode: '',
         contractCode: '',
         prData: [],
-        contractData: [],
+        materialsMatchData: [],
         activeName: '1',
         matchData: [],
         intentionData: [],
@@ -485,7 +496,9 @@
           }],
           remark: [{max: 300, message: '长度不超过300个字符', trigger: 'change'}]
         },
-        dialogVisible: false
+        dialogVisible: false,
+        contractForm: {},
+        orderForm: {}
       }
     },
     methods: {
@@ -500,9 +513,11 @@
           return
         }
 
+        this.comLoading(1)
         signModel.getPr({
           pr: prCode
         }).then((res) => {
+          this.comLoading()
           const data = res.data.dataMap
           console.log(data)
           if (this.prData.length && this.prData[0].companyCode !== data.companyCode) {
@@ -522,70 +537,104 @@
         const pr = prData.map((item) => {
           return item.pr
         })
+
+        this.comLoading(1)
         signModel.getMatch({
           pr,
           contractNo: this.contractCode
         }).then((res) => {
+          this.comLoading()
           console.log(res)
           const data = res.data.dataMap
           const {intentionContVos, materialsMatchVoList} = data
           this.intentionData = intentionContVos
-          this.contractData = materialsMatchVoList
+          this.materialsMatchData = materialsMatchVoList
           this.matchData = this.getSource(materialsMatchVoList)
           this.dialogVisible = true
         })
       },
       getSource(data) {
         const result = []
-        const materialList = data
-        this.prData.forEach((singlePr) => {
-          const {pr, purOrderMaterialsList = []} = singlePr
-          purOrderMaterialsList.forEach((prGood) => {
-            const {itemNo, materialName, materialCode} = prGood
-            const result1 = this.matchCode(materialCode, materialList)
-            if (result1.length) {
-              result.push({pr, itemNo, materialCode, materialName})
-              result1.forEach((item) => {
-                result.push(item)
-              })
-            }
-          })
+        const materialList = data || []
+        materialList.forEach((item) => {
+          const {pr, itemNo, materialName, materialCode, contVos} = item
+          if (contVos && contVos.length) {
+            result.push({pr, itemNo, materialCode, materialName})
+            contVos.forEach((cont) => {
+              result.push(cont)
+            })
+          }
         })
         console.log(result)
         return result
       },
-      matchCode(code, materialList) {
-        const result = []
-        materialList.some((material) => {
-          const {materialCode} = material
-          if (code === materialCode) {
-            const {contVos} = material
-            if (contVos) {
-              contVos.forEach((item) => {
-                result.push(item)
-              })
-            }
-            return true
-          }
-          return false
-        })
-        return result
-      },
-      getInfo() {
-        if (!this.radio && !this.radio1) {
+      setInfo() {
+        if (!this.radio && !(String(this.radio1))) {
           this.$message.warning('请选择一项！')
           return
         }
         this.dialogVisible = false
+
+        this.setContractData()
+        this.setOrderForm()
+        this.setOrderData()
+      },
+      setContractData() {
         console.log(this.activeName)
         if (this.activeName === '1') {
-          console.log(this.matchData[this.radio])
-          return
+          this.contractForm = this.matchData[this.radio]
+        } else {
+          this.contractForm = this.intentionData[this.radio1]
         }
-        console.log(this.intentionData[this.radio1])
+      },
+      setOrderForm() {
+        const {companyCode} = this.prData[0]
+        const {supplierName} = this.contractForm
+        this.orderForm = {
+          companyCode,
+          supplierName
+        }
+      },
+      setOrderData() {
+        const {id} = this.contractForm
+
+        const orderData = []
+        this.materialsMatchData.forEach((item) => {
+          const {pr, itemNo, materialName, materialCode, contVos} = item
+          if (contVos && contVos.length) {
+            contVos.forEach((cont) => {
+              if (cont.id === id) {
+                orderData.push({
+                  pr,
+                  itemNo,
+                  materialName,
+                  materialCode,
+                  ...cont
+                })
+              }
+            })
+          }
+        })
+
+        this.orderData = orderData
       },
       addService() {
         this.serverDialogVisible = true
+      },
+      rowClick(row) {
+        console.log(row)
+        let index = 0
+        if (this.activeName === '1') {
+          const {pr} = row
+          if (pr) {
+            return
+          }
+          index = this.matchData.indexOf(row)
+          this.radio = index
+        } else {
+          index = this.intentionData.indexOf(row)
+          this.radio1 = index
+        }
       },
       handleServiceItem(index, row) {
         console.log(row)
@@ -606,6 +655,22 @@
             console.log('error submit!!')
             return false
           }
+        })
+      },
+      submit() {
+        console.log(this.serverData, this.orderData)
+        const {id, contractNo} = this.contractForm
+        const result = {
+          id,
+          contractNo,
+          orderCheckItems: this.serverData,
+          purOrderMaterials: this.orderData
+        }
+        console.log(result)
+        signModel.submit(result).then((res) => {
+          this.$router.push({
+            name: routerNames.con_order_list
+          })
         })
       }
     },

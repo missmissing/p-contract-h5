@@ -16,47 +16,35 @@
             <el-row>
               <el-col :span="8">
                 <el-form-item label="合同编号">
-                  <el-autocomplete
-                    class="wp100"
-                    icon="search"
-                    :fetch-suggestions="querySearch"
-                    @select="search"
-                    v-model="contractCode"
-                    :trigger-on-focus="false">
-                  </el-autocomplete>
+                  <el-input v-model="contractCode" icon="search" :on-icon-click="search"></el-input>
                 </el-form-item>
               </el-col>
               <el-button type="info" class="ml20">详 情</el-button>
             </el-row>
             <el-row>
-              <el-col :span="6">
-                <el-form-item label="合同名称">
-                  <el-input disabled></el-input>
-                </el-form-item>
-              </el-col>
-              <el-col :span="6">
+              <el-col :span="8">
                 <el-form-item label="合同签署日期">
-                  <el-input disabled></el-input>
+                  <el-input :value="signDate | formatDate" disabled></el-input>
                 </el-form-item>
               </el-col>
-              <el-col :span="6">
+              <el-col :span="8">
                 <el-form-item label="合同生效日期">
-                  <el-input disabled></el-input>
+                  <el-input :value="startTime | formatDate" disabled></el-input>
                 </el-form-item>
               </el-col>
-              <el-col :span="6">
+              <el-col :span="8">
                 <el-form-item label="合同中止日期">
-                  <el-input disabled></el-input>
+                  <el-input :value="endTime | formatDate" disabled></el-input>
                 </el-form-item>
               </el-col>
-              <el-col :span="6">
-                <el-form-item label="申请人">
-                  <el-input disabled></el-input>
+              <el-col :span="8">
+                <el-form-item label="业务经办人">
+                  <el-input :value="person" disabled></el-input>
                 </el-form-item>
               </el-col>
-              <el-col :span="6">
+              <el-col :span="8">
                 <el-form-item label="所属部门">
-                  <el-input disabled></el-input>
+                  <el-input :value="belongDePart" disabled></el-input>
                 </el-form-item>
               </el-col>
             </el-row>
@@ -78,9 +66,9 @@
                   <el-select v-model="payType" placeholder="请选择">
                     <el-option
                       v-for="item in options"
-                      :key="item.value"
-                      :label="item.label"
-                      :value="item.value">
+                      :key="item"
+                      :label="item"
+                      :value="item">
                     </el-option>
                   </el-select>
                 </el-form-item>
@@ -146,17 +134,23 @@
 </template>
 
 <script>
-  import Api from '@/api/performance'
+  import Api from '@/api/manageContract'
   import Upload from '@/components/upload.vue'
   import {uploadUrl, downloadUrl} from '@/api/consts'
+  import {formatDate} from '@/filters/moment'
 
   export default {
     data() {
       return {
         contractCode: '',
+        signDate: '',
+        startTime: '',
+        endTime: '',
+        person: '',
+        belongDePart: '',
         breachRadio: '2',
         payment: false,
-        payType: '1',
+        payType: '',
         radio: '1',
         reason: '',
         handleResult: '',
@@ -164,37 +158,29 @@
         download: downloadUrl,
         fileList: [],
         uploadData: {},
-        options: [{
-          value: '1',
-          label: '供应商向我方赔付'
-        }]
+        options: ['供应商向我方赔付', '我方向供应商佩服'],
+        info: {}
       }
     },
     methods: {
       search() {
         console.log(this.contractCode)
-      },
-      querySearch(queryString, cb) {
-        if (!queryString) {
-          return cb([])
-        }
-        Api.getContractCode({
-          contractCode: queryString
-        }).then((res) => {
-          const result = res.data.dataMap || []
-          cb(this.createFilter(result))
-        }, () => {
-          cb([])
-        })
-      },
-      createFilter(result) {
-        return result.map((item) => {
-          return {value: item, label: item}
+        Api.getContractDetailByCode({id: this.contractCode}).then((res) => {
+          const data = res.data.dataMap
+          console.log(data)
+          this.info = data
+          const {cardContentInfoForm} = data
+          const {startTime, endTime} = cardContentInfoForm
+          this.startTime = startTime
+          this.endTime = endTime
         })
       }
     },
     components: {
       Upload
+    },
+    filters: {
+      formatDate
     }
   }
 </script>

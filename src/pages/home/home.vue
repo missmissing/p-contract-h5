@@ -105,7 +105,7 @@
       <div class="userInfo">
         <el-dropdown @command="handleCommand">
           <span class="avatar">
-            {{username}}
+            {{username}}({{userId}})
              <img :src="userPhoto" alt=""/>
           </span>
           <el-dropdown-menu slot="dropdown">
@@ -150,7 +150,7 @@
   import localStore from 'store'
   import Api from '@/api'
 
-  const {user = {}} = localStore.get('user') || {}
+  const user = localStore.get('user') || {}
   const logo = require('../../assets/img/main-logo.png')
   const userPhoto = require('../../assets/img/user.jpg')
 
@@ -160,6 +160,7 @@
         logo,
         userPhoto,
         username: user.userName,
+        userId: user.userId,
         isCollapse: false
       }
     },

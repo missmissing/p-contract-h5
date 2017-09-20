@@ -191,16 +191,6 @@ const router = new Router({
         iconCls: 'stats-bars'
       },
       children: [
-        // {
-        //  path: '/conperf/inspection',
-        //  component: function (resolve) {
-        //    require(['../pages/performance/inspection.vue'], resolve);
-        //  },
-        //  name: routerNames.con_performanceIndex,
-        //  meta: {
-        //    auth: true
-        //  },
-        // },
         {
           path: '/conperf/inspectionreject',
           component: function (resolve) {

@@ -1,7 +1,7 @@
 import moment from 'moment'
 
 export const formatTime = (value) => {
-  const m = moment(value)
+  const m = moment(value || '')
   if (m.isValid()) {
     return m.format('YYYY-MM-DD HH:mm:ss')
   }
@@ -9,7 +9,7 @@ export const formatTime = (value) => {
 }
 
 export const formatDate = (value) => {
-  const m = moment(value)
+  const m = moment(value || '')
   if (m.isValid()) {
     return m.format('YYYY-MM-DD')
   }
@@ -17,7 +17,7 @@ export const formatDate = (value) => {
 }
 
 export const formatTimeStamp = (value) => {
-  const m = moment(value)
+  const m = moment(value || '')
   if (m.isValid()) {
     return m.valueOf()
   }
@@ -25,7 +25,7 @@ export const formatTimeStamp = (value) => {
 }
 
 export const formatToDate = (value) => {
-  const m = moment(value)
+  const m = moment(value || '')
   if (m.isValid()) {
     return m.toDate()
   }

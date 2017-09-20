@@ -16,14 +16,7 @@
             <el-row>
               <el-col :span="8">
                 <el-form-item label="采购订单编号">
-                  <el-autocomplete
-                    class="wp100"
-                    icon="search"
-                    :fetch-suggestions="querySearch"
-                    @select="search"
-                    v-model="prCode"
-                    :trigger-on-focus="false">
-                  </el-autocomplete>
+                  <el-input v-model="prCode" icon="search" :on-icon-click="search"></el-input>
                 </el-form-item>
               </el-col>
               <el-button type="info" class="ml20">详 情</el-button>
@@ -301,24 +294,6 @@
     methods: {
       search() {
         console.log(this.prCode)
-      },
-      querySearch(queryString, cb) {
-        if (!queryString) {
-          return cb([])
-        }
-        Api.getOrderCode({
-          orderCode: queryString
-        }).then((res) => {
-          const result = res.data.dataMap || []
-          cb(this.createFilter(result))
-        }, () => {
-          cb([])
-        })
-      },
-      createFilter(result) {
-        return result.map((item) => {
-          return {value: item, label: item}
-        })
       },
       addNotQualityDialogOk() {
         this.$refs['addNotQualityDialogForm'].validate((valid) => {
