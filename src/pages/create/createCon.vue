@@ -852,6 +852,7 @@
                 </el-col>
                 <el-col :span="8">
                   <el-form-item label="合同总金额" prop="totalConMoney">
+                    <!--<el-input v-if=""></el-input>-->
                     <el-input :disabled="!cardFinanceInfoForm.oneOffPay" v-model="totalConMoney"
                               placeholder="根据上表累加(含税价)"></el-input>
                   </el-form-item>
@@ -2424,7 +2425,6 @@
         params.contractBusinessTypeSecond = types[1];
         params.contractBusinessTypeThird = types[2];
       }
-      console.log('mounted-this.operateType',this.operateType);
       if(this.operateType==='create'){
         Api.getContractBaseInfo(params).then((data) => {
           const dataMap=data.data.dataMap
@@ -2462,13 +2462,14 @@
         paymentMethods.progress[0].type = "进度款"
         paymentMethods._final[0].type = "尾款"
 
+
         if(this.operateType!=='create'){
           this.baseInfoForm.contractTypeName=data.baseInfoForm.contractType//初始化合同模式
-          /*for(let i=0,len=this.cardSealInfoForm.length;i<len;i++){//初始化附件类型的数据
-            const item=this.cardSealInfoForm[i]
-
-
-          }*/
+          const sealAttachments=this.cardSealInfoForm.sealAttachments
+          for(let i=0,len=sealAttachments.length;i<len;i++){//初始化附件类型的数据
+            const item=this.sealAttachments[i]
+            console.log('item',item);
+          }
 
         }else{
           this.baseInfoForm.contractTypeName = this.getContractModelName(params.contractType);//初始化合同模式
@@ -2488,16 +2489,27 @@
         }
       },
       handlePreview() {
-        this.previewData.conStandard=this.cardContentInfoForm.conStandard||[]
-        this.previewData.startTime=formatDate(this.cardContentInfoForm.startTime)
-        this.previewData.endTime=formatDate(this.cardContentInfoForm.endTime)
-        this.previewData.yiBillingInfo=this.cardFinanceInfoForm.yiBillingInfo||[]
-        this.previewData.jiaBillingInfo=this.cardFinanceInfoForm.jiaBillingInfo||[]
-        this.previewData.paymentMethods=this.cardFinanceInfoForm.paymentMethods||[]
-        this.previewData.totalAmount=this.cardFinanceInfoForm.totalAmount||0
-        this.previewData.deposit=this.cardFinanceInfoForm.deposit||0
-        console.log('this.previewData',this.previewData);
-        this.visible = true;
+        this.isSubmit = true
+        this.comLoading(1)
+        this.validateForms().then(()=> {
+          this.previewData.conStandard=this.cardContentInfoForm.conStandard||[]
+          this.previewData.startTime=formatDate(this.cardContentInfoForm.startTime)
+          this.previewData.endTime=formatDate(this.cardContentInfoForm.endTime)
+          this.previewData.yiBillingInfo=this.cardFinanceInfoForm.yiBillingInfo||[]
+          this.previewData.jiaBillingInfo=this.cardFinanceInfoForm.jiaBillingInfo||[]
+          this.previewData.paymentMethods=this.cardFinanceInfoForm.paymentMethods||[]
+          this.previewData.totalAmount=this.cardFinanceInfoForm.totalAmount||0
+          this.previewData.deposit=this.cardFinanceInfoForm.deposit||0
+          this.previewData.payTime=formatDate(this.cardFinanceInfoForm.payTime)
+          this.previewData.marginLevel=this.getProportion(this.cardFinanceInfoForm.deposit)
+          console.log('this.previewData',this.previewData);
+          this.visible = true;
+          this.comLoading()
+        }).catch(()=> {
+          this.$message.error('请填写完整信息再预览！')
+          this.comLoading()
+        })
+
       },
       handleTabClick(tab, event) {
         console.log('handleTabClick')
@@ -2674,7 +2686,7 @@
             const key = this.formContractSupplier.search
             if (suppliers.length) {
               for (let i = 0, len = suppliers.length; i < len; i++) {
-                if (key === suppliers[i].companyCode) {
+                if (key === suppliers[i].code) {
                   this.cardFinanceInfoForm.yiBillingInfo = suppliers;
                 }
               }
@@ -2800,6 +2812,12 @@
       },
       getProportion(money) {
         let result = 0
+        if(this.cardFinanceInfoForm.oneOffPay){
+
+        }
+        if(this.totalConMoney===0){
+          return 100+'%'
+        }
         if (money) {
           result = parseFloat(money) / parseFloat(this.totalConMoney)
         }
@@ -3158,11 +3176,8 @@
         Api.getUpdateInfo(code).then((data)=>{
           const dataMap=data.data.dataMap
           if(dataMap&&dataMap.baseInfoForm.id){
-            const dataMap=data.data.dataMap
-            if(dataMap){
-              this.updateForm.visible = true
               this.initData(dataMap);
-            }
+              this.updateForm.visible = true
           }
         })
       },
@@ -3306,7 +3321,6 @@
         item.taxRate = curFormName.model.taxRate
         item.operate = 'add'
         conStandard.push(item);
-
         this.cardContentInfoForm.dialogAddConStandard = false
         this.$refs[formName].resetFields()
       },
@@ -3338,6 +3352,7 @@
               this.formAddConStandard.materialName = materials[i].materialName
               this.formAddConStandard.price = materials[i].price
               this.formAddConStandard.taxRate = materials[i].taxRate
+              this.formAddConStandard.total = materials[i].total
             }
           }
         }
@@ -3392,7 +3407,6 @@
           this.$refs['formAddConStandard'].resetFields()
         }
       }
-
     }
   }
 </script>
