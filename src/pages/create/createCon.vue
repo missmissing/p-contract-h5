@@ -219,7 +219,7 @@
             </el-card>
             <el-card class="mt20">
               <header slot="header">合同我方主体名称<i class="errorMsg">{{cardContentInfoForm.subjectsErrorMsg}}</i></header>
-              <el-button v-if="operateType!=='query'||EnabledInupdated" type="primary" @click="handleNewSubjectName"
+              <el-button v-if="enabledInupdated" type="primary" @click="handleNewSubjectName"
                          icon="plus" class="mb10">新增
               </el-button>
               <el-table :data="cardContentInfoForm.conSubjctName">
@@ -294,7 +294,7 @@
               <el-row class="mt20" v-if="operateType==='update'">
                 <el-col :span="8">
                   <el-form-item label="是否固定期限">
-                    <el-radio-group v-model="cardContentInfoForm.ifFixedTerm">
+                    <el-radio-group v-model="cardContentInfoForm.ifFixedTerm" :disabled="!enabledInupdated">
                       <el-radio :label="1">是</el-radio>
                       <el-radio :label="0">否</el-radio>
                     </el-radio-group>
@@ -307,7 +307,7 @@
                                 prop="startTime">
                     <el-date-picker v-model="cardContentInfoForm.startTime"
                                     format="yyyy-MM-dd"
-                                    :disabled="operateType==='query'"
+                                    :disabled="!enabledInupdated"
                                     placeholder="请输入合同生效期日期"
                                     type="date"></el-date-picker>
                   </el-form-item>
@@ -317,7 +317,7 @@
                                 prop="endTime">
                     <el-date-picker v-model="cardContentInfoForm.endTime"
                                     format="yyyy-MM-dd"
-                                    :disabled="operateType==='query'"
+                                    :disabled="!enabledInupdated"
                                     placeholder="请输入合同终止日期"
                                     type="date"></el-date-picker>
                   </el-form-item>
@@ -1130,11 +1130,11 @@
         <el-tab-pane label="合同附件及盖章信息" name="tabSealInfo" v-if="baseInfoForm.contractType!==2">
           <el-form v-if="baseInfoForm.templateId" rel="cardSealInfoForm" :model="cardSealInfoForm" label-width="100px"
                    :rules="cardSealInfoForm.rules">
-            <el-button type="primary" @click="handleNewOtherSealFile" icon="plus" v-if="operateType!=='query'"
+            <el-button type="primary" @click="handleNewOtherSealFile" icon="plus" v-if="enabledInupdated"
                        class="mb20">
               新增其他附件
             </el-button>
-            <el-button type="primary" @click="handleNewAgreenmentSealFile" icon="plus" v-if="operateType!=='query'"
+            <el-button type="primary" @click="handleNewAgreenmentSealFile" icon="plus" v-if="enabledInupdated"
                        class="mb20">
               新增从协议
             </el-button>
@@ -1166,20 +1166,20 @@
                   <el-row>
                     <el-col :span="6">
                       <el-form-item label="用章次数" prop="saleTime">
-                        <el-input :disabled="operateType==='query'"
+                        <el-input :disabled="!enabledInupdated"
                                   v-model="props.row.saleTime">
                         </el-input>
                       </el-form-item>
                     </el-col>
                     <el-col :span="6">
                       <el-form-item label="打印份数" prop="printTime">
-                        <el-input :disabled="operateType==='query'"
+                        <el-input :disabled="!enabledInupdated"
                                   v-model="props.row.printTime"></el-input>
                       </el-form-item>
                     </el-col>
                     <el-col :span="6">
                       <el-form-item label="我方留存份数" prop="remainTime">
-                        <el-input :disabled="operateType==='query'"
+                        <el-input :disabled="!enabledInupdated"
                                   v-model="props.row.remainTime"></el-input>
                       </el-form-item>
                     </el-col>
@@ -1350,7 +1350,7 @@
                       :on-success="handleUploadSealFileSuccess"
                       :on-error="handleUploadSealFileError"
                     >
-                      <el-button :disabled="operateType==='query'"
+                      <el-button :disabled="!enabledInupdated"
                                  size="small" type="primary" @click="handleUploadOuter(index)">上传
                       </el-button>
                     </el-upload>
@@ -1359,11 +1359,11 @@
                 <el-table-column prop="haveSale" label="是否盖章" width="70px">
                   <template scope="scope">
                     <el-checkbox
-                      :disabled="operateType==='query'"
+                      :disabled="!enabledInupdated"
                       v-model="item[scope.$index].haveSale"></el-checkbox>
                   </template>
                 </el-table-column>
-                <el-table-column prop="remark" label="备注" width="200px">
+                <el-table-column prop="remark" :disabled="!enabledInupdated" label="备注" width="200px">
                   <template scope="scope">
                     <el-input
                       :disabled="operateType==='query'"
@@ -1397,7 +1397,7 @@
                                 :rules="[{validator: (rule, value, callback)=>{if(value&&value.length!==10){callback(new Error('error'))}callback();},trigger: 'blur'},
                                              { required: true, message: '请输入从协议编号'}
                                              ]">
-                    <el-input :disabled="operateType==='query'" icon="search"
+                    <el-input :disabled="!enabledInupdated" icon="search"
                               @keyup.enter.native="handleCodeBlur(cardSealInfoForm.agreenments[scope.$index],cardSealInfoForm.agreenments[scope.$index].slaveProtocolNo)"
                               @blur="handleCodeBlur(cardSealInfoForm.agreenments[scope.$index],cardSealInfoForm.agreenments[scope.$index].slaveProtocolNo)"
                               v-model="cardSealInfoForm.agreenments[scope.$index].slaveProtocolNo"
@@ -1704,7 +1704,6 @@
   import {formatDate} from '@/filters/moment'
 
   const user = store.get('user')
-  console.log('user',user);
 
   export default {
     mixins: [comLoading],
@@ -2359,7 +2358,7 @@
         this.cardFinanceInfoForm.depositRatio=val.replace(/\%$/g,'')
         return val
       },
-      EnabledInupdated:function(){//在各种操作类型下，控制元素的是否可见和是否可用
+      enabledInupdated:function(){//在各种操作类型下，控制元素的是否可见和是否可用
         let result=false
         if(this.operateType==='query'){
           result=false
@@ -2469,7 +2468,6 @@
       },
       handlePreview() {
         this.isSubmit = true
-        this.comLoading(1)
         this.validateForms().then(()=> {
           const previewData = {};
           previewData.conStandard = this.cardContentInfoForm.conStandard || []
@@ -2479,10 +2477,8 @@
           previewData.templateId = this.baseInfoForm.templateId
           this.previewData = previewData
           this.visible = true;
-          this.comLoading()
         }).catch(()=> {
           this.$message.error('请填写完整信息再预览！')
-          this.comLoading()
         })
 
       },
@@ -2661,7 +2657,7 @@
             const key = this.formContractSupplier.search
             if (suppliers.length) {
               for (let i = 0, len = suppliers.length; i < len; i++) {
-                if (key === suppliers[i].code) {
+                if (key === suppliers[i].companyCode) {
                   this.cardFinanceInfoForm.yiBillingInfo = suppliers;
                 }
               }
