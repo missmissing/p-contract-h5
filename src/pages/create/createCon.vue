@@ -1194,7 +1194,7 @@
                           :on-success="handleUploadFileAfterSealSuccess"
                           :on-error="handleUploadFileAfterSealError"
                         >
-                          <el-button :disabled="operateType==='query'||(props.row.filesSealed&&!!props.row.filesSealed.length)" size="small"
+                          <el-button :disabled="getEnabledUploadBtn(props.row.filesSealed)" size="small"
                                      type="primary" @click="handleUpload(cardSealInfoForm.contract[0].attachType)">上传
                           </el-button>
                           </el-button>
@@ -1207,6 +1207,7 @@
                       <el-form-item prop="saleInfos">
                         <el-checkbox-group v-model="props.row.saleInfos">
                           <el-checkbox
+                            :disabled="!enabledInupdated"
                             v-for="item in props.row.useSeals"
                             :label="item.id"
                             :key="item.id">
@@ -1277,20 +1278,20 @@
                     <el-row>
                       <el-col :span="6">
                         <el-form-item label="用章次数" prop="saleTime">
-                          <el-input :disabled="operateType==='query'"
+                          <el-input :disabled="!enabledInupdated"
                                     v-model="props.row.saleTime">
                           </el-input>
                         </el-form-item>
                       </el-col>
                       <el-col :span="6">
                         <el-form-item label="打印份数" prop="printTime">
-                          <el-input :disabled="operateType==='query'"
+                          <el-input :disabled="!enabledInupdated"
                                     v-model="props.row.printTime"></el-input>
                         </el-form-item>
                       </el-col>
                       <el-col :span="6">
                         <el-form-item label="我方留存份数" prop="remainTime">
-                          <el-input :disabled="operateType==='query'"
+                          <el-input :disabled="!enabledInupdated"
                                     v-model="props.row.remainTime"></el-input>
                         </el-form-item>
                       </el-col>
@@ -1305,7 +1306,7 @@
                             :on-success="handleUploadFileAfterSealSuccess"
                             :on-error="handleUploadFileAfterSealError"
                           >
-                            <el-button :disabled="(props.row.filesSealed&&!!props.row.filesSealed.length)" size="small"
+                            <el-button :disabled="getEnabledUploadBtn(props.row.filesSealed)" size="small"
                                        type="primary" @click="handleUpload(item[props.$index].attachType,index)">上传
                             </el-button>
                             </el-button>
@@ -1318,6 +1319,7 @@
                         <el-form-item prop="saleInfos">
                           <el-checkbox-group v-model="props.row.saleInfos">
                             <el-checkbox
+                              :disabled="!enabledInupdated"
                               v-for="item in props.row.useSeals"
                               :label="item.id"
                               :key="item.id">
@@ -1424,7 +1426,7 @@
             <el-card>
               <header slot="header">其他说明</header>
               <el-form-item prop="otherInstruction">
-                <el-input :disabled="operateType==='query'" style="margin-left: -100px" type="textarea"
+                <el-input :disabled="!enabledInupdated" style="margin-left: -100px" type="textarea"
                           placeholder="请输入内容" :rows="6"
                           v-model="cardRemarkInfoForm.otherInstruction"></el-input>
               </el-form-item>
@@ -2447,6 +2449,15 @@
             this.baseInfoForm.contractTypeName = this.getContractModelName(params.contractType);//初始化合同模式
           }
         }
+      },
+      getEnabledUploadBtn(items){
+        let result=true
+        if(this.enabledInupdated){
+          result=false
+        }else{
+          items&&items.length>1?result=false:result=true
+        }
+        return result
       },
       setRatio(item,val){
         let result=this.getProportion(val)
