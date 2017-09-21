@@ -41,7 +41,7 @@ export default {
   },
   // 根据关键字搜索合同标的数据
   getRemoteMaterialsByKeyWord(params) {
-    return Http.get(`/contract-web/contract/materials`, params)
+    return Http.get(`${contract}/contract-web/contract/sample`, params)
   },
   // 保存合同
   saveContract(params) {
