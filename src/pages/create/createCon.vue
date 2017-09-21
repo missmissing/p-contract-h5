@@ -1147,7 +1147,7 @@
               <el-table-column type="expand"
                                v-if="cardSealInfoForm.contract&&cardSealInfoForm.contract.length&&cardSealInfoForm.contract[0].haveSale">
                 <template scope="props">
-                  <!--<el-table :data="props.row.filesSealed" class="mb20"
+                  <el-table :data="props.row.filesSealed" class="mb20"
                             v-if="props.row.filesSealed&&props.row.filesSealed.length">
                     <el-table-column label="文件名" prop="sealFileName">
                       <template scope="scope">
@@ -1167,7 +1167,7 @@
                         </el-button>
                       </template>
                     </el-table-column>
-                  </el-table>-->
+                  </el-table>
                   <el-row>
                     <el-col :span="6">
                       <el-form-item label="用章次数" prop="saleTime">
@@ -1199,7 +1199,7 @@
                           :on-success="handleUploadFileAfterSealSuccess"
                           :on-error="handleUploadFileAfterSealError"
                         >
-                          <el-button :disabled="operateType==='query'||!!props.row.filesSealed.length" size="small"
+                          <el-button :disabled="operateType==='query'||(props.row.filesSealed&&!!props.row.filesSealed.length)" size="small"
                                      type="primary" @click="handleUpload(cardSealInfoForm.contract[0].attachType)">上传
                           </el-button>
                           </el-button>
@@ -1310,7 +1310,7 @@
                             :on-success="handleUploadFileAfterSealSuccess"
                             :on-error="handleUploadFileAfterSealError"
                           >
-                            <el-button :disabled="operateType==='query'||!!props.row.filesSealed.length" size="small"
+                            <el-button :disabled="(props.row.filesSealed&&!!props.row.filesSealed.length)" size="small"
                                        type="primary" @click="handleUpload(item[props.$index].attachType,index)">上传
                             </el-button>
                             </el-button>
@@ -2365,7 +2365,7 @@
       },
       depositRatio:function(){
         const val=this.getProportion(this.cardFinanceInfoForm.deposit)
-        this.cardFinanceInfoForm.depositRatio=val
+        this.cardFinanceInfoForm.depositRatio=val.replace(/\%$/g,'')
         return val
       }
     },
@@ -2858,6 +2858,15 @@
               serviceCheckMsg: ''
             },
             baseInfoForm: false
+          }
+          if(this.operateType==='update'){
+            this.$refs.updateForm.validate((valid)=> {
+              if (!valid) {
+                this.$message.error('请填写完整变更原因再提交！')
+              } else {
+                errors.baseInfoForm = true
+              }
+            })
           }
           this.$refs.baseInfoForm.validate((valid)=> {
             if (!valid) {
