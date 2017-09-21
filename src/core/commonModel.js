@@ -2,6 +2,7 @@
  * Created by bizhou.liu on 2017/6/9.
  */
 import axios from 'axios'
+import LocalStore from 'store'
 import emitter from './emitter'
 import Consts from './consts'
 
@@ -11,6 +12,7 @@ function checkStatus(response) {
   const {data} = response
   const {code, dataMap} = data
   if (code === 911) {
+    LocalStore.remove('user')
     const currentUrl = encodeURIComponent(window.location.href)
     window.location.href = `${dataMap}${currentUrl}`
     return false

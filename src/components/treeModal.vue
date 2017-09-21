@@ -10,6 +10,7 @@
     @close="close">
     <div>
       <el-tree
+        accordion
         :data="regions"
         ref="tree"
         :props="defaultProps"

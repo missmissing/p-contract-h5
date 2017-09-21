@@ -12,5 +12,8 @@ export default {
   },
   submit(params) {
     return Http.post(`${contract}/contract-web/purchaseOrder/submit`, params)
+  },
+  query(params) {
+    return Http.post(`${contract}/contract-web/purchaseOrder/query`, params)
   }
 }
