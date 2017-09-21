@@ -219,7 +219,7 @@
             </el-card>
             <el-card class="mt20">
               <header slot="header">合同我方主体名称<i class="errorMsg">{{cardContentInfoForm.subjectsErrorMsg}}</i></header>
-              <el-button v-if="operateType!=='query'" type="primary" @click="handleNewSubjectName"
+              <el-button v-if="operateType!=='query'||EnabledInupdated" type="primary" @click="handleNewSubjectName"
                          icon="plus" class="mb10">新增
               </el-button>
               <el-table :data="cardContentInfoForm.conSubjctName">
@@ -1703,9 +1703,8 @@
   import Process from '@/components/process.vue'
   import {formatDate} from '@/filters/moment'
 
-
-  //document.cookie = 'sys=FMM21KGIJLHOGHNKHGGLLOFMMKFNKKE'
   const user = store.get('user')
+  console.log('user',user);
 
   export default {
     mixins: [comLoading],
@@ -2363,6 +2362,19 @@
         const val=this.getProportion(this.cardFinanceInfoForm.deposit)
         this.cardFinanceInfoForm.depositRatio=val.replace(/\%$/g,'')
         return val
+      },
+      EnabledInupdated:function(){//在各种操作类型下，控制元素的是否可见和是否可用
+        let result=false
+        if(this.operateType==='query'){
+          result=false
+        }
+        if(this.operateType==='create'){
+          result=true
+        }
+        if(this.operateType==='update'){
+          this.updateForm.updateMode?result= false:result= true
+        }
+        return result
       }
     },
     mounted() {
