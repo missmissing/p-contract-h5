@@ -6,7 +6,7 @@
       <el-row>
         <el-col :span="7">
           <el-form-item label="合同编号">
-            <el-input v-model="form.contractCode" placeholder="请输入合同编号"></el-input>
+            <el-input v-model="form.contractNo" placeholder="请输入合同编号"></el-input>
           </el-form-item>
         </el-col>
         <el-col :span="14">
@@ -17,7 +17,7 @@
         <el-col :span="7">
           <el-form-item label="合同模式">
             <el-select
-              v-model="form.contractPattern"
+              v-model="form.contractTextType"
               placeholder="请选择合同模式"
               class="wp100">
               <el-option label="合同模板" value="1"></el-option>
@@ -43,17 +43,17 @@
         </el-col>
         <el-col :span="7">
           <el-form-item label="发起人">
-            <el-input v-model="form.initiator" placeholder="请输入发起人"></el-input>
+            <el-input v-model="form.creatorName" placeholder="请输入发起人"></el-input>
           </el-form-item>
         </el-col>
         <el-col :span="7">
           <el-form-item label="业务经办人">
-            <el-input v-model="form.busiController" placeholder="请输入业务经办人"></el-input>
+            <el-input v-model="form.businessOperator" placeholder="请输入业务经办人"></el-input>
           </el-form-item>
         </el-col>
         <el-col :span="7">
           <el-form-item label="业务部门">
-            <el-input v-model="form.busiApartment" placeholder="请输入业务部门"></el-input>
+            <el-input v-model="form.businessDept" placeholder="请输入业务部门"></el-input>
           </el-form-item>
         </el-col>
         <el-col :span="7">
@@ -69,7 +69,7 @@
         </el-col>
         <el-col :span="7">
           <el-form-item label="有效合同">
-            <el-switch v-model="form.valid"></el-switch>
+            <el-switch v-model="form.effective"></el-switch>
             <el-button type="primary" @click="search" style="margin-left:30px;">搜 索</el-button>
           </el-form-item>
         </el-col>
@@ -139,15 +139,20 @@
     data() {
       return {
         form: {
-          contractCode: '',
+          contractNo: '',
           contractName: '',
-          contractPattern: '',
+          contractTextType: '',
           contractType: '',
           pr: '',
-          initiator: '',
-          busiController: '',
+          creatorName: '',
+          businessOperator: '',
+          createStart:'',
+          createEnd:'',
+          businessDept:'',
+          effective: true,
+
           daterange: [],
-          valid: true
+
         },
         tableData: [],
         loading: false

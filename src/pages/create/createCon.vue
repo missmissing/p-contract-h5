@@ -2989,15 +2989,31 @@
           paras.cardSealInfoForm = this.cardSealInfoForm
           paras.cardRemarkInfoForm = this.cardRemarkInfoForm
           paras.cardOtherInfo = this.cardOtherInfo
+          
+          if(this.operateType==='create'){
+            Api.submit(paras).then((data)=> {
+              if (data.data.dataMap.id) {
+                this.$message.success('提交成功！')
+                this.operateType = 'query'
+              }
+              this.comLoading()
+            })
+          }else{
+            const updateForm=this.updateForm
+            const updateParams={}
+            updateParams.alterMode=updateForm.updateMode
+            updateParams.alterRemark=updateForm.remark
+            updateParams.contractVo=paras
+            Api.updatedSubmit(updateParams).then((data)=> {
+              if (data.data.dataMap.id) {
+                this.operateType==='update'?this.updated=true:null
+                this.$message.success('提交成功！')
+                this.operateType = 'query'
+              }
+              this.comLoading()
+            })
+          }
 
-          Api.submit(paras).then((data)=> {
-            if (data.data.dataMap.id) {
-              this.operateType==='update'?this.updated=true:null
-              this.$message.success('提交成功！')
-              this.operateType = 'query'
-            }
-            this.comLoading()
-          })
         }).catch(()=> {
           this.$message.error('请填写完整信息再提交！')
           this.comLoading()
