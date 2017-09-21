@@ -851,10 +851,9 @@
                   </el-form-item>
                 </el-col>
                 <el-col :span="8">
-                  <el-form-item label="合同总金额" prop="totalConMoney">
-                    <!--<el-input v-if=""></el-input>-->
-                    <el-input :disabled="!cardFinanceInfoForm.oneOffPay" v-model="totalConMoney"
-                              placeholder="根据上表累加(含税价)"></el-input>
+                  <el-form-item label="合同总金额" prop="totalAmount">
+                    <el-input :disabled="!cardFinanceInfoForm.oneOffPay" v-model="cardFinanceInfoForm.totalAmount"
+                              placeholder="根据上表累加(含税价)">{{totalConMoney}}</el-input>
                   </el-form-item>
                 </el-col>
               </el-row>
@@ -2313,6 +2312,9 @@
         return result
       },
       totalConMoney: function () {
+        if(this.cardFinanceInfoForm.oneOffPay){
+          return this.cardFinanceInfoForm.totalAmount
+        }
         const paymentMethods = this.cardFinanceInfoForm.paymentMethods
         const advance = parseFloat(paymentMethods.advance[0].paymentAmount ? paymentMethods.advance[0].paymentAmount : 0)
         const progress = parseFloat(paymentMethods.progress[0].paymentAmount ? paymentMethods.progress[0].paymentAmount : 0)
@@ -2811,15 +2813,12 @@
         rows.splice(index, 1)
       },
       getProportion(money) {
-        let result = 0
-        if(this.cardFinanceInfoForm.oneOffPay){
-
-        }
-        if(this.totalConMoney===0){
+        let result = 0,totalAmount=this.cardFinanceInfoForm.totalAmount?parseFloat(this.cardFinanceInfoForm.totalAmount):0
+        if(totalAmount===0){
           return 100+'%'
         }
         if (money) {
-          result = parseFloat(money) / parseFloat(this.totalConMoney)
+          result = parseFloat(money) /totalAmount
         }
         return result.toFixed(2) * 100 + '%'
       },
