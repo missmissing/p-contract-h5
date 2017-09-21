@@ -47,9 +47,13 @@ export default {
   saveContract(params) {
     return Http.post(`${contract}/contract-web/contract/save`, params)
   },
-  // 提交
+  // 提交(创建合同）
   submit(params) {
     return Http.post(`${contract}/contract-web/contract/commit`, params)
+  },
+  // 提交(变更合同)
+  updatedSubmit(params) {
+    return Http.post(`${contract}/contract-web/contract/alter`, params)
   },
   /** ***标签页****/
   getPrTableData(params) {
