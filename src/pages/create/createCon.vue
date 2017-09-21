@@ -1693,7 +1693,7 @@
         <el-button v-if="operateType!=='query'" type="primary" @click="handleSubmit">提交</el-button>
       </el-col>
     </el-row>
-    <Preview :visible.sync="visible"></Preview>
+    <Preview :visible.sync="visible" :datas="previewData"></Preview>
     <Process></Process>
   </div>
 </template>
@@ -1705,6 +1705,7 @@
   import {downloadUrl, uploadUrl} from '@/api/consts'
   import store from 'store'
   import Process from '@/components/process.vue'
+  import {formatDate} from '@/filters/moment'
 
 
   //document.cookie = 'sys=FMM21KGIJLHOGHNKHGGLLOFMMKFNKKE'
@@ -1739,45 +1740,7 @@
       }
 
       return {
-        city: null,
-        cities: [
-          {
-            value: 'Beijing',
-            label: '北京'
-          }, {
-            value: 'Shanghai',
-            label: '上海'
-          }, {
-            value: 'Nanjing',
-            label: '南京'
-          }, {
-            value: 'Chengdu',
-            label: '成都'
-          }, {
-            value: 'Shenzhen',
-            label: '深圳'
-          }, {
-            value: 'Guangzhou',
-            label: '广州'
-          }
-        ],
-        tableData: [
-          {
-            city: null,
-            id: '1',
-            name: 'name1'
-          },
-          {
-            city: null,
-            id: '2',
-            name: 'name2'
-          },
-          {
-            city: null,
-            id: '3',
-            name: 'name3'
-          },
-        ],
+        previewData:{},//预览数据
         visible: false,//预览
         users: user,
         downloadUrl: downloadUrl,
@@ -2500,7 +2463,13 @@
         paymentMethods._final[0].type = "尾款"
 
         if(this.operateType!=='create'){
-          this.baseInfoForm.contractTypeName=data.baseInfoForm.contractType
+          this.baseInfoForm.contractTypeName=data.baseInfoForm.contractType//初始化合同模式
+          /*for(let i=0,len=this.cardSealInfoForm.length;i<len;i++){//初始化附件类型的数据
+            const item=this.cardSealInfoForm[i]
+
+
+          }*/
+
         }else{
           this.baseInfoForm.contractTypeName = this.getContractModelName(params.contractType);//初始化合同模式
         }
@@ -2519,6 +2488,15 @@
         }
       },
       handlePreview() {
+        this.previewData.conStandard=this.cardContentInfoForm.conStandard||[]
+        this.previewData.startTime=formatDate(this.cardContentInfoForm.startTime)
+        this.previewData.endTime=formatDate(this.cardContentInfoForm.endTime)
+        this.previewData.yiBillingInfo=this.cardFinanceInfoForm.yiBillingInfo||[]
+        this.previewData.jiaBillingInfo=this.cardFinanceInfoForm.jiaBillingInfo||[]
+        this.previewData.paymentMethods=this.cardFinanceInfoForm.paymentMethods||[]
+        this.previewData.totalAmount=this.cardFinanceInfoForm.totalAmount||0
+        this.previewData.deposit=this.cardFinanceInfoForm.deposit||0
+        console.log('this.previewData',this.previewData);
         this.visible = true;
       },
       handleTabClick(tab, event) {
@@ -2701,7 +2679,6 @@
                 }
               }
             }
-            console.log('add-yi', this.cardFinanceInfoForm.yiBillingInfo);
             this.cardContentInfoForm.tableSupplierInfo = [{
               code: suppliers[0].companyCode,
               name: suppliers[0].company,
@@ -2951,10 +2928,26 @@
         })
 
       },
+      combineSealsInfo(){
+        if(this.operateType!=='query'){
+          const contract=this.cardSealInfoForm.contract
+          const agreenments=this.cardSealInfoForm.agreenments
+          const others=this.cardSealInfoForm.others
+          let sealAttachments =this.cardSealInfoForm.sealAttachments,result
+          sealAttachments=[]
+          contract.length?sealAttachments.push(contract):null
+          agreenments.length?sealAttachments.push(agreenments):null
+          if(others.length){
+            sealAttachments=sealAttachments.concat(others)
+          }
+          return sealAttachments
+        }
+      },
       handleSave() {
         this.isSubmit = true
         this.comLoading(1)
         this.validateForms().then(()=> {
+          this.cardSealInfoForm.sealAttachments=this.combineSealsInfo()
           const paras = {};
           paras.baseInfoForm = this.baseInfoForm
           paras.cardContentInfoForm = this.cardContentInfoForm
@@ -2963,7 +2956,6 @@
           paras.cardSealInfoForm = this.cardSealInfoForm
           paras.cardRemarkInfoForm = this.cardRemarkInfoForm
           paras.cardOtherInfo = this.cardOtherInfo
-
           Api.saveContract(paras).then((data)=> {
             if (data.data.dataMap.id) {
               this.$message.success('保存成功！')
