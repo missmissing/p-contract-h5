@@ -39,30 +39,25 @@
 </style>
 <template>
   <div class="createCon" v-loading="loadingFlag" :element-loading-text="loadingText">
-    <el-card v-if="operateType==='update'">
+    <el-card v-if="operateType==='update'||updated">
       <header slot="header">变更原因</header>
       <el-form ref="updateForm" :model="updateForm" label-width="100px" :rules="updateForm.rules">
         <el-row>
           <el-col :span="8">
             <el-form-item label="合同编号" prop="code">
-              <el-input v-model="updateForm.code" placeholder="请输入合同编号"></el-input>
+              <el-input :disabled="operateType==='query'" v-model="updateForm.code" placeholder="请输入合同编号"></el-input>
             </el-form-item>
           </el-col>
-          <el-col :span="4" :offset="2">
+          <el-col :span="4" :offset="2" v-if="operateType==='update'">
             <el-button :disabled="!updateForm.code" type="primary" @click="handleQuery(updateForm.code)">
               查找
-            </el-button>
-          </el-col>
-          <el-col :span="2">
-            <el-button :disabled="!updateForm.code" type="primary" @click="handleDetail(updateForm.code)"
-                       style="margin-left:33px">详情
             </el-button>
           </el-col>
         </el-row>
         <el-row>
           <el-col :span="8">
             <el-form-item label="变更方式" prop="updateMode">
-              <el-select v-model="updateForm.updateMode" placeholder="请选择变更方式">
+              <el-select :disabled="operateType==='query'" v-model="updateForm.updateMode" placeholder="请选择变更方式">
                 <el-option
                   v-for="item in updateForm.updateModes"
                   :key="item.id"
@@ -79,7 +74,7 @@
           </el-col>
         </el-row>
         <el-form-item label="备注" prop="remark">
-          <el-input v-model="updateForm.remark" placeholder="请输入备注" type="textarea" :rows="4"></el-input>
+          <el-input :disabled="operateType==='query'" v-model="updateForm.remark" placeholder="请输入备注" type="textarea" :rows="4"></el-input>
         </el-form-item>
       </el-form>
     </el-card>
@@ -426,7 +421,7 @@
                       </el-table-column>
                       <el-table-column prop="ratio" label="占比" width="80px">
                         <template scope="scope">
-                          {{getProportion(props.row.subItem[scope.$index].paymentAmount)}}
+                          {{setRatio(props.row.subItem[scope.$index],props.row.subItem[scope.$index].paymentAmount)}}
                         </template>
                       </el-table-column>
                       <el-table-column
@@ -508,7 +503,7 @@
                 </el-table-column>
                 <el-table-column prop="ratio" label="占比" width="80px">
                   <template scope="scope">
-                    {{getProportion(cardFinanceInfoForm.paymentMethods.advance[scope.$index].paymentAmount)}}
+                    {{setRatio(cardFinanceInfoForm.paymentMethods.advance[scope.$index],cardFinanceInfoForm.paymentMethods.advance[scope.$index].paymentAmount)}}
                   </template>
                 </el-table-column>
               </el-table>
@@ -579,7 +574,7 @@
                       </el-table-column>
                       <el-table-column prop="ratio" label="占比" width="80px">
                         <template scope="scope">
-                          {{getProportion(props.row.subItem[scope.$index].paymentAmount)}}
+                          {{setRatio(props.row.subItem[scope.$index],props.row.subItem[scope.$index].paymentAmount)}}
                         </template>
                       </el-table-column>
                       <el-table-column
@@ -661,7 +656,7 @@
                 </el-table-column>
                 <el-table-column prop="ratio" label="占比" width="80px">
                   <template scope="scope">
-                    {{getProportion(cardFinanceInfoForm.paymentMethods.progress[scope.$index].paymentAmount)}}
+                    {{setRatio(cardFinanceInfoForm.paymentMethods.progress[scope.$index],cardFinanceInfoForm.paymentMethods.progress[scope.$index].paymentAmount)}}
                   </template>
                 </el-table-column>
               </el-table>
@@ -733,7 +728,7 @@
                       </el-table-column>
                       <el-table-column prop="ratio" label="占比" width="80px">
                         <template scope="scope">
-                          {{getProportion(props.row.subItem[scope.$index].paymentAmount)}}
+                          {{setRatio(props.row.subItem[scope.$index],props.row.subItem[scope.$index].paymentAmount)}}
                         </template>
                       </el-table-column>
                       <el-table-column
@@ -818,7 +813,7 @@
                 </el-table-column>
                 <el-table-column prop="ratio" label="占比" width="80px">
                   <template scope="scope">
-                    {{getProportion(cardFinanceInfoForm.paymentMethods._final[scope.$index].paymentAmount)}}
+                    {{setRatio(cardFinanceInfoForm.paymentMethods._final[scope.$index],cardFinanceInfoForm.paymentMethods._final[scope.$index].paymentAmount)}}
                   </template>
                 </el-table-column>
               </el-table>
@@ -1741,6 +1736,7 @@
       }
 
       return {
+        updated:false,//在变更合同提交后是否显示变更原因
         previewData: {},//预览数据
         visible: false,//预览
         users: user,
@@ -2445,6 +2441,11 @@
           }
         }
       },
+      setRatio(item,val){
+        let result=this.getProportion(val)
+        item.ratio=result?result.replace(/\%$/g,''):null
+        return result
+      },
       getContractModelName(id){
         switch (id) {
           case '1':
@@ -2860,11 +2861,12 @@
             baseInfoForm: false
           }
           if(this.operateType==='update'){
+            errors.updateError=false
             this.$refs.updateForm.validate((valid)=> {
               if (!valid) {
                 this.$message.error('请填写完整变更原因再提交！')
               } else {
-                errors.baseInfoForm = true
+                errors.updateError = true
               }
             })
           }
@@ -2916,10 +2918,13 @@
           this.cardContCheckInfoForm.errorCount = errors.cardContCheckInfoForm.errorCount
           this.cardContCheckInfoForm.serviceCheckMsg = errors.cardContCheckInfoForm.serviceCheckMsg
           if (!this.cardContentInfoForm.errorCount && !this.cardContCheckInfoForm.errorCount && errors.baseInfoForm) {
-            console.log('resolve');
-            resolve()
+            if(this.operateType==='update'&&!errors.updateError){
+              reject()
+            }else{
+              resolve()
+            }
           } else {
-            console.log('reject');
+            console.log('reject',errors);
             reject()
           }
         })
@@ -2979,6 +2984,7 @@
 
           Api.submit(paras).then((data)=> {
             if (data.data.dataMap.id) {
+              this.operateType==='update'?this.updated=true:null
               this.$message.success('提交成功！')
               this.operateType = 'query'
             }
@@ -3159,9 +3165,6 @@
             this.updateForm.visible = true
           }
         })
-      },
-      handleDetail(id) {
-        console.log('id', id)
       },
       handleChangeType(index, row, rows){
         const currentType = row.attachType;
