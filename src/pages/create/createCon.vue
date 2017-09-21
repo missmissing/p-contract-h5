@@ -1788,11 +1788,7 @@
           sealOrder: 1, // 0：我方先盖章 1：对方先盖章
           ourSealOpinion: '',
           templateId: '',//当前模版id
-          templateOptions: [{
-            id: '1',
-            name: '模版1',
-            version: '1'
-          }],
+          templateOptions: [],
           belongProject: '',
           prFlag: 1,//是否有比加单号 1：有 0：无
           prNo: '',//pr号
@@ -2479,16 +2475,9 @@
           previewData.conStandard = this.cardContentInfoForm.conStandard || []
           previewData.startTime = formatDate(this.cardContentInfoForm.startTime)
           previewData.endTime = formatDate(this.cardContentInfoForm.endTime)
-          /*previewData.yiBillingInfo = this.cardFinanceInfoForm.yiBillingInfo || []
-          previewData.jiaBillingInfo = this.cardFinanceInfoForm.jiaBillingInfo || []
-          previewData.paymentMethods = this.cardFinanceInfoForm.paymentMethods || []
-          previewData.totalAmount = this.cardFinanceInfoForm.totalAmount || 0
-          previewData.deposit = this.cardFinanceInfoForm.deposit || 0
-          previewData.payTime = formatDate(this.cardFinanceInfoForm.payTime)
-          previewData.marginLevel = this.getProportion(this.cardFinanceInfoForm.deposit)*/
           previewData.cardFinanceInfoForm = this.cardFinanceInfoForm
+          previewData.templateId = this.baseInfoForm.templateId
           this.previewData = previewData
-          console.log('this.previewData',this.previewData);
           this.visible = true;
           this.comLoading()
         }).catch(()=> {
