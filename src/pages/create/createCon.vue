@@ -2024,60 +2024,8 @@
           dialogAddServiceVisible: false
         },
         cardSealInfoForm: {
-          sealAttachments: [
-            /*[{
-             id: '',
-             fileId: 15,//附件类型为其他时，上传的文件的id
-             attachType: 3,//附件类型
-             types: [
-             {
-             id: 1,
-             name: '其他'
-             },
-             {
-             id: 2,
-             name: '从协议'
-             },
-             {
-             id: 3,
-             name: '合同'
-             }
-             ],//附件类型集合
-             fileName: '文件名',
-             fileUrl: '',//合同文本类型为非模版合同时，附件类型的合同的文件下载地址
-             slaveProtocolNo: '',//从协议编号
-             haveSale: true,//是否用章
-             saleTime: null,//用章次数
-             printTime: null,//打印份数
-             remainTime: null,//我方留存份数
-             saleInfos: [1, 2],//当前选中的张
-             useSeals: [
-             {
-             id: 1,
-             name: '公章'
-             },
-             {
-             id: 2,
-             name: '法人章'
-             },
-             {
-             id: 3,
-             name: '人事章'
-             }
-             ],//章列表
-             remark: '',
-             filesSealed: [//上传的盖章后的文件信息
-             {
-             sealFileId: '',
-             sealFileName: 'filename',//文件名
-             sealFileUrl: '',
-             sealFileCreatorName: 'wyy',//上传人
-             sealFileCreateTime: '2017-09-15',//上传时间
-             }
-             ]
-             }]*/
-          ],
-          contract: [{//合同
+          sealAttachments: [],
+          contract: [/*{//合同
             id: '',
             fileId: 15,//附件类型为其他时，上传的文件的id
             attachType: 3,//附件类型
@@ -2127,7 +2075,7 @@
                 sealFileCreateTime: '2017-09-15',//上传时间
               }
             ]
-          }],
+          }*/],
           others: [],
           agreenments: [],
           current: null,//为上传功能保存当前所在附件列表的索引
@@ -2468,11 +2416,13 @@
         if(this.operateType!=='create'){
           this.baseInfoForm.contractTypeName=data.baseInfoForm.contractType//初始化合同模式
           const sealAttachments=this.cardSealInfoForm.sealAttachments
-          for(let i=0,len=sealAttachments.length;i<len;i++){//初始化附件类型的数据
-            const item=this.sealAttachments[i]
-            console.log('item',item);
-          }
-
+          /*debugger
+          if(sealAttachments.length){
+            for(let i=0,len=sealAttachments.length;i<len;i++){//初始化附件类型的数据
+              const item=this.sealAttachments[i]
+              console.log('item',item);
+            }
+          }*/
         }else{
           this.baseInfoForm.contractTypeName = this.getContractModelName(params.contractType);//初始化合同模式
         }
@@ -2494,17 +2444,18 @@
         this.isSubmit = true
         this.comLoading(1)
         this.validateForms().then(()=> {
-          this.previewData.conStandard=this.cardContentInfoForm.conStandard||[]
-          this.previewData.startTime=formatDate(this.cardContentInfoForm.startTime)
-          this.previewData.endTime=formatDate(this.cardContentInfoForm.endTime)
-          this.previewData.yiBillingInfo=this.cardFinanceInfoForm.yiBillingInfo||[]
-          this.previewData.jiaBillingInfo=this.cardFinanceInfoForm.jiaBillingInfo||[]
-          this.previewData.paymentMethods=this.cardFinanceInfoForm.paymentMethods||[]
-          this.previewData.totalAmount=this.cardFinanceInfoForm.totalAmount||0
-          this.previewData.deposit=this.cardFinanceInfoForm.deposit||0
-          this.previewData.payTime=formatDate(this.cardFinanceInfoForm.payTime)
-          this.previewData.marginLevel=this.getProportion(this.cardFinanceInfoForm.deposit)
-          console.log('this.previewData',this.previewData);
+          const previewData={};
+          previewData.conStandard=this.cardContentInfoForm.conStandard||[]
+          previewData.startTime=formatDate(this.cardContentInfoForm.startTime)
+          previewData.endTime=formatDate(this.cardContentInfoForm.endTime)
+          previewData.yiBillingInfo=this.cardFinanceInfoForm.yiBillingInfo||[]
+          previewData.jiaBillingInfo=this.cardFinanceInfoForm.jiaBillingInfo||[]
+          previewData.paymentMethods=this.cardFinanceInfoForm.paymentMethods||[]
+          previewData.totalAmount=this.cardFinanceInfoForm.totalAmount||0
+          previewData.deposit=this.cardFinanceInfoForm.deposit||0
+          previewData.payTime=formatDate(this.cardFinanceInfoForm.payTime)
+          previewData.marginLevel=this.getProportion(this.cardFinanceInfoForm.deposit)
+          this.previewData=previewData
           this.visible = true;
           this.comLoading()
         }).catch(()=> {
