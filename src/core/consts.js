@@ -34,9 +34,15 @@ export const routerNames = {
   home: '',
   con_index: '首页',
 
-  con_create: '合同管理',
-  con_createIndex: '创建合同',
-  con_createSlaveProtocol: '创建从协议',
+  con_support: '合同模板管理',
+  con_tpl_see: '合同模板查看',
+  con_tpl_create: '合同模板创建',
+  con_tpl_update: '合同模板变更',
+  con_tpl_abolish: '合同模板废除',
+
+  con_create: '合同签批管理',
+  con_createIndex: '合同创建',
+  con_createSlaveProtocol: '从协议创建',
   con_agreementList: '从协议查询',
   con_update: '合同变更',
   con_createFrameContract: '框架合同创建',
@@ -45,8 +51,8 @@ export const routerNames = {
   con_createSimpleContract: '简易合同创建',
   con_Check: '查看合同',
 
-  con_sign: '合同签订',
-  con_purchase_order: '创建采购订单',
+  con_sign: '合同订单管理',
+  con_purchase_order: '采购订单创建',
   con_purchase_see: '采购订单查看',
 
   con_performance: '合同履约',
@@ -55,12 +61,6 @@ export const routerNames = {
   con_check_reject: '合同验收不合格处理',
   con_stop: '合同中止',
 
-  con_support: '合同支持',
-  con_tpl_see: '合同模板查看',
-  con_tpl_create: '合同模板创建',
-  con_tpl_update: '合同模板变更',
-  con_tpl_abolish: '合同模板废除',
-
   con_process: '合同流程',
   con_handing_process: '我待办的流程',
   con_create_process: '我发起的流程',
@@ -68,7 +68,7 @@ export const routerNames = {
   con_process_see: '查看流程',
   con_process_approve: '审批流程',
 
-  con_search: '查询功能',
+  con_search: '报表查询',
   con_list: '合同查询',
   con_tpl_list: '合同模板查询',
   con_order_list: '采购订单查询'

@@ -178,6 +178,7 @@
                 </el-table-column>
                 <el-table-column
                   prop="materialName"
+                  min-width="100"
                   label="物料名称">
                 </el-table-column>
                 <el-table-column
@@ -658,7 +659,6 @@
         })
       },
       submit() {
-        console.log(this.serverData, this.orderData)
         const {id, contractNo} = this.contractForm
         const result = {
           id,

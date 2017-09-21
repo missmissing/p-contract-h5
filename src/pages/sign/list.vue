@@ -10,7 +10,7 @@
           <el-form-item label="查询条件">
             <el-input
               placeholder="请输入供应商名称，物料名称"
-              v-model="form.keywords">
+              v-model="form.fuzzySearch">
             </el-input>
           </el-form-item>
         </el-col>
@@ -19,7 +19,7 @@
       <el-row>
         <el-col :span="7">
           <el-form-item label="发起人">
-            <el-input v-model="form.operatorName"></el-input>
+            <el-input v-model="form.initiator"></el-input>
           </el-form-item>
         </el-col>
         <el-col :span="7">
@@ -42,7 +42,7 @@
       highlight-current-row
       class="wp100">
       <el-table-column
-        prop="templateCode"
+        prop="pr"
         min-width="150"
         label="订单编号">
         <template scope="scope">
@@ -60,53 +60,52 @@
         width="180"
         label="创建日期">
         <template scope="scope">
-          {{scope.row.createTime | formatTime}}
+          {{scope.row.createTime | formatDate}}
         </template>
       </el-table-column>
     </el-table>
-    <TreeModal
-      nodeKey="id"
-      title="选择业务类型"
-      :visible.sync="visible"
-      :defaultProps="defaultProps"
-      :regions="regions"
-      :initialKeys="form.bizTypes"
-      @ok="setBusiType">
-    </TreeModal>
+    <div class="mt20">
+      <el-pagination
+        class="fr"
+        @size-change="handleSizeChange"
+        @current-change="handleCurrentChange"
+        :current-page="form.pageNo"
+        :page-size="form.pageSize"
+        :page-sizes="[10, 20, 30, 50]"
+        layout="total, sizes, prev, pager, next, jumper"
+        :total="totalPage">
+      </el-pagination>
+    </div>
   </div>
 </template>
 
 <script>
-  import supportModel from '@/api/support'
-  import getBusiType from '@/mixins/getBusiType'
+  import Api from '@/api/sign'
   import comLoading from '@/mixins/comLoading'
-  import {formatTime} from '@/filters/moment'
-  import TreeModal from '@/components/treeModal.vue'
+  import {formatDate} from '@/filters/moment'
 
   export default {
-    mixins: [getBusiType, comLoading],
+    mixins: [comLoading],
     data() {
       return {
         form: {
-          keywords: '',
-          startTime: '',
-          endTime: '',
-          operatorName: '',
-          bizTypes: [],
-          busiTypeText: ''
+          fuzzySearch: '',
+          createDateStart: '',
+          createDateEnd: '',
+          initiator: '',
+          orderSource: 0,
+          category: 0,
+          pageNo: 1,
+          pageSize: 10
         },
+        totalPage: 0,
         daterange: [],
         pickerOptions: {
           disabledDate(time) {
             return time.getTime() > Date.now()
           }
         },
-        tableData: [],
-        defaultProps: {
-          children: 'children',
-          label: 'businessName'
-        },
-        visible: false
+        tableData: []
       }
     },
     methods: {
@@ -114,27 +113,16 @@
         console.log(JSON.stringify(this.form))
         this.getList(this.form)
       },
-      getList(params) {
+      getList() {
         this.comLoading(1)
-        supportModel.getList(params).then((res) => {
+        Api.query(this.form).then((res) => {
           console.log(res)
           this.comLoading()
-          this.tableData = res.data.dataMap
-        }, () => {
-          this.comLoading()
+          const data = res.data.dataMap || []
+          this.tableData = data
+          const {totalPage} = data
+          this.totalPage = totalPage
         })
-      },
-      setBusiType(value, tree) {
-        const bizTypes = []
-        const busiTypeText = []
-        const leafs = tree.getCheckedNodes(true)
-        leafs.forEach((item) => {
-          bizTypes.push(item.id)
-          busiTypeText.push(item.businessName)
-        })
-        this.form.bizTypes = bizTypes
-        this.form.busiTypeText = busiTypeText.join(',')
-        this.visible = false
       },
       see(index, row) {
         console.log(row)
@@ -143,18 +131,25 @@
       formatDateRange(value) {
         const daterange = value.split(' ')
         this.daterange = [daterange[0], daterange[2]]
-        this.form.startTime = daterange[0]
-        this.form.ednTime = daterange[1]
+        this.form.createDateStart = daterange[0]
+        this.form.createDateEnd = daterange[2]
+      },
+      handleSizeChange(val) {
+        console.log(`每页 ${val} 条`)
+        this.pageSize = val
+        this.getList()
+      },
+      handleCurrentChange(val) {
+        console.log(`当前页: ${val}`)
+        this.pageNo = val
+        this.getList()
       }
     },
     created() {
       this.getList()
     },
     filters: {
-      formatTime
-    },
-    components: {
-      TreeModal
+      formatDate
     }
   }
 </script>
