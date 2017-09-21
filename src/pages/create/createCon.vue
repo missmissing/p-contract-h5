@@ -885,7 +885,7 @@
                 </el-col>
                 <el-col :span="8">
                   <el-form-item label="保证金占比" prop="depositRatio">
-                    {{getProportion(cardFinanceInfoForm.deposit)}}
+                    {{depositRatio}}
                   </el-form-item>
                 </el-col>
               </el-row>
@@ -1143,11 +1143,11 @@
                        class="mb20">
               新增从协议
             </el-button>
-            <el-table v-if="cardSealInfoForm.contract.length" :data="cardSealInfoForm.contract" class="mb20">
+            <el-table v-if="cardSealInfoForm.contract&&cardSealInfoForm.contract.length" :data="cardSealInfoForm.contract" class="mb20">
               <el-table-column type="expand"
-                               v-if="cardSealInfoForm.contract.length&&cardSealInfoForm.contract[0].haveSale">
+                               v-if="cardSealInfoForm.contract&&cardSealInfoForm.contract.length&&cardSealInfoForm.contract[0].haveSale">
                 <template scope="props">
-                  <el-table :data="props.row.filesSealed" class="mb20"
+                  <!--<el-table :data="props.row.filesSealed" class="mb20"
                             v-if="props.row.filesSealed&&props.row.filesSealed.length">
                     <el-table-column label="文件名" prop="sealFileName">
                       <template scope="scope">
@@ -1167,7 +1167,7 @@
                         </el-button>
                       </template>
                     </el-table-column>
-                  </el-table>
+                  </el-table>-->
                   <el-row>
                     <el-col :span="6">
                       <el-form-item label="用章次数" prop="saleTime">
@@ -2362,6 +2362,11 @@
           result = yiBillingInfo[0] || {}
         }
         return result
+      },
+      depositRatio:function(){
+        const val=this.getProportion(this.cardFinanceInfoForm.deposit)
+        this.cardFinanceInfoForm.depositRatio=val
+        return val
       }
     },
     mounted() {
@@ -2417,14 +2422,27 @@
         if (this.operateType !== 'create') {
           this.baseInfoForm.contractTypeName = data.baseInfoForm.contractType//初始化合同模式
           const sealAttachments = this.cardSealInfoForm.sealAttachments
+          let contract = [], agreenments = [], others = []
           if (sealAttachments.length) {
             for (let i = 0, len = sealAttachments.length; i < len; i++) {//初始化附件类型的数
-              const item = this.sealAttachments[i]
-              console.log('item', item);
+              const item = sealAttachments[i]
+              if (item[0].attachType === 3) {
+                contract = item
+              }
+              if (item[0].attachType == 1) {
+                others.push(item)
+              }
+              if (item[0].attachType == 2) {
+                agreenments.push(item[0])
+              }
             }
+            this.cardSealInfoForm.contract=contract
+            this.cardSealInfoForm.agreenments=agreenments
+            this.cardSealInfoForm.others=others
+            console.log('this.cardSealInfoForm',this.cardSealInfoForm);
+          } else {
+            this.baseInfoForm.contractTypeName = this.getContractModelName(params.contractType);//初始化合同模式
           }
-        } else {
-          this.baseInfoForm.contractTypeName = this.getContractModelName(params.contractType);//初始化合同模式
         }
       },
       getContractModelName(id){
@@ -2448,14 +2466,16 @@
           previewData.conStandard = this.cardContentInfoForm.conStandard || []
           previewData.startTime = formatDate(this.cardContentInfoForm.startTime)
           previewData.endTime = formatDate(this.cardContentInfoForm.endTime)
-          previewData.yiBillingInfo = this.cardFinanceInfoForm.yiBillingInfo || []
+          /*previewData.yiBillingInfo = this.cardFinanceInfoForm.yiBillingInfo || []
           previewData.jiaBillingInfo = this.cardFinanceInfoForm.jiaBillingInfo || []
           previewData.paymentMethods = this.cardFinanceInfoForm.paymentMethods || []
           previewData.totalAmount = this.cardFinanceInfoForm.totalAmount || 0
           previewData.deposit = this.cardFinanceInfoForm.deposit || 0
           previewData.payTime = formatDate(this.cardFinanceInfoForm.payTime)
-          previewData.marginLevel = this.getProportion(this.cardFinanceInfoForm.deposit)
+          previewData.marginLevel = this.getProportion(this.cardFinanceInfoForm.deposit)*/
+          previewData.cardFinanceInfoForm = this.cardFinanceInfoForm
           this.previewData = previewData
+          console.log('this.previewData',this.previewData);
           this.visible = true;
           this.comLoading()
         }).catch(()=> {
