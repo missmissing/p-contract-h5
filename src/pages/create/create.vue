@@ -66,10 +66,16 @@
         <el-table-column
           property="startTime"
           label="发起时间">
+          <template scope="scope">
+            {{transformDataFormat(curPriceList[scope.$index].startTime)}}
+          </template>
         </el-table-column>
         <el-table-column
           property="finishTime"
           label="结束时间">
+          <template scope="scope">
+            {{transformDataFormat(curPriceList[scope.$index].finishTime)}}
+          </template>
         </el-table-column>
         <el-table-column
           fixed="right"
@@ -175,10 +181,16 @@
         <el-table-column
           property="startTime"
           label="发起时间">
+          <template scope="scope">
+            {{transformDataFormat(priceList[scope.$index].startTime)}}
+          </template>
         </el-table-column>
         <el-table-column
           property="finishTime"
           label="结束时间">
+          <template scope="scope">
+            {{transformDataFormat(priceList[scope.$index].finishTime)}}
+          </template>
         </el-table-column>
         <el-table-column
           fixed="right"
@@ -310,6 +322,9 @@
       TreeModal
     },
     methods: {
+      transformDataFormat(date){
+        return formatDate(date)
+      },
       handleSwitch(newStatus) {
         if (!newStatus) {
           this.arrPr = []
