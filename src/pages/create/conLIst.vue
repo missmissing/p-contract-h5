@@ -93,7 +93,7 @@
         </el-col>
         <el-col :span="7">
           <el-form-item label="业务部门">
-            <el-input v-model="form.businessDept" placeholder="请输入业务部门"></el-input>
+            <el-input :disabled="true" v-model="form.businessDept" placeholder="请输入业务部门"></el-input>
           </el-form-item>
         </el-col>
         <el-col :span="7">
@@ -258,6 +258,7 @@
           for (let i = 0, len = operators.length; i < len; i++) {
             if (val === operators[i].userId) {
               this.form.businessOperator = operators[i].userName
+              this.form.businessDept = operators[i].deptName
             }
           }
         }
