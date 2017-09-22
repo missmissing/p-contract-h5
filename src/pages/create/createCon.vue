@@ -2461,10 +2461,9 @@
             this.cardSealInfoForm.agreenments=agreenments
             this.cardSealInfoForm.others=others
             console.log('this.cardSealInfoForm',this.cardSealInfoForm);
-          } else {
-            this.baseInfoForm.contractTypeName = this.getContractModelName(params.contractType);//初始化合同模式
           }
         }
+        this.baseInfoForm.contractTypeName = this.getContractModelName(params.contractType);//初始化合同模式
       },
       getEnabledUploadBtn(items){
         let result=true
