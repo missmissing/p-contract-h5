@@ -7,7 +7,7 @@
 </template>
 
 <script>
-  import {routerNames, tplMap, contractMap, processListMap, contractModelRoutes} from '@/core/consts'
+  import {routerNames, tplMap, contractMap, processListMap} from '@/core/consts'
   import Api from '@/api/process'
 
   export default {
@@ -55,24 +55,24 @@
         })
         if (tplMap.indexOf(procCode) > -1) {
           const {id} = approveInfo
+          const param = {
+            id
+          }
           const name = routerNames.con_tpl_see
           this.$router.push({
             name,
             query: {
-              id,
+              ...param,
               processData
             }
           })
         } else if (contractMap.indexOf(procCode) > -1) {
           const {baseInfoForm} = approveInfo
-          const {prNo, contractType, contractBusinessTypeFirst, contractBusinessTypeSecond, contractBusinessTypeThird} = baseInfoForm
+          const {contractNo} = baseInfoForm
           const param = {
-            operateType: 'query',
-            currentPr: prNo,
-            curConModelId: contractType,
-            curConTypeId: `${contractBusinessTypeFirst}-${contractBusinessTypeSecond}-${contractBusinessTypeThird}`
+            contractNo
           }
-          const name = contractModelRoutes[contractType]
+          const name = routerNames.con_Check
           this.$router.push({
             name,
             query: {
