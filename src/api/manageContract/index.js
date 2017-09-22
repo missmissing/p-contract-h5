@@ -91,6 +91,11 @@ export default {
   /** ***合同中止提交****/
   contractSuspendSubmit(params) {
     return Http.post(`${contract}/contract-web/contract/suspend`, params)
-  }
+  },
   /** ***合同中止提交****/
+  /** ***合同列表****/
+  getConList(params) {
+    return Http.post(`${contract}/contract-web/contract/query`, params)
+  }
+  /** ***合同列表****/
 }

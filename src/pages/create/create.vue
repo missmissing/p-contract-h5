@@ -223,7 +223,7 @@
   import comLoading from '@/mixins/comLoading'
   import TreeModal from '@/components/treeModal.vue'
   import {formatDate} from '@/filters/moment'
-  document.cookie='sys=FMM21KGIJLHOGHNKHGGLLOFMMKFNKKE'
+
   export default {
     mixins: [getBusiType, comLoading],
     data() {

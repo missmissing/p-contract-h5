@@ -26,29 +26,69 @@
           </el-form-item>
         </el-col>
         <el-col :span="7">
-          <el-form-item label="合同类型">
+          <el-form-item label="合同类型" prop="conTypeName">
             <el-select
               v-model="form.contractType"
               placeholder="请选择合同类型"
-              class="wp100">
-              <el-option label="合同模板" value="1"></el-option>
-              <el-option label="合同文本" value="2"></el-option>
+              class="wp100"
+            >
+              <el-option
+                v-for="item in conModels"
+                :key="item.id"
+                :value="item.id"
+                :label="item.name"
+              >
+              </el-option>
             </el-select>
           </el-form-item>
         </el-col>
         <el-col :span="7">
           <el-form-item label="采购订单">
-            <el-input v-model="form.pr" placeholder="请输入采购订单号"></el-input>
+            <el-input v-model="form.purchaseOrder" placeholder="请输入采购订单号"></el-input>
           </el-form-item>
         </el-col>
         <el-col :span="7">
-          <el-form-item label="发起人">
-            <el-input v-model="form.creatorName" placeholder="请输入发起人"></el-input>
+          <el-form-item label="发起人" prop="creatorName">
+            <el-select
+              size="small"
+              v-model="form.creatorId"
+              filterable
+              remote
+              placeholder="请输入发起人"
+              :remote-method="getRemoteCreatorsByKeyWord"
+              :loading="form.loading"
+              @change="handleCreatorChange">
+              <el-option
+                v-for="item in form.creators"
+                :key="item.userId"
+                :label="item.userName"
+                :value="item.userId">
+                <span style="float: left">{{ item.userName }}</span>
+                <span style="float: right; color: #8492a6; font-size: 13px">{{ item.deptName }}</span>
+              </el-option>
+            </el-select>
           </el-form-item>
         </el-col>
         <el-col :span="7">
-          <el-form-item label="业务经办人">
-            <el-input v-model="form.businessOperator" placeholder="请输入业务经办人"></el-input>
+          <el-form-item label="业务经办人" prop="businessOperator">
+            <el-select
+              size="small"
+              v-model="form.businessOperatorId"
+              filterable
+              remote
+              placeholder="请输入发起人"
+              :remote-method="getRemoteOperatorsByKeyWord"
+              :loading="form.opratorLoading"
+              @change="handleOperatorChange">
+              <el-option
+                v-for="item in form.operators"
+                :key="item.userId"
+                :label="item.userName"
+                :value="item.userId">
+                <span style="float: left">{{ item.userName }}</span>
+                <span style="float: right; color: #8492a6; font-size: 13px">{{ item.deptName }}</span>
+              </el-option>
+            </el-select>
           </el-form-item>
         </el-col>
         <el-col :span="7">
@@ -133,7 +173,9 @@
 </template>
 
 <script>
-  import performanceModel from '@/api/performance'
+  import Api from '@/api/manageContract'
+
+  //document.cookie='sys=FFKHLEH21HEOFKLIEIMKHOFFKHKLHNM'
 
   export default {
     data() {
@@ -143,48 +185,97 @@
           contractName: '',
           contractTextType: '',
           contractType: '',
-          pr: '',
+          purchaseOrder: '',
           creatorName: '',
+          creatorId: '',
           businessOperator: '',
+          businessOperatorId: '',
           createStart:'',
           createEnd:'',
           businessDept:'',
           effective: true,
-
           daterange: [],
-
+          loading:false,
+          opratorLoading:false
+        },
+        conModels:[
+          {id: '1', name: '单一合同'},
+          {id: '2', name: '简易合同'},
+          {id: '3', name: '框架合同'},
+          {id: '4', name: '框架意向合同'}
+        ],
+        defaultProps: {
+          children: 'children',
+          label: 'businessName'
         },
         tableData: [],
+        creators:[],
         loading: false
       }
     },
-    watch: {
-      dialogVisible() {
-        if (!this.dialogVisible) {
-          this.stopData.endDate = ''
-          this.stopData.reason = ''
-        }
-      }
-    },
+    watch: {},
     methods: {
       search() {
-        console.log('搜索')
-        console.log(JSON.stringify(this.form))
-      },
-      getList() {
         this.loading = true
-        performanceModel.getConList({}).then((res) => {
+
+        Api.getConList(this.form).then((res) => {
           this.tableData = res.data.dataMap
           this.loading = false
         })
       },
       formatDateRange(value) {
         const daterange = value.split(' ')
-        this.form.daterange = [daterange[0], daterange[2]]
-      }
+        this.form.createStart=daterange[0]
+        this.form.createEnd=daterange[2]
+      },
+      getRemoteCreatorsByKeyWord(query){
+        if (query !== '') {
+          this.form.loading = true
+          Api.getRemoteCreatePersonsByKeyWord({keyword: query})
+            .then((data) => {
+              this.form.loading = false
+              this.form.creators = data.data.dataMap
+            })
+        } else {
+          this.form.creators =[]
+        }
+      },
+      getRemoteOperatorsByKeyWord(query){
+        if (query !== '') {
+          this.form.opratorLoading = true
+          Api.getRemoteCreatePersonsByKeyWord({keyword: query})
+            .then((data) => {
+              this.form.opratorLoading = false
+              this.form.operators = data.data.dataMap
+            })
+        } else {
+          this.form.operators =[]
+        }
+      },
+      handleOperatorChange(val){
+        const operators = this.form.operators
+        if (operators.length) {
+          for (let i = 0, len = operators.length; i < len; i++) {
+            if (val === operators[i].userId) {
+              this.form.businessOperator = operators[i].userName
+            }
+          }
+        }
+      },
+      handleCreatorChange(val){
+        const creators = this.form.creators
+        if (creators.length) {
+          for (let i = 0, len = creators.length; i < len; i++) {
+            if (val === creators[i].userId) {
+              this.form.creatorName = creators[i].userName
+            }
+          }
+        }
+      },
+
     },
     created() {
-      this.getList()
+      this.search()
     }
   }
 </script>
