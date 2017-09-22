@@ -2227,17 +2227,6 @@
       }
     },
     created() {
-      console.log('created');
-      let path = this.$route.path
-      if (path && path === '/conperf/conupdate') {
-        this.operateType = 'update'
-      }
-      let query = this.$route.query
-      if (JSON.stringify(query) !== '{}') {
-        this.operateType = query.operateType
-        this.baseInfoForm.prNo = query.currentFolio//比加单号
-        this.baseInfoForm.contractType = query.curConModelId
-      }
     },
     computed: {
       conVersion: function () {
@@ -2379,16 +2368,20 @@
       console.log('mounted');
       const params = {};
       const query = this.$route.query
-      let types = []
       if (JSON.stringify(query) !== '{}') {
-        if(query.curConTypeId){
-          types = query.curConTypeId.split('-');
-          params.contractBusinessTypeFirst = types[0];
-          params.contractBusinessTypeSecond = types[1];
-          params.contractBusinessTypeThird = types[2];
+        if(query.operateType){
+          this.operateType = query.operateType
+          if(query.operateType==='create'){
+            let types = []
+            types = query.curConTypeId.split('-');
+            params.folio = query.currentFolio
+            params.contractType = query.curConModelId;//合同模式
+            params.contractBusinessTypeFirst = types[0];
+            params.contractBusinessTypeSecond = types[1];
+            params.contractBusinessTypeThird = types[2];
+          }
+
         }
-        params.folio = query.currentFolio
-        params.contractType = query.curConModelId;//合同模式
 
       }
       if (this.operateType === 'create') {
@@ -2398,11 +2391,6 @@
             this.initData(dataMap, params)
           }
         })
-
-        if (query.currentFolio) {
-          this.baseInfoForm.prNo = query.currentFolio
-          this.baseInfoForm.prFlag = 1
-        }
       }
       if (this.$route.path && this.$route.path === '/ConCreate/conCheck') {
         let query = this.$route.query
@@ -2441,7 +2429,7 @@
 
 
         if (this.operateType !== 'create') {
-          this.baseInfoForm.contractTypeName = data.baseInfoForm.contractType//初始化合同模式
+          this.baseInfoForm.contractTypeName = this.getContractModelName(parseInt(data.baseInfoForm.contractType))//初始化合同模式
           const sealAttachments = this.cardSealInfoForm.sealAttachments
           let contract = [], agreenments = [], others = []
           if (sealAttachments.length) {
@@ -2463,7 +2451,14 @@
             console.log('this.cardSealInfoForm',this.cardSealInfoForm);
           }
         }
-        this.baseInfoForm.contractTypeName = this.getContractModelName(params.contractType);//初始化合同模式
+        else{
+          this.baseInfoForm.contractTypeName = this.getContractModelName(parseInt(params.contractType));//初始化合同模式
+          this.baseInfoForm.prNo = params.folio//比加单号
+          this.baseInfoForm.contractType = params.contractType
+          if(params.folio){
+            this.baseInfoForm.prFlag = 1
+          }
+        }
       },
       getEnabledUploadBtn(items){
         let result=true
@@ -2481,13 +2476,13 @@
       },
       getContractModelName(id){
         switch (id) {
-          case '1':
+          case 1:
             return '单一合同'
-          case '2':
+          case 2:
             return '简易合同'
-          case '3':
+          case 3:
             return '框架合同'
-          case '4':
+          case 4:
             return '意向合同'
 
         }
