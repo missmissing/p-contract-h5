@@ -55,6 +55,10 @@ export default {
   updatedSubmit(params) {
     return Http.post(`${contract}/contract-web/contract/alter`, params)
   },
+  //根据合同编号查询合同详情
+  getContractDetail(contractNo){
+    return Http.get(`${contract}/contract-web/contract/no/${contractNo}`)
+  },
   /** ***标签页****/
   getPrTableData(params) {
     return Http.get(`/api/createContract/getPrTableData`, params)

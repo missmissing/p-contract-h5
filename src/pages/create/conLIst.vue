@@ -1,7 +1,5 @@
 <template>
-  <div class="pd20"
-       v-loading="loading"
-       element-loading-text="拼命加载中">
+  <div class="pd20" v-loading="loading" element-loading-text="拼命加载中">
     <el-form class="mb20" ref="form" :model="form" label-width="100px">
       <el-row>
         <el-col :span="7">
@@ -109,7 +107,7 @@
         </el-col>
         <el-col :span="7">
           <el-form-item label="有效合同">
-            <el-switch v-model="form.effective"></el-switch>
+            <el-switch v-model="form.effective1"></el-switch>
             <el-button type="primary" @click="search" style="margin-left:30px;">搜 索</el-button>
           </el-form-item>
         </el-col>
@@ -120,54 +118,34 @@
       border
       highlight-current-row
       class="wp100">
-      <el-table-column
-        type="index"
-        label="序号"
-        width="70">
-      </el-table-column>
-      <el-table-column
-        prop="createDate"
-        label="日期"
-        width="120">
-      </el-table-column>
-      <el-table-column
-        prop="owner"
-        label="创建人"
-        width="100">
-      </el-table-column>
-      <el-table-column prop="conTypeName" label="合同类型" width="150px"></el-table-column>
-      <el-table-column prop="conModelName" label="合同模式" width="100px"></el-table-column>
-      <el-table-column
-        prop="conCode"
-        label="合同编号"
-      width="150px">
+      <el-table-column type="index" label="序号" width="70"></el-table-column>
+      <el-table-column prop="contractNo" label="合同编号" width="150px">
         <template scope="scope">
-          <router-link :to="{path:'/ConCreate/conCheck', query:{operateType: 'query',currentPr:''+tableData[scope.$index].pr,curConModelId:''+tableData[scope.$index].curConModelId,curConTypeId:''+tableData[scope.$index].conTypeId}}">
-            {{tableData[scope.$index].conCode}}
+          <router-link :to="{path:'/ConCreate/conCheck', query:{operateType: 'query',contractNo:''+tableData[scope.$index].contractNo,currentPr:''+tableData[scope.$index].prNo,curConModelId:''+tableData[scope.$index].contractType}}">
+            {{tableData[scope.$index].contractNo}}
           </router-link>
         </template>
       </el-table-column>
-      <el-table-column
-        prop="pr"
-        label="PR"
-        width="150px">
+      <el-table-column prop="contractTextType" label="合同文本类型" width="150px">
+        <template scope="scope">
+          {{getContractTextType(tableData[scope.$index].contractTextType)}}
+        </template>
       </el-table-column>
-      <el-table-column
-        prop="materialCode"
-        label="物料编码"
-        width="150px">
+      <el-table-column prop="contractType" label="合同模式" width="100px">
+        <template scope="scope">
+          {{getContractModel(tableData[scope.$index].contractType)}}
+        </template>
       </el-table-column>
-      <el-table-column
-        prop="price"
-        label="单价"
-        width="100"
-      >
-      </el-table-column>
-      <el-table-column
-        prop="counts"
-        label="数量"
-        width="100">
-      </el-table-column>
+      <el-table-column prop="creator" label="发起人" width="100"></el-table-column>
+      <el-table-column prop="businessDept" label="业务部门" width="100"></el-table-column>
+      <el-table-column prop="businessOperator" label="经办人" width="100"></el-table-column>
+      <el-table-column prop="submitTime" label="创建日期" width="120"></el-table-column>
+      <el-table-column prop="approvalDate" label="批准日期" width="120"></el-table-column>
+      <el-table-column prop="sealTime" label="盖章日期" width="120"></el-table-column>
+      <el-table-column prop="startTime" label="生效日期" width="120"></el-table-column>
+      <el-table-column prop="prNo" label="终止日期" width="120"></el-table-column>
+      <el-table-column prop="contractStatusName" label="合同状态" width="120"></el-table-column>
+      <el-table-column prop="slaveProtocolNo" label="从协议编号" width="120"></el-table-column>
     </el-table>
   </div>
 </template>
@@ -193,7 +171,7 @@
           createStart:'',
           createEnd:'',
           businessDept:'',
-          effective: true,
+          effective1: true,
           daterange: [],
           loading:false,
           opratorLoading:false
@@ -219,9 +197,33 @@
         this.loading = true
 
         Api.getConList(this.form).then((res) => {
-          this.tableData = res.data.dataMap
+          this.tableData = res.data.dataMap.data
           this.loading = false
         })
+      },
+      getContractTextType(id){
+        if(id){
+          switch(id){
+            case 1:
+              return '模版合同'
+            case 2:
+              return '非模版合同'
+          }
+        }
+      },
+      getContractModel(id){
+        if(id){
+          switch(id){
+            case 1:
+              return '单一合同'
+            case 2:
+              return '简易合同'
+            case 3:
+              return '框架合同'
+            case 4:
+              return '框架意向合同'
+          }
+        }
       },
       formatDateRange(value) {
         const daterange = value.split(' ')
@@ -273,7 +275,6 @@
           }
         }
       },
-
     },
     created() {
       this.search()

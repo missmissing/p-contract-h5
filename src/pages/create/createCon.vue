@@ -2227,6 +2227,7 @@
       }
     },
     created() {
+      console.log('created');
       let path = this.$route.path
       if (path && path === '/conperf/conupdate') {
         this.operateType = 'update'
@@ -2375,16 +2376,20 @@
       }
     },
     mounted() {
+      console.log('mounted');
       const params = {};
       const query = this.$route.query
       let types = []
       if (JSON.stringify(query) !== '{}') {
-        types = query.curConTypeId.split('-');
+        if(query.curConTypeId){
+          types = query.curConTypeId.split('-');
+          params.contractBusinessTypeFirst = types[0];
+          params.contractBusinessTypeSecond = types[1];
+          params.contractBusinessTypeThird = types[2];
+        }
         params.folio = query.currentFolio
         params.contractType = query.curConModelId;//合同模式
-        params.contractBusinessTypeFirst = types[0];
-        params.contractBusinessTypeSecond = types[1];
-        params.contractBusinessTypeThird = types[2];
+
       }
       if (this.operateType === 'create') {
         Api.getContractBaseInfo(params).then((data) => {
@@ -2399,9 +2404,20 @@
           this.baseInfoForm.prFlag = 1
         }
       }
+      if (this.$route.path && this.$route.path === '/ConCreate/conCheck') {
+        let query = this.$route.query
+          Api.getContractDetail(query.contractNo).then((data)=>{
+            const dataMap = data.data.dataMap
+            if (dataMap) {
+              this.initData(dataMap, params)
+            }
+          })
+
+      }
     },
     methods: {
       initData(data, params){
+        console.log('initData');
         Object.assign(this.baseInfoForm, data.baseInfoForm);
         Object.assign(this.cardContentInfoForm, data.cardContentInfoForm);
         Object.assign(this.cardFinanceInfoForm, data.cardFinanceInfoForm);
@@ -2989,7 +3005,7 @@
           paras.cardSealInfoForm = this.cardSealInfoForm
           paras.cardRemarkInfoForm = this.cardRemarkInfoForm
           paras.cardOtherInfo = this.cardOtherInfo
-          
+
           if(this.operateType==='create'){
             Api.submit(paras).then((data)=> {
               if (data.data.dataMap.id) {
@@ -3401,12 +3417,11 @@
     },
     watch: {
       '$route'(to, from) {
-        console.log('watch');
-        // 刷新参数放到这里里面去触发就可以刷新相同界面了
         let path = this.$route.path
         if (path && path === '/conperf/conupdate') {
           this.operateType = 'update'
         }
+
       },
       'formAddConStandard.conStandardType': function (val, oldVal) {
         if (val !== oldVal) {

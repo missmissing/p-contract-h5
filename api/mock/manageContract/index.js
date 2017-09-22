@@ -583,4 +583,32 @@ module.exports = function (api) {
       ]
     });
   });
+  api.use('/contract-web/contract/query',function(req,res){
+    res.status(200).json({
+      code: 200,
+      message: 'success',
+      dataMap: [
+        {
+          "id": "",
+          "contractNo": "1111",
+          "contractTextType": 1,//1:模版 2：文本
+          "contractType": 3,
+          "businessTypeName": "企划礼品",
+          "creator": "武康",
+          "businessDept": "研发部",
+          "businessOperator": "许家印",
+          "submitTime": "2017-09-09",
+          "sealTime": "2017-09-10",
+          "approvalDate": "2017-09-11",
+          "slaveProtocolNo": "100011001",
+          "startTime": "2017-08-08",
+          "endTime": "2018-09-09",
+          "haveProtocol": true,
+          "contractStatus": 1,
+          "contractStatusName": "正常使用",
+          "folio":"比价号-1090089",
+        }
+      ]
+    });
+  });
 };
