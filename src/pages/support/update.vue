@@ -154,7 +154,7 @@
       :defaultProps="defaultProps"
       :regions="regions"
       :initialKeys="form.bizTypes"
-      multi
+      multiple
       @ok="setBusiType">
     </TreeModal>
   </div>

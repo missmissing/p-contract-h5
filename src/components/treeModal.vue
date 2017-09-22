@@ -18,8 +18,8 @@
         :default-checked-keys="initialKeys"
         @check-change="getCheckedNodes"
         @node-click="nodeClick"
-        :highlight-current="!multi"
-        :show-checkbox="multi">
+        :highlight-current="!multiple"
+        :show-checkbox="multiple">
       </el-tree>
     </div>
     <div slot="footer">
@@ -64,7 +64,7 @@
           return []
         }
       },
-      multi: {
+      multiple: {
         type: Boolean,
         default: false
       }
@@ -73,7 +73,7 @@
       nodeClick(node, nodeObj) {
         console.log(node, nodeObj)
         this.currentNode = nodeObj
-        if (!this.multi) {
+        if (!this.multiple) {
           this.checkNodes = [node]
         }
       },
@@ -90,7 +90,7 @@
         return this.getNodeDetail(parent, result)
       },
       ok() {
-        if (!this.multi) {
+        if (!this.multiple) {
           if (this.currentNode && this.currentNode.childNodes && this.currentNode.childNodes.length) {
             this.$message.warning('请选择最后一级节点!')
             return

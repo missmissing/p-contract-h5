@@ -16,7 +16,12 @@
             <el-row>
               <el-col :span="8">
                 <el-form-item label="合同编号">
-                  <el-input v-model="contractCode" icon="search" :on-icon-click="search"></el-input>
+                  <el-input
+                    v-model="contractCode"
+                    icon="search"
+                    :on-icon-click="search"
+                    @keyup.enter.native="search">
+                  </el-input>
                 </el-form-item>
               </el-col>
               <el-button type="info" class="ml20">详 情</el-button>
@@ -63,7 +68,7 @@
             <el-row v-show="payment">
               <el-col :span="8">
                 <el-form-item label="赔付类型">
-                  <el-select v-model="payType" placeholder="请选择">
+                  <el-select class="wp100" v-model="payType" placeholder="请选择">
                     <el-option
                       v-for="item in options"
                       :key="item"
@@ -127,7 +132,7 @@
       </el-card>
     </div>
     <div class="mt20 mb20 ml20">
-      <el-button>保 存</el-button>
+      <!--<el-button>保 存</el-button>-->
       <el-button type="primary">提 交</el-button>
     </div>
   </div>
