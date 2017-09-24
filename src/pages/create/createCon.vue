@@ -1097,7 +1097,6 @@
                 <el-table-column type="index" label="序号" width="100px"></el-table-column>
                 <el-table-column prop="sampleCode" label="物料编码"></el-table-column>
                 <el-table-column prop="sampleDesc" label="物料描述"></el-table-column>
-                <el-table-column prop="remark" label="备注"></el-table-column>
               </el-table>
             </el-card>
             <el-card v-else>
@@ -3427,6 +3426,21 @@
         if (val !== oldVal) {
           this.$refs['formAddConStandard'].resetFields()
         }
+      },
+      'cardContentInfoForm.conStandard':function(conStandards,oldVal){
+        const result=[]
+        if(conStandards && conStandards.length){
+          for(let i=0,len=conStandards.length;i<len;i++){
+            const item=conStandards[i]
+            if(item.materialCode){
+              result.push({
+                sampleCode:item.materialCode,
+                sampleDesc:item.materialName
+              });
+            }
+          }
+        }
+        this.cardContCheckInfoForm.materialMatters=result
       }
     }
   }
