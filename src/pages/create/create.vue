@@ -236,7 +236,7 @@
           curConModelId: null,
           conModel: [
             {id: '1', name: '单一合同'},
-            {id: '2', name: '简易合同'},
+            {id: '2', name: '固定格式合同'},
             {id: '3', name: '框架合同'},
             {id: '4', name: '框架意向合同'}
           ],
@@ -340,7 +340,6 @@
         }
       },
       handleQuery(e) {
-        console.log('query')
         this.comLoading(1)
         Api.getQrDetail({
           folio: this.conForm.strPC
@@ -364,6 +363,20 @@
                 type: 'warning'
               })
               return
+            }
+            if(parseInt(this.conForm.curConModelId)===2){//判断当前为固定格式合同时，合同总金额》=10000时，不让其创建固定格式合同
+              const items=this.curPriceList[0].items
+              let total=0
+              for(let i=0,len=items.length;i<len;i++){
+                total+=parseFloat(items[0].amount)
+              }
+              if(total>=10000){
+                this.$message({
+                  message: '合同金额大于一万元，请调整合同模式',
+                  type: 'warning'
+                });
+                return
+              }
             }
             let routePath = ''
             switch (this.conForm.curConModelId) {
@@ -483,9 +496,12 @@
         this.priceList=[]
         let startTime = this.prForm.createTime[0] ? formatDate(this.prForm.createTime[0].toLocaleDateString()) : ''
         let endTime = this.prForm.createTime[1] ? formatDate(this.prForm.createTime[1].toLocaleDateString()) : ''
-        let  times=endTime.split('-')
-        let day=parseInt(times[2])+1
-        let endDay=times[0]+'-'+times[1]+'-'+[day]
+        let times=[],day=null,endDay=''
+        if(endTime){
+          times=endTime.split('-')
+          day=parseInt(times[2])+1
+          endDay=times[0]+'-'+times[1]+'-'+[day]
+        }
         this.$refs[formName].validate((valid) => {
           if (valid) {
             Api.getQrList({
