@@ -635,7 +635,9 @@
             }
           })
         } else {
-
+          this.prData.forEach((item) => {
+            console.log(item)
+          })
         }
         this.orderData = orderData
       },

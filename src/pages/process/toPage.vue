@@ -70,7 +70,7 @@
           const {baseInfoForm} = approveInfo
           const {id} = baseInfoForm
           const param = {
-            id
+            contractId: id
           }
           const name = routerNames.con_Check
           this.$router.push({
