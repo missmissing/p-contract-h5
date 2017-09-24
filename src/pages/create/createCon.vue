@@ -873,6 +873,7 @@
                 <el-col :span="8">
                   <el-form-item label="付款时间" prop="payTime">
                     <el-date-picker v-model="cardFinanceInfoForm.payTime"
+                                    format="yyyy-MM-dd"
                                     placeholder="请输入付款时间"
                                     :disabled="operateType==='query'"
                                     type="date"></el-date-picker>
@@ -1802,7 +1803,7 @@
           contractNo: '',//合同编号
           dialogNewSubjectVisible: false,
           rules: {
-            businessOperator: [{required: true, message: '请输入业务经办人', trigger: 'blur'}],
+            businessOperatorId: [{required: true, message: '请输入业务经办人', trigger: 'blur'}],
             templateId: [{required: true, message: '请选择模版名称', trigger: 'blur'}],
           }
         },
@@ -1988,7 +1989,7 @@
           },
           rules: {
             deposit: [{required: true, message: '请输入保证金金额', trigger: 'blur'}],
-            payTime: [{required: true, message: '请输入付款时间', trigger: 'blur'}]
+            payTime: [{required: true, message: '请输入付款时间'}]
           },
         },
         cardContCheckInfoForm: {
