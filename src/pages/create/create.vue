@@ -234,14 +234,14 @@
           isPr: true,
           strPC: '', // 比价单编号
           curConModelId: null,
-          conModel:[
+          conModel: [
             {id: '1', name: '单一合同'},
             {id: '2', name: '简易合同'},
             {id: '3', name: '框架合同'},
             {id: '4', name: '框架意向合同'}
           ],
           conType: '',
-          conTypeName: '',
+          conTypeName: ''
         },
         conFormRules: {
           curConModelId: [
@@ -249,7 +249,7 @@
           ],
           conTypeName: [
             {required: true, message: '请选择合同类型', trigger: 'change'}
-          ],
+          ]
         },
         arrPr: [], // 比价单列表
         dialogVisible: false,
@@ -290,10 +290,10 @@
             ]
           },
           rules: {
-            /*createPerson: [
+            /* createPerson: [
               {required: true, message: '请输入搜索关键字', trigger: 'blur'}
-            ]*/
-          },
+            ] */
+          }
         },
         priceList: [],
         currentPr: null, // 当前选择的比价单
@@ -302,7 +302,7 @@
         defaultProps: {
           children: 'children',
           label: 'businessName'
-        },
+        }
       }
     },
     created(){},
@@ -319,7 +319,7 @@
     watch: {
       'conForm.isPr': function (val, oldVal) {
         if (!val) {
-          this.curPriceList = [];
+          this.curPriceList = []
         }
       }
     },
@@ -327,7 +327,7 @@
       TreeModal
     },
     methods: {
-      transformDataFormat(date){
+      transformDataFormat(date) {
         return formatDate(date)
       },
       handleSwitch(newStatus) {
@@ -340,14 +340,14 @@
         }
       },
       handleQuery(e) {
-        console.log('query');
+        console.log('query')
         this.comLoading(1)
         Api.getQrDetail({
-          folio: this.conForm.strPC,
+          folio: this.conForm.strPC
         }).then((data) => {
           if (data.data.dataMap) {
-            this.currentPr = data.data.dataMap;
-            this.curPriceList = [data.data.dataMap];
+            this.currentPr = data.data.dataMap
+            this.curPriceList = [data.data.dataMap]
           }
           this.comLoading()
         })
@@ -362,7 +362,7 @@
               this.$message({
                 message: '请选择一条比加单信息！',
                 type: 'warning'
-              });
+              })
               return
             }
             let routePath = ''
@@ -391,11 +391,10 @@
             })
 
             if (this.curPriceList.length) {
-              this.curPriceList = [];
-              this.currentPr = null;
+              this.curPriceList = []
+              this.currentPr = null
             }
-            this.$refs[formName].resetFields();
-
+            this.$refs[formName].resetFields()
           } else {
             return false
           }
@@ -404,25 +403,24 @@
       handleCloseDialog() {
         this.dialogVisible = false
         if (this.currentPr) {
-          this.currentPr.clicked = false;
-          this.currentPr.ifSelect = false;
-          this.$refs.priceList.setCurrentRow(null);
-          this.priceList=[];
+          this.currentPr.clicked = false
+          this.currentPr.ifSelect = false
+          this.$refs.priceList.setCurrentRow(null)
+          this.priceList = []
         }
         this.$refs.prForm.resetFields()
       },
       handleOKDialog() {
         this.dialogVisible = false
         if (this.currentPr) {
-          this.curPriceList = [this.currentPr];
-          this.conForm.strPC = '';
+          this.curPriceList = [this.currentPr]
+          this.conForm.strPC = ''
         }
-        this.currentPr.clicked = false;
-        this.currentPr.ifSelect = false;
-        this.$refs.priceList.setCurrentRow(null);
-        this.priceList=[];
+        this.currentPr.clicked = false
+        this.currentPr.ifSelect = false
+        this.$refs.priceList.setCurrentRow(null)
+        this.priceList = []
         this.$refs.prForm.resetFields()
-
       },
       handleDetailPR(index, row) {
         window.open(row.processViewUrl)
@@ -467,20 +465,20 @@
        }
        })
        } */
-      setBusiType(checkNodes,tree){
-        const ids=[],names=[];
-        if(checkNodes.length){
-          for(let i=0,len=checkNodes.length;i<len;i++){
-            ids.push(checkNodes[i].id);
-            names.push(checkNodes[i].businessName);
+      setBusiType(checkNodes, tree) {
+        const ids = [], names = []
+        if (checkNodes.length) {
+          for (let i = 0, len = checkNodes.length; i < len; i++) {
+            ids.push(checkNodes[i].id)
+            names.push(checkNodes[i].businessName)
           }
         }
         this.conForm.conType = ids.join('-')
         this.conForm.conTypeName = names.join('-')
 
-        this.visible = false;
+        this.visible = false
       },
-      handleQueryPriceList(formName){
+      handleQueryPriceList(formName) {
         this.comLoading(1)
         this.priceList=[]
         let startTime = this.prForm.createTime[0] ? formatDate(this.prForm.createTime[0].toLocaleDateString()) : ''
@@ -497,11 +495,11 @@
               toDate: endDay
             }).then((data) => {
               if (data.data.dataMap && data.data.dataMap.length > 0) {
-                let arr = data.data.dataMap;
+                let arr = data.data.dataMap
                 for (let i = 0, len = arr.length; i < len; i++) {
-                  arr[i].ifSelect = false;
+                  arr[i].ifSelect = false
                 }
-                this.priceList = arr;
+                this.priceList = arr
               }
               this.comLoading()
             })
@@ -511,28 +509,28 @@
           }
         })
       },
-      handleSelectCurrent(currentRow, oldRow){
+      handleSelectCurrent(currentRow, oldRow) {
         if (currentRow) {
-          currentRow.ifSelect = true;
-          this.currentPr = currentRow;
+          currentRow.ifSelect = true
+          this.currentPr = currentRow
         }
         if (oldRow) {
           oldRow.ifSelect = false
         }
       },
-      handleRowClick(row){
+      handleRowClick(row) {
         if (row.clicked) {
-          row.clicked = false;
-          this.$refs.priceList.setCurrentRow(null);
+          row.clicked = false
+          this.$refs.priceList.setCurrentRow(null)
           this.currentPr = null
         } else {
-          row.clicked = true;
+          row.clicked = true
         }
       },
-      closeTree(){
-        this.visible = false;
+      closeTree() {
+        this.visible = false
       },
-      getRemoteCreatePersonsByKeyWord(query){
+      getRemoteCreatePersonsByKeyWord(query) {
         if (query !== '') {
           this.prForm.loading = true
           Api.getRemoteCreatePersonsByKeyWord({keyword: query})
@@ -545,7 +543,7 @@
           this.prForm.createPerson=''
 
         }
-      },
+      }
     }
   }
 </script>

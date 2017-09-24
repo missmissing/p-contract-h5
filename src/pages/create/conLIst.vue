@@ -153,7 +153,7 @@
 <script>
   import Api from '@/api/manageContract'
 
-  //document.cookie='sys=FFKHLEH21HEOFKLIEIMKHOFFKHKLHNM'
+  // document.cookie='sys=FFKHLEH21HEOFKLIEIMKHOFFKHKLHNM'
 
   export default {
     data() {
@@ -168,15 +168,15 @@
           creatorId: '',
           businessOperator: '',
           businessOperatorId: '',
-          createStart:'',
-          createEnd:'',
-          businessDept:'',
+          createStart: '',
+          createEnd: '',
+          businessDept: '',
           effective1: true,
           daterange: [],
-          loading:false,
-          opratorLoading:false
+          loading: false,
+          opratorLoading: false
         },
-        conModels:[
+        conModels: [
           {id: '1', name: '单一合同'},
           {id: '2', name: '简易合同'},
           {id: '3', name: '框架合同'},
@@ -187,7 +187,7 @@
           label: 'businessName'
         },
         tableData: [],
-        creators:[],
+        creators: [],
         loading: false
       }
     },
@@ -201,9 +201,9 @@
           this.loading = false
         })
       },
-      getContractTextType(id){
-        if(id){
-          switch(id){
+      getContractTextType(id) {
+        if (id) {
+          switch (id) {
             case 1:
               return '模版合同'
             case 2:
@@ -211,9 +211,9 @@
           }
         }
       },
-      getContractModel(id){
-        if(id){
-          switch(id){
+      getContractModel(id) {
+        if (id) {
+          switch (id) {
             case 1:
               return '单一合同'
             case 2:
@@ -227,10 +227,10 @@
       },
       formatDateRange(value) {
         const daterange = value.split(' ')
-        this.form.createStart=daterange[0]
-        this.form.createEnd=daterange[2]
+        this.form.createStart = daterange[0]
+        this.form.createEnd = daterange[2]
       },
-      getRemoteCreatorsByKeyWord(query){
+      getRemoteCreatorsByKeyWord(query) {
         if (query !== '') {
           this.form.loading = true
           Api.getRemoteCreatePersonsByKeyWord({keyword: query})
@@ -239,10 +239,10 @@
               this.form.creators = data.data.dataMap
             })
         } else {
-          this.form.creators =[]
+          this.form.creators = []
         }
       },
-      getRemoteOperatorsByKeyWord(query){
+      getRemoteOperatorsByKeyWord(query) {
         if (query !== '') {
           this.form.opratorLoading = true
           Api.getRemoteCreatePersonsByKeyWord({keyword: query})
@@ -251,10 +251,10 @@
               this.form.operators = data.data.dataMap
             })
         } else {
-          this.form.operators =[]
+          this.form.operators = []
         }
       },
-      handleOperatorChange(val){
+      handleOperatorChange(val) {
         const operators = this.form.operators
         if (operators.length) {
           for (let i = 0, len = operators.length; i < len; i++) {
@@ -265,7 +265,7 @@
           }
         }
       },
-      handleCreatorChange(val){
+      handleCreatorChange(val) {
         const creators = this.form.creators
         if (creators.length) {
           for (let i = 0, len = creators.length; i < len; i++) {
@@ -274,7 +274,7 @@
             }
           }
         }
-      },
+      }
     },
     created() {
       this.search()

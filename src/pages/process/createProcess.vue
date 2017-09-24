@@ -23,6 +23,10 @@
         label="流程标题">
       </el-table-column>
       <el-table-column
+        prop="procStatus"
+        label="流程状态">
+      </el-table-column>
+      <el-table-column
         prop="applicantName"
         label="发起人">
       </el-table-column>
@@ -64,7 +68,7 @@
         pageNumber: 1,
         pageSize: 10,
         totalPage: 0,
-        dataType: processListMap[0]
+        dataType: processListMap[1]
       }
     },
     methods: {

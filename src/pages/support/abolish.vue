@@ -39,15 +39,10 @@
                 </el-col>
                 <el-col :span="8">
                   <el-form-item label="文本类型">
-                    <el-select
-                      v-model="form.templateType"
-                      placeholder="请选择"
-                      disabled
-                      class="wp100">
-                      <el-option label="请选择" value=""></el-option>
-                      <el-option label="合同模板" value="TEMPLATE"></el-option>
-                      <el-option label="合同文本" value="TEXT"></el-option>
-                    </el-select>
+                    <el-input
+                      :value="form.templateType"
+                      disabled>
+                    </el-input>
                   </el-form-item>
                 </el-col>
               </el-row>
@@ -177,6 +172,7 @@
   import supportModel from '@/api/support'
   import {uploadUrl, downloadUrl} from '@/api/consts'
   import {formatDate, formatTimeStamp, formatToDate} from '@/filters/moment'
+  import {tplTypeMap} from '@/core/consts'
 
   const defaultData = {
     form: {
@@ -231,7 +227,7 @@
         const {templateName, templateType, bizTypes, startDate, version, operatorName, creatorName, description, files} = tplInfo
         this.tplInfo = tplInfo
         this.form['templateName'] = templateName
-        this.form['templateType'] = templateType
+        this.form['templateType'] = tplTypeMap[templateType]
         this.form['busiTypeText'] = bizTypes.map(item => item.businessName).join(',')
         this.form['startDate'] = formatToDate(startDate)
         this.form['version'] = `V${version}`

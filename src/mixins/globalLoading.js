@@ -6,12 +6,13 @@
 let loadingInstance = null
 
 class support {
-  static globalLoading(flag) {
+  static globalLoading(flag, options = {}) {
     if (flag) {
-      loadingInstance = this.$loading({
+      const config = Object.assign({
         lock: true,
         text: '拼命加载中'
-      })
+      }, options)
+      loadingInstance = this.$loading(config)
       return loadingInstance
     }
     loadingInstance && loadingInstance.close()

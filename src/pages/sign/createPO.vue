@@ -103,13 +103,8 @@
                 </el-row>
                 <el-row>
                   <el-col :span="8">
-                    <el-form-item label="合同版本">
-                      <el-input :value="contractForm.version?`V${contractForm.version}`:''" disabled></el-input>
-                    </el-form-item>
-                  </el-col>
-                  <el-col :span="8">
                     <el-form-item label="合同模式">
-                      <el-input :value="contractForm.curConModelId" disabled></el-input>
+                      <el-input :value="contractForm.contractBusinessTypeThirdName" disabled></el-input>
                     </el-form-item>
                   </el-col>
                   <el-col :span="8">
@@ -454,7 +449,7 @@
 
 <script>
   import signModel from '@/api/sign'
-  import {routerNames} from '@/core/consts'
+  import {routerNames, prTypeMap} from '@/core/consts'
   import {formatTime, formatDate} from '@/filters/moment'
   import fillZero from '@/util/fillZero'
   import comLoading from '@/mixins/comLoading'
@@ -577,8 +572,8 @@
         this.dialogVisible = false
 
         this.setContractData()
-        this.setOrderForm()
         this.setOrderData()
+        this.setOrderForm()
       },
       setContractData() {
         console.log(this.activeName)
@@ -587,26 +582,31 @@
         } else {
           this.contractForm = this.intentionData[this.radio1]
         }
+        this.contractForm.contractType = prTypeMap[this.contractForm.contractType]
+        console.log('合同信息', this.contractForm)
       },
       setOrderForm() {
         const {companyCode} = this.prData[0]
         const {supplierName} = this.contractForm
+        const type = this.orderData.length ? this.orderData[0].type : ''
         this.orderForm = {
           companyCode,
+          type,
           supplierName
         }
       },
       setOrderData() {
         const {id} = this.contractForm
-
         const orderData = []
         this.materialsMatchData.forEach((item) => {
-          const {pr, itemNo, materialName, materialCode, contVos} = item
+          const {pr, itemNo, materialName, materialCode, contVos, category} = item
           if (contVos && contVos.length) {
             contVos.forEach((cont) => {
               if (cont.id === id) {
+                const type = [1, 3].indexOf(category) > -1 ? prTypeMap[1] : prTypeMap[2]
                 orderData.push({
                   pr,
+                  type,
                   itemNo,
                   materialName,
                   materialCode,
@@ -616,7 +616,6 @@
             })
           }
         })
-
         this.orderData = orderData
       },
       addService() {

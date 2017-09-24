@@ -89,7 +89,7 @@
       <el-table-column
         prop="creatorName"
         min-width="100"
-        label="发起人">
+        label="创建人">
       </el-table-column>
       <el-table-column
         prop="departmentName"

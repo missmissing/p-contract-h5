@@ -76,23 +76,23 @@
   import Api from '../../api/manageContract'
 
   export default{
-    data:function(){
+    data: function() {
       return {
-        agreementForm:{
-          id:'',
-          suppliers:[],
-          loading:false,
-          supplierName:'',
-          supplierId:'',
-          companyName:'',
-          companyId:'',
-          companies:[],
-          agreementLoading:false
+        agreementForm: {
+          id: '',
+          suppliers: [],
+          loading: false,
+          supplierName: '',
+          supplierId: '',
+          companyName: '',
+          companyId: '',
+          companies: [],
+          agreementLoading: false
         },
-        agreementList:[]
+        agreementList: []
       }
     },
-    methods:{
+    methods: {
       getRemoteSuppliersByKeyWord(query) {
         if (query !== '') {
           this.agreementForm.loading = true
@@ -117,16 +117,16 @@
           this.agreementForm.companies = []
         }
       },
-      handleQuery(){
-        const agreementForm=this.agreementForm;
-        let params={};
-        params.id=agreementForm.id;
-        params.supplierId=agreementForm.supplierId;
-        params.companyId=agreementForm.companyId;
+      handleQuery() {
+        const agreementForm = this.agreementForm
+        let params = {}
+        params.id = agreementForm.id
+        params.supplierId = agreementForm.supplierId
+        params.companyId = agreementForm.companyId
         Api.getAgreementList(params)
-          .then((data)=>{
-            this.agreementList=data.data.dataMap||[];
-          });
+          .then((data) => {
+            this.agreementList = data.data.dataMap || []
+          })
       }
     }
   }

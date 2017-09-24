@@ -457,48 +457,48 @@
           sealAttachments: [
             [
               {
-              id: '',
-              name: '文件名',
-              type: 3,
-              code: '0011001',
-              types: [
-                {
-                  id: 1,
-                  name: '其他'
-                },
-                {
-                  id: 2,
-                  name: '从协议'
-                },
-                {
-                  id: 3,
-                  name: '合同'
-                }
-              ],
-              isSeal: true,
-              remark: '',
-              sealTimes: '',
-              printTimes: '',
-              retainFileNumber: '',
-              sealName: '',
-              ifPrint: '',
-              useSeal: ['seal1', 'seal2'],
-              useSeals: [
-                {
-                  id: 'seal1',
-                  name: '公章'
-                },
-                {
-                  id: 'seal2',
-                  name: '法人章'
-                },
-                {
-                  id: 'seal3',
-                  name: '人事章'
-                }
-              ]
+                id: '',
+                name: '文件名',
+                type: 3,
+                code: '0011001',
+                types: [
+                  {
+                    id: 1,
+                    name: '其他'
+                  },
+                  {
+                    id: 2,
+                    name: '从协议'
+                  },
+                  {
+                    id: 3,
+                    name: '合同'
+                  }
+                ],
+                isSeal: true,
+                remark: '',
+                sealTimes: '',
+                printTimes: '',
+                retainFileNumber: '',
+                sealName: '',
+                ifPrint: '',
+                useSeal: ['seal1', 'seal2'],
+                useSeals: [
+                  {
+                    id: 'seal1',
+                    name: '公章'
+                  },
+                  {
+                    id: 'seal2',
+                    name: '法人章'
+                  },
+                  {
+                    id: 'seal3',
+                    name: '人事章'
+                  }
+                ]
 
-            }
+              }
             ]
           ]
         },
@@ -725,8 +725,8 @@
         rows.splice(index, 1)
       },
       handleChangeType(index, row) {
-        index===2?row.isSeal = false:row.isSeal = true;
-      },
+        index === 2 ? row.isSeal = false : row.isSeal = true
+      }
     }
   }
 </script>

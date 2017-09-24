@@ -59,6 +59,59 @@ const router = new Router({
       component: function (resolve) {
         require(['../pages/home/home.vue'], resolve)
       },
+      name: routerNames.con_support,
+      children: [
+        {
+          path: '/contemplate/see',
+          component: function (resolve) {
+            require(['../pages/support/see.vue'], resolve)
+          },
+          meta: {
+            hidden: true,
+            auth: true
+          },
+          name: routerNames.con_tpl_see
+        },
+        {
+          path: '/contemplate/create',
+          component: function (resolve) {
+            require(['../pages/support/create.vue'], resolve)
+          },
+          meta: {
+            auth: true
+          },
+          name: routerNames.con_tpl_create
+        },
+        {
+          path: '/contemplate/update',
+          component: function (resolve) {
+            require(['../pages/support/update.vue'], resolve)
+          },
+          meta: {
+            auth: true
+          },
+          name: routerNames.con_tpl_update
+        },
+        {
+          path: '/contemplate/abolish',
+          component: function (resolve) {
+            require(['../pages/support/abolish.vue'], resolve)
+          },
+          meta: {
+            auth: true
+          },
+          name: routerNames.con_tpl_abolish
+        }
+      ],
+      meta: {
+        iconCls: 'stats-bars'
+      }
+    },
+    {
+      path: '/',
+      component: function (resolve) {
+        require(['../pages/home/home.vue'], resolve)
+      },
       name: routerNames.con_create,
       meta: {
         iconCls: 'stats-bars'
@@ -228,59 +281,6 @@ const router = new Router({
       component: function (resolve) {
         require(['../pages/home/home.vue'], resolve)
       },
-      name: routerNames.con_support,
-      children: [
-        {
-          path: '/contemplate/see',
-          component: function (resolve) {
-            require(['../pages/support/see.vue'], resolve)
-          },
-          meta: {
-            hidden: true,
-            auth: true
-          },
-          name: routerNames.con_tpl_see
-        },
-        {
-          path: '/contemplate/create',
-          component: function (resolve) {
-            require(['../pages/support/create.vue'], resolve)
-          },
-          meta: {
-            auth: true
-          },
-          name: routerNames.con_tpl_create
-        },
-        {
-          path: '/contemplate/update',
-          component: function (resolve) {
-            require(['../pages/support/update.vue'], resolve)
-          },
-          meta: {
-            auth: true
-          },
-          name: routerNames.con_tpl_update
-        },
-        {
-          path: '/contemplate/abolish',
-          component: function (resolve) {
-            require(['../pages/support/abolish.vue'], resolve)
-          },
-          meta: {
-            auth: true
-          },
-          name: routerNames.con_tpl_abolish
-        }
-      ],
-      meta: {
-        iconCls: 'stats-bars'
-      }
-    },
-    {
-      path: '/',
-      component: function (resolve) {
-        require(['../pages/home/home.vue'], resolve)
-      },
       name: routerNames.con_process,
       meta: {
         iconCls: 'stats-bars',
@@ -301,7 +301,7 @@ const router = new Router({
           auth: true
         },
         component: function (resolve) {
-          require(['../pages/process/handingProcess.vue'], resolve)
+          require(['../pages/process/createProcess.vue'], resolve)
         },
         name: routerNames.con_create_process
       }, {
@@ -310,7 +310,7 @@ const router = new Router({
           auth: true
         },
         component: function (resolve) {
-          require(['../pages/process/handingProcess.vue'], resolve)
+          require(['../pages/process/handleProcess.vue'], resolve)
         },
         name: routerNames.con_handle_process
       }, {

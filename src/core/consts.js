@@ -55,7 +55,7 @@ export const routerNames = {
   con_purchase_order: '采购订单创建',
   con_purchase_see: '采购订单查看',
 
-  con_performance: '合同履约',
+  con_performance: '合同异常处理',
   con_performanceIndex: '履约合同',
   con_compensate: '违约/赔付处理',
   con_check_reject: '合同验收不合格处理',
@@ -74,8 +74,19 @@ export const routerNames = {
   con_order_list: '采购订单查询'
 }
 
+export const tplTypeMap = {
+  TEMPLATE: '合同模板',
+  TEXT: '合同文本'
+}
+
 export const tplMap = ['CRS_Contract_CreateTemplate', 'CRS_Contract_UpdateTemplate', 'CRS_Contract_DeleteTemplate']
 
 export const contractMap = ['CRS_Contract_Create', 'CRS_Contract_Update', 'CRS_Contract_Delete]']
 
 export const processListMap = ['BACKLOG', 'STARTED', 'FINISHED']
+
+export const prTypeMap = {
+  1: '一般物资',
+  2: '服务',
+  3: '固定资产'
+}
