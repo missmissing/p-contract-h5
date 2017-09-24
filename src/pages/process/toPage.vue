@@ -68,9 +68,9 @@
           })
         } else if (contractMap.indexOf(procCode) > -1) {
           const {baseInfoForm} = approveInfo
-          const {contractNo} = baseInfoForm
+          const {id} = baseInfoForm
           const param = {
-            contractNo
+            id
           }
           const name = routerNames.con_Check
           this.$router.push({

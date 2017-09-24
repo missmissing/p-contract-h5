@@ -90,3 +90,10 @@ export const prTypeMap = {
   2: '服务',
   3: '固定资产'
 }
+
+export const contractPatternMap = {
+  1: '单一合同',
+  2: '简易合同',
+  3: '框架合同',
+  4: '意向合同'
+}

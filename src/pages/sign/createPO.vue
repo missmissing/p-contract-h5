@@ -104,12 +104,12 @@
                 <el-row>
                   <el-col :span="8">
                     <el-form-item label="合同模式">
-                      <el-input :value="contractForm.contractBusinessTypeThirdName" disabled></el-input>
+                      <el-input :value="contractForm.contractType" disabled></el-input>
                     </el-form-item>
                   </el-col>
                   <el-col :span="8">
                     <el-form-item label="合同类型">
-                      <el-input :value="contractForm.contractType" disabled></el-input>
+                      <el-input :value="contractForm.contractBusinessTypeThirdName" disabled></el-input>
                     </el-form-item>
                   </el-col>
                   <el-col :span="8">
@@ -162,9 +162,10 @@
                   width="80">
                 </el-table-column>
                 <el-table-column
-                  prop="type"
+                  prop="category"
                   label="类型"
-                  width="100">
+                  width="100"
+                  :formatter="formatType">
                 </el-table-column>
                 <el-table-column
                   prop="materialCode"
@@ -177,18 +178,18 @@
                   label="物料名称">
                 </el-table-column>
                 <el-table-column
-                  prop="totalAmount"
+                  prop="total"
                   label="数量"
                   width="80">
                 </el-table-column>
                 <el-table-column
-                  prop="taxPrice"
+                  prop="price"
                   label="含税价"
                   width="80">
                   <template scope="scope">
-                    <div v-if="radio">{{scope.row.taxPrice}}</div>
+                    <div v-if="radio">{{scope.row.price}}</div>
                     <div v-else>
-                      <el-input v-model="scope.row.taxPrice"></el-input>
+                      <el-input v-model="scope.row.price"></el-input>
                     </div>
                   </template>
                 </el-table-column>
@@ -197,19 +198,31 @@
                   label="税率"
                   width="80">
                   <template scope="scope">
-                    <div v-if="radio">{{scope.row.taxRate}}</div>
+                    <div v-if="radio">{{scope.row.taxRate ? `${scope.row.taxRate}%` : ''}}</div>
                     <div v-else>
                       <el-input v-model="scope.row.taxRate"></el-input>
+                      %
                     </div>
                   </template>
                 </el-table-column>
                 <el-table-column
-                  prop="deliveryDate"
+                  prop="deliveryTime"
                   label="交货日期"
-                  width="100">
+                  width="186">
+                  <template scope="scope">
+                    <div>
+                      <el-date-picker
+                        v-model="scope.row.deliveryTime"
+                        type="date"
+                        style="width:150px"
+                        :editable="false"
+                        placeholder="选择日期">
+                      </el-date-picker>
+                    </div>
+                  </template>
                 </el-table-column>
                 <el-table-column
-                  prop="purchseRequest"
+                  prop="pr"
                   label="采购申请"
                   width="100">
                 </el-table-column>
@@ -249,11 +262,11 @@
                   width="80">
                 </el-table-column>
                 <el-table-column
-                  prop="serverName"
+                  prop="serviceName"
                   label="服务名称">
                 </el-table-column>
                 <el-table-column
-                  prop="acceptRequire"
+                  prop="serviceRequire"
                   label="验收要求">
                 </el-table-column>
                 <el-table-column
@@ -291,15 +304,15 @@
         :model="serverDialogForm"
         :rules="serverRules"
         label-width="80px">
-        <el-form-item label="服务名称" prop="serverName">
-          <el-input v-model="serverDialogForm.serverName"></el-input>
+        <el-form-item label="服务名称" prop="serviceName">
+          <el-input v-model="serverDialogForm.serviceName"></el-input>
         </el-form-item>
-        <el-form-item label="验收要求" prop="acceptRequire">
+        <el-form-item label="验收要求" prop="serviceRequire">
           <el-input
             type="textarea"
             :autosize="{ minRows: 2 }"
             resize="none"
-            v-model="serverDialogForm.acceptRequire"></el-input>
+            v-model="serverDialogForm.serviceRequire"></el-input>
         </el-form-item>
         <el-form-item label="备注" prop="remark">
           <el-input
@@ -390,6 +403,7 @@
                 prop="taxRate"
                 label="税率"
                 width="80">
+                <template scope="scope">{{scope.row.taxRate ? `${scope.row.taxRate}%` : ''}}</template>
               </el-table-column>
             </el-table>
           </el-tab-pane>
@@ -449,7 +463,7 @@
 
 <script>
   import signModel from '@/api/sign'
-  import {routerNames, prTypeMap} from '@/core/consts'
+  import {routerNames, prTypeMap, contractPatternMap} from '@/core/consts'
   import {formatTime, formatDate} from '@/filters/moment'
   import fillZero from '@/util/fillZero'
   import comLoading from '@/mixins/comLoading'
@@ -471,17 +485,17 @@
         serverData: [],
         serverDialogVisible: false,
         serverDialogForm: {
-          serverName: '',
-          acceptRequire: '',
+          serviceName: '',
+          serviceRequire: '',
           remark: ''
         },
         serverRules: {
-          serverName: [{
+          serviceName: [{
             required: true,
             message: '请输入服务名称',
             trigger: 'blur'
           }],
-          acceptRequire: [{
+          serviceRequire: [{
             required: true,
             message: '请输入验收要求',
             trigger: 'blur'
@@ -582,13 +596,13 @@
         } else {
           this.contractForm = this.intentionData[this.radio1]
         }
-        this.contractForm.contractType = prTypeMap[this.contractForm.contractType]
+        this.contractForm.contractType = contractPatternMap[this.contractForm.contractType]
         console.log('合同信息', this.contractForm)
       },
       setOrderForm() {
         const {companyCode} = this.prData[0]
         const {supplierName} = this.contractForm
-        const type = this.orderData.length ? this.orderData[0].type : ''
+        const type = this.orderData.length ? [1, 3].indexOf(this.orderData[0].category) > -1 ? prTypeMap[1] : prTypeMap[2] : ''
         this.orderForm = {
           companyCode,
           type,
@@ -598,25 +612,35 @@
       setOrderData() {
         const {id} = this.contractForm
         const orderData = []
-        this.materialsMatchData.forEach((item) => {
-          const {pr, itemNo, materialName, materialCode, contVos, category} = item
-          if (contVos && contVos.length) {
-            contVos.forEach((cont) => {
-              if (cont.id === id) {
-                const type = [1, 3].indexOf(category) > -1 ? prTypeMap[1] : prTypeMap[2]
-                orderData.push({
-                  pr,
-                  type,
-                  itemNo,
-                  materialName,
-                  materialCode,
-                  ...cont
-                })
-              }
-            })
-          }
-        })
+        if (this.radio) {
+          this.materialsMatchData.forEach((item) => {
+            const {pr, itemNo, materialName, materialCode, contVos, category} = item
+            if (contVos && contVos.length) {
+              contVos.forEach((cont) => {
+                if (cont.id === id) {
+                  console.log(cont)
+                  orderData.push({
+                    pr,
+                    category,
+                    itemNo,
+                    materialName,
+                    materialCode,
+                    price: cont.totalAmount,
+                    total: cont.total,
+                    taxRate: cont.taxRate,
+                    deliveryTime: ''
+                  })
+                }
+              })
+            }
+          })
+        } else {
+
+        }
         this.orderData = orderData
+      },
+      formatType(row, column, cellValue) {
+        return prTypeMap[cellValue]
       },
       addService() {
         this.serverDialogVisible = true
@@ -657,15 +681,44 @@
           }
         })
       },
-      submit() {
+      check(result) {
+        const {purOrderMaterials} = result
+        if (!purOrderMaterials.length) {
+          this.$message.warning('订单信息不能为空！')
+          return
+        }
+        if (this.radio) {
+          const exist = purOrderMaterials.some(item => !item.deliveryTime)
+          if (exist) {
+            this.$message.warning('请选择订单交货日期！')
+            return
+          }
+        } else {
+          const exist = purOrderMaterials.some(item => (!item.totalAmount || !item.taxRate || !item.deliveryTime))
+          if (exist) {
+            this.$message.warning('订单信息不完整！')
+            return
+          }
+        }
+
+        return true
+      },
+      getResult() {
         const {id, contractNo} = this.contractForm
-        const result = {
+
+        return {
           id,
           contractNo,
           orderCheckItems: this.serverData,
           purOrderMaterials: this.orderData
         }
+      },
+      submit() {
+        const result = this.getResult()
         console.log(result)
+        if (!this.check(result)) {
+          return
+        }
         signModel.submit(result).then((res) => {
           this.$router.push({
             name: routerNames.con_order_list

@@ -19,6 +19,10 @@
         </template>
       </el-table-column>
       <el-table-column
+        prop="procInstCode"
+        label="流程编号">
+      </el-table-column>
+      <el-table-column
         prop="procTitle"
         label="流程标题">
       </el-table-column>

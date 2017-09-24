@@ -10,10 +10,10 @@
       </el-col>
       <el-col :span="12">
         <el-row>
-          <List title="我发起的" :pageSize="done.pageSize" :dataType="done.dataType"></List>
+          <List title="我发起的" :pageSize="todo.pageSize" :dataType="todo.dataType"></List>
         </el-row>
         <el-row class="mb20">
-          <List title="已办任务" :pageSize="todo.pageSize" :dataType="todo.dataType"></List>
+          <List title="已办任务" :pageSize="done.pageSize" :dataType="done.dataType"></List>
         </el-row>
       </el-col>
     </el-row>
