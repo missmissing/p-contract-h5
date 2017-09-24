@@ -87,7 +87,7 @@
               <el-select
                 :disabled="isEnabled1"
                 size="small"
-                v-model="baseInfoForm.businessOperator"
+                v-model="baseInfoForm.businessOperatorId"
                 filterable
                 remote
                 placeholder="请输入业务经办人"
@@ -106,8 +106,8 @@
             </el-form-item>
           </el-col>
           <el-col :span="8">
-            <el-form-item label="业务部门" prop="businessDept">
-              <el-input :disabled="isEnabled" v-model="baseInfoForm.businessDept"
+            <el-form-item label="业务部门" prop="businessDeptName">
+              <el-input :disabled="isEnabled" v-model="baseInfoForm.businessDeptName"
                         placeholder="请输入业务部门"></el-input>
             </el-form-item>
           </el-col>
@@ -1495,6 +1495,8 @@
               :key="item.companyCode"
               :label="item.company"
               :value="item.companyCode">
+              <span style="float: left">{{ item.company }}</span>
+              <span style="float: right; color: #8492a6; font-size: 13px">{{ item.companyCode }}</span>
             </el-option>
           </el-select>
         </el-form-item>
@@ -1523,6 +1525,8 @@
               :key="item.companyCode"
               :label="item.company"
               :value="item.companyCode">
+              <span style="float: left">{{ item.company }}</span>
+              <span style="float: right; color: #8492a6; font-size: 13px">{{ item.companyCode }}</span>
             </el-option>
           </el-select>
         </el-form-item>
@@ -1550,6 +1554,8 @@
               :key="item.companyCode"
               :label="item.company"
               :value="item.companyCode">
+              <span style="float: left">{{ item.company }}</span>
+              <span style="float: right; color: #8492a6; font-size: 13px">{{ item.companyCode }}</span>
             </el-option>
           </el-select>
         </el-form-item>
@@ -1768,8 +1774,9 @@
           id: '',//在更新合同是把合同id传入
           procInstId: '',//流程编号
           guid: '',//草稿箱编号
-          businessOperator: '', // 业务经办人
-          businessDept: '',
+          //businessOperator: '',
+          businessOperatorId:'',// 业务经办人
+          businessDeptName: '',
           contractType: '',//合同模式id
           contractTypeName: '',//合同模式名称
           businessOperators: [],//业务操作人数组
@@ -2405,7 +2412,7 @@
     },
     methods: {
       initData(data, params){
-        console.log('initData');
+        console.log('initData-data',data);
         Object.assign(this.baseInfoForm, data.baseInfoForm);
         Object.assign(this.cardContentInfoForm, data.cardContentInfoForm);
         Object.assign(this.cardFinanceInfoForm, data.cardFinanceInfoForm);
@@ -2426,7 +2433,6 @@
         paymentMethods.advance[0].type = "预付款"
         paymentMethods.progress[0].type = "进度款"
         paymentMethods._final[0].type = "尾款"
-
 
         if (this.operateType !== 'create') {
           this.baseInfoForm.contractTypeName = this.getContractModelName(parseInt(data.baseInfoForm.contractType))//初始化合同模式
@@ -2454,7 +2460,7 @@
         else{
           this.baseInfoForm.contractTypeName = this.getContractModelName(parseInt(params.contractType));//初始化合同模式
           this.baseInfoForm.prNo = params.folio//比加单号
-          this.baseInfoForm.contractType = params.contractType
+          this.baseInfoForm.contractType = parseInt(params.contractType)
           if(params.folio){
             this.baseInfoForm.prFlag = 1
           }
@@ -3251,7 +3257,7 @@
         if (businessOperators.length) {
           for (let i = 0, len = businessOperators.length; i < len; i++) {
             if (val === businessOperators[i].userId) {
-              this.baseInfoForm.businessDept = businessOperators[i].deptName
+              this.baseInfoForm.businessDeptName = businessOperators[i].deptName
             }
           }
         }

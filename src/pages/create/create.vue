@@ -219,11 +219,13 @@
 
 <script>
   import Api from '../../api/manageContract'
+  import store from 'store'
   import getBusiType from '@/mixins/getBusiType'
   import comLoading from '@/mixins/comLoading'
   import TreeModal from '@/components/treeModal.vue'
   import {formatDate} from '@/filters/moment'
 
+  const user = store.get('user')
   export default {
     mixins: [getBusiType, comLoading],
     data() {
@@ -303,7 +305,10 @@
         },
       }
     },
+    created(){},
     mounted() {
+      this.prForm.createPerson=user.userId
+      this.getRemoteCreatePersonsByKeyWord(user.userId)
     },
     computed: {
       conModels: function () {
@@ -477,15 +482,19 @@
       },
       handleQueryPriceList(formName){
         this.comLoading(1)
-        const startTime = this.prForm.createTime[0] ? this.prForm.createTime[0].toLocaleDateString() : ''
-        const endTime = this.prForm.createTime[1] ? this.prForm.createTime[1].toLocaleDateString() : ''
+        this.priceList=[]
+        let startTime = this.prForm.createTime[0] ? formatDate(this.prForm.createTime[0].toLocaleDateString()) : ''
+        let endTime = this.prForm.createTime[1] ? formatDate(this.prForm.createTime[1].toLocaleDateString()) : ''
+        let  times=endTime.split('-')
+        let day=parseInt(times[2])+1
+        let endDay=times[0]+'-'+times[1]+'-'+[day]
         this.$refs[formName].validate((valid) => {
           if (valid) {
             Api.getQrList({
               pr: this.prForm.prCode,
               originator: this.prForm.createPerson,
-              fromDate: formatDate(startTime),
-              toDate: formatDate(endTime)
+              fromDate: startTime,
+              toDate: endDay
             }).then((data) => {
               if (data.data.dataMap && data.data.dataMap.length > 0) {
                 let arr = data.data.dataMap;
@@ -533,6 +542,8 @@
             })
         } else {
           this.prForm.createPersons = []
+          this.prForm.createPerson=''
+
         }
       },
     }
