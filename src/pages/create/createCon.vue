@@ -847,7 +847,7 @@
                 </el-col>
                 <el-col :span="8">
                   <el-form-item label="合同总金额" prop="totalAmount">
-                    <el-input :disabled="!cardFinanceInfoForm.oneOffPay" v-model="cardFinanceInfoForm.totalAmount"
+                    <el-input :disabled="!cardFinanceInfoForm.oneOffPay||operateType==='query'" v-model="cardFinanceInfoForm.totalAmount"
                               placeholder="根据上表累加(含税价)">{{totalConMoney}}
                     </el-input>
                   </el-form-item>
