@@ -1684,6 +1684,7 @@
         <el-button type="primary" @click="handleCancelAddConStandard('formAddConStandard')">取消</el-button>
       </footer>
     </el-dialog>
+    <Process></Process>
     <el-row class="mt20">
       <el-col :span="4" :offset="4">
         <el-button v-if="operateType!=='query'" type="primary" @click="handleSave('')">保存</el-button>
@@ -1698,7 +1699,6 @@
       </el-col>
     </el-row>
     <Preview :visible.sync="visible" :datas="previewData"></Preview>
-    <Process></Process>
   </div>
 </template>
 <script>
@@ -1748,7 +1748,7 @@
         users: user,
         downloadUrl: downloadUrl,
         uploadUrl: uploadUrl,
-        operateType: 'create', // create:创建，update:变更，query:查询
+        operateType: '', // create:创建，update:变更，query:查询
         updateForm: {
           visible: false,//在变更合同中控制合同页面数据的显示与否
           code: '',
@@ -2233,8 +2233,7 @@
         isSubmit: false
       }
     },
-    created() {
-    },
+    created() {},
     computed: {
       conVersion: function () {
         let id = this.baseInfoForm.templateId
@@ -2372,7 +2371,6 @@
       }
     },
     mounted() {
-      console.log('mounted');
       const params = {};
       const query = this.$route.query
       if (JSON.stringify(query) !== '{}') {
@@ -2387,9 +2385,7 @@
             params.contractBusinessTypeSecond = types[1];
             params.contractBusinessTypeThird = types[2];
           }
-
         }
-
       }
       if (this.operateType === 'create') {
         Api.getContractBaseInfo(params).then((data) => {
@@ -2400,14 +2396,14 @@
         })
       }
       if (this.$route.path && this.$route.path === '/ConCreate/conCheck') {
+        this.operateType='query'
         let query = this.$route.query
-          Api.getContractDetail(query.contractNo).then((data)=>{
+          Api.getContractDetailByContractId(query.contractId).then((data)=>{
             const dataMap = data.data.dataMap
             if (dataMap) {
               this.initData(dataMap, params)
             }
           })
-
       }
     },
     methods: {
@@ -3197,6 +3193,7 @@
         this.cardSealInfoForm.agreenments.push(file)
       },
       handleQuery(code) {
+        this.operateType='update'
         //根据合同编号获取合同模式设置当前合同模式及合同类型
         Api.getUpdateInfo(code).then((data)=> {
           const dataMap = data.data.dataMap

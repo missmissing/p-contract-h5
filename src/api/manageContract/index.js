@@ -59,6 +59,10 @@ export default {
   getContractDetail(contractNo) {
     return Http.get(`${contract}/contract-web/contract/no/${contractNo}`)
   },
+  // 根据合同id查询合同详情
+  getContractDetailByContractId(contractId) {
+    return Http.get(`${contract}/contract-web/contract/id/${contractId}`)
+  },
   /** ***标签页****/
   getPrTableData(params) {
     return Http.get(`/api/createContract/getPrTableData`, params)
