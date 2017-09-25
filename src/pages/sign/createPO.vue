@@ -185,7 +185,7 @@
                 <el-table-column
                   prop="price"
                   label="含税价"
-                  width="80">
+                  width="120">
                   <template scope="scope">
                     <div v-if="radio">{{scope.row.price}}</div>
                     <div v-else>
@@ -196,11 +196,11 @@
                 <el-table-column
                   prop="taxRate"
                   label="税率"
-                  width="80">
+                  width="120">
                   <template scope="scope">
                     <div v-if="radio">{{scope.row.taxRate ? `${scope.row.taxRate}%` : ''}}</div>
                     <div v-else>
-                      <el-input v-model="scope.row.taxRate"></el-input>
+                      <el-input style="width:50px" v-model="scope.row.taxRate"></el-input>
                       %
                     </div>
                   </template>
@@ -247,48 +247,50 @@
               </el-table>
             </div>
           </el-tab-pane>
-          <el-tab-pane label="服务验收信息">
-            <div class="server-info">
-              <div class="mb20">
-                <el-button type="primary" @click="addService">新 增</el-button>
+          <template v-if="showService">
+            <el-tab-pane label="服务验收信息">
+              <div class="server-info">
+                <div class="mb20">
+                  <el-button type="primary" @click="addService">新 增</el-button>
+                </div>
+                <el-table
+                  :data="serverData"
+                  border
+                  style="width: 100%">
+                  <el-table-column
+                    type="index"
+                    label="序号"
+                    width="80">
+                  </el-table-column>
+                  <el-table-column
+                    prop="serviceName"
+                    label="服务名称">
+                  </el-table-column>
+                  <el-table-column
+                    prop="serviceRequire"
+                    label="验收要求">
+                  </el-table-column>
+                  <el-table-column
+                    prop="remark"
+                    label="备注">
+                  </el-table-column>
+                  <el-table-column
+                    fixed="right"
+                    label="操作"
+                    width="100">
+                    <template scope="scope">
+                      <el-button
+                        @click.native.prevent="deleteRow(scope.$index, serverData)"
+                        type="text"
+                        size="small">
+                        移除
+                      </el-button>
+                    </template>
+                  </el-table-column>
+                </el-table>
               </div>
-              <el-table
-                :data="serverData"
-                border
-                style="width: 100%">
-                <el-table-column
-                  type="index"
-                  label="序号"
-                  width="80">
-                </el-table-column>
-                <el-table-column
-                  prop="serviceName"
-                  label="服务名称">
-                </el-table-column>
-                <el-table-column
-                  prop="serviceRequire"
-                  label="验收要求">
-                </el-table-column>
-                <el-table-column
-                  prop="remark"
-                  label="备注">
-                </el-table-column>
-                <el-table-column
-                  fixed="right"
-                  label="操作"
-                  width="100">
-                  <template scope="scope">
-                    <el-button
-                      @click.native.prevent="deleteRow(scope.$index, serverData)"
-                      type="text"
-                      size="small">
-                      移除
-                    </el-button>
-                  </template>
-                </el-table-column>
-              </el-table>
-            </div>
-          </el-tab-pane>
+            </el-tab-pane>
+          </template>
         </el-tabs>
       </el-card>
       <div class="mt20 mb20 ml20">
@@ -508,7 +510,8 @@
         },
         dialogVisible: false,
         contractForm: {},
-        orderForm: {}
+        orderForm: {},
+        showService: false
       }
     },
     methods: {
@@ -530,9 +533,15 @@
           this.comLoading()
           const data = res.data.dataMap
           console.log(data)
-          if (this.prData.length && this.prData[0].companyCode !== data.companyCode) {
-            this.$message.warning('采购申请号所属公司编码不同!')
-            return
+          if (this.prData.length) {
+            if (this.prData[0].companyCode !== data.companyCode) {
+              this.$message.warning('采购申请号所属公司编码不同!')
+              return
+            }
+            if (this.prData[0].category !== data.category) {
+              this.$message.warning('采购申请号类型不同!')
+              return
+            }
           }
           this.prData.push(data)
         })
@@ -588,6 +597,7 @@
         this.setContractData()
         this.setOrderData()
         this.setOrderForm()
+        this.showServiceTab()
       },
       setContractData() {
         console.log(this.activeName)
@@ -637,9 +647,28 @@
         } else {
           this.prData.forEach((item) => {
             console.log(item)
+            const {purOrderMaterialsList} = item
+            const {pr, category} = item
+            purOrderMaterialsList.forEach((material) => {
+              const {itemNo, materialName, materialCode, total} = material
+              orderData.push({
+                pr,
+                category,
+                itemNo,
+                materialName,
+                materialCode,
+                price: '',
+                total,
+                taxRate: '',
+                deliveryTime: ''
+              })
+            })
           })
         }
         this.orderData = orderData
+      },
+      showServiceTab() {
+        this.showService = this.prData.length && this.prData[0].category === 2 && this.radio1
       },
       formatType(row, column, cellValue) {
         return prTypeMap[cellValue]
@@ -699,6 +728,10 @@
           const exist = purOrderMaterials.some(item => (!item.totalAmount || !item.taxRate || !item.deliveryTime))
           if (exist) {
             this.$message.warning('订单信息不完整！')
+            return
+          }
+          if (this.showService && this.serverData.length) {
+            this.$message.warning('服务验收信息不能为空！')
             return
           }
         }
