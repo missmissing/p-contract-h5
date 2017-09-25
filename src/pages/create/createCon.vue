@@ -179,13 +179,18 @@
           </el-col>
         </el-row>
         <el-row>
-          <el-col :span="16">
+          <el-col :span="8">
             <el-form-item label="盖章次序">
               <el-radio-group v-model="baseInfoForm.sealOrder" :disabled="isEnabled1">
                 <el-radio :label="1">对方先盖章</el-radio>
                 <el-radio :label="0">我方先盖章</el-radio>
               </el-radio-group>
             </el-form-item>
+          </el-col>
+          <el-col :span="6">
+            <el-button type="primary" @click="handlePreview" style="margin-left:33px"
+                       v-if="operateType==='query'&&baseInfoForm.contractTextType===1">预览
+            </el-button>
           </el-col>
         </el-row>
         <el-row v-if="baseInfoForm.sealOrder===0">
@@ -1727,7 +1732,7 @@
       </el-col>
       <el-col :span="6">
         <el-button type="primary" @click="handlePreview" style="margin-left:33px"
-                   v-if="baseInfoForm.contractTextType===1">预览
+                   v-if="operateType!=='query'&&baseInfoForm.contractTextType===1">预览
         </el-button>
       </el-col>
       <el-col :span="4">
