@@ -432,7 +432,7 @@
   export default {
     data: function () {
       return {
-        currentStage: 'create', // 目前处于创建阶段
+        operateType:'create',//默认创建状态，query：查看 update：修改
         activeTabName: 'tabBaseInfo',
         baseInfoForm: {
           tableSupplierInfo: [
@@ -536,6 +536,19 @@
           subjects: [],
           loading: false
         }
+      }
+    },
+    mounted:function(){
+      if (this.$route.path && this.$route.path === '/ConCreate/querySlaveProtocol') {
+        this.operateType='query'
+        console.log('query');
+      }
+      if (this.$route.path && this.$route.path === '/ConCreate/updateSlaveProtocol') {
+        this.operateType='update'
+        console.log('update');
+      }
+      if(this.operateType==='create'){
+
       }
     },
     methods: {

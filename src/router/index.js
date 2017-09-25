@@ -138,6 +138,26 @@ const router = new Router({
           name: routerNames.con_createSlaveProtocol
         },
         {
+          path: '/ConCreate/querySlaveProtocol',
+          meta: {
+            auth: true
+          },
+          component: function (resolve) {
+            require(['../pages/create/createSlaveProtocol.vue'], resolve)
+          },
+          name: routerNames.con_querySlaveProtocol
+        },
+        {
+          path: '/ConCreate/updateSlaveProtocol',
+          meta: {
+            auth: true
+          },
+          component: function (resolve) {
+            require(['../pages/create/createSlaveProtocol.vue'], resolve)
+          },
+          name: routerNames.con_updateSlaveProtocol
+        },
+        {
           path: '/conperf/conupdate',
           component: function (resolve) {
             require(['../pages/create/createCon.vue'], resolve)

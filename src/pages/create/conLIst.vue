@@ -122,7 +122,7 @@
       <el-table-column prop="id" label="合同编号" width="150px">
         <template scope="scope">
           <router-link :to="{path:'/ConCreate/conCheck', query:{contractId:''+tableData[scope.$index].id}}">
-            {{tableData[scope.$index].id}}
+            {{tableData[scope.$index].contractNo}}
           </router-link>
         </template>
       </el-table-column>
