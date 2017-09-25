@@ -119,10 +119,10 @@
       highlight-current-row
       class="wp100">
       <el-table-column type="index" label="序号" width="70"></el-table-column>
-      <el-table-column prop="contractNo" label="合同编号" width="150px">
+      <el-table-column prop="id" label="合同编号" width="150px">
         <template scope="scope">
-          <router-link :to="{path:'/ConCreate/conCheck', query:{contractNo:''+tableData[scope.$index].contractNo}}">
-            {{tableData[scope.$index].contractNo}}
+          <router-link :to="{path:'/ConCreate/conCheck', query:{contractId:''+tableData[scope.$index].id}}">
+            {{tableData[scope.$index].id}}
           </router-link>
         </template>
       </el-table-column>

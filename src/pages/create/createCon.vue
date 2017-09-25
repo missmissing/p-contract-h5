@@ -1,4 +1,4 @@
-<style>
+<style scope>
   .createCon .title {
     position: relative;
   }
@@ -35,6 +35,15 @@
 
   .createCon table {
     width: 100% !important;
+  }
+  .createCon table td{
+    height: 0;
+    padding-top:0;
+    padding-bottom:0;
+  }
+  .createCon table .tdPd{
+    padding-top:20px;
+    padding-bottom:50px;
   }
 </style>
 <template>
@@ -356,87 +365,89 @@
               >
                 <el-table-column type="expand" v-if="cardFinanceInfoForm.paymentMethods.advance[0].seriousPayments">
                   <template scope="props">
-                    <el-button icon="plus" type="primary"
-                               v-if="operateType!=='query'"
-                               @click="handleAddAdvanceItem(props.row.type)"
-                               class="mb10">
-                      添加
-                    </el-button>
-                    <el-table :data="props.row.subItem">
-                      <el-table-column width="100px" prop="name" label="名称">
-                        <template scope="scope">{{props.row.type}}{{scope.$index+1}}</template>
-                      </el-table-column>
-                      <el-table-column
-                        prop="paymentAmount"
-                        label="付款金额">
-                        <template scope="scope">
-                          <el-input
-                            :disabled="operateType==='query'"
-                            v-model="props.row.subItem[scope.$index].paymentAmount"></el-input>
-                        </template>
-                      </el-table-column>
-                      <el-table-column
-                        prop="paymentTimePeriod"
-                        label="付款时间"
-                        width="250px">
-                        <template scope="scope">
-                          <el-row class="select-money">
-                            <el-col>
-                              <el-select
-                                class="select-curTime"
-                                @change="handleItemCurTimeChange(props.row.subItem[scope.$index].paymentTimePeriod,props.row.subItem[scope.$index])"
-                                :disabled="operateType==='query'"
-                                placeholder="请选择付款时间"
-                                v-model="props.row.subItem[scope.$index].paymentTimePeriod">
-                                <el-option
-                                  v-for="item in props.row.subItem[scope.$index].times"
-                                  :key="item.value"
-                                  :label="item.label"
-                                  :value="item.value">
-                                </el-option>
-                              </el-select>
-                            </el-col>
-                            <el-col>
-                              <el-date-picker
-                                @change="handleItemExactDateChange(props.row.subItem[scope.$index].paymentTime,props.row.subItem[scope.$index])"
-                                v-model="props.row.subItem[scope.$index].paymentTime"
-                                :disabled="operateType==='query'"
-                                placeholder="请输入具体付款日期"
-                                type="date"></el-date-picker>
-                            </el-col>
-                          </el-row>
-                        </template>
-                      </el-table-column>
-                      <el-table-column
-                        prop="remark"
-                        label="备注"
-                        width="200px">
-                        <template scope="scope">
-                          <el-input
-                            type="textarea"
-                            :rows="2"
-                            :disabled="operateType==='query'"
-                            v-model="props.row.subItem[scope.$index].remark"></el-input>
-                        </template>
-                      </el-table-column>
-                      <el-table-column prop="ratio" label="占比" width="80px">
-                        <template scope="scope">
-                          {{setRatio(props.row.subItem[scope.$index],props.row.subItem[scope.$index].paymentAmount)}}
-                        </template>
-                      </el-table-column>
-                      <el-table-column
-                        fixed="right"
-                        label="操作"
-                        width="100"
-                        v-if="operateType!=='query'">
-                        <template scope="scope">
-                          <el-button
-                            @click="handleRemoveAdvanceItem(scope.$index, props.row.subItem)"
-                            type="text" size="small">移除
-                          </el-button>
-                        </template>
-                      </el-table-column>
-                    </el-table>
+                    <div v-if="cardFinanceInfoForm.paymentMethods.advance[0].seriousPayments" v-bind:class="{tdPd:cardFinanceInfoForm.paymentMethods.advance[0].seriousPayments}">
+                      <el-button icon="plus" type="primary"
+                                 v-if="operateType!=='query'"
+                                 @click="handleAddAdvanceItem(props.row.type)"
+                                 class="mb10">
+                        添加
+                      </el-button>
+                      <el-table :data="props.row.subItem">
+                        <el-table-column width="100px" prop="name" label="名称">
+                          <template scope="scope">{{props.row.type}}{{scope.$index+1}}</template>
+                        </el-table-column>
+                        <el-table-column
+                          prop="paymentAmount"
+                          label="付款金额">
+                          <template scope="scope">
+                            <el-input
+                              :disabled="operateType==='query'"
+                              v-model="props.row.subItem[scope.$index].paymentAmount"></el-input>
+                          </template>
+                        </el-table-column>
+                        <el-table-column
+                          prop="paymentTimePeriod"
+                          label="付款时间"
+                          width="250px">
+                          <template scope="scope">
+                            <el-row class="select-money">
+                              <el-col>
+                                <el-select
+                                  class="select-curTime"
+                                  @change="handleItemCurTimeChange(props.row.subItem[scope.$index].paymentTimePeriod,props.row.subItem[scope.$index])"
+                                  :disabled="operateType==='query'"
+                                  placeholder="请选择付款时间"
+                                  v-model="props.row.subItem[scope.$index].paymentTimePeriod">
+                                  <el-option
+                                    v-for="item in props.row.subItem[scope.$index].times"
+                                    :key="item.value"
+                                    :label="item.label"
+                                    :value="item.value">
+                                  </el-option>
+                                </el-select>
+                              </el-col>
+                              <el-col>
+                                <el-date-picker
+                                  @change="handleItemExactDateChange(props.row.subItem[scope.$index].paymentTime,props.row.subItem[scope.$index])"
+                                  v-model="props.row.subItem[scope.$index].paymentTime"
+                                  :disabled="operateType==='query'"
+                                  placeholder="请输入具体付款日期"
+                                  type="date"></el-date-picker>
+                              </el-col>
+                            </el-row>
+                          </template>
+                        </el-table-column>
+                        <el-table-column
+                          prop="remark"
+                          label="备注"
+                          width="200px">
+                          <template scope="scope">
+                            <el-input
+                              type="textarea"
+                              :rows="2"
+                              :disabled="operateType==='query'"
+                              v-model="props.row.subItem[scope.$index].remark"></el-input>
+                          </template>
+                        </el-table-column>
+                        <el-table-column prop="ratio" label="占比" width="80px">
+                          <template scope="scope">
+                            {{setRatio(props.row.subItem[scope.$index],props.row.subItem[scope.$index].paymentAmount)}}
+                          </template>
+                        </el-table-column>
+                        <el-table-column
+                          fixed="right"
+                          label="操作"
+                          width="100"
+                          v-if="operateType!=='query'">
+                          <template scope="scope">
+                            <el-button
+                              @click="handleRemoveAdvanceItem(scope.$index, props.row.subItem)"
+                              type="text" size="small">移除
+                            </el-button>
+                          </template>
+                        </el-table-column>
+                      </el-table>
+                    </div>
                   </template>
                 </el-table-column>
                 <el-table-column prop="type" label="类型" width="100px"></el-table-column>
@@ -511,85 +522,87 @@
                         v-if="!cardFinanceInfoForm.oneOffPay" style="width: 100%">
                 <el-table-column type="expand" v-if="cardFinanceInfoForm.paymentMethods.progress[0].seriousPayments">
                   <template scope="props">
-                    <el-button icon="plus" type="primary" class="mb10" v-if="operateType!=='query'"
-                               @click="handleAddAdvanceItem(props.row.type)">
-                      添加
-                    </el-button>
-                    <el-table :data="props.row.subItem">
-                      <el-table-column width="100px" prop="name" label="名称">
-                        <template scope="scope">{{props.row.type}}{{scope.$index+1}}</template>
-                      </el-table-column>
-                      <el-table-column
-                        prop="monpaymentAmountey"
-                        label="付款金额">
-                        <template scope="scope">
-                          <el-input
-                            :disabled="operateType==='query'"
-                            v-model="props.row.subItem[scope.$index].paymentAmount"></el-input>
-                        </template>
-                      </el-table-column>
-                      <el-table-column
-                        prop="paymentTimePeriod"
-                        label="付款时间"
-                        width="250px">
-                        <template scope="scope">
-                          <el-row class="select-money">
-                            <el-col>
-                              <el-select
-                                class="select-curTime"
-                                @change="handleItemCurTimeChange(props.row.subItem[scope.$index].paymentTimePeriod,props.row.subItem[scope.$index])"
-                                :disabled="operateType==='query'"
-                                placeholder="请选择付款时间"
-                                v-model="props.row.subItem[scope.$index].paymentTimePeriod">
-                                <el-option
-                                  v-for="item in props.row.subItem[scope.$index].times"
-                                  :key="item.value"
-                                  :label="item.label"
-                                  :value="item.value">
-                                </el-option>
-                              </el-select>
-                            </el-col>
-                            <el-col>
-                              <el-date-picker
-                                @change="handleItemExactDateChange(props.row.subItem[scope.$index].paymentTime,props.row.subItem[scope.$index])"
-                                v-model="props.row.subItem[scope.$index].paymentTime"
-                                :disabled="operateType==='query'"
-                                placeholder="请输入具体付款日期"
-                                type="date"></el-date-picker>
-                            </el-col>
-                          </el-row>
-                        </template>
-                      </el-table-column>
-                      <el-table-column
-                        prop="remark"
-                        label="备注"
-                        width="200px">
-                        <template scope="scope">
-                          <el-input
-                            type="textarea"
-                            :rows="2"
-                            :disabled="operateType==='query'"
-                            v-model="props.row.subItem[scope.$index].remark"></el-input>
-                        </template>
-                      </el-table-column>
-                      <el-table-column prop="ratio" label="占比" width="80px">
-                        <template scope="scope">
-                          {{setRatio(props.row.subItem[scope.$index],props.row.subItem[scope.$index].paymentAmount)}}
-                        </template>
-                      </el-table-column>
-                      <el-table-column
-                        fixed="right"
-                        label="操作"
-                        width="100"
-                        v-if="operateType!=='query'">
-                        <template scope="scope">
-                          <el-button
-                            @click="handleRemoveAdvanceItem(scope.$index, props.row.subItem)"
-                            type="text" size="small">移除
-                          </el-button>
-                        </template>
-                      </el-table-column>
-                    </el-table>
+                    <div v-if="cardFinanceInfoForm.paymentMethods.progress[0].seriousPayments" v-bind:class="{tdPd:cardFinanceInfoForm.paymentMethods.progress[0].seriousPayments}">
+                      <el-button icon="plus" type="primary" class="mb10" v-if="operateType!=='query'"
+                                 @click="handleAddAdvanceItem(props.row.type)">
+                        添加
+                      </el-button>
+                      <el-table :data="props.row.subItem">
+                        <el-table-column width="100px" prop="name" label="名称">
+                          <template scope="scope">{{props.row.type}}{{scope.$index+1}}</template>
+                        </el-table-column>
+                        <el-table-column
+                          prop="monpaymentAmountey"
+                          label="付款金额">
+                          <template scope="scope">
+                            <el-input
+                              :disabled="operateType==='query'"
+                              v-model="props.row.subItem[scope.$index].paymentAmount"></el-input>
+                          </template>
+                        </el-table-column>
+                        <el-table-column
+                          prop="paymentTimePeriod"
+                          label="付款时间"
+                          width="250px">
+                          <template scope="scope">
+                            <el-row class="select-money">
+                              <el-col>
+                                <el-select
+                                  class="select-curTime"
+                                  @change="handleItemCurTimeChange(props.row.subItem[scope.$index].paymentTimePeriod,props.row.subItem[scope.$index])"
+                                  :disabled="operateType==='query'"
+                                  placeholder="请选择付款时间"
+                                  v-model="props.row.subItem[scope.$index].paymentTimePeriod">
+                                  <el-option
+                                    v-for="item in props.row.subItem[scope.$index].times"
+                                    :key="item.value"
+                                    :label="item.label"
+                                    :value="item.value">
+                                  </el-option>
+                                </el-select>
+                              </el-col>
+                              <el-col>
+                                <el-date-picker
+                                  @change="handleItemExactDateChange(props.row.subItem[scope.$index].paymentTime,props.row.subItem[scope.$index])"
+                                  v-model="props.row.subItem[scope.$index].paymentTime"
+                                  :disabled="operateType==='query'"
+                                  placeholder="请输入具体付款日期"
+                                  type="date"></el-date-picker>
+                              </el-col>
+                            </el-row>
+                          </template>
+                        </el-table-column>
+                        <el-table-column
+                          prop="remark"
+                          label="备注"
+                          width="200px">
+                          <template scope="scope">
+                            <el-input
+                              type="textarea"
+                              :rows="2"
+                              :disabled="operateType==='query'"
+                              v-model="props.row.subItem[scope.$index].remark"></el-input>
+                          </template>
+                        </el-table-column>
+                        <el-table-column prop="ratio" label="占比" width="80px">
+                          <template scope="scope">
+                            {{setRatio(props.row.subItem[scope.$index],props.row.subItem[scope.$index].paymentAmount)}}
+                          </template>
+                        </el-table-column>
+                        <el-table-column
+                          fixed="right"
+                          label="操作"
+                          width="100"
+                          v-if="operateType!=='query'">
+                          <template scope="scope">
+                            <el-button
+                              @click="handleRemoveAdvanceItem(scope.$index, props.row.subItem)"
+                              type="text" size="small">移除
+                            </el-button>
+                          </template>
+                        </el-table-column>
+                      </el-table>
+                    </div>
                   </template>
                 </el-table-column>
                 <el-table-column prop="type" label="类型" width="100px"></el-table-column>
@@ -664,86 +677,88 @@
                         v-if="!cardFinanceInfoForm.oneOffPay" style="width: 100%">
                 <el-table-column type="expand" v-if="cardFinanceInfoForm.paymentMethods._final[0].seriousPayments">
                   <template scope="props">
-                    <el-button icon="plus" type="primary" class="mb10"
-                               v-if="operateType!=='query'"
-                               @click="handleAddAdvanceItem(props.row.type)">
-                      添加
-                    </el-button>
-                    <el-table :data="props.row.subItem">
-                      <el-table-column width="100px" prop="name" label="名称">
-                        <template scope="scope">{{props.row.type}}{{scope.$index+1}}</template>
-                      </el-table-column>
-                      <el-table-column
-                        prop="paymentAmount"
-                        label="付款金额">
-                        <template scope="scope">
-                          <el-input
-                            :disabled="operateType==='query'"
-                            v-model="props.row.subItem[scope.$index].paymentAmount"></el-input>
-                        </template>
-                      </el-table-column>
-                      <el-table-column
-                        prop="paymentTimePeriod"
-                        label="付款时间"
-                        width="250px">
-                        <template scope="scope">
-                          <el-row class="select-money">
-                            <el-col>
-                              <el-select
-                                class="select-curTime"
-                                @change="handleItemCurTimeChange(props.row.subItem[scope.$index].paymentTimePeriod,props.row.subItem[scope.$index])"
-                                :disabled="operateType==='query'"
-                                placeholder="请选择付款时间"
-                                v-model="props.row.subItem[scope.$index].paymentTimePeriod">
-                                <el-option
-                                  v-for="item in props.row.subItem[scope.$index].times"
-                                  :key="item.value"
-                                  :label="item.label"
-                                  :value="item.value">
-                                </el-option>
-                              </el-select>
-                            </el-col>
-                            <el-col>
-                              <el-date-picker
-                                @change="handleItemExactDateChange(props.row.subItem[scope.$index].paymentTime,props.row.subItem[scope.$index])"
-                                v-model="props.row.subItem[scope.$index].paymentTime"
-                                :disabled="operateType==='query'"
-                                placeholder="请输入具体付款日期"
-                                type="date"></el-date-picker>
-                            </el-col>
-                          </el-row>
-                        </template>
-                      </el-table-column>
-                      <el-table-column
-                        prop="remark"
-                        label="备注"
-                        width="200px">
-                        <template scope="scope">
-                          <el-input
-                            type="textarea"
-                            :rows="2"
-                            :disabled="operateType==='query'"
-                            v-model="props.row.subItem[scope.$index].remark"></el-input>
-                        </template>
-                      </el-table-column>
-                      <el-table-column prop="ratio" label="占比" width="80px">
-                        <template scope="scope">
-                          {{setRatio(props.row.subItem[scope.$index],props.row.subItem[scope.$index].paymentAmount)}}
-                        </template>
-                      </el-table-column>
-                      <el-table-column
-                        fixed="right"
-                        label="操作"
-                        width="100"
-                        v-if="operateType!=='query'">
-                        <template scope="scope">
-                          <el-button
-                            @click="handleRemoveAdvanceItem(scope.$index, props.row.subItem)"
-                            type="text" size="small">移除
-                          </el-button>
-                        </template>
-                      </el-table-column>
-                    </el-table>
+                    <div v-if="cardFinanceInfoForm.paymentMethods._final[0].seriousPayments" v-bind:class="{tdPd:cardFinanceInfoForm.paymentMethods._final[0].seriousPayments}">
+                      <el-button icon="plus" type="primary" class="mb10"
+                                 v-if="operateType!=='query'"
+                                 @click="handleAddAdvanceItem(props.row.type)">
+                        添加
+                      </el-button>
+                      <el-table :data="props.row.subItem">
+                        <el-table-column width="100px" prop="name" label="名称">
+                          <template scope="scope">{{props.row.type}}{{scope.$index+1}}</template>
+                        </el-table-column>
+                        <el-table-column
+                          prop="paymentAmount"
+                          label="付款金额">
+                          <template scope="scope">
+                            <el-input
+                              :disabled="operateType==='query'"
+                              v-model="props.row.subItem[scope.$index].paymentAmount"></el-input>
+                          </template>
+                        </el-table-column>
+                        <el-table-column
+                          prop="paymentTimePeriod"
+                          label="付款时间"
+                          width="250px">
+                          <template scope="scope">
+                            <el-row class="select-money">
+                              <el-col>
+                                <el-select
+                                  class="select-curTime"
+                                  @change="handleItemCurTimeChange(props.row.subItem[scope.$index].paymentTimePeriod,props.row.subItem[scope.$index])"
+                                  :disabled="operateType==='query'"
+                                  placeholder="请选择付款时间"
+                                  v-model="props.row.subItem[scope.$index].paymentTimePeriod">
+                                  <el-option
+                                    v-for="item in props.row.subItem[scope.$index].times"
+                                    :key="item.value"
+                                    :label="item.label"
+                                    :value="item.value">
+                                  </el-option>
+                                </el-select>
+                              </el-col>
+                              <el-col>
+                                <el-date-picker
+                                  @change="handleItemExactDateChange(props.row.subItem[scope.$index].paymentTime,props.row.subItem[scope.$index])"
+                                  v-model="props.row.subItem[scope.$index].paymentTime"
+                                  :disabled="operateType==='query'"
+                                  placeholder="请输入具体付款日期"
+                                  type="date"></el-date-picker>
+                              </el-col>
+                            </el-row>
+                          </template>
+                        </el-table-column>
+                        <el-table-column
+                          prop="remark"
+                          label="备注"
+                          width="200px">
+                          <template scope="scope">
+                            <el-input
+                              type="textarea"
+                              :rows="2"
+                              :disabled="operateType==='query'"
+                              v-model="props.row.subItem[scope.$index].remark"></el-input>
+                          </template>
+                        </el-table-column>
+                        <el-table-column prop="ratio" label="占比" width="80px">
+                          <template scope="scope">
+                            {{setRatio(props.row.subItem[scope.$index],props.row.subItem[scope.$index].paymentAmount)}}
+                          </template>
+                        </el-table-column>
+                        <el-table-column
+                          fixed="right"
+                          label="操作"
+                          width="100"
+                          v-if="operateType!=='query'">
+                          <template scope="scope">
+                            <el-button
+                              @click="handleRemoveAdvanceItem(scope.$index, props.row.subItem)"
+                              type="text" size="small">移除
+                            </el-button>
+                          </template>
+                        </el-table-column>
+                      </el-table>
+                    </div>
                   </template>
                 </el-table-column>
                 <el-table-column prop="type" label="类型" width="100px"></el-table-column>
@@ -1159,6 +1174,7 @@
               <el-table-column type="expand"
                                v-if="cardSealInfoForm.contract&&cardSealInfoForm.contract.length&&cardSealInfoForm.contract[0].haveSale">
                 <template scope="props">
+                  <div  v-if="cardSealInfoForm.contract&&cardSealInfoForm.contract.length&&cardSealInfoForm.contract[0].haveSale" v-bind:class="{tdPd:cardSealInfoForm.contract&&cardSealInfoForm.contract.length&&cardSealInfoForm.contract[0].haveSale}">
                   <el-table :data="props.row.filesSealed" class="mb20"
                             v-if="props.row.filesSealed&&props.row.filesSealed.length">
                     <el-table-column label="文件名" prop="sealFileName">
@@ -1234,6 +1250,7 @@
                       </el-form-item>
                     </el-col>
                   </el-row>
+                  </div>
                 </template>
               </el-table-column>
               <el-table-column prop="attachType" label="附件类型" width="150px">
@@ -1270,82 +1287,84 @@
             <template v-if="cardSealInfoForm.others.length" v-for="(item,index) in cardSealInfoForm.others">
               <el-table :data="item" :show-header="index===0?true:false">
                 <el-table-column type="expand" v-if="item[0].haveSale">
-                  <template scope="props">
-                    <el-table :data="props.row.filesSealed" class="mb20"
-                              v-if="props.row.filesSealed&&props.row.filesSealed.length">
-                      <el-table-column label="文件名" prop="sealFileName">
-                        <template scope="scope">
-                          <a :href="props.row.filesSealed[scope.$index].sealFileUrl">{{props.row.filesSealed[scope.$index].sealFileName}}</a>
-                        </template>
-                      </el-table-column>
-                      <el-table-column label="上传人" prop="sealFileCreatorName"></el-table-column>
-                      <el-table-column label="上传时间" prop="sealFileCreateTime"></el-table-column>
-                      <el-table-column
-                        fixed="right"
-                        label="操作"
-                        v-if="props.row.filesSealed[0].operate"
-                      >
-                        <template scope="scope">
-                          <el-button @click="handleRemoveFilesSealedItem(index, props.row.filesSealed)"
-                                     type="text" size="small">移除
-                          </el-button>
-                        </template>
-                      </el-table-column>
-                    </el-table>
-                    <el-row>
-                      <el-col :span="6">
-                        <el-form-item label="用章次数" prop="saleTime">
-                          <el-input :disabled="!enabledInupdated"
-                                    v-model="props.row.saleTime">
-                          </el-input>
-                        </el-form-item>
-                      </el-col>
-                      <el-col :span="6">
-                        <el-form-item label="打印份数" prop="printTime">
-                          <el-input :disabled="!enabledInupdated"
-                                    v-model="props.row.printTime"></el-input>
-                        </el-form-item>
-                      </el-col>
-                      <el-col :span="6">
-                        <el-form-item label="我方留存份数" prop="remainTime">
-                          <el-input :disabled="!enabledInupdated"
-                                    v-model="props.row.remainTime"></el-input>
-                        </el-form-item>
-                      </el-col>
-                      <el-col :span="6">
-                        <el-form-item label="用印后上传">
-                          <el-upload
-                            ref="uploadFileAfterSeal"
-                            :data="{userId:users.userId}"
-                            :show-file-list="false"
-                            :action="uploadUrl"
-                            :with-credentials="true"
-                            :on-success="handleUploadFileAfterSealSuccess"
-                            :on-error="handleUploadFileAfterSealError"
-                          >
-                            <el-button :disabled="getEnabledUploadBtn(props.row.filesSealed)" size="small"
-                                       type="primary" @click="handleUpload(item[props.$index].attachType,index)">上传
+                  <template scope="props" v-if="item[0].haveSale">
+                    <div v-if="item[0].haveSale" v-bind:class="{tdPd:item[0].haveSale}">
+                      <el-table :data="props.row.filesSealed" class="mb20"
+                                v-if="props.row.filesSealed&&props.row.filesSealed.length">
+                        <el-table-column label="文件名" prop="sealFileName">
+                          <template scope="scope">
+                            <a :href="props.row.filesSealed[scope.$index].sealFileUrl">{{props.row.filesSealed[scope.$index].sealFileName}}</a>
+                          </template>
+                        </el-table-column>
+                        <el-table-column label="上传人" prop="sealFileCreatorName"></el-table-column>
+                        <el-table-column label="上传时间" prop="sealFileCreateTime"></el-table-column>
+                        <el-table-column
+                          fixed="right"
+                          label="操作"
+                          v-if="props.row.filesSealed[0].operate"
+                        >
+                          <template scope="scope">
+                            <el-button @click="handleRemoveFilesSealedItem(index, props.row.filesSealed)"
+                                       type="text" size="small">移除
                             </el-button>
-                            </el-button>
-                          </el-upload>
-                        </el-form-item>
-                      </el-col>
-                    </el-row>
-                    <el-row>
-                      <el-col :span="12">
-                        <el-form-item prop="saleInfos">
-                          <el-checkbox-group v-model="props.row.saleInfos">
-                            <el-checkbox
-                              :disabled="!enabledInupdated"
-                              v-for="item in props.row.useSeals"
-                              :label="item.id"
-                              :key="item.id">
-                              {{item.name}}
-                            </el-checkbox>
-                          </el-checkbox-group>
-                        </el-form-item>
-                      </el-col>
-                    </el-row>
+                          </template>
+                        </el-table-column>
+                      </el-table>
+                      <el-row>
+                        <el-col :span="6">
+                          <el-form-item label="用章次数" prop="saleTime">
+                            <el-input :disabled="!enabledInupdated"
+                                      v-model="props.row.saleTime">
+                            </el-input>
+                          </el-form-item>
+                        </el-col>
+                        <el-col :span="6">
+                          <el-form-item label="打印份数" prop="printTime">
+                            <el-input :disabled="!enabledInupdated"
+                                      v-model="props.row.printTime"></el-input>
+                          </el-form-item>
+                        </el-col>
+                        <el-col :span="6">
+                          <el-form-item label="我方留存份数" prop="remainTime">
+                            <el-input :disabled="!enabledInupdated"
+                                      v-model="props.row.remainTime"></el-input>
+                          </el-form-item>
+                        </el-col>
+                        <el-col :span="6">
+                          <el-form-item label="用印后上传">
+                            <el-upload
+                              ref="uploadFileAfterSeal"
+                              :data="{userId:users.userId}"
+                              :show-file-list="false"
+                              :action="uploadUrl"
+                              :with-credentials="true"
+                              :on-success="handleUploadFileAfterSealSuccess"
+                              :on-error="handleUploadFileAfterSealError"
+                            >
+                              <el-button :disabled="getEnabledUploadBtn(props.row.filesSealed)" size="small"
+                                         type="primary" @click="handleUpload(item[props.$index].attachType,index)">上传
+                              </el-button>
+                              </el-button>
+                            </el-upload>
+                          </el-form-item>
+                        </el-col>
+                      </el-row>
+                      <el-row>
+                        <el-col :span="12">
+                          <el-form-item prop="saleInfos">
+                            <el-checkbox-group v-model="props.row.saleInfos">
+                              <el-checkbox
+                                :disabled="!enabledInupdated"
+                                v-for="item in props.row.useSeals"
+                                :label="item.id"
+                                :key="item.id">
+                                {{item.name}}
+                              </el-checkbox>
+                            </el-checkbox-group>
+                          </el-form-item>
+                        </el-col>
+                      </el-row>
+                    </div>
                   </template>
                 </el-table-column>
                 <el-table-column prop="attachType" label="附件类型" width="150px">
@@ -1512,8 +1531,8 @@
               :key="item.companyCode"
               :label="item.company"
               :value="item.companyCode">
-              <span style="float: left">{{ item.company }}</span>
-              <span style="float: right; color: #8492a6; font-size: 13px">{{ item.companyCode }}</span>
+              <span style="float: right">{{ item.company }}</span>
+              <span style="float: left; color: #8492a6; font-size: 13px">{{ item.companyCode }}</span>
             </el-option>
           </el-select>
         </el-form-item>
@@ -1542,8 +1561,8 @@
               :key="item.companyCode"
               :label="item.company"
               :value="item.companyCode">
-              <span style="float: left">{{ item.company }}</span>
-              <span style="float: right; color: #8492a6; font-size: 13px">{{ item.companyCode }}</span>
+              <span style="float: right">{{ item.company }}</span>
+              <span style="float: left; color: #8492a6; font-size: 13px">{{ item.companyCode }}</span>
             </el-option>
           </el-select>
         </el-form-item>
@@ -1571,8 +1590,8 @@
               :key="item.companyCode"
               :label="item.company"
               :value="item.companyCode">
-              <span style="float: left">{{ item.company }}</span>
-              <span style="float: right; color: #8492a6; font-size: 13px">{{ item.companyCode }}</span>
+              <span style="float: right">{{ item.company }}</span>
+              <span style="float: left; color: #8492a6; font-size: 13px">{{ item.companyCode }}</span>
             </el-option>
           </el-select>
         </el-form-item>
@@ -2516,6 +2535,7 @@
         this.validateForms().then(()=> {
           const previewData = {};
           previewData.conStandard = this.cardContentInfoForm.conStandard || []
+          previewData.contractType = this.baseInfoForm.contractType
           previewData.startTime = formatDate(this.cardContentInfoForm.startTime)
           previewData.endTime = formatDate(this.cardContentInfoForm.endTime)
           previewData.cardFinanceInfoForm = this.cardFinanceInfoForm
@@ -2992,6 +3012,8 @@
         this.comLoading(1)
         this.validateForms().then(()=> {
           this.cardSealInfoForm.sealAttachments = this.combineSealsInfo()
+          this.cardContentInfoForm.startTime=formatDate(this.cardContentInfoForm.startTime)
+          this.cardContentInfoForm.endTime=formatDate(this.cardContentInfoForm.endTime)
           const paras = {};
           paras.baseInfoForm = this.baseInfoForm
           paras.cardContentInfoForm = this.cardContentInfoForm
@@ -3000,6 +3022,7 @@
           paras.cardSealInfoForm = this.cardSealInfoForm
           paras.cardRemarkInfoForm = this.cardRemarkInfoForm
           paras.cardOtherInfo = this.cardOtherInfo
+          console.log(JSON.stringify(paras));
           Api.saveContract(paras).then((data)=> {
             if (data.data.dataMap.id) {
               this.$message.success('保存成功！')
@@ -3375,6 +3398,16 @@
       },
       handleAddConStandardItem(formName){
         const curFormName = this.$refs[formName]
+        const conStandards = this.cardContentInfoForm.conStandard
+        const key = this.formAddConStandard.search
+        let index = _.findIndex(conStandards, function (chr) {
+          return chr.materialCode === key
+        })
+        if (index > -1) {
+          this.$message.error('这条数据已存在咯！')
+          return false
+        }
+
         if (curFormName.model.firstAddType === '') {
           this.formAddConStandard.firstAddType = curFormName.model.conStandardType
         }
