@@ -1,11 +1,15 @@
 <style type="text/scss" lang="scss" scoped>
   .form-container {
-
+    .router-link {
+      color: #FFFFFF;
+    }
   }
 </style>
 
 <template>
-  <div class="form-container">
+  <div class="form-container"
+       v-loading="loadingFlag"
+       :element-loading-text="loadingText">
     <div>
       <el-card>
         <div slot="header">
@@ -19,7 +23,9 @@
                   <el-input v-model="prCode" icon="search" :on-icon-click="search"></el-input>
                 </el-form-item>
               </el-col>
-              <el-button type="info" class="ml20">详 情</el-button>
+              <el-button type="primary" class="ml20" v-show="toDetail.query.id">
+                <router-link class="router-link" :to="toDetail" target="_blank">详 情</router-link>
+              </el-button>
             </el-row>
             <el-row>
               <el-col :span="6">
@@ -238,8 +244,11 @@
   import Api from '@/api/performance'
   import Upload from '@/components/upload.vue'
   import {uploadUrl, downloadUrl} from '@/api/consts'
+  import {routerNames} from '@/core/consts'
+  import comLoading from '@/mixins/comLoading'
 
   export default {
+    mixins: [comLoading],
     data() {
       return {
         prCode: '',
@@ -288,12 +297,26 @@
             trigger: 'change'
           }],
           remark: [{max: 300, message: '长度不超过300个字符', trigger: 'change'}]
-        }
+        },
+        toDetail: {name: routerNames.con_Check, query: {id: ''}}
       }
     },
     methods: {
       search() {
         console.log(this.prCode)
+        if (!this.prCode) {
+          this.$message.warning('请输入采购订单号！')
+          return
+        }
+        this.comLoading(1)
+        Api.detail({id: this.prCode}).then((res) => {
+          const data = res.data.dataMap
+          const {contractId} = data
+          this.toDetail.query.id = contractId
+          this.comLoading()
+        }, () => {
+          this.comLoading()
+        })
       },
       addNotQualityDialogOk() {
         this.$refs['addNotQualityDialogForm'].validate((valid) => {

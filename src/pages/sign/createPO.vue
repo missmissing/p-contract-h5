@@ -31,7 +31,7 @@
                   <el-input v-model.trim="contractCode"></el-input>
                 </el-form-item>
               </el-col>
-              <el-button type="primary" @click="match" class="ml20">匹 配</el-button>
+              <el-button type="primary" @click="match" class="ml20" :disabled="!prData.length">匹 配</el-button>
             </el-row>
           </el-form>
           <div v-if="prData.length!==0">
@@ -193,7 +193,9 @@
                   <template scope="scope">
                     <div v-if="radio">{{scope.row.price}}</div>
                     <div v-else>
-                      <el-input v-model="scope.row.price"></el-input>
+                      <el-input
+                        v-model.trim="scope.row.price"
+                        @blur="isNumber"></el-input>
                     </div>
                   </template>
                 </el-table-column>
@@ -204,7 +206,10 @@
                   <template scope="scope">
                     <div v-if="radio">{{scope.row.taxRate ? `${scope.row.taxRate}%` : ''}}</div>
                     <div v-else>
-                      <el-input style="width:50px" v-model="scope.row.taxRate"></el-input>
+                      <el-input
+                        style="width:50px"
+                        v-model.trim="scope.row.taxRate"
+                        @blur="isNumber"></el-input>
                       %
                     </div>
                   </template>
@@ -472,6 +477,7 @@
   import {routerNames, prTypeMap, contractPatternMap} from '@/core/consts'
   import {formatTime, formatDate} from '@/filters/moment'
   import fillZero from '@/util/fillZero'
+  import {nonNegative} from '@/util/reg'
   import comLoading from '@/mixins/comLoading'
 
   export default {
@@ -549,6 +555,8 @@
             }
           }
           this.prData.push(data)
+        }, () => {
+          this.comLoading()
         })
       },
       match() {
@@ -679,6 +687,17 @@
       formatType(row, column, cellValue) {
         return prTypeMap[cellValue]
       },
+      isNumber(event) {
+        const val = event.target.value
+        if (!val) {
+          console.log(1)
+          return
+        }
+        if (!nonNegative(val)) {
+          this.$message.warning('请输入数字！')
+          event.target.value = ''
+        }
+      },
       addService() {
         this.serverDialogVisible = true
       },
@@ -748,7 +767,7 @@
         const {id, contractNo} = this.contractForm
 
         return {
-          id,
+          contractId: id,
           contractNo,
           orderCheckItems: this.serverData,
           purOrderMaterials: this.orderData

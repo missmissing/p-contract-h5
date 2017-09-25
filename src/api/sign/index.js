@@ -15,5 +15,9 @@ export default {
   },
   query(params) {
     return Http.post(`${contract}/contract-web/purchaseOrder/query`, params)
+  },
+  detail(params) {
+    const {id} = params
+    return Http.post(`${contract}/contract-web//purchaseOrder/detail/${id}`)
   }
 }

@@ -1,11 +1,16 @@
 <style type="text/scss" lang="scss" scoped>
   .form-container {
-
+    .router-link {
+      color: #FFFFFF;
+    }
   }
 </style>
 
 <template>
-  <div class="form-container">
+  <div
+    class="form-container"
+    v-loading="loadingFlag"
+    :element-loading-text="loadingText">
     <div>
       <el-card>
         <div slot="header">
@@ -24,7 +29,9 @@
                   </el-input>
                 </el-form-item>
               </el-col>
-              <el-button type="info" class="ml20">详 情</el-button>
+              <el-button type="primary" class="ml20" v-show="toDetail.query.contractId">
+                <router-link class="router-link" :to="toDetail" target="_blank">详 情</router-link>
+              </el-button>
             </el-row>
             <el-row>
               <el-col :span="8">
@@ -143,8 +150,11 @@
   import Upload from '@/components/upload.vue'
   import {uploadUrl, downloadUrl} from '@/api/consts'
   import {formatDate} from '@/filters/moment'
+  import {routerNames} from '@/core/consts'
+  import comLoading from '@/mixins/comLoading'
 
   export default {
+    mixins: [comLoading],
     data() {
       return {
         contractCode: '',
@@ -164,23 +174,33 @@
         fileList: [],
         uploadData: {},
         options: ['供应商向我方赔付', '我方向供应商佩服'],
-        info: {}
+        info: {},
+        toDetail: {name: routerNames.con_Check, query: {contractId: ''}}
       }
     },
     methods: {
       search() {
         console.log(this.contractCode)
+        if (!this.contractCode) {
+          this.$message.warning('请输入合同编号！')
+          return
+        }
+        this.comLoading(1)
         Api.getContractDetailByCode({id: this.contractCode}).then((res) => {
           const data = res.data.dataMap
           console.log(data)
           this.info = data
           const {baseInfoForm, cardContentInfoForm} = data
-          const {businessDeptName, businessOperatorName} = baseInfoForm
+          const {businessDeptName, businessOperatorName, id} = baseInfoForm
           const {startTime, endTime} = cardContentInfoForm
           this.startTime = startTime
           this.endTime = endTime
           this.businessOperatorName = businessOperatorName
           this.businessDeptName = businessDeptName
+          this.toDetail.query.contractId = id
+          this.comLoading()
+        }, () => {
+          this.comLoading()
         })
       }
     },

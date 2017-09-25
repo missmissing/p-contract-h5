@@ -1,5 +1,9 @@
 <style type="text/scss" lang="scss" scoped>
-
+  .basic-info {
+    .router-link {
+      color: #FFFFFF;
+    }
+  }
 </style>
 
 <template>
@@ -19,7 +23,9 @@
               </el-input>
             </el-form-item>
           </el-col>
-          <el-button type="info" class="ml20" @click="toDetail">详 情</el-button>
+          <el-button type="primary" class="ml20" v-show="toDetail.query.contractId">
+            <router-link class="router-link" :to="toDetail" target="_blank">详 情</router-link>
+          </el-button>
         </el-row>
         <el-row>
           <el-col :span="8">
@@ -89,6 +95,7 @@
   import Api from '@/api/manageContract'
   import {formatDate} from '@/filters/moment'
   import comLoading from '@/mixins/comLoading'
+  import {routerNames} from '@/core/consts'
 
   export default {
     mixins: [comLoading],
@@ -117,28 +124,29 @@
         startTime: '',
         endTime: '',
         options: [{value: 1, label: '合同违约中止'}, {value: 2, label: '合同变更后中止'}, {value: 3, label: '固定期限合同正常履行完成后中止'}],
-        info: null
+        info: null,
+        toDetail: {name: routerNames.con_Check, query: {contractId: ''}}
       }
     },
     methods: {
       search() {
         console.log(this.contractCode)
+        if (!this.contractCode) {
+          this.$message.warning('请输入合同编号！')
+          return
+        }
         this.comLoading(1)
         Api.getContractDetailByCode({id: this.contractCode}).then((res) => {
           const data = res.data.dataMap
           console.log(data)
-          this.info = data
-          const {cardContentInfoForm} = data
+          const {baseInfoForm, cardContentInfoForm} = data
+          const {id} = baseInfoForm
           const {startTime, endTime} = cardContentInfoForm
           this.startTime = startTime
           this.endTime = endTime
+          this.toDetail.query.contractId = id
           this.comLoading()
         })
-      },
-      toDetail() {
-        if (!this.info) {
-          this.$message.warning('请输入合同编号查询')
-        }
       },
       submit() {
         this.$refs['form'].validate((valid) => {

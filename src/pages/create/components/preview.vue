@@ -28,7 +28,7 @@
             <div v-for="item in partAName">{{item}}</div>
           </div>
         </div>
-        <div>
+        <div class="flex mb20">
           <div>乙方：</div>
           <div>
             <div v-for="item in partBName">{{item}}</div>
@@ -38,40 +38,90 @@
       <p>甲乙双方在平等、互利的基础上，遵循自愿、公平和诚信的原则，依照《中华人民共和国合同法》及其他有关法律、行政法规，经友好协商，达成如下协议:</p>
       <p>合作范围及约定</p>
       <div v-show="materialTable.length>0">
-        <el-table
-          :data="materialTable"
-          border
-          class="wp100">
-          <el-table-column
-            prop="materialCode"
-            label="物料编码">
-          </el-table-column>
-          <el-table-column
-            prop="materialName"
-            label="物料描述">
-          </el-table-column>
-          <el-table-column
-            prop="total"
-            label="数量">
-          </el-table-column>
-          <el-table-column
-            prop="price"
-            label="含税单价">
-          </el-table-column>
-          <el-table-column
-            prop="taxRate"
-            label="税率">
-            <template scope="scope">
-              {{scope.row.taxRate}}%
-            </template>
-          </el-table-column>
-        </el-table>
+        <template v-if="[1,2,3].indexOf(contractType)>-1&&contractBusinessTypeFirst===2">
+          <el-table
+            :data="materialTable"
+            border
+            class="wp100">
+            <el-table-column
+              prop="materialName"
+              label="物料描述">
+            </el-table-column>
+            <el-table-column
+              prop="price"
+              label="价格">
+            </el-table-column>
+            <el-table-column
+              prop="taxRate"
+              label="税率">
+              <template scope="scope">
+                {{scope.row.taxRate}}%
+              </template>
+            </el-table-column>
+          </el-table>
+        </template>
+        <template v-if="[1,2].indexOf(contractType)>-1&&[1,3].indexOf(contractBusinessTypeFirst)>-1">
+          <el-table
+            :data="materialTable"
+            border
+            class="wp100">
+            <el-table-column
+              prop="materialCode"
+              label="物料编码">
+            </el-table-column>
+            <el-table-column
+              prop="materialName"
+              label="物料描述">
+            </el-table-column>
+            <el-table-column
+              prop="total"
+              label="数量">
+            </el-table-column>
+            <el-table-column
+              prop="price"
+              label="含税单价">
+            </el-table-column>
+            <el-table-column
+              prop="taxRate"
+              label="税率">
+              <template scope="scope">
+                {{scope.row.taxRate}}%
+              </template>
+            </el-table-column>
+          </el-table>
+        </template>
+        <template v-if="contractType===3&&[1,3].indexOf(contractBusinessTypeFirst)>-1">
+          <el-table
+            :data="materialTable"
+            border
+            class="wp100">
+            <el-table-column
+              prop="materialCode"
+              label="物料编码">
+            </el-table-column>
+            <el-table-column
+              prop="materialName"
+              label="物料描述">
+            </el-table-column>
+            <el-table-column
+              prop="price"
+              label="含税单价">
+            </el-table-column>
+            <el-table-column
+              prop="taxRate"
+              label="税率">
+              <template scope="scope">
+                {{scope.row.taxRate}}%
+              </template>
+            </el-table-column>
+          </el-table>
+        </template>
       </div>
 
       <p>合同生效期间：{{startTime}}至{{endTime}}</p>
       <p v-show="materialTable.length>0">备注：合同总价款已包括但不限于增值税、安装费、运输费、送货上门费、人工费、定制费等与家具定制、购买、运输、安装有关的一切费用。</p>
       <div v-show="moneyInvolved">
-        <div v-show="oneOffPay">
+        <div v-show="!oneOffPay">
           付款方式
           <el-table
             :data="priceTable"
@@ -173,6 +223,8 @@
     },
     data() {
       return {
+        contractType: null,
+        contractBusinessTypeFirst: null,
         materialTable: [],
         priceTable: [],
         partA: [],
@@ -237,9 +289,12 @@
         if (!Object.keys(this.datas).length) {
           return null
         }
-        const {conStandard, cardFinanceInfoForm, endTime, startTime, templateId} = this.datas
+        debugger
+        const {conStandard, cardFinanceInfoForm, endTime, startTime, templateId, contractType, contractBusinessTypeFirst} = this.datas
         const {jiaBillingInfo, yiBillingInfo, deposit, payTime, moneyInvolved, depositRatio, totalAmount, paymentMethods, oneOffPay} = cardFinanceInfoForm
         const {advance, progress, _final} = paymentMethods
+        this.contractType = contractType
+        this.contractBusinessTypeFirst = contractBusinessTypeFirst
         this.materialTable = conStandard
         this.startTime = startTime
         this.endTime = endTime
@@ -254,7 +309,7 @@
           this.partAName = jiaBillingInfo.map((item) => {
             return item.company
           })
-          this.partBName = yiBillingInfo.length > 0 ? [yiBillingInfo[0].companyName] : []
+          this.partBName = yiBillingInfo.length > 0 ? [yiBillingInfo[0].company] : []
 
           if (oneOffPay) {
             this.oneOffPay = true
