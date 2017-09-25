@@ -2536,10 +2536,12 @@
           const previewData = {};
           previewData.conStandard = this.cardContentInfoForm.conStandard || []
           previewData.contractType = this.baseInfoForm.contractType
+          previewData.contractBusinessTypeFirst = this.baseInfoForm.contractBusinessTypeFirst
           previewData.startTime = formatDate(this.cardContentInfoForm.startTime)
           previewData.endTime = formatDate(this.cardContentInfoForm.endTime)
           previewData.cardFinanceInfoForm = this.cardFinanceInfoForm
           previewData.templateId = this.baseInfoForm.templateId
+          console.log('previewData',previewData);
           this.previewData = previewData
           this.visible = true;
         }).catch(()=> {
@@ -2723,7 +2725,7 @@
             if (suppliers.length) {
               for (let i = 0, len = suppliers.length; i < len; i++) {
                 if (key === suppliers[i].companyCode) {
-                  this.cardFinanceInfoForm.yiBillingInfo = suppliers;
+                  this.cardFinanceInfoForm.yiBillingInfo = suppliers[i];
                 }
               }
             }
