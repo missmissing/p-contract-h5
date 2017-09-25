@@ -121,7 +121,7 @@
       <el-table-column type="index" label="序号" width="70"></el-table-column>
       <el-table-column prop="contractNo" label="合同编号" width="150px">
         <template scope="scope">
-          <router-link :to="{path:'/ConCreate/conCheck', query:{operateType: 'query',contractNo:''+tableData[scope.$index].contractNo,currentPr:''+tableData[scope.$index].prNo,curConModelId:''+tableData[scope.$index].contractType}}">
+          <router-link :to="{path:'/ConCreate/conCheck', query:{contractNo:''+tableData[scope.$index].contractNo}}">
             {{tableData[scope.$index].contractNo}}
           </router-link>
         </template>
