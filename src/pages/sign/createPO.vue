@@ -1,6 +1,8 @@
 <style type="text/scss" lang="scss" scoped>
   .form-container {
-
+    .router-link {
+      color: #FFFFFF;
+    }
   }
 </style>
 
@@ -99,7 +101,9 @@
                       <el-input :value="contractForm.contractNo" disabled></el-input>
                     </el-form-item>
                   </el-col>
-                  <el-button type="primary" class="ml20">详 情</el-button>
+                  <el-button type="primary" class="ml20" v-show="toDetail.query.contractId">
+                    <router-link class="router-link" :to="toDetail" target="_blank">详 情</router-link>
+                  </el-button>
                 </el-row>
                 <el-row>
                   <el-col :span="8">
@@ -511,7 +515,8 @@
         dialogVisible: false,
         contractForm: {},
         orderForm: {},
-        showService: false
+        showService: false,
+        toDetail: {name: routerNames.con_Check, query: {contractId: ''}}
       }
     },
     methods: {
@@ -607,6 +612,7 @@
           this.contractForm = this.intentionData[this.radio1]
         }
         this.contractForm.contractType = contractPatternMap[this.contractForm.contractType]
+        this.toDetail.query.contractId = this.contractForm.id
         console.log('合同信息', this.contractForm)
       },
       setOrderForm() {
