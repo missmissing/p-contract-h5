@@ -90,17 +90,6 @@
       <el-button type="primary" @click="handleNext('conForm')" :disabled="!!(arrPr.length&&!currentPr)">下一步
       </el-button>
     </div>
-    <!--<el-row>
-      <el-col :span="8">
-        <el-button type="primary" @click="handleTestCreate">创建</el-button>
-      </el-col>
-      <el-col :span="8">
-        <el-button type="primary" @click="handleTestUpdate">更新</el-button>
-      </el-col>
-      <el-col :span="8">
-        <el-button type="primary" @click="handleTestQuery">查看</el-button>
-      </el-col>
-    </el-row>-->
     <el-dialog title="查询比价单" :visible.sync="dialogVisible" size="large">
       <el-form ref="prForm" :model="prForm" label-width="100px" :rules="prForm.rules">
         <el-row>
@@ -366,16 +355,18 @@
             }
             if(parseInt(this.conForm.curConModelId)===2){//判断当前为固定格式合同时，合同总金额》=10000时，不让其创建固定格式合同
               const items=this.curPriceList[0].items
-              let total=0
-              for(let i=0,len=items.length;i<len;i++){
-                total+=parseFloat(items[0].amount)
-              }
-              if(total>=10000){
-                this.$message({
-                  message: '合同金额大于一万元，请调整合同模式',
-                  type: 'warning'
-                });
-                return
+              if(items&&items.length){
+                let total=0
+                for(let i=0,len=items.length;i<len;i++){
+                  total+=parseFloat(items[0].amount)
+                }
+                if(total>=10000){
+                  this.$message({
+                    message: '合同金额大于一万元，请调整合同模式',
+                    type: 'warning'
+                  });
+                  return
+                }
               }
             }
             let routePath = ''
@@ -402,7 +393,6 @@
                 operateType: 'create'
               }
             })
-
             if (this.curPriceList.length) {
               this.curPriceList = []
               this.currentPr = null
@@ -438,46 +428,6 @@
       handleDetailPR(index, row) {
         window.open(row.processViewUrl)
       },
-      /* handleTestCreate() {
-       console.log('create')
-       let routePath = '/ConCreate/CreateFrameContract'
-       this.$router.push({
-       path: routePath,
-       query: {
-       currentPr: this.currentPr ? this.currentPr.id : '',
-       curConModelId: this.conForm.curConModelId,
-       curConTypeId: this.conForm.curConTypeId,
-       operateType: 'create'
-       }
-       })
-       },
-       handleTestUpdate() {
-       console.log('update')
-       let routePath = '/ConCreate/CreateFrameContract'
-       this.$router.push({
-       path: routePath,
-       query: {
-       currentPr: this.currentPr ? this.currentPr.id : '',
-       curConModelId: this.conForm.curConModelId,
-       curConTypeId: this.conForm.curConTypeId,
-       operateType: 'update'
-       }
-       })
-       },
-       handleTestQuery() {
-       console.log('query')
-       // http://localhost:8080/#/ConCreate/CreateFrameContract?currentPr=&curConModelId=&curConTypeId=&operateType=update
-       let routePath = '/ConCreate/CreateFrameContract'
-       this.$router.push({
-       path: routePath,
-       query: {
-       currentPr: this.currentPr ? this.currentPr.id : '',
-       curConModelId: this.conForm.curConModelId,
-       curConTypeId: this.conForm.curConTypeId,
-       operateType: 'query'
-       }
-       })
-       } */
       setBusiType(checkNodes, tree) {
         const ids = [], names = []
         if (checkNodes.length) {
@@ -532,15 +482,17 @@
         }
         if (oldRow) {
           oldRow.ifSelect = false
+          oldRow.clicked = false
         }
       },
       handleRowClick(row) {
         if (row.clicked) {
           row.clicked = false
-          this.$refs.priceList.setCurrentRow(null)
+          this.$refs.priceList.setCurrentRow();
           this.currentPr = null
         } else {
           row.clicked = true
+          this.$refs.priceList.setCurrentRow(row);
         }
       },
       closeTree() {

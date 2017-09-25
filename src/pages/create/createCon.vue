@@ -1020,14 +1020,31 @@
           <el-form ref="cardContCheckInfoForm" :model="cardContCheckInfoForm" label-width="100px">
             <el-row>
               <el-col :span="8">
-                <el-form-item prop="responsible" label="验收责任人">
-                  <el-input v-model="cardContCheckInfoForm.responsible" :disabled="operateType==='query'"
-                            placeholder="请输入验收责任人"></el-input>
+                <el-form-item label="验收责任人" prop="responsibleId">
+                  <el-select
+                    :disabled="operateType==='query'"
+                    size="small"
+                    v-model="cardContCheckInfoForm.responsibleId"
+                    filterable
+                    remote
+                    placeholder="请输入验收责任人"
+                    :remote-method="getRemoteResponsiblesByKeyWord"
+                    :loading="cardContCheckInfoForm.loading"
+                    @change="handleResponsibleChange">
+                    <el-option
+                      v-for="item in cardContCheckInfoForm.responsibles"
+                      :key="item.userId"
+                      :label="item.userName"
+                      :value="item.userId">
+                      <span style="float: left">{{ item.userName }}</span>
+                      <span style="float: right; color: #8492a6; font-size: 13px">{{ item.deptName }}</span>
+                    </el-option>
+                  </el-select>
                 </el-form-item>
               </el-col>
               <el-col :span="8">
-                <el-form-item prop="responsibleDept" label="验收责任人部门" label-width="120px">
-                  <el-input :disabled="isEnabled" v-model="cardContCheckInfoForm.responsibleDept"
+                <el-form-item prop="responsibleDeptName" label="验收责任人部门" label-width="120px">
+                  <el-input :disabled="isEnabled" v-model="cardContCheckInfoForm.responsibleDeptName"
                             placeholder="请输入验收责任人部门"></el-input>
                 </el-form-item>
               </el-col>
@@ -1776,6 +1793,7 @@
           guid: '',//草稿箱编号
           //businessOperator: '',
           businessOperatorId:'',// 业务经办人
+          businessDeptId:'',
           businessDeptName: '',
           contractType: '',//合同模式id
           contractTypeName: '',//合同模式名称
@@ -1993,8 +2011,12 @@
           },
         },
         cardContCheckInfoForm: {
-          responsible: '',
-          responsibleDept: '',
+          loading:false,
+          responsibles:[],
+          responsibleId: '',
+          responsibleName:'',
+          responsibleDeptId: '',
+          responsibleDeptName: '',
           checkType: '',
           checkServiceMethods: [
             {
@@ -3241,6 +3263,18 @@
           this.baseInfoForm.businessOperators = []
         }
       },
+      getRemoteResponsiblesByKeyWord(query){
+        if (query !== '') {
+          this.cardContCheckInfoForm.loading = true
+          Api.getRemoteCreatePersonsByKeyWord({keyword: query})
+            .then((data) => {
+              this.cardContCheckInfoForm.loading = false
+              this.cardContCheckInfoForm.responsibles = data.data.dataMap
+            })
+        } else {
+          this.cardContCheckInfoForm.responsibles = []
+        }
+      },
       handleContractTextTypeChange(val){
         const params = {};
         params.bizTypeId = this.baseInfoForm.contractBusinessTypeThird
@@ -3255,6 +3289,20 @@
           for (let i = 0, len = businessOperators.length; i < len; i++) {
             if (val === businessOperators[i].userId) {
               this.baseInfoForm.businessDeptName = businessOperators[i].deptName
+              this.baseInfoForm.businessDeptId = businessOperators[i].deptCode
+              this.cardContCheckInfoForm.responsibleId = responsibles[i].superiorId
+              this.cardContCheckInfoForm.responsibleName = responsibles[i].superiorName
+            }
+          }
+        }
+      },
+      handleResponsibleChange(val){
+        const responsibles = this.cardContCheckInfoForm.responsibles
+        if (responsibles.length) {
+          for (let i = 0, len = responsibles.length; i < len; i++) {
+            if (val === responsibles[i].userId) {
+              this.cardContCheckInfoForm.responsibleDeptName = responsibles[i].deptName
+              this.cardContCheckInfoForm.responsibleDeptId = responsibles[i].deptCode
             }
           }
         }
