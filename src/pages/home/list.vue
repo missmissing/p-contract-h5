@@ -14,7 +14,7 @@
     .item {
       display: flex;
       margin-bottom: 5px;
-      label {
+      div {
         flex: 1;
         padding-right: 10px;
         color: #20a0ff;
@@ -22,8 +22,11 @@
         overflow: hidden;
         text-overflow: ellipsis;
         white-space: nowrap;
+        span {
+          color: #C0CCDA;
+        }
       }
-      span {
+      > span {
         width: 150px;
         text-align: right;
       }
@@ -36,7 +39,7 @@
     <div class="title">{{title}}<span class="fr" @click="toDetailPage">更多</span></div>
     <div class="content">
       <div class="item" v-for="item in items" @click="toPage(item)">
-        <label>{{item.procTitle}}</label>
+        <div>{{item.procTitle}}<span v-show="item.procStatus">({{item.procStatus}})</span></div>
         <span>{{item.startTime | formatDate}}</span>
       </div>
       <template v-if="!items.length">
