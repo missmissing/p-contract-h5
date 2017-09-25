@@ -278,8 +278,8 @@
               </el-button>
               <el-table :data="cardContentInfoForm.conStandard">
                 <el-table-column type="index"></el-table-column>
-                <el-table-column prop="materialCode" label="物料编码"></el-table-column>
-                <el-table-column prop="materialName" label="物料名称"></el-table-column>
+                <el-table-column v-if="baseInfoForm.contractBusinessTypeFirst!==2" prop="materialCode" label="物料编码"></el-table-column>
+                <el-table-column prop="materialName" :label="baseInfoForm.contractBusinessTypeFirst===2?'服务名称':'物料名称'"></el-table-column>
                 <el-table-column v-if="baseInfoForm.contractType!==3" prop="total" label="数量"></el-table-column>
                 <el-table-column prop="price" label="价格"></el-table-column>
                 <el-table-column prop="taxRate" label="税率">
@@ -1666,7 +1666,7 @@
                label-width="130px">
         <el-form-item label="类型">
           <el-radio-group v-model="formAddConStandard.conStandardType"
-                          :disabled="operateType==='query'||!!formAddConStandard.firstAddType">
+                          :disabled="true">
             <el-radio :label="1">一般物资类</el-radio>
             <el-radio :label="2">服务类</el-radio>
           </el-radio-group>
@@ -2223,8 +2223,7 @@
         },
         formAddConStandard: {
           search: '',
-          conStandardType: 1,
-          firstAddType: '',
+          conStandardType: null,
           name: '',
           loading: false,
           materials: [],
@@ -2491,11 +2490,16 @@
             this.cardSealInfoForm.contract=contract
             this.cardSealInfoForm.agreenments=agreenments
             this.cardSealInfoForm.others=others
-            console.log('this.cardSealInfoForm',this.cardSealInfoForm);
+
           }
         }
         else{
           this.baseInfoForm.contractTypeName = this.getContractModelName(parseInt(params.contractType));//初始化合同模式
+          if(this.baseInfoForm.contractBusinessTypeFirst!==2){//初始化当前可添加的合同标的的类型
+            this.formAddConStandard.conStandardType = 1;
+          }else{
+            this.formAddConStandard.conStandardType = 2;
+          }
           this.baseInfoForm.prNo = params.folio//比加单号
           this.baseInfoForm.contractType = parseInt(params.contractType)
           if(params.folio){
@@ -2541,7 +2545,6 @@
           previewData.endTime = formatDate(this.cardContentInfoForm.endTime)
           previewData.cardFinanceInfoForm = this.cardFinanceInfoForm
           previewData.templateId = this.baseInfoForm.templateId
-          console.log('previewData',previewData);
           this.previewData = previewData
           this.visible = true;
         }).catch(()=> {
@@ -2613,11 +2616,7 @@
             curForm.resetFields()
             this.cardContCheckInfoForm.dialogAddServiceVisible = false
             if (this.isSubmit) {
-              this.validateForms().then(()=> {
-                console.log('handleAddServiceCheckItem-validate-success');
-              }).catch(()=> {
-                console.log('handleAddServiceCheckItem-validate-fail');
-              })
+              this.validateForms()
             }
           } else {
             console.log('error submit!!')
@@ -3195,7 +3194,6 @@
           filesSealed: []//上传的盖章后的文件信息
         }]
         this.cardSealInfoForm.others.push(file)
-        console.log('this.cardSealInfoForm.others', this.cardSealInfoForm.others);
       },
       handleNewAgreenmentSealFile(){
         const file = {
@@ -3409,10 +3407,6 @@
           this.$message.error('这条数据已存在咯！')
           return false
         }
-
-        if (curFormName.model.firstAddType === '') {
-          this.formAddConStandard.firstAddType = curFormName.model.conStandardType
-        }
         const conStandard = this.cardContentInfoForm.conStandard
         const item = {};
         item.id = curFormName.model.id
@@ -3439,7 +3433,6 @@
               this.formAddConStandard.materials = data.data.dataMap
             })
         } else {
-          console.log('getRemoteMaterialsByKeyWord-null');
           this.formAddConStandard.materials = []
         }
       },
@@ -3502,11 +3495,6 @@
           this.operateType = 'update'
         }
 
-      },
-      'formAddConStandard.conStandardType': function (val, oldVal) {
-        if (val !== oldVal) {
-          this.$refs['formAddConStandard'].resetFields()
-        }
       },
       'cardContentInfoForm.conStandard':function(conStandards,oldVal){
         const result=[]
