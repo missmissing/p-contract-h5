@@ -54,7 +54,7 @@
 </template>
 
 <script>
-  import {processListMap, routerNames} from '@/core/consts'
+  import {processListMap} from '@/core/consts'
   import Api from '@/api/process'
   import {formatTime} from '@/filters/moment'
   import comLoading from '@/mixins/comLoading'

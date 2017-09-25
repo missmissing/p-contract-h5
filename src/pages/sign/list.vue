@@ -17,12 +17,24 @@
         <el-button type="primary" @click="search" class="ml20">搜 索</el-button>
       </el-row>
       <el-row>
-        <el-col :span="7">
-          <el-form-item label="发起人">
-            <el-input v-model="form.initiator"></el-input>
+        <el-col :span="6">
+          <el-form-item label="订单类型">
+            <el-select v-model="form.orderType">
+              <el-option
+                v-for="item in options"
+                :key="item.value"
+                :label="item.label"
+                :value="item.value">
+              </el-option>
+            </el-select>
           </el-form-item>
         </el-col>
-        <el-col :span="7">
+        <el-col :span="6">
+          <el-form-item label="发起人">
+            <SelectPerson @change="selectPerson"></SelectPerson>
+          </el-form-item>
+        </el-col>
+        <el-col :span="9">
           <el-form-item label="创建时间">
             <el-date-picker
               style="width:100%;"
@@ -46,8 +58,7 @@
         min-width="150"
         label="订单编号">
         <template scope="scope">
-          <el-button type="text" @click.native.prevent="see(scope.$index,scope.row)">{{scope.row.templateCode}}
-          </el-button>
+          <el-button type="text" @click.native.prevent="see(scope.row)">{{scope.row.templateCode}}</el-button>
         </template>
       </el-table-column>
       <el-table-column
@@ -81,8 +92,10 @@
 
 <script>
   import Api from '@/api/sign'
+  import {routerNames} from '@/core/consts'
   import comLoading from '@/mixins/comLoading'
   import {formatDate} from '@/filters/moment'
+  import SelectPerson from '@/components/selectPerson.vue'
 
   export default {
     mixins: [comLoading],
@@ -90,6 +103,7 @@
       return {
         form: {
           fuzzySearch: '',
+          orderType: '',
           createDateStart: '',
           createDateEnd: '',
           initiator: '',
@@ -98,6 +112,13 @@
           pageNo: 1,
           pageSize: 10
         },
+        options: [{
+          label: '一般物资',
+          value: 1
+        }, {
+          label: '服务',
+          value: 2
+        }],
         totalPage: 0,
         daterange: [],
         pickerOptions: {
@@ -111,22 +132,28 @@
     methods: {
       search() {
         console.log(JSON.stringify(this.form))
-        this.getList(this.form)
+        this.getList()
+      },
+      selectPerson(val) {
+        this.form.initiator = val
       },
       getList() {
         this.comLoading(1)
         Api.query(this.form).then((res) => {
           console.log(res)
           this.comLoading()
-          const data = res.data.dataMap || []
+          const {total, data} = res.data.dataMap
           this.tableData = data
-          const {totalPage} = data
-          this.totalPage = totalPage
+          this.totalPage = total
         })
       },
       see(index, row) {
         console.log(row)
-        // this.$router.push(`/contemplate/see?id=${row.id}`)
+        const id = row.id
+        this.$router.push({
+          name: routerNames.con_purchase_see,
+          query: {id}
+        })
       },
       formatDateRange(value) {
         const daterange = value.split(' ')
@@ -150,6 +177,9 @@
     },
     filters: {
       formatDate
+    },
+    components: {
+      SelectPerson
     }
   }
 </script>

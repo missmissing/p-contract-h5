@@ -44,12 +44,12 @@
               </el-col>
               <el-col :span="8">
                 <el-form-item label="业务经办人">
-                  <el-input :value="person" disabled></el-input>
+                  <el-input :value="businessOperatorName" disabled></el-input>
                 </el-form-item>
               </el-col>
               <el-col :span="8">
                 <el-form-item label="所属部门">
-                  <el-input :value="belongDePart" disabled></el-input>
+                  <el-input :value="businessDeptName" disabled></el-input>
                 </el-form-item>
               </el-col>
             </el-row>
@@ -151,8 +151,8 @@
         signDate: '',
         startTime: '',
         endTime: '',
-        person: '',
-        belongDePart: '',
+        businessOperatorName: '',
+        businessDeptName: '',
         breachRadio: '2',
         payment: false,
         payType: '',
@@ -174,10 +174,13 @@
           const data = res.data.dataMap
           console.log(data)
           this.info = data
-          const {cardContentInfoForm} = data
+          const {baseInfoForm, cardContentInfoForm} = data
+          const {businessDeptName, businessOperatorName} = baseInfoForm
           const {startTime, endTime} = cardContentInfoForm
           this.startTime = startTime
           this.endTime = endTime
+          this.businessOperatorName = businessOperatorName
+          this.businessDeptName = businessDeptName
         })
       }
     },

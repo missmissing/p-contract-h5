@@ -177,7 +177,6 @@
 <script>
   import Api from '@/api/sign'
   import {formatDate} from '@/filters/moment'
-  import fillZero from '@/util/fillZero'
   import comLoading from '@/mixins/comLoading'
   import Process from '@/components/process'
 
