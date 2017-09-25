@@ -195,7 +195,7 @@
                     <div v-else>
                       <el-input
                         v-model.trim="scope.row.price"
-                        @blur="isNumber"></el-input>
+                        @blur="nonNegative"></el-input>
                     </div>
                   </template>
                 </el-table-column>
@@ -209,7 +209,7 @@
                       <el-input
                         style="width:50px"
                         v-model.trim="scope.row.taxRate"
-                        @blur="isNumber"></el-input>
+                        @blur="nonNegative"></el-input>
                       %
                     </div>
                   </template>
@@ -687,7 +687,7 @@
       formatType(row, column, cellValue) {
         return prTypeMap[cellValue]
       },
-      isNumber(event) {
+      nonNegative(event) {
         const val = event.target.value
         if (!val) {
           console.log(1)

@@ -82,8 +82,6 @@
               </el-form-item>
               <el-form-item label="文本上传" v-show="showUpload">
                 <Upload
-                  :action="action"
-                  :download="download"
                   :fileList.sync="fileList"
                   :data="uploadData"
                   multiple>
@@ -126,7 +124,6 @@
   import supportModel from '@/api/support'
   import getBusiType from '@/mixins/getBusiType'
   import comLoading from '@/mixins/comLoading'
-  import {uploadUrl, downloadUrl} from '@/api/consts'
   import {formatTimeStamp} from '@/filters/moment'
 
   const defaultData = {
@@ -146,8 +143,6 @@
     mixins: [getBusiType, comLoading],
     data() {
       return Object.assign({
-        action: uploadUrl,
-        download: downloadUrl,
         endDate: '9999-12-31',
         uploadData: {},
         pickerOptions: {

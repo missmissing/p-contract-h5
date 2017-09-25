@@ -174,8 +174,6 @@
             </el-form-item>
             <el-form-item label="相关附件">
               <Upload
-                :action="action"
-                :download="download"
                 :fileList.sync="fileList"
                 :data="uploadData"
                 multiple>
@@ -243,7 +241,6 @@
 <script>
   import Api from '@/api/performance'
   import Upload from '@/components/upload.vue'
-  import {uploadUrl, downloadUrl} from '@/api/consts'
   import {routerNames} from '@/core/consts'
   import comLoading from '@/mixins/comLoading'
 
@@ -256,8 +253,6 @@
         radio: '1',
         reason: '',
         handleResult: '',
-        action: uploadUrl,
-        download: downloadUrl,
         fileList: [],
         uploadData: {},
         nonconformity: [],
