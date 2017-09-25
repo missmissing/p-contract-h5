@@ -2453,7 +2453,6 @@
     },
     methods: {
       initData(data, params){
-        console.log('initData-data',data);
         Object.assign(this.baseInfoForm, data.baseInfoForm);
         Object.assign(this.cardContentInfoForm, data.cardContentInfoForm);
         Object.assign(this.cardFinanceInfoForm, data.cardFinanceInfoForm);
@@ -2542,12 +2541,13 @@
       handlePreview() {
         this.isSubmit = true
         this.validateForms().then(()=> {
+          this.formatTime(this.cardContentInfoForm,this.cardFinanceInfoForm)
           const previewData = {};
           previewData.conStandard = this.cardContentInfoForm.conStandard || []
           previewData.contractType = this.baseInfoForm.contractType
           previewData.contractBusinessTypeFirst = this.baseInfoForm.contractBusinessTypeFirst
-          previewData.startTime = formatDate(this.cardContentInfoForm.startTime)
-          previewData.endTime = formatDate(this.cardContentInfoForm.endTime)
+          previewData.startTime = this.cardContentInfoForm.startTime
+          previewData.endTime = this.cardContentInfoForm.endTime
           previewData.cardFinanceInfoForm = this.cardFinanceInfoForm
           previewData.templateId = this.baseInfoForm.templateId
           this.previewData = previewData
@@ -2679,6 +2679,8 @@
             if (subjects.length) {
               for (let i = 0, len = subjects.length; i < len; i++) {
                 if (key === subjects[i].companyCode) {
+                  console.log('this.cardFinanceInfoForm.jiaBillingInfo',this.cardFinanceInfoForm.jiaBillingInfo);
+                  console.log('subjects[i]',subjects[i]);
                   this.cardFinanceInfoForm.jiaBillingInfo.push(subjects[i]);
                 }
               }
@@ -2729,7 +2731,7 @@
             if (suppliers.length) {
               for (let i = 0, len = suppliers.length; i < len; i++) {
                 if (key === suppliers[i].companyCode) {
-                  this.cardFinanceInfoForm.yiBillingInfo = suppliers[i];
+                  this.cardFinanceInfoForm.yiBillingInfo = [suppliers[i]];
                 }
               }
             }
@@ -2974,6 +2976,7 @@
                   }
                 } else {
                   this.$message.error('请填写完整信息再提交！')
+                  console.log('errors',errors);
                   return false
                 }
               })
@@ -3018,8 +3021,7 @@
         this.comLoading(1)
         this.validateForms().then(()=> {
           this.cardSealInfoForm.sealAttachments = this.combineSealsInfo()
-          this.cardContentInfoForm.startTime=formatDate(this.cardContentInfoForm.startTime)
-          this.cardContentInfoForm.endTime=formatDate(this.cardContentInfoForm.endTime)
+          this.formatTime(this.cardContentInfoForm,this.cardFinanceInfoForm)
           const paras = {};
           paras.baseInfoForm = this.baseInfoForm
           paras.cardContentInfoForm = this.cardContentInfoForm
@@ -3028,7 +3030,6 @@
           paras.cardSealInfoForm = this.cardSealInfoForm
           paras.cardRemarkInfoForm = this.cardRemarkInfoForm
           paras.cardOtherInfo = this.cardOtherInfo
-          console.log(JSON.stringify(paras));
           Api.saveContract(paras).then((data)=> {
             if (data.data.dataMap.id) {
               this.$message.success('保存成功！')
@@ -3036,14 +3037,32 @@
             this.comLoading()
           })
         }).catch(()=> {
-          this.$message.error('请填写完整信息再提交！')
           this.comLoading()
         })
+      },
+      formatTime(content,finance){
+        content.startTime=formatDate(content.startTime)
+        content.endTime=formatDate(content.endTime)
+        finance.payTime=formatDate(finance.payTime)
+        this.formatItemTime(finance.paymentMethods.advance)
+        this.formatItemTime(finance.paymentMethods.progress)
+        this.formatItemTime(finance.paymentMethods._final)
+      },
+      formatItemTime(arr){
+        if(arr&&arr.length){
+          for(let i=0,len=arr.length;i<len;i++){
+            arr[i].paymentTime=formatDate(arr[i].paymentTime)
+            if(arr[i].subItem&&arr[i].subItem.length){
+                this.formatItemTime(arr[i].subItem)
+            }
+          }
+        }
       },
       handleSubmit() {
         this.isSubmit = true
         this.comLoading(1)
         this.validateForms().then(()=> {
+          this.formatTime(this.cardContentInfoForm,this.cardFinanceInfoForm)
           const paras = {};
           paras.baseInfoForm = this.baseInfoForm
           paras.cardContentInfoForm = this.cardContentInfoForm
@@ -3078,7 +3097,6 @@
           }
 
         }).catch(()=> {
-          this.$message.error('请填写完整信息再提交！')
           this.comLoading()
         })
 
