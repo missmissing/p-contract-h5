@@ -2400,6 +2400,9 @@
             }
           })
       }
+      if (this.$route.path && this.$route.path === '/conperf/conupdate') {
+        this.operateType = 'update'
+      }
     },
     methods: {
       initData(data, params){
