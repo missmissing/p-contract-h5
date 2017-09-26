@@ -140,7 +140,8 @@ const router = new Router({
         {
           path: '/ConCreate/querySlaveProtocol',
           meta: {
-            auth: true
+            auth: true,
+            hidden: true
           },
           component: function (resolve) {
             require(['../pages/create/createSlaveProtocol.vue'], resolve)
