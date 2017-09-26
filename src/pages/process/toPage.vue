@@ -100,9 +100,9 @@
     },
     created() {
       this.getDataType()
-      const {procInstId, serialNumber, procCode, sn, processInstanceId} = this.$route.query
+      const {procInstId, serialNumber, procCode, sn} = this.$route.query
       if (sn) {
-        this.see({procInstId, serialNumber: processInstanceId, procCode})
+        this.see({procInstId, serialNumber: sn, procCode})
         return
       }
       this.see({procInstId, serialNumber, procCode})

@@ -284,6 +284,17 @@ const router = new Router({
           meta: {
             auth: true
           }
+        },
+        {
+          path: '/conperf/compensate/see',
+          component: function (resolve) {
+            require(['../pages/performance/compensateSee.vue'], resolve)
+          },
+          name: routerNames.con_compensate_see,
+          meta: {
+            auth: true,
+            hidden: true
+          }
         }
       ]
     },

@@ -18,6 +18,6 @@ export default {
   },
   detail(params) {
     const {id} = params
-    return Http.post(`${contract}/contract-web//purchaseOrder/detail/${id}`)
+    return Http.get(`${contract}/contract-web//purchaseOrder/detail/${id}`)
   }
 }

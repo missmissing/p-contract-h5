@@ -59,6 +59,7 @@ export const routerNames = {
   con_performance: '合同异常处理',
   con_performanceIndex: '履约合同',
   con_compensate: '违约/赔付处理',
+  con_compensate_see: '违约/赔付处理查看',
   con_check_reject: '合同验收不合格处理',
   con_stop: '合同中止',
 

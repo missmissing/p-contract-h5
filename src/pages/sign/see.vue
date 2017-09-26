@@ -17,7 +17,9 @@
                   <el-input :value="contractForm.contractNo" disabled></el-input>
                 </el-form-item>
               </el-col>
-              <el-button type="primary" class="ml20">详 情</el-button>
+              <el-button type="primary" class="ml20" v-show="toDetail.query.contractId">
+                <router-link class="router-link" :to="toDetail" target="_blank">详 情</router-link>
+              </el-button>
             </el-row>
             <el-row>
               <el-col :span="8">
@@ -27,7 +29,7 @@
               </el-col>
               <el-col :span="8">
                 <el-form-item label="合同模式">
-                  <el-input :value="contractForm.curConModelId" disabled></el-input>
+                  <el-input :value="contractForm.contractBusinessTypeThirdName" disabled></el-input>
                 </el-form-item>
               </el-col>
               <el-col :span="8">
@@ -78,7 +80,7 @@
           <el-table
             :data="orderData"
             border
-            style="width: 100%">
+            class="wp100">
             <el-table-column
               type="index"
               label="序号"
@@ -107,23 +109,11 @@
               prop="taxPrice"
               label="含税价"
               width="80">
-              <template scope="scope">
-                <div v-if="radio">{{scope.row.taxPrice}}</div>
-                <div v-else>
-                  <el-input v-model="scope.row.taxPrice"></el-input>
-                </div>
-              </template>
             </el-table-column>
             <el-table-column
               prop="taxRate"
               label="税率"
               width="80">
-              <template scope="scope">
-                <div v-if="radio">{{scope.row.taxRate}}</div>
-                <div v-else>
-                  <el-input v-model="scope.row.taxRate"></el-input>
-                </div>
-              </template>
             </el-table-column>
             <el-table-column
               prop="deliveryDate"
@@ -179,12 +169,14 @@
   import {formatDate} from '@/filters/moment'
   import comLoading from '@/mixins/comLoading'
   import Process from '@/components/process'
+  import {routerNames, contractPatternMap} from '@/core/consts'
 
   export default {
     mixins: [comLoading],
     data() {
       return {
         info: {},
+        toDetail: {name: routerNames.con_Check, query: {contractId: ''}},
         orderForm: {},
         orderData: [],
         serverData: [],
@@ -204,21 +196,32 @@
           this.comLoading()
         })
       },
+      setContractForm() {
+        const {contractNo, version, contractBusinessTypeThirdName, contractType, belongProject, startTime, endTime} = this.info
+        this.contractForm = {
+          contractNo,
+          version,
+          contractBusinessTypeThirdName,
+          contractType: contractPatternMap[contractType],
+          belongProject,
+          startTime,
+          endTime
+        }
+      },
       setOrderForm() {
 
       },
       setOrderData() {
-
+        const {purOrderMaterials} = this.info
+        this.orderData = purOrderMaterials
       },
       setServerData() {
-
-      },
-      setContractForm() {
-
+        const {orderCheckItems} = this.info
+        this.orderData = orderCheckItems
       }
     },
     created() {
-      const {id} = this.$router.query
+      const {id} = this.$route.query
       this.getInfo(id)
     },
     filters: {
