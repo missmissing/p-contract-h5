@@ -9,5 +9,11 @@ export default {
   },
   getContractCode(params) {
     return Http.post(`${contract}/contract-web/getContractCode/`, params)
+  },
+  getContractViolate(params) {
+    return Http.get(`${contract}/contract-web/contEnforcing/getContractViolateByContractNo`, params)
+  },
+  contractViolateSave(params) {
+    return Http.post(`${contract}/contract-web/contEnforcing/contractViolateSave`, params)
   }
 }

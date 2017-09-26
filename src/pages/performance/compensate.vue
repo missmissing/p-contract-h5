@@ -36,7 +36,7 @@
             <el-row>
               <el-col :span="8">
                 <el-form-item label="合同签署日期">
-                  <el-input :value="signDate | formatDate" disabled></el-input>
+                  <el-input :value="signTime | formatDate" disabled></el-input>
                 </el-form-item>
               </el-col>
               <el-col :span="8">
@@ -51,43 +51,43 @@
               </el-col>
               <el-col :span="8">
                 <el-form-item label="业务经办人">
-                  <el-input :value="businessOperatorName" disabled></el-input>
+                  <el-input :value="businessOperator" disabled></el-input>
                 </el-form-item>
               </el-col>
               <el-col :span="8">
                 <el-form-item label="所属部门">
-                  <el-input :value="businessDeptName" disabled></el-input>
+                  <el-input :value="businessDept" disabled></el-input>
                 </el-form-item>
               </el-col>
             </el-row>
             <el-form-item label="违约方">
-              <el-radio class="radio" v-model="breachRadio" label="1">我方</el-radio>
-              <el-radio class="radio" v-model="breachRadio" label="2">对方</el-radio>
-              <el-radio class="radio" v-model="breachRadio" label="3">双方</el-radio>
+              <el-radio class="radio" v-model="defaulter" :label="0">我方</el-radio>
+              <el-radio class="radio" v-model="defaulter" :label="1">对方</el-radio>
+              <el-radio class="radio" v-model="defaulter" :label="2">双方</el-radio>
             </el-form-item>
             <el-form-item label="涉及赔付">
               <el-switch
-                v-model="payment"
+                v-model="compensateStatus"
                 on-text=""
                 off-text="">
               </el-switch>
             </el-form-item>
-            <el-row v-show="payment">
+            <el-row v-show="compensateStatus">
               <el-col :span="8">
                 <el-form-item label="赔付类型">
-                  <el-select class="wp100" v-model="payType" placeholder="请选择">
+                  <el-select class="wp100" v-model="compensateType" placeholder="请选择">
                     <el-option
                       v-for="item in options"
-                      :key="item"
-                      :label="item"
-                      :value="item">
+                      :key="item.value"
+                      :label="item.label"
+                      :value="item.value">
                     </el-option>
                   </el-select>
                 </el-form-item>
               </el-col>
               <el-col :span="8">
                 <el-form-item label="赔付金额">
-                  <el-input></el-input>
+                  <el-input v-model="compensateMoney"></el-input>
                 </el-form-item>
               </el-col>
             </el-row>
@@ -101,10 +101,10 @@
         <div class="handle-info">
           <el-form label-width="120px">
             <el-form-item label="">
-              <el-radio class="radio" v-model="radio" label="1">继续履行</el-radio>
-              <el-radio class="radio" v-model="radio" label="2">变更合同</el-radio>
-              <el-radio class="radio" v-model="radio" label="3">按验收实际结果履行合同</el-radio>
-              <el-radio class="radio" v-model="radio" label="4">转合同违约处理</el-radio>
+              <el-radio class="radio" v-model="schemeType" :label="0">继续履行</el-radio>
+              <el-radio class="radio" v-model="schemeType" :label="1">变更合同</el-radio>
+              <el-radio class="radio" v-model="schemeType" :label="2">按验收实际结果履行合同</el-radio>
+              <el-radio class="radio" v-model="schemeType" :label="3">转合同违约处理</el-radio>
             </el-form-item>
             <el-form-item label="违约/赔付原因">
               <el-input
@@ -112,7 +112,7 @@
                 :maxlength="300"
                 :autosize="{ minRows: 2 }"
                 resize="none"
-                v-model="reason">
+                v-model="violateReason">
               </el-input>
             </el-form-item>
             <el-form-item label="处理方案">
@@ -121,13 +121,11 @@
                 :maxlength="300"
                 :autosize="{ minRows: 2 }"
                 resize="none"
-                v-model="handleResult">
+                v-model="treatmentScheme">
               </el-input>
             </el-form-item>
             <el-form-item label="相关附件">
               <Upload
-                :action="action"
-                :download="download"
                 :fileList.sync="fileList"
                 :data="uploadData"
                 multiple>
@@ -140,15 +138,14 @@
     </div>
     <div class="mt20 mb20 ml20">
       <!--<el-button>保 存</el-button>-->
-      <el-button type="primary">提 交</el-button>
+      <el-button type="primary" @click="submit">提 交</el-button>
     </div>
   </div>
 </template>
 
 <script>
-  import Api from '@/api/manageContract'
+  import Api from '@/api/performance'
   import Upload from '@/components/upload.vue'
-  import {uploadUrl, downloadUrl} from '@/api/consts'
   import {formatDate} from '@/filters/moment'
   import {routerNames} from '@/core/consts'
   import comLoading from '@/mixins/comLoading'
@@ -158,22 +155,21 @@
     data() {
       return {
         contractCode: '',
-        signDate: '',
+        signTime: '',
         startTime: '',
         endTime: '',
-        businessOperatorName: '',
-        businessDeptName: '',
-        breachRadio: '2',
-        payment: false,
-        payType: '',
-        radio: '1',
-        reason: '',
-        handleResult: '',
-        action: uploadUrl,
-        download: downloadUrl,
+        businessOperator: '',
+        businessDept: '',
+        defaulter: 1,
+        compensateStatus: false,
+        compensateType: null,
+        compensateMoney: '',
+        schemeType: 1,
+        violateReason: '',
+        treatmentScheme: '',
         fileList: [],
         uploadData: {},
-        options: ['供应商向我方赔付', '我方向供应商佩服'],
+        options: [{label: '供应商向我方赔付', value: 0}, {label: '我方向供应商佩服', value: 1}],
         info: {},
         toDetail: {name: routerNames.con_Check, query: {contractId: ''}}
       }
@@ -186,18 +182,45 @@
           return
         }
         this.comLoading(1)
-        Api.getContractDetailByCode({id: this.contractCode}).then((res) => {
+        Api.getContractViolate({contractNo: this.contractCode}).then((res) => {
           const data = res.data.dataMap
           console.log(data)
           this.info = data
-          const {baseInfoForm, cardContentInfoForm} = data
-          const {businessDeptName, businessOperatorName, id} = baseInfoForm
-          const {startTime, endTime} = cardContentInfoForm
+          const {startTime, endTime, businessOperator, businessDept, signTime, contractId} = data
           this.startTime = startTime
           this.endTime = endTime
-          this.businessOperatorName = businessOperatorName
-          this.businessDeptName = businessDeptName
-          this.toDetail.query.contractId = id
+          this.signTime = signTime
+          this.businessDept = businessDept
+          this.businessOperator = businessOperator
+          this.toDetail.query.contractId = contractId
+          this.comLoading()
+        }, () => {
+          this.comLoading()
+        })
+      },
+      getResult() {
+        const fileIds = this.fileList.map((file) => {
+          if (file.status === 'success') {
+            return file.fileId
+          }
+        })
+        return {
+          contractNo: this.contractCode,
+          defaulter: this.defaulter,
+          compensateStatus: this.compensateStatus,
+          compensateType: this.compensateType,
+          compensateMoney: this.compensateMoney,
+          schemeType: this.schemeType,
+          violateReason: this.violateReason,
+          treatmentScheme: this.treatmentScheme,
+          fileIds
+        }
+      },
+      submit() {
+        const result = this.getResult()
+        console.log(result)
+        this.comLoading(1)
+        Api.contractViolateSave(result).then((res) => {
           this.comLoading()
         }, () => {
           this.comLoading()

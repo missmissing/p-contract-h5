@@ -117,8 +117,6 @@
               </el-form-item>
               <el-form-item label="文本上传" v-show="showUpload">
                 <Upload
-                  :action="action"
-                  :download="download"
                   :fileList.sync="fileList"
                   multiple>
                   <!--<div class="el-upload__tip" slot="tip">文件不超过10M</div>-->
@@ -170,7 +168,6 @@
   import Upload from '@/components/upload.vue'
   import comLoading from '@/mixins/comLoading'
   import supportModel from '@/api/support'
-  import {uploadUrl, downloadUrl} from '@/api/consts'
   import {formatDate, formatTimeStamp, formatToDate} from '@/filters/moment'
   import {tplTypeMap} from '@/core/consts'
 
@@ -197,8 +194,6 @@
     mixins: [comLoading],
     data() {
       return Object.assign({
-        action: uploadUrl,
-        download: downloadUrl,
         endDate: '9999-12-31',
         showTmpl: false,
         rules: {

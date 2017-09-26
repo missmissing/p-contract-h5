@@ -36,18 +36,17 @@
 </template>
 
 <script>
+  import {uploadUrl, downloadUrl} from '@/api/consts'
+
   export default {
     data() {
       return {
+        action: uploadUrl,
+        download: downloadUrl,
         uploadFiles: []
       }
     },
     props: {
-      action: {
-        type: String,
-        required: true
-      },
-      download: String,
       name: {
         type: String,
         default: 'file'

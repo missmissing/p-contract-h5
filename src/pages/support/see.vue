@@ -86,8 +86,6 @@
             </el-form-item>
             <el-form-item label="文本上传" v-show="tplTypeShow">
               <Upload
-                :action="action"
-                :download="download"
                 :fileList.sync="fileList"
                 disabled
                 multiple>
@@ -123,7 +121,6 @@
   import Process from '@/components/process.vue'
   import supportModel from '@/api/support'
   import comLoading from '@/mixins/comLoading'
-  import {uploadUrl, downloadUrl} from '@/api/consts'
   import {formatDate} from '@/filters/moment'
   import {tplMap} from '@/core/consts'
 
@@ -150,8 +147,6 @@
     mixins: [comLoading],
     data() {
       return Object.assign({
-        action: uploadUrl,
-        download: downloadUrl,
         showTmpl: false,
         templateId: this.$route.query.id,
         showAbolish: false
