@@ -2071,57 +2071,7 @@
         },
         cardSealInfoForm: {
           sealAttachments: [],
-          contract: [/*{//合同
-           id: '',
-           fileId: 15,//附件类型为其他时，上传的文件的id
-           attachType: 3,//附件类型
-           types: [
-           {
-           id: 1,
-           name: '其他'
-           },
-           {
-           id: 2,
-           name: '从协议'
-           },
-           {
-           id: 3,
-           name: '合同'
-           }
-           ],//附件类型集合
-           fileName: '文件名',
-           fileUrl: '',//合同文本类型为非模版合同时，附件类型的合同的文件下载地址
-           slaveProtocolNo: '',//从协议编号
-           haveSale: true,//是否用章
-           saleTime: 1,//用章次数
-           printTime: 2,//打印份数
-           remainTime: 3,//我方留存份数
-           saleInfos: [1, 2],//当前选中的张
-           useSeals: [
-           {
-           id: 1,
-           name: '公章'
-           },
-           {
-           id: 2,
-           name: '法人章'
-           },
-           {
-           id: 3,
-           name: '人事章'
-           }
-           ],//章列表
-           remark: '',
-           filesSealed: [//上传的盖章后的文件信息
-           {
-           sealFileId: '',
-           sealFileName: 'filename',//文件名
-           sealFileUrl: '',
-           sealFileCreatorName: 'wyy',//上传人
-           sealFileCreateTime: '2017-09-15',//上传时间
-           }
-           ]
-           }*/],
+          contract: [],
           others: [],
           agreenments: [],
           current: null,//为上传功能保存当前所在附件列表的索引
@@ -2512,13 +2462,9 @@
         }
       },
       getEnabledUploadBtn(items){
-        let result=true
-        if(this.enabledInupdated){
-          result=false
-        }else{
-          items&&items.length>1?result=false:result=true
-        }
-        return result
+        let enabled=true
+        items&&items.length>=1?enabled=true:enabled=false
+        return enabled
       },
       setRatio(item,val){
         let result=this.getProportion(val)

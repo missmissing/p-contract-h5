@@ -83,11 +83,16 @@ export default {
     return Http.get(`${contract}/contract-web/contract/no/${params}`)
   },
   /** ****变更合同接口end******/
-  /** ***从协议列表接口****/
+  /** ***从协议接口****/
+  //从协议列表
   getAgreementList(params) {
     return Http.get(`/api/agreeement/getAgreementList`, params)
   },
-  /** ***从协议列表接口****/
+  //创建从协议
+  createAgreenment(params){
+    return Http.post(`${contract}/contract-web/protocol/add`, params)
+  },
+  /** ***从协议接口****/
 
   /** ***根据合同编号获取详情接口****/
   getContractDetailByCode(params) {
