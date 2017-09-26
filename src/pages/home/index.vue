@@ -35,11 +35,11 @@
           dataType: processListMap[0]
         },
         done: {
-          pageSize: 3,
+          pageSize: 5,
           dataType: processListMap[2]
         },
         todo: {
-          pageSize: 2,
+          pageSize: 5,
           dataType: processListMap[1]
         }
       }

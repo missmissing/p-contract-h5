@@ -17,12 +17,12 @@
           <span class="common-title">基本信息</span>
         </div>
         <div class="basic-info">
-          <el-form label-width="120px">
+          <el-form label-width="120px" :model="basicForm" :rules="basicRules" ref="basicForm">
             <el-row>
               <el-col :span="8">
-                <el-form-item label="合同编号">
+                <el-form-item label="合同编号" prop="contractNo">
                   <el-input
-                    v-model="contractCode"
+                    v-model="basicForm.contractNo"
                     icon="search"
                     :on-icon-click="search"
                     @keyup.enter.native="search">
@@ -99,29 +99,29 @@
           <span class="common-title">处理结论</span>
         </div>
         <div class="handle-info">
-          <el-form label-width="120px">
+          <el-form label-width="120px" :model="handleForm" :rules="handleFormRules" ref="handleForm">
             <el-form-item label="">
-              <el-radio class="radio" v-model="schemeType" :label="0">继续履行</el-radio>
-              <el-radio class="radio" v-model="schemeType" :label="1">变更合同</el-radio>
-              <el-radio class="radio" v-model="schemeType" :label="2">按验收实际结果履行合同</el-radio>
-              <el-radio class="radio" v-model="schemeType" :label="3">转合同违约处理</el-radio>
+              <el-radio class="radio" v-model="handleForm.schemeType" :label="0">继续履行</el-radio>
+              <el-radio class="radio" v-model="handleForm.schemeType" :label="1">变更合同</el-radio>
+              <el-radio class="radio" v-model="handleForm.schemeType" :label="2">按验收实际结果履行合同</el-radio>
+              <el-radio class="radio" v-model="handleForm.schemeType" :label="3">转合同违约处理</el-radio>
             </el-form-item>
-            <el-form-item label="违约/赔付原因">
+            <el-form-item label="违约/赔付原因" prop="violateReason">
               <el-input
                 type="textarea"
                 :maxlength="300"
                 :autosize="{ minRows: 2 }"
                 resize="none"
-                v-model="violateReason">
+                v-model="handleForm.violateReason">
               </el-input>
             </el-form-item>
-            <el-form-item label="处理方案">
+            <el-form-item label="处理方案" prop="treatmentScheme">
               <el-input
                 type="textarea"
                 :maxlength="300"
                 :autosize="{ minRows: 2 }"
                 resize="none"
-                v-model="treatmentScheme">
+                v-model="handleForm.treatmentScheme">
               </el-input>
             </el-form-item>
             <el-form-item label="相关附件">
@@ -154,7 +154,6 @@
     mixins: [comLoading],
     data() {
       return {
-        contractCode: '',
         signTime: '',
         startTime: '',
         endTime: '',
@@ -164,25 +163,42 @@
         compensateStatus: false,
         compensateType: null,
         compensateMoney: '',
-        schemeType: 1,
-        violateReason: '',
-        treatmentScheme: '',
         fileList: [],
         uploadData: {},
         options: [{label: '供应商向我方赔付', value: 0}, {label: '我方向供应商佩服', value: 1}],
         info: {},
-        toDetail: {name: routerNames.con_Check, query: {contractId: ''}}
+        toDetail: {name: routerNames.con_Check, query: {contractId: ''}},
+        basicForm: {
+          contractNo: ''
+        },
+        basicRules: {
+          contractNo: [{required: true, message: '请输入合同编号', trigger: 'change'}]
+        },
+        handleForm: {
+          schemeType: 1,
+          violateReason: '',
+          treatmentScheme: '',
+          fileIds: null
+        },
+        handleFormRules: {
+          violateReason: [{required: true, message: '请输入违约/赔付原因'}, {
+            max: 300,
+            message: '长度不超过300个字符'
+          }],
+          treatmentScheme: [{required: true, message: '请输入处理方案'}, {
+            max: 300,
+            message: '长度不超过300个字符'
+          }]
+        }
       }
     },
     methods: {
       search() {
-        console.log(this.contractCode)
-        if (!this.contractCode) {
-          this.$message.warning('请输入合同编号！')
+        if (!this.basicForm.contractNo) {
           return
         }
         this.comLoading(1)
-        Api.getContractViolate({contractNo: this.contractCode}).then((res) => {
+        Api.getContractViolate({contractNo: this.basicForm.contractNo}).then((res) => {
           const data = res.data.dataMap
           console.log(data)
           this.info = data
@@ -199,26 +215,40 @@
         })
       },
       getResult() {
-        const fileIds = this.fileList.map((file) => {
+        this.fileIds = this.fileList.map((file) => {
           if (file.status === 'success') {
             return file.fileId
           }
         })
         return {
-          contractNo: this.contractCode,
+          contractNo: this.info.contractNo,
           defaulter: this.defaulter,
           compensateStatus: this.compensateStatus,
           compensateType: this.compensateType,
           compensateMoney: this.compensateMoney,
-          schemeType: this.schemeType,
-          violateReason: this.violateReason,
-          treatmentScheme: this.treatmentScheme,
-          fileIds
+          ...this.handleForm
         }
+      },
+      check(result) {
+        let flag = false
+        this.$refs['basicForm'].validate((valid) => {
+          if (valid) {
+            this.$refs['handleForm'].validate((valid) => {
+              if (valid) {
+                flag = true
+              }
+            })
+          }
+        })
+
+        return flag
       },
       submit() {
         const result = this.getResult()
         console.log(result)
+        if (!this.check(result)) {
+          return
+        }
         this.comLoading(1)
         Api.contractViolateSave(result).then((res) => {
           this.comLoading()
