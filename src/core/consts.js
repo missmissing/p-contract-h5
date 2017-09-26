@@ -84,6 +84,8 @@ export const tplMap = ['CRS_Contract_CreateTemplate', 'CRS_Contract_UpdateTempla
 
 export const contractMap = ['CRS_Contract_Create', 'CRS_Contract_Update', 'CRS_Contract_Delete]']
 
+export const prMap = ['CRS_Contract_CreatePO', 'CRS_Contract_UpdatePO', 'CRS_Contract_DeletePO']
+
 export const processListMap = ['BACKLOG', 'STARTED', 'FINISHED']
 
 export const prTypeMap = {

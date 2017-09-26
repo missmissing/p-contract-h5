@@ -194,7 +194,7 @@
     methods: {
       getInfo(id) {
         this.comLoading(1)
-        Api.getInfo({id}).then((res) => {
+        Api.detail({id}).then((res) => {
           console.log(res)
           this.info = res.data.dataMap
           this.setOrderForm()

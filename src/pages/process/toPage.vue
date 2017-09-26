@@ -7,7 +7,7 @@
 </template>
 
 <script>
-  import {routerNames, tplMap, contractMap, processListMap} from '@/core/consts'
+  import {routerNames, tplMap, prMap, contractMap, processListMap} from '@/core/consts'
   import Api from '@/api/process'
 
   export default {
@@ -80,14 +80,31 @@
               processData
             }
           })
+        } else if (prMap.indexOf(procCode) > -1) {
+          const {purchaseOrderId} = approveInfo
+          const param = {
+            id: purchaseOrderId
+          }
+          const name = routerNames.con_purchase_see
+          this.$router.push({
+            name,
+            query: {
+              ...param,
+              processData
+            }
+          })
         } else {
-          console.log('找不到相应类型')
+          console.log('找不到相应类型', procCode)
         }
       }
     },
     created() {
       this.getDataType()
-      const {procInstId, serialNumber, procCode} = this.$route.query
+      const {procInstId, serialNumber, procCode, sn, processInstanceId} = this.$route.query
+      if (sn) {
+        this.see({procInstId, serialNumber: processInstanceId, procCode})
+        return
+      }
       this.see({procInstId, serialNumber, procCode})
     }
   }

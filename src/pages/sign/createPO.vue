@@ -225,7 +225,8 @@
                         type="date"
                         style="width:150px"
                         :editable="false"
-                        placeholder="选择日期">
+                        placeholder="选择日期"
+                        @change="formatDate(scope.row,scope.row.deliveryTime)">
                       </el-date-picker>
                     </div>
                   </template>
@@ -638,7 +639,7 @@
         const orderData = []
         if (this.radio) {
           this.materialsMatchData.forEach((item) => {
-            const {pr, itemNo, materialName, materialCode, contVos, category} = item
+            const {pr, itemNo, materialName, total, materialCode, contVos, category} = item
             if (contVos && contVos.length) {
               contVos.forEach((cont) => {
                 if (cont.id === id) {
@@ -650,7 +651,7 @@
                     materialName,
                     materialCode,
                     price: cont.totalAmount,
-                    total: cont.total,
+                    total,
                     taxRate: cont.taxRate,
                     deliveryTime: ''
                   })
@@ -686,6 +687,9 @@
       },
       formatType(row, column, cellValue) {
         return prTypeMap[cellValue]
+      },
+      formatDate(row, value) {
+        row.deliveryTime = formatDate(value)
       },
       nonNegative(event) {
         const val = event.target.value
@@ -750,7 +754,7 @@
             return
           }
         } else {
-          const exist = purOrderMaterials.some(item => (!item.totalAmount || !item.taxRate || !item.deliveryTime))
+          const exist = purOrderMaterials.some(item => (!item.price || !item.taxRate || !item.deliveryTime))
           if (exist) {
             this.$message.warning('订单信息不完整！')
             return
