@@ -7,16 +7,15 @@
       <el-form ref="agreementForm" :model="agreementForm" :rules="agreementForm.rules" label-width="100px">
         <el-row>
           <el-col :span="8">
-            <el-form-item prop="id" label="从协议编号">
+            <el-form-item prop="id" label="从协议编号" label-width="150px">
               <el-input v-model="agreementForm.id" placeholder="请输入从协议编号"></el-input>
             </el-form-item>
           </el-col>
           <el-col :span="8">
-            <el-form-item label="供应商名称" prop="supplierName">
+            <el-form-item label="供应商名称/编码" prop="search" label-width="150px">
               <el-select
-                style="width:236px;height:36px"
                 size="small"
-                v-model="agreementForm.supplierName"
+                v-model="agreementForm.supplierId"
                 filterable
                 remote
                 placeholder="请输入关键词搜索"
@@ -24,9 +23,11 @@
                 :loading="agreementForm.loading">
                 <el-option
                   v-for="item in agreementForm.suppliers"
-                  :key="item.id"
-                  :label="item.name"
-                  :value="item.id">
+                  :key="item.companyCode"
+                  :label="item.company"
+                  :value="item.companyCode">
+                  <span style="float: right">{{ item.company }}</span>
+                  <span style="float: left; color: #8492a6; font-size: 13px">{{ item.companyCode }}</span>
                 </el-option>
               </el-select>
             </el-form-item>
@@ -34,10 +35,10 @@
         </el-row>
         <el-row>
           <el-col :span="8">
-            <el-form-item label="公司名称" prop="companyName">
+            <el-form-item label="公司名称/编码" prop="companyId" label-width="150px">
               <el-select
-                style="width:236px;height:36px"
-                v-model="agreementForm.companyName"
+                size="small"
+                v-model="agreementForm.companyId"
                 filterable
                 remote
                 placeholder="请输入关键词搜索"
@@ -45,23 +46,45 @@
                 :loading="agreementForm.agreementLoading">
                 <el-option
                   v-for="item in agreementForm.companies"
-                  :key="item.id"
-                  :label="item.name"
-                  :value="item.id">
+                  :key="item.companyCode"
+                  :label="item.company"
+                  :value="item.companyCode">
+                  <span style="float: right">{{ item.company }}</span>
+                  <span style="float: left; color: #8492a6; font-size: 13px">{{ item.companyCode }}</span>
                 </el-option>
               </el-select>
             </el-form-item>
           </el-col>
-          <el-col :span="8" :offset="2">
+          <el-col :span="8">
+            <el-form-item label="创建人" prop="createrId" label-width="150px">
+              <el-select
+                size="small"
+                v-model="agreementForm.createrId"
+                filterable
+                remote
+                placeholder="请输入创建人"
+                :remote-method="getRemoteCreatorsByKeyWord"
+                :loading="agreementForm.creatorLoading">
+                <el-option
+                  v-for="item in agreementForm.creators"
+                  :key="item.userId"
+                  :label="item.userName"
+                  :value="item.userId">
+                  <span style="float: left">{{ item.userName }}</span>
+                  <span style="float: right; color: #8492a6; font-size: 13px">{{ item.deptName }}</span>
+                </el-option>
+              </el-select>
+            </el-form-item>
+          </el-col>
+          <el-col :span="4" :offset="2">
             <el-button size="large" type="primary" @click="handleQuery('agreementForm')">查找</el-button>
           </el-col>
         </el-row>
       </el-form>
     </el-card>
-    <el-card v-if="agreementList.length" >
+    <el-card v-if="agreementList.length">
       <el-table :data="agreementList" style="width:100%">
         <el-table-column type="index"></el-table-column>
-        <el-table-column prop="contractId" label="合同号"></el-table-column>
         <el-table-column prop="id" label="从协议编码"></el-table-column>
         <el-table-column prop="name" label="从协议名称"></el-table-column>
         <el-table-column prop="createPerson" label="发起人"></el-table-column>
@@ -76,7 +99,7 @@
   import Api from '../../api/manageContract'
 
   export default{
-    data: function() {
+    data: function () {
       return {
         agreementForm: {
           id: '',
@@ -87,7 +110,10 @@
           companyName: '',
           companyId: '',
           companies: [],
-          agreementLoading: false
+          agreementLoading: false,
+          creatorLoading: false,
+          createrId: '',
+          creators: [],
         },
         agreementList: []
       }
@@ -99,7 +125,7 @@
           Api.getRemoteSuppliersByKeyWord({key: query})
             .then((data) => {
               this.agreementForm.loading = false
-              this.agreementForm.suppliers = data.data.dataMap.list
+              this.agreementForm.suppliers = data.data.dataMap||[]
             })
         } else {
           this.agreementForm.suppliers = []
@@ -111,7 +137,7 @@
           Api.getRemoteSubjectsByKeyWord({key: query})
             .then((data) => {
               this.agreementForm.agreementLoading = false
-              this.agreementForm.companies = data.data.dataMap.list
+              this.agreementForm.companies = data.data.dataMap||[]
             })
         } else {
           this.agreementForm.companies = []
@@ -127,7 +153,19 @@
           .then((data) => {
             this.agreementList = data.data.dataMap || []
           })
-      }
+      },
+      getRemoteCreatorsByKeyWord(query){
+        if (query !== '') {
+          this.agreementForm.creatorLoading = true
+          Api.getRemoteCreatePersonsByKeyWord({keyword: query})
+            .then((data) => {
+            this.agreementForm.creatorLoading = false
+            this.agreementForm.creators = data.data.dataMap||[]
+            })
+        } else {
+          this.agreementForm.creators = []
+        }
+      },
     }
   }
 </script>

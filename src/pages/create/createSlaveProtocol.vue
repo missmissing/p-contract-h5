@@ -1,5 +1,13 @@
+<style scope>
+  .createSlaveProtocal .errorMsg {
+    color: red;
+    font-style: normal;
+    font-size: 12px;
+    margin-left: 20px;
+  }
+</style>
 <template>
-  <div>
+  <div class="createSlaveProtocal">
     <el-card>
       <header slot="header">基本信息</header>
       <el-form ref="baseInfoForm" :model="baseInfoForm" label-width="100px"
@@ -12,7 +20,7 @@
           </el-col>
         </el-row>
         <el-card class="mb20 mr20 ml20">
-          <header slot="header">供应商信息</header>
+          <header slot="header">合同供应商信息<i class="errorMsg">{{baseInfoForm.supplierErrorMsg}}</i></header>
           <el-button
             v-if="baseInfoForm.tableSupplierInfo.length<=0"
             @click="handleAddContractSupplier" icon="plus"
@@ -37,7 +45,7 @@
           </el-table>
         </el-card>
         <el-card class="mb20 mr20 ml20">
-          <header slot="header">我方主体名称</header>
+          <header slot="header">我方主体名称<i class="errorMsg">{{baseInfoForm.subjectErrorMsg}}</i></header>
           <el-button type="primary" @click="handleNewSubjectName" icon="plus">新增</el-button>
           <el-table :data="baseInfoForm.conSubjctName">
             <el-table-column prop="id" label="公司代码"></el-table-column>
@@ -75,7 +83,7 @@
       </el-form>
     </el-card>
     <el-card>
-      <header slot="header">合同附件及盖章信息</header>
+      <header slot="header">合同附件及盖章信息<i class="errorMsg">{{baseInfoForm.attachmentErrorMsg}}</i></header>
       <el-form rel="cardSealInfoForm" :model="cardSealInfoForm" label-width="100px"
                :rules="cardSealInfoForm.rules">
         <el-button type="primary" @click="handleNewOtherSealFile" icon="plus" class="mb20" v-if="enabledInupdated">新增其他附件</el-button>
@@ -337,6 +345,7 @@
   export default {
     data: function () {
       return {
+        isSubmit:false,
         users: user,
         downloadUrl: downloadUrl,
         uploadUrl: uploadUrl,
@@ -361,11 +370,14 @@
             remark: [{required: true, message: '请输入合同编号', trigger: 'blur'}]
           }
         },
-        id:'',//从协议编号
+        id:null,//从协议编号
         operateType:'create',//默认创建状态，query：查看 update：修改
         activeTabName: 'tabBaseInfo',
         baseInfoForm: {
           tableSupplierInfo: [],
+          supplierErrorMsg:'',
+          subjectErrorMsg:'',
+          attachmentErrorMsg:'',
           conSubjctName: [],
           radioSealOrder: 0, // 0：我方先盖章 1：对方先盖章
           sealReason: '',
@@ -465,12 +477,15 @@
           if (valid) {
             let suppliers = this.formContractSupplier.suppliers
             this.baseInfoForm.tableSupplierInfo = [{
-              code: suppliers[0].companyCode,
+              id: suppliers[0].companyCode,
               name: suppliers[0].company,
               type: 'add'
             }]
             curForm.resetFields()
             this.baseInfoForm.dialogAddContractSupplier = false
+            if(this.isSubmit){
+              this.validateForms()
+            }
           } else {
             console.log('error submit!!')
             return false
@@ -516,6 +531,9 @@
             })
 
             curForm.resetFields()
+            if(this.isSubmit){
+              this.validateForms()
+            }
             this.baseInfoForm.dialogNewSubjectVisible = false
           } else {
             console.log('error submit!!')
@@ -578,14 +596,6 @@
           this.$message.success('文件上传成功')
         }
       },
-      getAgreenmentFieldName(id){
-        switch (id) {
-          case 1:
-            return 'others'
-          case 2:
-            return 'agreenments'
-        }
-      },
       handleUploadFileAfterSealError(err, file, fileList) {
         console.log('error', err)
         console.log('file', file)
@@ -610,17 +620,59 @@
       /*handleSave() {
         console.log('save')
       },*/
+      //验证
+      /*
+      * 1.供应商有且仅有一个
+      * 2.我方主体至少有一个
+      * 3.附件至少有一个*/
+      
+      validateForms(){//supplierErrorMsg
+        return new Promise((resolve,reject)=>{
+          const baseInfoForm=this.baseInfoForm
+          const suppliers=baseInfoForm.tableSupplierInfo,subjects=baseInfoForm.conSubjctName,attachments=this.cardSealInfoForm.sealAttachments
+          if(!suppliers.length){
+            baseInfoForm.supplierErrorMsg='合同供应商信息不能为空'
+            this.$message.error('请填写完合同供应商信息再提交！')
+            return
+          }else{
+            baseInfoForm.supplierErrorMsg=''
+          }
+          if(!subjects.length){
+            baseInfoForm.subjectErrorMsg='我方主体信息不能为空'
+            this.$message.error('请填写完合同我方主体信息再提交！')
+            return
+          } else{
+            baseInfoForm.subjectErrorMsg=''
+          }
+          if(!attachments.length){
+            baseInfoForm.attachmentErrorMsg='合同附件及盖章信息不能为空'
+            this.$message.error('请填写完合同附件及盖章信息再提交！')
+            return
+          } else{
+            baseInfoForm.attachmentErrorMsg=''
+          }
+          if(suppliers.length===1&&subjects.length>=1&&attachments.length>=1){
+            resolve()
+          }
+        })
+      },
       handleSubmit() {
-        const params={};
-        params.id=this.id
-        params.baseInfoForm=this.baseInfoForm
-        params.cardSealInfoForm=this.cardSealInfoForm
-        params.cardRemarkInfoForm=this.cardRemarkInfoForm
-        console.log(JSON.stringify(params))
+        this.isSubmit=true
+        this.validateForms().then(()=>{
+          const params={};
+          params.id=parseInt(this.id)
+          params.baseInfoForm=this.baseInfoForm
+          params.cardSealInfoForm=this.cardSealInfoForm
+          params.cardRemarkInfoForm=this.cardRemarkInfoForm
+          console.log(JSON.stringify(params))
           Api.createAgreenment(params).then((data)=>{
             const dataMap=data.data.dataMap
             console.log('dataMap',dataMap);
           })
+        })
+          /*.catch(()=>{
+            this.$message.error('请填写完所有数据再提交！')
+          })*/
       },
       handleContractDetail(index, row) {
         console.log('详情', index, row)
@@ -665,6 +717,9 @@
           filesSealed: []//上传的盖章后的文件信息
         }]
         this.cardSealInfoForm.sealAttachments.push(file)
+        if(this.isSubmit){
+          this.validateForms()
+        }
       },
       getContractAgreenmentName(id){
         switch (id) {

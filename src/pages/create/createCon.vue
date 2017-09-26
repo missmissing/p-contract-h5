@@ -3017,7 +3017,7 @@
           paras.cardSealInfoForm = this.cardSealInfoForm
           paras.cardRemarkInfoForm = this.cardRemarkInfoForm
           paras.cardOtherInfo = this.cardOtherInfo
-
+          console.log('handleSubmit-params',JSON.stringify(paras));
           if(this.operateType==='create'){
             Api.submit(paras).then((data)=> {
               if (data.data.dataMap.id) {
@@ -3047,6 +3047,7 @@
         })
 
       },
+
       handleCurTimeChange(value, row) {
         if (value) {
           row.paymentTime = ''

@@ -106,6 +106,11 @@
           </el-form-item>
         </el-col>
         <el-col :span="7">
+          <el-form-item label="从协议编号">
+            <el-input v-model="form.agreenmentId" placeholder="请输入从协议编号"></el-input>
+          </el-form-item>
+        </el-col>
+        <el-col :span="7">
           <el-form-item label="有效合同">
             <el-switch v-model="form.effective1"></el-switch>
             <el-button type="primary" @click="search" style="margin-left:30px;">搜 索</el-button>
@@ -195,7 +200,6 @@
     methods: {
       search() {
         this.loading = true
-
         Api.getConList(this.form).then((res) => {
           this.tableData = res.data.dataMap.data
           this.loading = false
