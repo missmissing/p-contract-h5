@@ -92,6 +92,10 @@ export default {
   createAgreenment(params){
     return Http.post(`${contract}/contract-web/protocol/add`, params)
   },
+  //根据从协议ID查询从协议详情
+  getAgreenmentDetail(params){
+    return Http.get(`${contract}/contract-web/protocol/detail/id/${params}` )
+  },
   /** ***从协议接口****/
 
   /** ***根据合同编号获取详情接口****/

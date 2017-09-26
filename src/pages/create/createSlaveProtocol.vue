@@ -22,9 +22,9 @@
         <el-card class="mb20 mr20 ml20">
           <header slot="header">合同供应商信息<i class="errorMsg">{{baseInfoForm.supplierErrorMsg}}</i></header>
           <el-button
-            v-if="baseInfoForm.tableSupplierInfo.length<=0"
+            v-if="baseInfoForm.tableSupplierInfo.length<=0&&enabledInupdated"
             @click="handleAddContractSupplier" icon="plus"
-            type="primary">新增
+            type="primary" class="mb20">新增
           </el-button>
           <el-table :data="baseInfoForm.tableSupplierInfo">
             <el-table-column type="index"></el-table-column>
@@ -46,7 +46,7 @@
         </el-card>
         <el-card class="mb20 mr20 ml20">
           <header slot="header">我方主体名称<i class="errorMsg">{{baseInfoForm.subjectErrorMsg}}</i></header>
-          <el-button type="primary" @click="handleNewSubjectName" icon="plus">新增</el-button>
+          <el-button type="primary" @click="handleNewSubjectName" icon="plus" v-if="enabledInupdated" class="mb20">新增</el-button>
           <el-table :data="baseInfoForm.conSubjctName">
             <el-table-column prop="id" label="公司代码"></el-table-column>
             <el-table-column prop="name" label="公司名称"></el-table-column>
@@ -67,7 +67,7 @@
         <el-row>
           <el-col :span="16">
             <el-form-item label="盖章次序">
-              <el-radio-group v-model="baseInfoForm.radioSealOrder">
+              <el-radio-group v-model="baseInfoForm.radioSealOrder" :disabled="!enabledInupdated">
                 <el-radio :label="1">对方先盖章（默认)</el-radio>
                 <el-radio :label="0">我方先盖章</el-radio>
               </el-radio-group>
@@ -77,15 +77,14 @@
         <el-row v-if="baseInfoForm.radioSealOrder==0">
           <el-col :span="16" style="margin-left: 100px">
             <el-input type="textarea" :rows="4" placeholder="请输入内容"
-                      v-model="baseInfoForm.sealReason"></el-input>
+                      v-model="baseInfoForm.sealReason" :disabled="!enabledInupdated"></el-input>
           </el-col>
         </el-row>
       </el-form>
     </el-card>
-    <el-card>
+    <el-card v-if="ifShowNewSeals">
       <header slot="header">合同附件及盖章信息<i class="errorMsg">{{baseInfoForm.attachmentErrorMsg}}</i></header>
-      <el-form rel="cardSealInfoForm" :model="cardSealInfoForm" label-width="100px"
-               :rules="cardSealInfoForm.rules">
+      <el-form  rel="cardSealInfoForm" :model="cardSealInfoForm" label-width="100px" :rules="cardSealInfoForm.rules">
         <el-button type="primary" @click="handleNewOtherSealFile" icon="plus" class="mb20" v-if="enabledInupdated">新增其他附件</el-button>
         <template v-if="cardSealInfoForm.sealAttachments.length" v-for="(item,index) in cardSealInfoForm.sealAttachments">
           <el-table :data="item" :show-header="index===0?true:false">
@@ -207,7 +206,7 @@
             <el-table-column prop="remark" :disabled="!enabledInupdated" label="备注" width="200px">
               <template scope="scope">
                 <el-input
-                  :disabled="operateType==='query'"
+                  :disabled="!enabledInupdated"
                   v-model="item[scope.$index].remark"></el-input>
               </template>
             </el-table-column>
@@ -232,7 +231,7 @@
           <header slot="header">备注</header>
           <el-form-item prop="otherInstruction">
             <el-input style="margin-left: -100px" type="textarea" placeholder="请输入内容" :rows="6"
-                      v-model="cardRemarkInfoForm.otherInstruction"></el-input>
+                      v-model="cardRemarkInfoForm.otherInstruction" :disabled="!enabledInupdated"></el-input>
           </el-form-item>
         </el-card>
       </el-form>
@@ -349,29 +348,8 @@
         users: user,
         downloadUrl: downloadUrl,
         uploadUrl: uploadUrl,
-        updateForm: {//变更从协议
-          visible: false,//在变更从协议中控制从协议页面数据的显示与否
-          code: '',
-          updateMode: 1,
-          updateModes: [
-            {
-              id: 1,
-              name: '原从协议有效'
-            },
-            {
-              id: 0,
-              name: '原从协议作废'
-            }
-          ],
-          newCode: '',
-          remark: '',
-          rules: {
-            code: [{required: true, message: '请输入合同编号', trigger: 'blur'}],
-            remark: [{required: true, message: '请输入合同编号', trigger: 'blur'}]
-          }
-        },
         id:null,//从协议编号
-        operateType:'create',//默认创建状态，query：查看 update：修改
+        operateType:'create',//默认创建状态，query：查看
         activeTabName: 'tabBaseInfo',
         baseInfoForm: {
           tableSupplierInfo: [],
@@ -435,26 +413,41 @@
         if(this.operateType==='create'){
           result=true
         }
-        if(this.operateType==='update'){
-          this.updateForm.updateMode?result= false:result= true
-        }
         return result
+      },
+      ifShowNewSeals:function(){
+        let show=false
+        if(this.enabledInupdated){
+          show=true
+        }else{
+          if(this.cardSealInfoForm.sealAttachments.length){
+            show=true
+          }else{
+            show=false
+          }
+        }
+        return show
       }
     },
     mounted:function(){
       if (this.$route.path && this.$route.path === '/ConCreate/querySlaveProtocol') {
         this.operateType='query'
-        console.log('query');
-      }
-      if (this.$route.path && this.$route.path === '/ConCreate/updateSlaveProtocol') {
-        this.operateType='update'
-        console.log('update');
-      }
-      if(this.operateType==='create'){
-
+        this.requestQueryData()
       }
     },
     methods: {
+      requestQueryData(){
+        Api.getAgreenmentDetail(this.$route.query.id)
+          .then((data)=>{
+            const dataMap=data.data.dataMap
+            if(dataMap){
+              Object.assign(this.baseInfoForm,dataMap.baseInfoForm)
+              Object.assign(this.cardSealInfoForm,dataMap.cardSealInfoForm)
+              Object.assign(this.cardRemarkInfoForm,dataMap.cardRemarkInfoForm)
+              Object.assign(this.cardRelatedInfoForm,dataMap.cardRelatedInfoForm)
+            }
+          })
+      },
       handleAddContractSupplier() {
         this.baseInfoForm.dialogAddContractSupplier = true
       },
@@ -625,7 +618,7 @@
       * 1.供应商有且仅有一个
       * 2.我方主体至少有一个
       * 3.附件至少有一个*/
-      
+
       validateForms(){//supplierErrorMsg
         return new Promise((resolve,reject)=>{
           const baseInfoForm=this.baseInfoForm
@@ -664,15 +657,13 @@
           params.baseInfoForm=this.baseInfoForm
           params.cardSealInfoForm=this.cardSealInfoForm
           params.cardRemarkInfoForm=this.cardRemarkInfoForm
-          console.log(JSON.stringify(params))
           Api.createAgreenment(params).then((data)=>{
-            const dataMap=data.data.dataMap
-            console.log('dataMap',dataMap);
+            if(data.data.code===200){
+              this.operateType='query'
+              $message.success(data.data.message)
+            }
           })
         })
-          /*.catch(()=>{
-            this.$message.error('请填写完所有数据再提交！')
-          })*/
       },
       handleContractDetail(index, row) {
         console.log('详情', index, row)
@@ -744,6 +735,79 @@
       },
       handleRemoveItem(index, rows){
         rows.splice(index, 1)
+      },
+    },
+    watch:{
+      '$route'(to, from) {
+        let path = this.$route.path
+        if (path && path === '/ConCreate/querySlaveProtocol') {
+          this.operateType = 'query'
+          this.requestQueryData()
+        }
+        if(path && path === '/ConCreate/createSlaveProtocol'){
+          this.operateType = 'create'
+          const obj={
+            isSubmit:false,
+            users: user,
+            downloadUrl: downloadUrl,
+            uploadUrl: uploadUrl,
+            id:null,//从协议编号
+            operateType:'create',//默认创建状态，query：查看
+            activeTabName: 'tabBaseInfo',
+            baseInfoForm: {
+              tableSupplierInfo: [],
+              supplierErrorMsg:'',
+              subjectErrorMsg:'',
+              attachmentErrorMsg:'',
+              conSubjctName: [],
+              radioSealOrder: 0, // 0：我方先盖章 1：对方先盖章
+              sealReason: '',
+              dialogAddContractSupplier: false,
+              dialogNewSubjectVisible: false,
+              rules: {}
+            },
+            cardSealInfoForm: {
+              sealAttachments: [],
+              current: null,//为上传功能保存当前所在附件列表的索引
+              type: null,//为上传功能保存当前附件类型
+            },
+            cardRemarkInfoForm: {
+              otherInstruction: ''
+            },
+            cardRelatedInfoForm: {
+              contractList: [
+                /*{
+                 contractCode: '0001001',
+                 type: '类型',
+                 status: '状态',
+                 company: '公司',
+                 startTime: '2018-09-11'
+                 }*/
+              ]
+            },
+            formContractSupplier: {
+              rules: {
+                search: [
+                  {required: true, message: '请输入搜索关键字', trigger: 'blur'}
+                ]
+              },
+              search: '',
+              suppliers: [],
+              loading: false
+            },
+            formNewSubject: {
+              rules: {
+                search: [
+                  {required: true, message: '请输入搜索关键字', trigger: 'blur'}
+                ]
+              },
+              search: '',
+              subjects: [],
+              loading: false
+            }
+          }
+          Object.assign(this,obj)
+        }
       },
     }
   }

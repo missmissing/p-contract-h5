@@ -85,8 +85,13 @@
     <el-card v-if="agreementList.length">
       <el-table :data="agreementList" style="width:100%">
         <el-table-column type="index"></el-table-column>
-        <el-table-column prop="id" label="从协议编码"></el-table-column>
-        <el-table-column prop="name" label="从协议名称"></el-table-column>
+        <el-table-column prop="contractNo" label="从协议编码">
+          <template scope="scope">
+            <router-link :to="{path:'/ConCreate/querySlaveProtocol', query:{id:''+agreementList[scope.$index].id}}">
+              {{agreementList[scope.$index].contractNo}}
+            </router-link>
+          </template>
+        </el-table-column>
         <el-table-column prop="createPerson" label="发起人"></el-table-column>
         <el-table-column prop="createDepart" label="发起部门"></el-table-column>
         <el-table-column prop="createTime" label="发起时间"></el-table-column>

@@ -379,16 +379,16 @@ module.exports = function (api) {
       message: 'success',
       dataMap: [
         {
-          contractId:'001',
-          id:'001001',
+          contractNo:'C20170926161046347',
+          id:'14',
           name:'从协议1',
           createPerson:'wyy',
           createDepart:'development',
           createTime:'2017-09-11'
         },
         {
-          contractId:'002',
-          id:'001002',
+          contractNo:'002',
+          id:'14',
           name:'从协议2',
           createPerson:'wyy',
           createDepart:'development',
@@ -396,7 +396,7 @@ module.exports = function (api) {
           version:'1'
         },
         {
-          contractId:'003',
+          contractNo:'003',
           id:'001003',
           name:'从协议3',
           createPerson:'wyy',
@@ -405,7 +405,7 @@ module.exports = function (api) {
           version:'1'
         },
         {
-          contractId:'004',
+          contractNo:'004',
           id:'001004',
           name:'从协议4',
           createPerson:'wyy',
@@ -414,7 +414,7 @@ module.exports = function (api) {
           version:'1'
         },
         {
-          contractId:'005',
+          contractNo:'005',
           id:'001005',
           name:'从协议5',
           createPerson:'wyy',
