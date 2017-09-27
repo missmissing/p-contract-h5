@@ -4,7 +4,7 @@ export default function (row) {
   const {procInstId, serialNumber, procCode} = row
   const query = {
     procInstId,
-    serialNumber,
+    serialNumber: serialNumber || '',
     procCode
   }
   if (this.dataType === processListMap[0]) {

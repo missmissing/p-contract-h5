@@ -15,5 +15,8 @@ export default {
   },
   contractViolateSave(params) {
     return Http.post(`${contract}/contract-web/contEnforcing/contractViolateSave`, params)
+  },
+  getViolateByProcInstId(params) {
+    return Http.get(`${contract}/contract-web/contEnforcing/getViolateByProcInstId`, params)
   }
 }

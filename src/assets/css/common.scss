@@ -63,13 +63,24 @@ a {
   text-decoration: none;
 }
 
-/**router-link default*/
-.router-link-active {
-  text-decoration: none;
-}
-
 .common-title {
   font-size: 16px;
   color: #1c2438;
   font-weight: 700;
+}
+
+/**
+vue-router
+router-link
+default
+ */
+.router-link-active {
+  text-decoration: none;
+}
+
+/**
+vuejs
+ */
+[v-cloak] {
+  display: none;
 }

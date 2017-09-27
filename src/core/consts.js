@@ -87,6 +87,8 @@ export const contractMap = ['CRS_Contract_Create', 'CRS_Contract_Update', 'CRS_C
 
 export const prMap = ['CRS_Contract_CreatePO', 'CRS_Contract_UpdatePO', 'CRS_Contract_DeletePO']
 
+export const compensateMap = ['CRS_Contract_CompensateManage']
+
 export const processListMap = ['BACKLOG', 'STARTED', 'FINISHED']
 
 export const prTypeMap = {

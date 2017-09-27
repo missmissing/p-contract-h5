@@ -7,7 +7,7 @@
 </template>
 
 <script>
-  import {routerNames, tplMap, prMap, contractMap, processListMap} from '@/core/consts'
+  import {routerNames, tplMap, prMap, contractMap, processListMap, compensateMap} from '@/core/consts'
   import Api from '@/api/process'
 
   export default {
@@ -45,57 +45,50 @@
       toPage(row, data) {
         const {procInstId, serialNumber, procCode} = row
         const {actions, approveInfo} = data
-        const show = this.dataType === processListMap[0]
         const processData = JSON.stringify({
           procInstId,
           actions,
           serialNumber,
           procCode,
-          show
+          dataType: this.dataType
         })
+        let param = {}
+        let name = null
         if (tplMap.indexOf(procCode) > -1) {
           const {id} = approveInfo
-          const param = {
+          param = {
             id
           }
-          const name = routerNames.con_tpl_see
-          this.$router.push({
-            name,
-            query: {
-              ...param,
-              processData
-            }
-          })
+          name = routerNames.con_tpl_see
         } else if (contractMap.indexOf(procCode) > -1) {
           const {baseInfoForm} = approveInfo
           const {id} = baseInfoForm
-          const param = {
+          param = {
             contractId: id
           }
-          const name = routerNames.con_Check
-          this.$router.push({
-            name,
-            query: {
-              ...param,
-              processData
-            }
-          })
+          name = routerNames.con_Check
         } else if (prMap.indexOf(procCode) > -1) {
           const {purchaseOrderId} = approveInfo
-          const param = {
+          param = {
             id: purchaseOrderId
           }
-          const name = routerNames.con_purchase_see
-          this.$router.push({
-            name,
-            query: {
-              ...param,
-              processData
-            }
-          })
+          name = routerNames.con_purchase_see
+        } else if (compensateMap.indexOf(procCode) > -1) {
+          param = {
+            id: procInstId
+          }
+          name = routerNames.con_compensate_see
         } else {
           console.log('找不到相应类型', procCode)
+          return
         }
+        this.$router.push({
+          name,
+          query: {
+            ...param,
+            processData
+          }
+        })
       }
     },
     created() {

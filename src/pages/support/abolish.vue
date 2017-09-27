@@ -308,10 +308,10 @@
     },
     computed: {
       showUpload() {
-        return this.form.templateType === 'TEXT'
+        return this.tplInfo.templateType === 'TEXT'
       },
       showTpl() {
-        return this.form.templateType === 'TEMPLATE'
+        return this.tplInfo.templateType === 'TEMPLATE'
       }
     },
     filters: {

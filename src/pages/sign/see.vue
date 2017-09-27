@@ -23,11 +23,6 @@
             </el-row>
             <el-row>
               <el-col :span="8">
-                <el-form-item label="合同版本">
-                  <el-input :value="contractForm.version?`V${contractForm.version}`:''" disabled></el-input>
-                </el-form-item>
-              </el-col>
-              <el-col :span="8">
                 <el-form-item label="合同模式">
                   <el-input :value="contractForm.contractBusinessTypeThirdName" disabled></el-input>
                 </el-form-item>
@@ -87,9 +82,10 @@
               width="80">
             </el-table-column>
             <el-table-column
-              prop="type"
+              prop="category"
               label="类型"
-              width="100">
+              width="100"
+              :formatter="formatType">
             </el-table-column>
             <el-table-column
               prop="materialCode"
@@ -101,12 +97,12 @@
               label="物料名称">
             </el-table-column>
             <el-table-column
-              prop="totalAmount"
+              prop="total"
               label="数量"
               width="80">
             </el-table-column>
             <el-table-column
-              prop="taxPrice"
+              prop="price"
               label="含税价"
               width="80">
             </el-table-column>
@@ -114,14 +110,18 @@
               prop="taxRate"
               label="税率"
               width="80">
+              <template scope="scope">
+                {{scope.row.taxRate ? `${scope.row.taxRate}%` : ''}}
+              </template>
             </el-table-column>
             <el-table-column
-              prop="deliveryDate"
+              prop="deliveryTime"
               label="交货日期"
-              width="100">
+              width="120"
+              :formatter="formatDate">
             </el-table-column>
             <el-table-column
-              prop="purchseRequest"
+              prop="pr"
               label="采购申请"
               width="100">
             </el-table-column>
@@ -133,7 +133,7 @@
           </el-table>
         </div>
       </el-tab-pane>
-      <el-tab-pane label="服务验收信息">
+      <el-tab-pane label="服务验收信息" v-if="serverData.length>0">
         <div class="server-info">
           <el-table
             :data="serverData"
@@ -169,7 +169,7 @@
   import {formatDate} from '@/filters/moment'
   import comLoading from '@/mixins/comLoading'
   import Process from '@/components/process'
-  import {routerNames, contractPatternMap} from '@/core/consts'
+  import {routerNames, contractPatternMap, prTypeMap} from '@/core/consts'
 
   export default {
     mixins: [comLoading],
@@ -189,7 +189,6 @@
         Api.detail({id}).then((res) => {
           console.log(res)
           this.info = res.data.dataMap
-          this.setOrderForm()
           this.setOrderData()
           this.setServerData()
           this.setContractForm()
@@ -197,10 +196,9 @@
         })
       },
       setContractForm() {
-        const {contractNo, version, contractBusinessTypeThirdName, contractType, belongProject, startTime, endTime} = this.info
+        const {contractNo, contractBusinessTypeThirdName, contractType, belongProject, startTime, endTime} = this.info
         this.contractForm = {
           contractNo,
-          version,
           contractBusinessTypeThirdName,
           contractType: contractPatternMap[contractType],
           belongProject,
@@ -208,16 +206,21 @@
           endTime
         }
       },
-      setOrderForm() {
-
-      },
       setOrderData() {
-        const {purOrderMaterials} = this.info
+        const {purOrderMaterials, supplierName, companyCode} = this.info
+        const type = purOrderMaterials.length ? [1, 3].indexOf(purOrderMaterials[0].category) > -1 ? prTypeMap[1] : prTypeMap[2] : ''
         this.orderData = purOrderMaterials
+        this.orderForm = {supplierName, type, companyCode}
       },
       setServerData() {
         const {orderCheckItems} = this.info
-        this.orderData = orderCheckItems
+        this.serverData = orderCheckItems
+      },
+      formatType(row, column, cellValue) {
+        return prTypeMap[cellValue]
+      },
+      formatDate(value) {
+        return formatDate(value)
       }
     },
     created() {

@@ -161,7 +161,7 @@
         compensateMoney: '',
         fileList: [],
         uploadData: {},
-        options: [{label: '供应商向我方赔付', value: 0}, {label: '我方向供应商佩服', value: 1}],
+        options: [{label: '供应商向我方赔付', value: 0}, {label: '我方向供应商赔付', value: 1}],
         info: {},
         toDetail: {name: routerNames.con_Check, query: {contractId: ''}},
         basicForm: {
@@ -176,9 +176,9 @@
       }
     },
     methods: {
-      getInfo() {
+      getInfo(id) {
         this.comLoading(1)
-        Api.getContractViolate({contractNo: this.basicForm.contractNo}).then((res) => {
+        Api.getViolateByProcInstId({procInstId: id}).then((res) => {
           const data = res.data.dataMap
           console.log(data)
           this.info = data
@@ -194,6 +194,10 @@
           this.comLoading()
         })
       }
+    },
+    created() {
+      const {id} = this.$route.query
+      this.getInfo(id)
     },
     components: {
       Upload,

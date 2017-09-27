@@ -152,7 +152,7 @@
         <p>合同含税总金额为{{totalAmount}} （CNY {{totalAmount}}元）</p>
         <p>保证金{{deposit | numToChinese}}（CNY {{deposit}}元），占比{{depositRatio}}%。保证金支付时间为{{payTime}}.</p>
 
-        <div class="mt20 mb20">
+        <!--<div class="mt20 mb20">
           <div class="mb20">
             <div v-show="partA.length===1">
               <p>甲方增值税专用开票信息：</p>
@@ -176,7 +176,7 @@
             <p>联系电话：{{partB.contractNumber}}</p>
             <p>E-mail:{{partB.email}}</p>
           </div>
-        </div>
+        </div>-->
         <pre v-html="currentTpl"></pre>
       </div>
       <div class="flex" style="margin-top:50px;">

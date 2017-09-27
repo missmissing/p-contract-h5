@@ -73,7 +73,7 @@
   import Api from '@/api/process'
   import {formatTime} from '@/filters/moment'
   import SelectPerson from '@/components/selectPerson.vue'
-  import {routerNames} from '@/core/consts'
+  import {routerNames, processListMap} from '@/core/consts'
 
   export default {
     data() {
@@ -103,14 +103,13 @@
           this.$message.warning('请选择审批操作!')
           return
         }
-        const {procInstId, procCode, serialNumber, operatorId} = this.processData
+        const {procInstId, procCode, serialNumber} = this.processData
         Api.submitProcess({
           procInstId,
           procCode,
           serialNumber,
-          approverId: operatorId,
           actionName: this.actionName,
-          redirectApproverId: '',
+          redirectApproverId: this.receiver,
           approveRemark: this.approveRemark
         }).then((res) => {
           console.log(res)
@@ -125,15 +124,14 @@
       }
       processData = JSON.parse(processData)
       console.log(processData)
-      const {procInstId, procCode, operatorId, actions, show} = processData
+      const {procInstId, procCode, actions, dataType} = processData
       this.btns = actions || []
       this.processData = processData
-      this.show = !!show
+      this.show = dataType === processListMap[0]
 
-      Api.getComments({
+      Api.getStartedProcNodes({
         procInstId,
-        procCode,
-        operatorId
+        procCode
       }).then((res) => {
         this.lists = res.data.dataMap.nodes
       })
