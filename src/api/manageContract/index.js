@@ -96,6 +96,10 @@ export default {
   getAgreenmentDetail(params){
     return Http.get(`${contract}/contract-web/protocol/detail/id/${params}` )
   },
+  //根据从协议编号查询从协议详情
+  getAgreenmentDetailByAgreenmentNo(params){
+    return Http.get(`${contract}/contract-web/protocol/detail/protocolNO/${params}`)
+  },
   /** ***从协议接口****/
 
   /** ***根据合同编号获取详情接口****/

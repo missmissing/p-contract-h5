@@ -143,7 +143,7 @@
                           :on-success="handleUploadFileAfterSealSuccess"
                           :on-error="handleUploadFileAfterSealError"
                         >
-                          <el-button :disabled="getEnabledUploadBtn(props.row.filesSealed)" size="small"
+                          <el-button :disabled="getEnabledUploadBtn(props.row.filesSealed)||!enabledInupdated" size="small"
                                      type="primary" @click="handleUpload(index)">上传
                           </el-button>
                           </el-button>

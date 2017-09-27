@@ -1433,16 +1433,12 @@
               </el-table-column>
               <el-table-column prop="slaveProtocolNo" label="从协议编号" width="150px">
                 <template scope="scope">
-                  <a v-if="cardSealInfoForm.agreenments[scope.$index].agreementUrl"
-                     v-model="cardSealInfoForm.agreenments[scope.$index].agreementUrl"
-                     href="cardSealInfoForm.agreenments[scope.$index].agreementUrl">{{cardSealInfoForm.agreenments[scope.$index].slaveProtocolNo}}</a>
-                  <el-form-item style="margin-left: -100px" v-else prop="slaveProtocolNo"
-                                :rules="[{validator: (rule, value, callback)=>{if(value&&value.length!==10){callback(new Error('error'))}callback();},trigger: 'blur'},
-                                             { required: true, message: '请输入从协议编号'}
-                                             ]">
+                  <router-link v-if="cardSealInfoForm.agreenments[scope.$index].id" :to="{path:'/ConCreate/querySlaveProtocol', query:{id:''+cardSealInfoForm.agreenments[scope.$index].id}}">
+                    {{cardSealInfoForm.agreenments[scope.$index].slaveProtocolNo}}
+                  </router-link>
+                  <el-form-item v-else style="margin-left: -100px" prop="slaveProtocolNo">
                     <el-input :disabled="!enabledInupdated" icon="search"
                               @keyup.enter.native="handleCodeBlur(cardSealInfoForm.agreenments[scope.$index],cardSealInfoForm.agreenments[scope.$index].slaveProtocolNo)"
-                              @blur="handleCodeBlur(cardSealInfoForm.agreenments[scope.$index],cardSealInfoForm.agreenments[scope.$index].slaveProtocolNo)"
                               v-model="cardSealInfoForm.agreenments[scope.$index].slaveProtocolNo"
                     ></el-input>
                   </el-form-item>
@@ -2077,15 +2073,15 @@
           current: null,//为上传功能保存当前所在附件列表的索引
           type: null,//为上传功能保存当前附件类型
           rules: {
-            /*slaveProtocolNo: [{
+            slaveProtocolNo: [/*{
              validator: (rule, value, callback)=>{console.log('value',value);
              callback();
              },
              trigger: 'blur'
-             }, {
+             }, */{
              required: true,
              message: '请输入从协议编号'
-             }]*/
+             }]
           }
         },
         cardRemarkInfoForm: {
@@ -2955,7 +2951,7 @@
           const contract = this.cardSealInfoForm.contract
           const agreenments = this.cardSealInfoForm.agreenments
           const others = this.cardSealInfoForm.others
-          let sealAttachments = this.cardSealInfoForm.sealAttachments, result
+          let sealAttachments = this.cardSealInfoForm.sealAttachments
           sealAttachments = []
           contract.length ? sealAttachments.push(contract) : null
           agreenments.length ? sealAttachments.push(agreenments) : null
@@ -3012,6 +3008,7 @@
         this.comLoading(1)
         this.validateForms().then(()=> {
           this.formatTime(this.cardContentInfoForm,this.cardFinanceInfoForm)
+          this.cardSealInfoForm.sealAttachments = this.combineSealsInfo()
           const paras = {};
           paras.baseInfoForm = this.baseInfoForm
           paras.cardContentInfoForm = this.cardContentInfoForm
@@ -3171,6 +3168,7 @@
       handleNewAgreenmentSealFile(){
         const file = {
           operate: 'add',
+          agreementId:'',
           id: '',
           fileName: '文件名',
           fileUrl: '',//合同文本类型为非模版合同时，附件类型的合同的文件下载地址
@@ -3348,9 +3346,26 @@
         }
       },
       handleCodeBlur(item, val){
-        console.log('handleCodeBlur-val', val);
         if (val) {
-          item.agreementUrl = '从协议页面的链接'
+          Api.getAgreenmentDetailByAgreenmentNo(val).then((data)=>{
+            const dataMap=data.data.dataMap
+            if(dataMap&&dataMap.id) {
+              const agreenments=this.cardSealInfoForm.agreenments
+              if(agreenments&&agreenments.length){
+                let index = _.findIndex(agreenments, function (chr) {
+                  return chr.id === dataMap.id
+                })
+                if (index > -1) {
+                  this.$message.error('这条数据已存在咯！')
+                  return false
+                }
+              }
+              item.id = dataMap.id
+            }
+          })
+            .catch(()=>{
+              item.slaveProtocolNo=''
+            })
         }
       },
       handleRemoveFilesSealedItem(index, rows){
