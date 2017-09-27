@@ -86,7 +86,7 @@ export default {
   /** ***从协议接口****/
   //从协议列表
   getAgreementList(params) {
-    return Http.get(`/api/agreeement/getAgreementList`, params)
+    return Http.post(`${contract}/contract-web/protocol/list/search`, params)
   },
   //创建从协议
   createAgreenment(params){

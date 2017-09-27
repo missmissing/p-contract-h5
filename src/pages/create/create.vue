@@ -146,7 +146,7 @@
                 max-height="250" @row-click="handleRowClick">
         <el-table-column prop="ifSelect" label="选择">
           <template scope="scope">
-            <el-checkbox v-model="scope.row.ifSelect"></el-checkbox>
+            <el-checkbox v-model="scope.row.ifSelect" @change.stop.prevent="handleRowClick(priceList[scope.$index])"></el-checkbox>
           </template>
         </el-table-column>
         <el-table-column
@@ -486,7 +486,11 @@
           oldRow.clicked = false
         }
       },
-      handleRowClick(row) {
+      handleRowClick(row,event) {
+        if(event){
+          event.stopPropagation()
+          event.preventDefault()
+        }
         if (row.clicked) {
           row.clicked = false
           this.$refs.priceList.setCurrentRow();
@@ -512,6 +516,9 @@
           this.prForm.createPerson=''
 
         }
+      },
+      handleIfSelectChange(val){
+        console.log('val',val);
       }
     }
   }

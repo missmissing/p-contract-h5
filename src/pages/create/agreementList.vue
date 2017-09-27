@@ -88,16 +88,15 @@
         <el-table-column prop="contractNo" label="从协议编码">
           <template scope="scope">
             <router-link :to="{path:'/ConCreate/querySlaveProtocol', query:{id:''+agreementList[scope.$index].id}}">
-              {{agreementList[scope.$index].contractNo}}
+              {{agreementList[scope.$index].protocolNo}}
             </router-link>
           </template>
         </el-table-column>
-        <el-table-column prop="createPerson" label="发起人"></el-table-column>
-        <el-table-column prop="createDepart" label="发起部门"></el-table-column>
+        <el-table-column prop="creatorName" label="发起人"></el-table-column>
+        <el-table-column prop="deptName" label="发起部门"></el-table-column>
         <el-table-column prop="createTime" label="发起时间"></el-table-column>
       </el-table>
     </el-card>
-
   </div>
 </template>
 <script>
@@ -151,9 +150,10 @@
       handleQuery() {
         const agreementForm = this.agreementForm
         let params = {}
-        params.id = agreementForm.id
-        params.supplierId = agreementForm.supplierId
-        params.companyId = agreementForm.companyId
+        params.protocolNo = agreementForm.id
+        params.supplierName = agreementForm.supplierId
+        params.conSubjctName = agreementForm.companyId
+        params.creatorName = agreementForm.createrId
         Api.getAgreementList(params)
           .then((data) => {
             this.agreementList = data.data.dataMap || []

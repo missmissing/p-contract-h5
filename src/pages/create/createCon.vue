@@ -1232,7 +1232,7 @@
                           :on-success="handleUploadFileAfterSealSuccess"
                           :on-error="handleUploadFileAfterSealError"
                         >
-                          <el-button :disabled="getEnabledUploadBtn(props.row.filesSealed)" size="small"
+                          <el-button :disabled="!enabledInupdated||!getEnabledUploadBtn(props.row.filesSealed)" size="small"
                                      type="primary" @click="handleUpload(cardSealInfoForm.contract[0].attachType)">上传
                           </el-button>
                           </el-button>
@@ -1346,7 +1346,7 @@
                               :on-success="handleUploadFileAfterSealSuccess"
                               :on-error="handleUploadFileAfterSealError"
                             >
-                              <el-button :disabled="getEnabledUploadBtn(props.row.filesSealed)" size="small"
+                              <el-button :disabled="!enabledInupdated||!getEnabledUploadBtn(props.row.filesSealed)" size="small"
                                          type="primary" @click="handleUpload(item[props.$index].attachType,index)">上传
                               </el-button>
                               </el-button>
@@ -1393,7 +1393,7 @@
                       :on-success="handleUploadSealFileSuccess"
                       :on-error="handleUploadSealFileError"
                     >
-                      <el-button :disabled="!enabledInupdated"
+                      <el-button :disabled="!enabledInupdated||!getEnabledUploadBtnOuter(item[scope.$index].fileName)"
                                  size="small" type="primary" @click="handleUploadOuter(index)">上传
                       </el-button>
                     </el-upload>
@@ -2073,12 +2073,7 @@
           current: null,//为上传功能保存当前所在附件列表的索引
           type: null,//为上传功能保存当前附件类型
           rules: {
-            slaveProtocolNo: [/*{
-             validator: (rule, value, callback)=>{console.log('value',value);
-             callback();
-             },
-             trigger: 'blur'
-             }, */{
+            slaveProtocolNo: [{
              required: true,
              message: '请输入从协议编号'
              }]
@@ -2089,13 +2084,6 @@
         },
         cardRelatedInfoForm: {
           contractList: [
-            /*{
-             contractCode: '0001001',
-             type: '类型',
-             status: '状态',
-             company: '公司',
-             startTime: '2018-09-11'
-             }*/
           ]
         },
         cardOtherInfo: {
@@ -2462,7 +2450,7 @@
       },
       getEnabledUploadBtn(items){
         let enabled=true
-        items&&items.length>=1?enabled=true:enabled=false
+        items&&items.length>=1?enabled=false:enabled=true
         return enabled
       },
       setRatio(item,val){
@@ -2624,8 +2612,6 @@
             if (subjects.length) {
               for (let i = 0, len = subjects.length; i < len; i++) {
                 if (key === subjects[i].companyCode) {
-                  console.log('this.cardFinanceInfoForm.jiaBillingInfo',this.cardFinanceInfoForm.jiaBillingInfo);
-                  console.log('subjects[i]',subjects[i]);
                   this.cardFinanceInfoForm.jiaBillingInfo.push(subjects[i]);
                 }
               }
@@ -2953,11 +2939,29 @@
           const others = this.cardSealInfoForm.others
           let sealAttachments = this.cardSealInfoForm.sealAttachments
           sealAttachments = []
-          contract.length ? sealAttachments.push(contract) : null
-          agreenments.length ? sealAttachments.push(agreenments) : null
-          if (others.length) {
-            sealAttachments = sealAttachments.concat(others)
+
+          const sealOthers=[],sealAgreenments=[]
+          if(others&&others.length){
+            for(let i=0,len=others.length;i<len;i++){
+              const item=others[i]
+              if(item[0]&&item[0].fileName){
+                sealOthers.push(item)
+              }
+            }
           }
+          if(agreenments&&agreenments.length){
+            for(let i=0,len=agreenments.length;i<len;i++){
+              const item=agreenments[i]
+              if(item&&item.slaveProtocolNo){
+                sealAgreenments.push([item])
+              }
+            }
+          }
+
+          //判断附件类型，当该附件类型的数据为空是，则该数组为空
+          contract.length ? sealAttachments.push(contract) : null
+          sealOthers.length ? sealAttachments=sealAttachments.concat(sealOthers):null
+          sealAgreenments.length ? sealAttachments=sealAttachments.concat(sealAgreenments):null
           return sealAttachments
         }
       },
@@ -3017,7 +3021,6 @@
           paras.cardSealInfoForm = this.cardSealInfoForm
           paras.cardRemarkInfoForm = this.cardRemarkInfoForm
           paras.cardOtherInfo = this.cardOtherInfo
-          console.log('handleSubmit-params',JSON.stringify(paras));
           if(this.operateType==='create'){
             Api.submit(paras).then((data)=> {
               if (data.data.dataMap.id) {
@@ -3072,7 +3075,7 @@
         const file = {
           operate: 'add',
           id: '',
-          fileName: '文件名',
+          fileName: '',
           fileUrl: '',//合同文本类型为非模版合同时，附件类型的合同的文件下载地址
           attachType: 1,//附件类型
           slaveProtocolNo: '0011001',//从协议编号
@@ -3127,7 +3130,7 @@
         const file = [{
           operate: 'add',
           id: '',
-          fileName: '文件名',
+          fileName: '',
           fileUrl: '',//合同文本类型为非模版合同时，附件类型的合同的文件下载地址
           attachType: 1,//附件类型
           slaveProtocolNo: '0011001',//从协议编号
@@ -3170,7 +3173,7 @@
           operate: 'add',
           agreementId:'',
           id: '',
-          fileName: '文件名',
+          fileName: '',
           fileUrl: '',//合同文本类型为非模版合同时，附件类型的合同的文件下载地址
           attachType: 2,//附件类型
           slaveProtocolNo: '',//从协议编号
@@ -3458,7 +3461,12 @@
       },
       handleRemoveAgreenmentsItem(index, rows){
         rows.splice(index, 1);
-      }
+      },
+      getEnabledUploadBtnOuter(fileName){
+        let enabled=true
+        fileName?enabled=false:enabled=true
+        return enabled
+      },
     },
     components: {
       Preview,

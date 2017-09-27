@@ -143,7 +143,7 @@
                           :on-success="handleUploadFileAfterSealSuccess"
                           :on-error="handleUploadFileAfterSealError"
                         >
-                          <el-button :disabled="getEnabledUploadBtn(props.row.filesSealed)||!enabledInupdated" size="small"
+                          <el-button :disabled="!getEnabledUploadBtn(props.row.filesSealed)||!enabledInupdated" size="small"
                                      type="primary" @click="handleUpload(index)">上传
                           </el-button>
                           </el-button>
@@ -190,7 +190,7 @@
                   :on-success="handleUploadSealFileSuccess"
                   :on-error="handleUploadSealFileError"
                 >
-                  <el-button :disabled="!enabledInupdated"
+                  <el-button :disabled="!enabledInupdated||!getEnabledUploadBtnOuter(item[scope.$index].fileName)"
                              size="small" type="primary" @click="handleUploadOuter(index)">上传
                   </el-button>
                 </el-upload>
@@ -675,7 +675,7 @@
         const file = [{
           operate: 'add',
           id: '',
-          fileName: '文件名',
+          fileName: '',
           fileUrl: '',//合同文本类型为非模版合同时，附件类型的合同的文件下载地址
           attachType: 1,//附件类型
           slaveProtocolNo: '0011001',//从协议编号
@@ -724,7 +724,12 @@
       },
       getEnabledUploadBtn(items){
         let enabled=true
-        items&&items.length>=1?enabled=true:enabled=false
+        items&&items.length>=1?enabled=false:enabled=true
+        return enabled
+      },
+      getEnabledUploadBtnOuter(fileName){
+        let enabled=true
+        fileName?enabled=false:enabled=true
         return enabled
       },
       handleUploadOuter(index){
