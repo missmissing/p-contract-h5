@@ -783,10 +783,14 @@
         if (!this.check(result)) {
           return
         }
+        this.comLoading(1)
         signModel.submit(result).then((res) => {
+          this.comLoading()
           this.$router.push({
-            name: routerNames.con_order_list
+            name: routerNames.con_index
           })
+        }, () => {
+          this.comLoading()
         })
       }
     },

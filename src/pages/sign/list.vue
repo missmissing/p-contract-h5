@@ -21,6 +21,11 @@
           <el-form-item label="订单类型">
             <el-select v-model="form.orderType">
               <el-option
+                :key="null"
+                label="请选择"
+                :value="null">
+              </el-option>
+              <el-option
                 v-for="item in options"
                 :key="item.value"
                 :label="item.label"
@@ -56,10 +61,40 @@
       <el-table-column
         prop="pr"
         min-width="150"
-        label="订单编号">
+        label="采购订单号">
         <template scope="scope">
           <el-button type="text" @click.native.prevent="see(scope.row)">{{scope.row.templateCode}}</el-button>
         </template>
+      </el-table-column>
+      <el-table-column
+        prop="creatorName"
+        min-width="100"
+        label="订单类型">
+      </el-table-column>
+      <el-table-column
+        prop="itemNo"
+        min-width="100"
+        label="行项目">
+      </el-table-column>
+      <el-table-column
+        prop="creatorName"
+        min-width="100"
+        label="物料编码">
+      </el-table-column>
+      <el-table-column
+        prop="creatorName"
+        min-width="100"
+        label="物料描述">
+      </el-table-column>
+      <el-table-column
+        prop="creatorName"
+        min-width="100"
+        label="数量">
+      </el-table-column>
+      <el-table-column
+        prop="creatorName"
+        min-width="100"
+        label="含税单价">
       </el-table-column>
       <el-table-column
         prop="creatorName"

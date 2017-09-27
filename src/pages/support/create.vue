@@ -125,6 +125,7 @@
   import getBusiType from '@/mixins/getBusiType'
   import comLoading from '@/mixins/comLoading'
   import {formatTimeStamp} from '@/filters/moment'
+  import {routerNames} from '@/core/consts'
 
   const defaultData = {
     form: {
@@ -205,7 +206,9 @@
         return result
       },
       back() { // 返回列表页
-        this.$router.push('/contemplate/list')
+        this.$router.push({
+          name: routerNames.con_index
+        })
       },
       save(templateStatus) {
         this.$refs['form'].validate((valid) => {

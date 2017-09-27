@@ -252,6 +252,9 @@
         this.comLoading(1)
         Api.contractViolateSave(result).then((res) => {
           this.comLoading()
+          this.$router.push({
+            name: routerNames.con_index
+          })
         }, () => {
           this.comLoading()
         })
