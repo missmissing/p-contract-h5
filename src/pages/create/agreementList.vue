@@ -77,7 +77,7 @@
             </el-form-item>
           </el-col>
           <el-col :span="4" :offset="2">
-            <el-button size="large" type="primary" @click="handleQuery('agreementForm')">查找</el-button>
+            <el-button size="large" type="primary" @click="handleQuery">查找</el-button>
           </el-col>
         </el-row>
       </el-form>
@@ -122,6 +122,9 @@
         agreementList: []
       }
     },
+    mounted:function(){
+      this.handleQuery()
+    },
     methods: {
       getRemoteSuppliersByKeyWord(query) {
         if (query !== '') {
@@ -129,7 +132,7 @@
           Api.getRemoteSuppliersByKeyWord({key: query})
             .then((data) => {
               this.agreementForm.loading = false
-              this.agreementForm.suppliers = data.data.dataMap||[]
+              this.agreementForm.suppliers = data.data.dataMap || []
             })
         } else {
           this.agreementForm.suppliers = []
@@ -141,7 +144,7 @@
           Api.getRemoteSubjectsByKeyWord({key: query})
             .then((data) => {
               this.agreementForm.agreementLoading = false
-              this.agreementForm.companies = data.data.dataMap||[]
+              this.agreementForm.companies = data.data.dataMap || []
             })
         } else {
           this.agreementForm.companies = []
@@ -156,16 +159,16 @@
         params.creatorName = agreementForm.createrId
         Api.getAgreementList(params)
           .then((data) => {
-            this.agreementList = data.data.dataMap || []
-          })
+          this.agreementList = data.data.dataMap || []
+      })
       },
       getRemoteCreatorsByKeyWord(query){
         if (query !== '') {
           this.agreementForm.creatorLoading = true
           Api.getRemoteCreatePersonsByKeyWord({keyword: query})
             .then((data) => {
-            this.agreementForm.creatorLoading = false
-            this.agreementForm.creators = data.data.dataMap||[]
+              this.agreementForm.creatorLoading = false
+              this.agreementForm.creators = data.data.dataMap || []
             })
         } else {
           this.agreementForm.creators = []

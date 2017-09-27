@@ -152,13 +152,20 @@
       <el-table-column prop="contractStatusName" label="合同状态" width="120"></el-table-column>
       <el-table-column prop="slaveProtocolNo" label="从协议编号" width="120"></el-table-column>
     </el-table>
+    <el-row class="mt20">
+      <el-col :span="8" :offset="8">
+        <el-pagination
+          @current-change="handleCurrentChange"
+          layout="prev, pager, next"
+          :total="1000">
+        </el-pagination>
+      </el-col>
+    </el-row>
   </div>
 </template>
 
 <script>
   import Api from '@/api/manageContract'
-
-  // document.cookie='sys=FFKHLEH21HEOFKLIEIMKHOFFKHKLHNM'
 
   export default {
     data() {
@@ -193,13 +200,19 @@
         },
         tableData: [],
         creators: [],
-        loading: false
+        loading: false,
+
+        pageNo:1,
+        pageSize:10,
+        total:0,//总条目数
+        pageCount:0,//总页数
       }
     },
     watch: {},
     methods: {
-      search() {
+      search(params) {
         this.loading = true
+        /*Object.assign()*/
         Api.getConList(this.form).then((res) => {
           this.tableData = res.data.dataMap.data
           this.loading = false
@@ -278,9 +291,12 @@
             }
           }
         }
-      }
+      },
+      handleCurrentChange(page){
+        console.log('handleCurrentChange',page);
+      },
     },
-    created() {
+    mounted() {
       this.search()
     }
   }

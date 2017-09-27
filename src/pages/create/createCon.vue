@@ -906,7 +906,7 @@
                 </el-col>
               </el-row>
             </el-card>
-            <el-card class="mt20" v-if="baseInfoForm.contractType===3&&cardFinanceInfoForm.moneyInvolved===true">
+            <el-card class="mt20" v-if="cardFinanceInfoForm.moneyInvolved===true">
               <header slot="header">开票信息</header>
               <el-row>
                 <el-col v-if="cardFinanceInfoForm.jiaBillingInfo.length>1" :span="12">
