@@ -19,8 +19,9 @@
           <el-form label-width="120px" :model="basicForm" :rules="basicRules" ref="basicForm">
             <el-row>
               <el-col :span="8">
-                <el-form-item label="采购订单号" prop="orderId">
-                  <el-input v-model="basicForm.orderId" icon="search" :on-icon-click="search" @keyup.enter.native="search"></el-input>
+                <el-form-item label="采购订单号" prop="orderNo">
+                  <el-input v-model="basicForm.orderNo" icon="search" :on-icon-click="search"
+                            @keyup.enter.native="search"></el-input>
                 </el-form-item>
               </el-col>
               <el-button type="primary" class="ml20" v-show="toDetail.query.id">
@@ -30,59 +31,54 @@
             <el-row>
               <el-col :span="6">
                 <el-form-item label="业务经办人">
-                  <el-input disabled></el-input>
+                  <el-input :value="basicForm.businessOperatorName" disabled></el-input>
                 </el-form-item>
               </el-col>
               <el-col :span="6">
                 <el-form-item label="业务部门">
-                  <el-input disabled></el-input>
+                  <el-input :value="basicForm.businessDeptName" disabled></el-input>
                 </el-form-item>
               </el-col>
               <el-col :span="6">
                 <el-form-item label="合同编号">
-                  <el-input disabled></el-input>
+                  <el-input :value="basicForm.contractNo" disabled></el-input>
                 </el-form-item>
               </el-col>
               <el-col :span="6">
                 <el-form-item label="合同模式">
-                  <el-input disabled></el-input>
-                </el-form-item>
-              </el-col>
-              <el-col :span="6">
-                <el-form-item label="合同版本">
-                  <el-input disabled></el-input>
+                  <el-input :value="basicForm.contractType" disabled></el-input>
                 </el-form-item>
               </el-col>
               <el-col :span="6">
                 <el-form-item label="合同类型">
-                  <el-input disabled></el-input>
+                  <el-input :value="basicForm.contractBusinessTypeThirdName" disabled></el-input>
                 </el-form-item>
               </el-col>
               <el-col :span="6">
                 <el-form-item label="所属项目">
-                  <el-input disabled></el-input>
+                  <el-input :value="basicForm.belongProject" disabled></el-input>
                 </el-form-item>
               </el-col>
               <el-col :span="6">
                 <el-form-item label="验收责任人">
-                  <el-input disabled></el-input>
+                  <el-input :value="basicForm.responsibleName" disabled></el-input>
                 </el-form-item>
               </el-col>
               <el-col :span="6">
                 <el-form-item label="合同生效日期">
-                  <el-input disabled></el-input>
+                  <el-input :value="basicForm.startTime | formatDate" disabled></el-input>
                 </el-form-item>
               </el-col>
               <el-col :span="6">
                 <el-form-item label="合同终止日期">
-                  <el-input disabled></el-input>
+                  <el-input :value="basicForm.endTime | formatDate" disabled></el-input>
                 </el-form-item>
               </el-col>
               <el-col :span="6">
-                <el-form-item label="合同验收日期">
+                <el-form-item label="合同验收日期" prop="contractCheckDate">
                   <el-date-picker
                     style="width:100%;"
-                    v-model="contractCheckDate"
+                    v-model="basicForm.contractCheckDate"
                     type="date"
                     :editable="false"
                     placeholder="选择日期">
@@ -97,12 +93,12 @@
         <div slot="header">
           <span class="common-title">不合格事项</span>
         </div>
-        <div class="nonconformity-info">
+        <div class="checkItems-info">
           <div class="mb20">
             <el-button type="primary" @click="addItem">新 增</el-button>
           </div>
           <el-table
-            :data="nonconformity"
+            :data="checkItems"
             border
             style="width: 100%">
             <el-table-column
@@ -175,7 +171,6 @@
             <el-form-item label="相关附件">
               <Upload
                 :fileList.sync="fileList"
-                :data="uploadData"
                 multiple>
                 <!--<div class="el-upload__tip" slot="tip">文件不超过10M</div>-->
               </Upload>
@@ -241,17 +236,16 @@
 <script>
   import Api from '@/api/performance'
   import Upload from '@/components/upload.vue'
-  import {routerNames} from '@/core/consts'
+  import {routerNames, contractPatternMap} from '@/core/consts'
   import comLoading from '@/mixins/comLoading'
+  import {formatDate} from '@/filters/moment'
 
   export default {
     mixins: [comLoading],
     data() {
       return {
-        contractCheckDate: '',
         fileList: [],
-        uploadData: {},
-        nonconformity: [],
+        checkItems: [],
         addNotQualityDialogForm: {
           serviceName: '',
           serviceRequire: '',
@@ -290,16 +284,28 @@
           remark: [{max: 300, message: '长度不超过300个字符', trigger: 'change'}]
         },
         basicForm: {
-          orderId: ''
+          orderNo: '',
+          contractCheckDate: ''
         },
         basicRules: {
-          orderId: [{required: true, message: '请输入采购订单号', trigger: 'change'}]
+          orderNo: [{required: true, message: '请输入采购订单号', trigger: 'change'}],
+          contractCheckDate: [{required: true, message: '请选择日期'}],
+          businessOperatorName: '',
+          businessDeptName: '',
+          contractTextType: '',
+          responsibleName: '',
+          belongProject: '',
+          startTime: '',
+          endTime: '',
+          contractType: '',
+          contractNo: '',
+          contractBusinessTypeThirdName: ''
         },
         handleForm: {
           schemeType: 1,
           unqualifiedReason: '',
           treatmentScheme: '',
-          fileIds: null
+          files: null
         },
         handleFormRules: {
           unqualifiedReason: [{required: true, message: '请输入违约/赔付原因'}, {
@@ -311,31 +317,48 @@
             message: '长度不超过300个字符'
           }]
         },
-        toDetail: {name: routerNames.con_Check, query: {id: ''}}
+        toDetail: {name: routerNames.con_purchase_see, query: {id: ''}},
+        info: {}
       }
     },
     methods: {
       search() {
-        if (!this.basicForm.orderId) {
+        if (!this.basicForm.orderNo) {
           this.$message.warning('请输入采购订单号！')
           return
         }
         this.comLoading(1)
-        Api.getUnqualifiedByOrderId({orderId: this.basicForm.orderId}).then((res) => {
+        Api.getUnqualifiedByOrderId({orderId: this.basicForm.orderNo}).then((res) => {
           const data = res.data.dataMap
           console.log(data)
-          const {contractId} = data
-          this.toDetail.query.id = contractId
+          const {purchaseOrderId} = data
+          this.toDetail.query.id = purchaseOrderId
+          this.info = data
+          this.setBasicForm()
           this.comLoading()
         }, () => {
           this.comLoading()
+        })
+      },
+      setBasicForm() {
+        const {businessOperatorName, businessDeptName, responsibleName, belongProject, startTime, endTime, contractType, contractNo, contractBusinessTypeThirdName} = this.info
+        Object.assign(this.basicForm, {
+          businessOperatorName,
+          businessDeptName,
+          responsibleName,
+          belongProject,
+          startTime,
+          endTime,
+          contractType: contractPatternMap[contractType],
+          contractNo,
+          contractBusinessTypeThirdName
         })
       },
       addNotQualityDialogOk() {
         this.$refs['addNotQualityDialogForm'].validate((valid) => {
           if (valid) {
             const form = this.addNotQualityDialogForm
-            this.nonconformity.push({...form})
+            this.checkItems.push({...form})
             Object.keys(form).forEach((key) => {
               form[key] = ''
             })
@@ -349,18 +372,21 @@
       addItem() {
         this.addNotQualityDialogVisible = true
       },
-      handleRemove(file, fileList) {
-        console.log(file, fileList)
-      },
       deleteRow(index, rows) {
         rows.splice(index, 1)
       },
       getResult() {
-        this.handleForm.fileIds = this.fileList.map((file) => {
+        this.handleForm.files = this.fileList.map((file) => {
           if (file.status === 'success') {
             return file.fileId
           }
         })
+        return {
+          orderNo: this.info.orderNo,
+          contractCheckDate: this.contractCheckDate,
+          checkItems: this.checkItems,
+          ...this.handleForm
+        }
       },
       check(result) {
         let flag = false
@@ -390,6 +416,9 @@
     },
     components: {
       Upload
+    },
+    filters: {
+      formatDate
     }
   }
 </script>
