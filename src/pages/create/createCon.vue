@@ -251,6 +251,11 @@
               <el-table :data="cardContentInfoForm.conSubjctName">
                 <el-table-column prop="code" label="公司代码"></el-table-column>
                 <el-table-column prop="name" label="公司名称"></el-table-column>
+                <el-table-column prop="wholeCompanyApplies" label="全公司适用">
+                  <template scope="scope">
+                    <el-checkbox  :disabled="cardContentInfoForm.conSubjctName[scope.$index]!=='1001'" v-model="cardContentInfoForm.conSubjctName[scope.$index].wholeCompanyApplies"></el-checkbox>
+                  </template>
+                </el-table-column>
                 <el-table-column
                   fixed="right"
                   label="操作"
@@ -2441,7 +2446,7 @@
       initData(data, params){console.log('initData');
         Object.assign(this.baseInfoForm, data.baseInfoForm);
         Object.assign(this.cardContentInfoForm, data.cardContentInfoForm);
-        //Object.assign(this.cardFinanceInfoForm, data.cardFinanceInfoForm);
+        Object.assign(this.cardFinanceInfoForm, data.cardFinanceInfoForm);
         Object.assign(this.cardContCheckInfoForm, data.cardContCheckInfoForm);
         Object.assign(this.cardSealInfoForm, data.cardSealInfoForm);
         Object.assign(this.cardRemarkInfoForm, data.cardRemarkInfoForm);
