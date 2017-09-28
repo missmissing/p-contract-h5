@@ -48,6 +48,18 @@
 </style>
 <template>
   <div class="createCon" v-loading="loadingFlag" :element-loading-text="loadingText">
+    <el-table :data="tableTest">
+      <el-table-column type="expand" v-if="tableTest[0].cb">
+        展开内容
+      </el-table-column>
+      <el-table-column prop="id" label="id"></el-table-column>
+      <el-table-column prop="name" label="name"></el-table-column>
+      <el-table-column prop="cb" label="cb">
+        <template scope="scope">
+          <el-checkbox v-model="tableTest[scope.$index].cb" @change="handleCbChange"></el-checkbox>
+        </template>
+      </el-table-column>
+    </el-table>
     <el-card v-if="operateType==='update'||updated">
       <header slot="header">变更原因</header>
       <el-form ref="updateForm" :model="updateForm" label-width="100px" :rules="updateForm.rules">
@@ -347,7 +359,7 @@
               <el-col :span="8">
                 <el-form-item label="是否涉及金额">
                   <el-radio-group v-model="cardFinanceInfoForm.moneyInvolved"
-                                  :disabled="operateType==='query'">
+                                  :disabled="operateType==='query'||!enaledMoneyInvolved">
                     <el-radio :label="true">是</el-radio>
                     <el-radio :label="false">否</el-radio>
                   </el-radio-group>
@@ -362,13 +374,69 @@
                 </el-form-item>
               </el-col>
             </el-row>
+            <el-row class="mt20">
+              <el-col :span="8">
+                <el-form-item label="币种" prop="currency">
+                  <el-select v-model="cardFinanceInfoForm.currency" placeholder="请选择币种"
+                             :disabled="operateType==='query'">
+                    <el-option
+                      v-for="item in cardFinanceInfoForm.currencyOptions"
+                      :key="item.value"
+                      :label="item.label"
+                      :value="item.value">
+                    </el-option>
+                  </el-select>
+                </el-form-item>
+              </el-col>
+              <el-col :span="8">
+                <el-form-item label="开票类型" prop="invoiceType">
+                  <el-select v-model="cardFinanceInfoForm.invoiceType"
+                             placeholder="请选择开票类型"
+                             :disabled="operateType==='query'">
+                    <el-option
+                      v-for="item in cardFinanceInfoForm.invoiceTypeOptions"
+                      :key="item.value"
+                      :label="item.label"
+                      :value="item.value">
+                    </el-option>
+                  </el-select>
+                </el-form-item>
+              </el-col>
+              <el-col :span="8">
+                <el-form-item label="合同总金额" prop="totalAmount">
+                  <el-input :disabled="!cardFinanceInfoForm.oneOffPay||operateType==='query'" v-model="cardFinanceInfoForm.totalAmount"
+                            placeholder="根据上表累加(含税价)">{{totalConMoney}}
+                  </el-input>
+                </el-form-item>
+              </el-col>
+            </el-row>
+            <el-row v-if="cardFinanceInfoForm.oneOffPay">
+              <el-col :span="8">
+                <el-form-item label="付款条件">
+                  <el-select
+                    v-model="cardFinanceInfoForm.paymentCondition"
+                    placeholder="请选择付款条件"
+                    class="wp100"
+                    :disabled="operateType==='query'"
+                  >
+                    <el-option
+                      v-for="item in cardFinanceInfoForm.paymentConditions"
+                      :key="item.id"
+                      :value="item.id"
+                      :label="item.name"
+                    >
+                    </el-option>
+                  </el-select>
+                </el-form-item>
+              </el-col>
+            </el-row>
             <el-card v-if="cardFinanceInfoForm.moneyInvolved===true">
               <header slot="header">付款方式</header>
               <el-table :data="cardFinanceInfoForm.paymentMethods.advance"
                         v-if="!cardFinanceInfoForm.oneOffPay"
                         style="width: 100%"
               >
-                <el-table-column type="expand" v-if="cardFinanceInfoForm.paymentMethods.advance[0].seriousPayments">
+                <!--<el-table-column type="expand" v-if="cardFinanceInfoForm.paymentMethods.advance[0].seriousPayments">
                   <template scope="props">
                     <div v-if="cardFinanceInfoForm.paymentMethods.advance[0].seriousPayments" v-bind:class="{tdPd:cardFinanceInfoForm.paymentMethods.advance[0].seriousPayments}">
                       <el-button icon="plus" type="primary"
@@ -392,34 +460,22 @@
                         </el-table-column>
                         <el-table-column
                           prop="paymentTimePeriod"
-                          label="付款时间"
+                          label="付款条件"
                           width="250px">
                           <template scope="scope">
-                            <el-row class="select-money">
-                              <el-col>
-                                <el-select
-                                  class="select-curTime"
-                                  @change="handleItemCurTimeChange(props.row.subItem[scope.$index].paymentTimePeriod,props.row.subItem[scope.$index])"
-                                  :disabled="operateType==='query'"
-                                  placeholder="请选择付款时间"
-                                  v-model="props.row.subItem[scope.$index].paymentTimePeriod">
-                                  <el-option
-                                    v-for="item in props.row.subItem[scope.$index].times"
-                                    :key="item.value"
-                                    :label="item.label"
-                                    :value="item.value">
-                                  </el-option>
-                                </el-select>
-                              </el-col>
-                              <el-col>
-                                <el-date-picker
-                                  @change="handleItemExactDateChange(props.row.subItem[scope.$index].paymentTime,props.row.subItem[scope.$index])"
-                                  v-model="props.row.subItem[scope.$index].paymentTime"
-                                  :disabled="operateType==='query'"
-                                  placeholder="请输入具体付款日期"
-                                  type="date"></el-date-picker>
-                              </el-col>
-                            </el-row>
+                            <el-select
+                              v-model="props.row.subItem[scope.$index].paymentCondition"
+                              placeholder="请选择付款条件"
+                              :disabled="operateType==='query'"
+                            >
+                              <el-option
+                                v-for="item in cardFinanceInfoForm.paymentConditions"
+                                :key="item.id"
+                                :value="item.id"
+                                :label="item.name"
+                              >
+                              </el-option>
+                            </el-select>
                           </template>
                         </el-table-column>
                         <el-table-column
@@ -454,13 +510,19 @@
                       </el-table>
                     </div>
                   </template>
-                </el-table-column>
+                </el-table-column>-->
                 <el-table-column prop="type" label="类型" width="100px"></el-table-column>
                 <el-table-column width="90px" prop="seriousPayments" label="是否多次付款">
                   <template scope="scope">
                     <el-checkbox
+                      @change="handleSeriousPaymentsChange"
                       :disabled="operateType==='query'"
-                      v-model="cardFinanceInfoForm.paymentMethods.advance[scope.$index].seriousPayments"></el-checkbox>
+                      v-model="cardFinanceInfoForm.paymentMethods.advance[scope.$index].seriousPayments"
+                      ></el-checkbox>
+                    <!--<el-checkbox v-model="cardFinanceInfoForm.paymentMethods.advance[scope.$index].seriousPayments"
+                    @change="handleSeriousPaymentsChange">
+                    </el-checkbox>
+                    {{cardFinanceInfoForm.paymentMethods.advance[scope.$index].seriousPayments}}-->
                   </template>
                 </el-table-column>
                 <el-table-column
@@ -474,35 +536,23 @@
                   </template>
                 </el-table-column>
                 <el-table-column
-                  prop="paymentTimePeriod"
-                  label="付款时间"
+                  prop="paymentCondition"
+                  label="付款条件"
                   width="250px">
                   <template scope="scope">
-                    <el-row class="select-money">
-                      <el-col>
-                        <el-select
-                          class="select-curTime"
-                          v-model="cardFinanceInfoForm.paymentMethods.advance[scope.$index].paymentTimePeriod"
-                          :disabled="operateType==='query'"
-                          placeholder="请选择付款时间"
-                          @change="handleCurTimeChange(cardFinanceInfoForm.paymentMethods.advance[scope.$index].paymentTimePeriod,cardFinanceInfoForm.paymentMethods.advance[scope.$index])">
-                          <el-option
-                            v-for="item in cardFinanceInfoForm.paymentMethods.advance[scope.$index].times"
-                            :key="item.value"
-                            :label="item.label"
-                            :value="item.value">
-                          </el-option>
-                        </el-select>
-                      </el-col>
-                      <el-col>
-                        <el-date-picker
-                          @change="handleExactDateChange(cardFinanceInfoForm.paymentMethods.advance[scope.$index].paymentTime,cardFinanceInfoForm.paymentMethods.advance[scope.$index])"
-                          v-model="cardFinanceInfoForm.paymentMethods.advance[scope.$index].paymentTime"
-                          :disabled="operateType==='query'"
-                          placeholder="请输入具体付款日期"
-                          type="date"></el-date-picker>
-                      </el-col>
-                    </el-row>
+                      <el-select
+                        v-model="cardFinanceInfoForm.paymentMethods.advance[scope.$index].paymentCondition"
+                        placeholder="请选择付款条件"
+                        :disabled="operateType==='query'"
+                      >
+                        <el-option
+                          v-for="item in cardFinanceInfoForm.paymentConditions"
+                          :key="item.id"
+                          :value="item.id"
+                          :label="item.name"
+                        >
+                        </el-option>
+                      </el-select>
                   </template>
                 </el-table-column>
                 <el-table-column
@@ -547,34 +597,22 @@
                         </el-table-column>
                         <el-table-column
                           prop="paymentTimePeriod"
-                          label="付款时间"
+                          label="付款条件"
                           width="250px">
                           <template scope="scope">
-                            <el-row class="select-money">
-                              <el-col>
-                                <el-select
-                                  class="select-curTime"
-                                  @change="handleItemCurTimeChange(props.row.subItem[scope.$index].paymentTimePeriod,props.row.subItem[scope.$index])"
-                                  :disabled="operateType==='query'"
-                                  placeholder="请选择付款时间"
-                                  v-model="props.row.subItem[scope.$index].paymentTimePeriod">
-                                  <el-option
-                                    v-for="item in props.row.subItem[scope.$index].times"
-                                    :key="item.value"
-                                    :label="item.label"
-                                    :value="item.value">
-                                  </el-option>
-                                </el-select>
-                              </el-col>
-                              <el-col>
-                                <el-date-picker
-                                  @change="handleItemExactDateChange(props.row.subItem[scope.$index].paymentTime,props.row.subItem[scope.$index])"
-                                  v-model="props.row.subItem[scope.$index].paymentTime"
-                                  :disabled="operateType==='query'"
-                                  placeholder="请输入具体付款日期"
-                                  type="date"></el-date-picker>
-                              </el-col>
-                            </el-row>
+                            <el-select
+                              v-model="props.row.subItem[scope.$index].paymentCondition"
+                              placeholder="请选择付款条件"
+                              :disabled="operateType==='query'"
+                            >
+                              <el-option
+                                v-for="item in cardFinanceInfoForm.paymentConditions"
+                                :key="item.id"
+                                :value="item.id"
+                                :label="item.name"
+                              >
+                              </el-option>
+                            </el-select>
                           </template>
                         </el-table-column>
                         <el-table-column
@@ -630,34 +668,22 @@
                 </el-table-column>
                 <el-table-column
                   prop="paymentTimePeriod"
-                  label="付款时间"
+                  label="付款条件"
                   width="250px">
                   <template scope="scope">
-                    <el-row class="select-money">
-                      <el-col>
-                        <el-select
-                          class="select-curTime"
-                          v-model="cardFinanceInfoForm.paymentMethods.progress[scope.$index].paymentTimePeriod"
-                          :disabled="operateType==='query'"
-                          placeholder="请选择付款时间"
-                          @change="handleCurTimeChange(cardFinanceInfoForm.paymentMethods.progress[scope.$index].paymentTimePeriod,cardFinanceInfoForm.paymentMethods.progress[scope.$index])">
-                          <el-option
-                            v-for="item in cardFinanceInfoForm.paymentMethods.progress[scope.$index].times"
-                            :key="item.value"
-                            :label="item.label"
-                            :value="item.value">
-                          </el-option>
-                        </el-select>
-                      </el-col>
-                      <el-col>
-                        <el-date-picker
-                          @change="handleExactDateChange(cardFinanceInfoForm.paymentMethods.progress[scope.$index].paymentTime,cardFinanceInfoForm.paymentMethods.progress[scope.$index])"
-                          v-model="cardFinanceInfoForm.paymentMethods.progress[scope.$index].paymentTime"
-                          :disabled="operateType==='query'"
-                          placeholder="请输入具体付款日期"
-                          type="date"></el-date-picker>
-                      </el-col>
-                    </el-row>
+                    <el-select
+                      v-model="cardFinanceInfoForm.paymentMethods.progress[scope.$index].paymentCondition"
+                      placeholder="请选择付款条件"
+                      :disabled="operateType==='query'"
+                    >
+                      <el-option
+                        v-for="item in cardFinanceInfoForm.paymentConditions"
+                        :key="item.id"
+                        :value="item.id"
+                        :label="item.name"
+                      >
+                      </el-option>
+                    </el-select>
                   </template>
                 </el-table-column>
                 <el-table-column
@@ -703,34 +729,22 @@
                         </el-table-column>
                         <el-table-column
                           prop="paymentTimePeriod"
-                          label="付款时间"
+                          label="付款条件"
                           width="250px">
                           <template scope="scope">
-                            <el-row class="select-money">
-                              <el-col>
-                                <el-select
-                                  class="select-curTime"
-                                  @change="handleItemCurTimeChange(props.row.subItem[scope.$index].paymentTimePeriod,props.row.subItem[scope.$index])"
-                                  :disabled="operateType==='query'"
-                                  placeholder="请选择付款时间"
-                                  v-model="props.row.subItem[scope.$index].paymentTimePeriod">
-                                  <el-option
-                                    v-for="item in props.row.subItem[scope.$index].times"
-                                    :key="item.value"
-                                    :label="item.label"
-                                    :value="item.value">
-                                  </el-option>
-                                </el-select>
-                              </el-col>
-                              <el-col>
-                                <el-date-picker
-                                  @change="handleItemExactDateChange(props.row.subItem[scope.$index].paymentTime,props.row.subItem[scope.$index])"
-                                  v-model="props.row.subItem[scope.$index].paymentTime"
-                                  :disabled="operateType==='query'"
-                                  placeholder="请输入具体付款日期"
-                                  type="date"></el-date-picker>
-                              </el-col>
-                            </el-row>
+                            <el-select
+                              v-model="props.row.subItem[scope.$index].paymentCondition"
+                              placeholder="请选择付款条件"
+                              :disabled="operateType==='query'"
+                            >
+                              <el-option
+                                v-for="item in cardFinanceInfoForm.paymentConditions"
+                                :key="item.id"
+                                :value="item.id"
+                                :label="item.name"
+                              >
+                              </el-option>
+                            </el-select>
                           </template>
                         </el-table-column>
                         <el-table-column
@@ -792,31 +806,19 @@
                   label="付款时间"
                   width="250px">
                   <template scope="scope">
-                    <el-row class="select-money">
-                      <el-col>
-                        <el-select
-                          class="select-curTime"
-                          v-model="cardFinanceInfoForm.paymentMethods._final[scope.$index].paymentTimePeriod"
-                          :disabled="operateType==='query'"
-                          placeholder="请选择付款时间"
-                          @change="handleCurTimeChange(cardFinanceInfoForm.paymentMethods._final[scope.$index].paymentTimePeriod,cardFinanceInfoForm.paymentMethods._final[scope.$index])">
-                          <el-option
-                            v-for="item in cardFinanceInfoForm.paymentMethods._final[scope.$index].times"
-                            :key="item.value"
-                            :label="item.label"
-                            :value="item.value">
-                          </el-option>
-                        </el-select>
-                      </el-col>
-                      <el-col>
-                        <el-date-picker
-                          @change="handleExactDateChange(cardFinanceInfoForm.paymentMethods._final[scope.$index].paymentTime,cardFinanceInfoForm.paymentMethods._final[scope.$index])"
-                          v-model="cardFinanceInfoForm.paymentMethods._final[scope.$index].paymentTime"
-                          :disabled="operateType==='query'"
-                          placeholder="请输入具体付款日期"
-                          type="date"></el-date-picker>
-                      </el-col>
-                    </el-row>
+                    <el-select
+                      v-model="cardFinanceInfoForm.paymentMethods._final[scope.$index].paymentCondition"
+                      placeholder="请选择付款条件"
+                      :disabled="operateType==='query'"
+                    >
+                      <el-option
+                        v-for="item in cardFinanceInfoForm.paymentConditions"
+                        :key="item.id"
+                        :value="item.id"
+                        :label="item.name"
+                      >
+                      </el-option>
+                    </el-select>
                   </template>
                 </el-table-column>
                 <el-table-column
@@ -837,42 +839,6 @@
                   </template>
                 </el-table-column>
               </el-table>
-              <el-row class="mt20">
-                <el-col :span="8">
-                  <el-form-item label="币种" prop="currency">
-                    <el-select v-model="cardFinanceInfoForm.currency" placeholder="请选择币种"
-                               :disabled="operateType==='query'">
-                      <el-option
-                        v-for="item in cardFinanceInfoForm.currencyOptions"
-                        :key="item.value"
-                        :label="item.label"
-                        :value="item.value">
-                      </el-option>
-                    </el-select>
-                  </el-form-item>
-                </el-col>
-                <el-col :span="8">
-                  <el-form-item label="开票类型" prop="invoiceType">
-                    <el-select v-model="cardFinanceInfoForm.invoiceType"
-                               placeholder="请选择开票类型"
-                               :disabled="operateType==='query'">
-                      <el-option
-                        v-for="item in cardFinanceInfoForm.invoiceTypeOptions"
-                        :key="item.value"
-                        :label="item.label"
-                        :value="item.value">
-                      </el-option>
-                    </el-select>
-                  </el-form-item>
-                </el-col>
-                <el-col :span="8">
-                  <el-form-item label="合同总金额" prop="totalAmount">
-                    <el-input :disabled="!cardFinanceInfoForm.oneOffPay||operateType==='query'" v-model="cardFinanceInfoForm.totalAmount"
-                              placeholder="根据上表累加(含税价)">{{totalConMoney}}
-                    </el-input>
-                  </el-form-item>
-                </el-col>
-              </el-row>
               <el-row>
                 <el-col :span="8">
                   <el-form-item label="是否收取保证金" label-width="120px">
@@ -1772,14 +1738,15 @@
         }
         callback()
       }
-      const validateAgreenmentCode = (rule, value, callback)=> {
-        if (value && value.length !== 10) {
-          callback(new Error('error'))
-        }
-        callback()
-      }
 
       return {
+        tableTest:[
+          {
+            id:1,
+            name:'1',
+            cb:true,
+          }
+        ],
         updated:false,//在变更合同提交后是否显示变更原因
         previewData: {},//预览数据
         visible: false,//预览
@@ -1933,6 +1900,7 @@
           paymentMethods: {
             advance: [{
               type: '预付款',
+              test:false,
               seriousPayments: true,//是否多次付款
               paymentAmount: 0,//付款金额
               paymentTimePeriod: null,//付款方式
@@ -1955,6 +1923,7 @@
               ratio: '',
               subItem: [
                 {
+                  paymentCondition:'',
                   paymentAmount: 0,
                   paymentTimePeriod: null,
                   paymentTime: '',
@@ -1975,10 +1944,46 @@
                   remark: '',
                   ratio: ''
                 }
-              ]
+              ],
+              paymentCondition:'',//付款条件
+              paymentConditions:[
+                {
+                  id:'Z015',
+                  name:'到票日后15天付款'
+                },
+                {
+                  id:'Z020',
+                  name:'到票日后16天付款'
+                },
+                {
+                  id:'Z025',
+                  name:'到票日后17天付款'
+                },
+                {
+                  id:'Z030',
+                  name:'到票日后18天付款'
+                },
+                {
+                  id:'Z035',
+                  name:'到票日后19天付款'
+                },
+                {
+                  id:'Z040',
+                  name:'到票日后20天付款'
+                },
+                {
+                  id:'Z045',
+                  name:'到票日后21天付款'
+                },
+                {
+                  id:'Z000',
+                  name:'到票日后22天付款'
+                },
+              ],
             }],
             progress: [{
               type: '进度款',
+              paymentCondition:'',
               seriousPayments: false,
               paymentAmount: 0,
               paymentTimePeriod: null,
@@ -1999,6 +2004,7 @@
             }],
             _final: [{
               type: '尾款',
+              paymentCondition:'',
               seriousPayments: true,
               paymentAmount: 0,
               paymentTimePeriod: null,
@@ -2026,6 +2032,41 @@
               subItem: []
             }]
           },
+          paymentCondition:'',
+          paymentConditions:[
+            {
+              id:'Z015',
+              name:'到票日后15天付款'
+            },
+            {
+              id:'Z020',
+              name:'到票日后16天付款'
+            },
+            {
+              id:'Z025',
+              name:'到票日后17天付款'
+            },
+            {
+              id:'Z030',
+              name:'到票日后18天付款'
+            },
+            {
+              id:'Z035',
+              name:'到票日后19天付款'
+            },
+            {
+              id:'Z040',
+              name:'到票日后20天付款'
+            },
+            {
+              id:'Z045',
+              name:'到票日后21天付款'
+            },
+            {
+              id:'Z000',
+              name:'到票日后22天付款'
+            },
+          ],
           rules: {
             deposit: [{required: true, message: '请输入保证金金额', trigger: 'blur'}],
             payTime: [{required: true, message: '请输入付款时间'}]
@@ -2348,6 +2389,16 @@
           this.updateForm.updateMode?result= false:result= true
         }
         return result
+      },
+      enaledMoneyInvolved:function(){
+        let enabled=true
+        const contractType=this.baseInfoForm.contractType
+        console.log('contractType',contractType);
+        console.log('contractType-typeof',typeof(contractType));
+        if(contractType===2||contractType===4){
+          enabled=false
+        }
+        return enabled
       }
     },
     mounted() {
@@ -2390,7 +2441,7 @@
       initData(data, params){console.log('initData');
         Object.assign(this.baseInfoForm, data.baseInfoForm);
         Object.assign(this.cardContentInfoForm, data.cardContentInfoForm);
-        Object.assign(this.cardFinanceInfoForm, data.cardFinanceInfoForm);
+        //Object.assign(this.cardFinanceInfoForm, data.cardFinanceInfoForm);
         Object.assign(this.cardContCheckInfoForm, data.cardContCheckInfoForm);
         Object.assign(this.cardSealInfoForm, data.cardSealInfoForm);
         Object.assign(this.cardRemarkInfoForm, data.cardRemarkInfoForm);
@@ -2754,6 +2805,7 @@
         let paymentMethods = this.cardFinanceInfoForm.paymentMethods
         const item = {
           paymentAmount: 0,
+          paymentCondition:'',
           paymentTimePeriod: null,
           paymentTime: '',
           times: [
@@ -3466,6 +3518,18 @@
         fileName?enabled=false:enabled=true
         return enabled
       },
+      //多次付款时，清空付款金额，付款条件，备注
+      handleSeriousPaymentsChange(item){
+        console.log('handleSeriousPaymentsChange-item',item);
+          /*if(item.seriousPayments){
+            item.paymentAmount=null
+            item.paymentCondition=null
+            item.remark=null
+          }*/
+      },
+      handleCbChange(event){
+        console.log('event',event);
+      },
     },
     components: {
       Preview,
@@ -3505,6 +3569,14 @@
           }
         }
         this.cardContCheckInfoForm.materialMatters=result
+      },
+      'baseInfoForm.contractType':function(val){
+        if(val===2){//固定格式合同
+          this.cardFinanceInfoForm.moneyInvolved=true
+        }
+        if(val===4){
+          this.cardFinanceInfoForm.moneyInvolved=false
+        }
       }
     }
   }

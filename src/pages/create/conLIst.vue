@@ -13,21 +13,10 @@
           </el-form-item>
         </el-col>
         <el-col :span="7">
-          <el-form-item label="合同模式">
-            <el-select
-              v-model="form.contractTextType"
-              placeholder="请选择合同模式"
-              class="wp100">
-              <el-option label="合同模板" value="1"></el-option>
-              <el-option label="合同文本" value="2"></el-option>
-            </el-select>
-          </el-form-item>
-        </el-col>
-        <el-col :span="7">
-          <el-form-item label="合同类型" prop="conTypeName">
+          <el-form-item label="合同模式" prop="contractType">
             <el-select
               v-model="form.contractType"
-              placeholder="请选择合同类型"
+              placeholder="请选择合同模式"
               class="wp100"
             >
               <el-option
@@ -38,6 +27,11 @@
               >
               </el-option>
             </el-select>
+          </el-form-item>
+        </el-col>
+        <el-col :span="7">
+          <el-form-item label="业务类型" prop="conTypeName">
+            <el-input readonly placeholder="请选择业务类型" @focus="visible=true" v-model="form.conTypeName"></el-input>
           </el-form-item>
         </el-col>
         <el-col :span="7">
@@ -161,20 +155,39 @@
         </el-pagination>
       </el-col>
     </el-row>
+    <TreeModal
+      nodeKey="id"
+      title="选择业务类型"
+      :visible.sync="visible"
+      :regions="regions"
+      :defaultProps="defaultProps"
+      @ok="setBusiType"
+      v-on:close="closeTree">
+    </TreeModal>
   </div>
 </template>
 
 <script>
   import Api from '@/api/manageContract'
+  import TreeModal from '@/components/treeModal.vue'
+  import getBusiType from '@/mixins/getBusiType'
 
   export default {
+    mixins: [getBusiType],
     data() {
       return {
+        visible:false,
+        defaultProps: {
+          children: 'children',
+          label: 'businessName'
+        },
         form: {
           contractNo: '',
           contractName: '',
           contractTextType: '',
-          contractType: '',
+          conTypeName:'',//业务类型名
+          conTypeId:'',//业务类型id
+          contractType: '',//合同模式
           purchaseOrder: '',
           creatorName: '',
           creatorId: '',
@@ -300,6 +313,25 @@
         this.form.pageNo=page
         this.search()
       },
+      setBusiType(checkNodes, tree) {
+        const ids = [], names = []
+        if (checkNodes.length) {
+          for (let i = 0, len = checkNodes.length; i < len; i++) {
+            ids.push(checkNodes[i].id)
+            names.push(checkNodes[i].businessName)
+          }
+        }
+        this.form.conTypeId = ids.join('-')
+        this.form.conTypeName = names.join('-')
+
+        this.visible = false
+      },
+      closeTree() {
+        this.visible = false
+      },
+    },
+    components: {
+      TreeModal
     },
     mounted() {
       this.search()
