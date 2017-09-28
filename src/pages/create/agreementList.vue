@@ -8,14 +8,14 @@
         <el-row>
           <el-col :span="8">
             <el-form-item prop="id" label="从协议编号" label-width="150px">
-              <el-input v-model="agreementForm.id" placeholder="请输入从协议编号"></el-input>
+              <el-input v-model="agreementForm.protocolNo" placeholder="请输入从协议编号"></el-input>
             </el-form-item>
           </el-col>
           <el-col :span="8">
             <el-form-item label="供应商名称/编码" prop="search" label-width="150px">
               <el-select
                 size="small"
-                v-model="agreementForm.supplierId"
+                v-model="agreementForm.supplierName"
                 filterable
                 remote
                 placeholder="请输入关键词搜索"
@@ -35,10 +35,10 @@
         </el-row>
         <el-row>
           <el-col :span="8">
-            <el-form-item label="公司名称/编码" prop="companyId" label-width="150px">
+            <el-form-item label="公司名称/编码" prop="conSubjctName" label-width="150px">
               <el-select
                 size="small"
-                v-model="agreementForm.companyId"
+                v-model="agreementForm.conSubjctName"
                 filterable
                 remote
                 placeholder="请输入关键词搜索"
@@ -56,10 +56,10 @@
             </el-form-item>
           </el-col>
           <el-col :span="8">
-            <el-form-item label="创建人" prop="createrId" label-width="150px">
+            <el-form-item label="创建人" prop="creatorName" label-width="150px">
               <el-select
                 size="small"
-                v-model="agreementForm.createrId"
+                v-model="agreementForm.creatorName"
                 filterable
                 remote
                 placeholder="请输入创建人"
@@ -85,7 +85,7 @@
     <el-card v-if="agreementList.length">
       <el-table :data="agreementList" style="width:100%">
         <el-table-column type="index"></el-table-column>
-        <el-table-column prop="contractNo" label="从协议编码">
+        <el-table-column prop="protocolNo" label="从协议编码">
           <template scope="scope">
             <router-link :to="{path:'/ConCreate/querySlaveProtocol', query:{id:''+agreementList[scope.$index].id}}">
               {{agreementList[scope.$index].protocolNo}}
@@ -96,6 +96,15 @@
         <el-table-column prop="deptName" label="发起部门"></el-table-column>
         <el-table-column prop="createTime" label="发起时间"></el-table-column>
       </el-table>
+      <el-row class="mt20">
+        <el-col :span="8" :offset="8">
+          <el-pagination
+            @current-change="handleCurrentChange"
+            layout="prev, pager, next,jumper"
+            :total="total">
+          </el-pagination>
+        </el-col>
+      </el-row>
     </el-card>
   </div>
 </template>
@@ -106,20 +115,22 @@
     data: function () {
       return {
         agreementForm: {
-          id: '',
+          protocolNo: '',
           suppliers: [],
           loading: false,
           supplierName: '',
-          supplierId: '',
           companyName: '',
-          companyId: '',
+          conSubjctName: '',
           companies: [],
           agreementLoading: false,
           creatorLoading: false,
-          createrId: '',
+          creatorName: '',
           creators: [],
+          pageNo:1,
+          pageSize:10,
         },
-        agreementList: []
+        agreementList: [],
+        total:0,
       }
     },
     mounted:function(){
@@ -151,15 +162,14 @@
         }
       },
       handleQuery() {
-        const agreementForm = this.agreementForm
-        let params = {}
-        params.protocolNo = agreementForm.id
-        params.supplierName = agreementForm.supplierId
-        params.conSubjctName = agreementForm.companyId
-        params.creatorName = agreementForm.createrId
-        Api.getAgreementList(params)
+        Api.getAgreementList(this.agreementForm)
           .then((data) => {
-          this.agreementList = data.data.dataMap || []
+            const dataMap=data.data.dataMap
+            if(dataMap){
+              this.agreementList =dataMap.data||[]
+              this.total=dataMap.total
+            }
+
       })
       },
       getRemoteCreatorsByKeyWord(query){
@@ -173,6 +183,10 @@
         } else {
           this.agreementForm.creators = []
         }
+      },
+      handleCurrentChange(page){
+        this.agreementForm.pageNo=page
+        this.search()
       },
     }
   }

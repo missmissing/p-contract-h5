@@ -12,10 +12,10 @@
       <header slot="header">基本信息</header>
       <el-form ref="baseInfoForm" :model="baseInfoForm" label-width="100px"
                :rules="baseInfoForm.rules">
-        <el-row v-if="baseInfoForm.id">
+        <el-row v-if="protocolNo">
           <el-col :span="8">
-            <el-form-item prop="id" label="从协议编号">
-              <el-input v-model="baseInfoForm.id" :disabled="true"></el-input>
+            <el-form-item prop="protocolNo" label="从协议编号">
+              <el-input v-model="protocolNo" :disabled="true"></el-input>
             </el-form-item>
           </el-col>
         </el-row>
@@ -236,7 +236,7 @@
         </el-card>
       </el-form>
     </el-card>
-    <el-card class="mb20" v-if="cardRelatedInfoForm.contractList&&cardRelatedInfoForm.contractList.length">
+    <el-card class="mb20" v-if="cardRelatedInfoForm&&cardRelatedInfoForm.contractList&&cardRelatedInfoForm.contractList.length">
       <header slot="header">相关数据</header>
       <el-form rel="cardRelatedInfoForm" :model="cardRelatedInfoForm" label-width="100px">
         <el-table :data="cardRelatedInfoForm.contractList">
@@ -269,7 +269,7 @@
         </el-button>
       </el-col>-->
       <el-col style="text-align: center" class="mt20">
-        <el-button type="primary" @click="handleSubmit" style="display:inline-block">提交</el-button>
+        <el-button type="primary" :disabled="!enabledInupdated" @click="handleSubmit" style="display:inline-block">提交</el-button>
       </el-col>
     </el-row>
     <el-dialog title="新增合同供应商信息" :visible.sync="baseInfoForm.dialogAddContractSupplier" size="small">
@@ -348,7 +348,7 @@
         users: user,
         downloadUrl: downloadUrl,
         uploadUrl: uploadUrl,
-        id:null,//从协议编号
+        protocolNo:null,//从协议编号
         operateType:'create',//默认创建状态，query：查看
         activeTabName: 'tabBaseInfo',
         baseInfoForm: {
@@ -441,10 +441,7 @@
           .then((data)=>{
             const dataMap=data.data.dataMap
             if(dataMap){
-              Object.assign(this.baseInfoForm,dataMap.baseInfoForm)
-              Object.assign(this.cardSealInfoForm,dataMap.cardSealInfoForm)
-              Object.assign(this.cardRemarkInfoForm,dataMap.cardRemarkInfoForm)
-              Object.assign(this.cardRelatedInfoForm,dataMap.cardRelatedInfoForm)
+              Object.assign(this,dataMap)
             }
           })
       },

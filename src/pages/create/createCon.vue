@@ -177,6 +177,11 @@
                         :disabled="true"></el-input>
             </el-form-item>
           </el-col>
+          <el-col :span="6">
+            <el-button type="primary" @click="handlePreview" style="margin-left:33px"
+                       v-if="operateType==='query'&&baseInfoForm.contractTextType===1">预览
+            </el-button>
+          </el-col>
         </el-row>
         <el-row>
           <el-col :span="8">
@@ -186,11 +191,6 @@
                 <el-radio :label="0">我方先盖章</el-radio>
               </el-radio-group>
             </el-form-item>
-          </el-col>
-          <el-col :span="6">
-            <el-button type="primary" @click="handlePreview" style="margin-left:33px"
-                       v-if="operateType==='query'&&baseInfoForm.contractTextType===1">预览
-            </el-button>
           </el-col>
         </el-row>
         <el-row v-if="baseInfoForm.sealOrder===0">
@@ -277,7 +277,7 @@
             </el-card>
             <el-card v-if="baseInfoForm.contractType!==4" class="mt20">
               <header slot="header">合同标的</header>
-              <el-button v-if="baseInfoForm.contractType===3&&!baseInfoForm.prNo"
+              <el-button v-if="baseInfoForm.contractType===3&&!baseInfoForm.prNo&&operateType!=='query'"
                          @click="handleAddConStandard" icon="plus" class="mb10"
                          type="primary">新增
               </el-button>
@@ -1747,6 +1747,7 @@
   import store from 'store'
   import Process from '@/components/process.vue'
   import {formatDate} from '@/filters/moment'
+  import {routerNames} from '@/core/consts'
 
   const user = store.get('user')
 
@@ -2350,29 +2351,26 @@
       }
     },
     mounted() {
-      const params = {};
       const query = this.$route.query
       if (JSON.stringify(query) !== '{}') {
         if(query.operateType){
           this.operateType = query.operateType
           if(query.operateType==='create'){
-            let types = []
-            types = query.curConTypeId.split('-');
+            const params = {}
+            const types = query.curConTypeId.split('-')
             params.folio = query.currentFolio
             params.contractType = query.curConModelId;//合同模式
             params.contractBusinessTypeFirst = types[0];
             params.contractBusinessTypeSecond = types[1];
             params.contractBusinessTypeThird = types[2];
+            Api.getContractBaseInfo(params).then((data) => {
+              const dataMap = data.data.dataMap
+              if (dataMap) {
+                this.initData(dataMap, params)
+              }
+            })
           }
         }
-      }
-      if (this.operateType === 'create') {
-        Api.getContractBaseInfo(params).then((data) => {
-          const dataMap = data.data.dataMap
-          if (dataMap) {
-            this.initData(dataMap, params)
-          }
-        })
       }
       if (this.$route.path && this.$route.path === '/ConCreate/conCheck') {
         this.operateType='query'
@@ -2380,7 +2378,7 @@
           Api.getContractDetailByContractId(query.contractId).then((data)=>{
             const dataMap = data.data.dataMap
             if (dataMap) {
-              this.initData(dataMap, params)
+              this.initData(dataMap)
             }
           })
       }
@@ -2389,7 +2387,7 @@
       }
     },
     methods: {
-      initData(data, params){
+      initData(data, params){console.log('initData');
         Object.assign(this.baseInfoForm, data.baseInfoForm);
         Object.assign(this.cardContentInfoForm, data.cardContentInfoForm);
         Object.assign(this.cardFinanceInfoForm, data.cardFinanceInfoForm);
@@ -3026,6 +3024,7 @@
               if (data.data.dataMap.id) {
                 this.$message.success('提交成功！')
                 this.operateType = 'query'
+                this.$router.push({name:routerNames.con_index})
               }
               this.comLoading()
             })

@@ -91,7 +91,7 @@
       </el-button>
     </div>
     <el-dialog title="查询比价单" :visible.sync="dialogVisible" size="large">
-      <el-form ref="prForm" :model="prForm" label-width="100px" :rules="prForm.rules">
+      <el-form ref="prForm" :model="prForm" label-width="100px">
         <el-row>
           <el-col :span="8">
             <el-form-item label="PR号" prop="prCode">
@@ -189,6 +189,15 @@
           </template>
         </el-table-column>
       </el-table>
+      <!--<el-row class="mt20">
+        <el-col :span="8" :offset="8">
+          <el-pagination
+            @current-change="handleCurrentChange"
+            layout="prev, pager, next,jumper"
+            :total="total">
+          </el-pagination>
+        </el-col>
+      </el-row>-->
       <template slot="footer">
         <el-button type="primary" @click="handleCloseDialog">关闭</el-button>
         <el-button type="primary" @click="handleOKDialog">确定</el-button>
@@ -278,11 +287,8 @@
               }
             ]
           },
-          rules: {
-            /* createPerson: [
-              {required: true, message: '请输入搜索关键字', trigger: 'blur'}
-            ] */
-          }
+          pageNo:1,
+          pageSize:10,
         },
         priceList: [],
         currentPr: null, // 当前选择的比价单
@@ -291,7 +297,9 @@
         defaultProps: {
           children: 'children',
           label: 'businessName'
-        }
+        },
+        total:0,//总条目数
+        pageCount:0,//总页数
       }
     },
     created(){},
@@ -442,7 +450,7 @@
 
         this.visible = false
       },
-      handleQueryPriceList(formName) {
+      handleQueryPriceList() {
         this.comLoading(1)
         this.priceList=[]
         let startTime = this.prForm.createTime[0] ? formatDate(this.prForm.createTime[0].toLocaleDateString()) : ''
@@ -453,14 +461,17 @@
           day=parseInt(times[2])+1
           endDay=times[0]+'-'+times[1]+'-'+[day]
         }
-        this.$refs[formName].validate((valid) => {
+        const params={
+          pr: this.prForm.prCode,
+          originator: this.prForm.createPerson,
+          fromDate: startTime,
+          toDate: endDay,
+          pageNo:this.prForm.pageNo,
+          pageSize:this.prForm.pageSize
+        }
+        this.$refs['prForm'].validate((valid) => {
           if (valid) {
-            Api.getQrList({
-              pr: this.prForm.prCode,
-              originator: this.prForm.createPerson,
-              fromDate: startTime,
-              toDate: endDay
-            }).then((data) => {
+            Api.getQrList(params).then((data) => {
               if (data.data.dataMap && data.data.dataMap.length > 0) {
                 let arr = data.data.dataMap
                 for (let i = 0, len = arr.length; i < len; i++) {
@@ -519,7 +530,11 @@
       },
       handleIfSelectChange(val){
         console.log('val',val);
-      }
+      },
+      handleCurrentChange(page){
+        this.prForm.pageNo=page
+        this.handleQueryPriceList()
+      },
     }
   }
 </script>

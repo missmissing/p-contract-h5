@@ -156,8 +156,8 @@
       <el-col :span="8" :offset="8">
         <el-pagination
           @current-change="handleCurrentChange"
-          layout="prev, pager, next"
-          :total="1000">
+          layout="prev, pager, next,jumper"
+          :total="total">
         </el-pagination>
       </el-col>
     </el-row>
@@ -186,7 +186,9 @@
           effective1: true,
           daterange: [],
           loading: false,
-          opratorLoading: false
+          opratorLoading: false,
+          pageNo:1,
+          pageSize:10,
         },
         conModels: [
           {id: '1', name: '单一合同'},
@@ -202,19 +204,21 @@
         creators: [],
         loading: false,
 
-        pageNo:1,
-        pageSize:10,
+
         total:0,//总条目数
         pageCount:0,//总页数
       }
     },
     watch: {},
     methods: {
-      search(params) {
+      search() {
         this.loading = true
-        /*Object.assign()*/
-        Api.getConList(this.form).then((res) => {
-          this.tableData = res.data.dataMap.data
+        Api.getConList(this.form).then((data) => {
+          const dataMap=data.data.dataMap
+          if(dataMap){
+            this.tableData = dataMap.data
+            this.total=dataMap.total
+          }
           this.loading = false
         })
       },
@@ -293,7 +297,8 @@
         }
       },
       handleCurrentChange(page){
-        console.log('handleCurrentChange',page);
+        this.form.pageNo=page
+        this.search()
       },
     },
     mounted() {
