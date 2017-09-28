@@ -48,18 +48,6 @@
 </style>
 <template>
   <div class="createCon" v-loading="loadingFlag" :element-loading-text="loadingText">
-    <el-table :data="tableTest">
-      <el-table-column type="expand" v-if="tableTest[0].cb">
-        展开内容
-      </el-table-column>
-      <el-table-column prop="id" label="id"></el-table-column>
-      <el-table-column prop="name" label="name"></el-table-column>
-      <el-table-column prop="cb" label="cb">
-        <template scope="scope">
-          <el-checkbox v-model="tableTest[scope.$index].cb" @change="handleCbChange"></el-checkbox>
-        </template>
-      </el-table-column>
-    </el-table>
     <el-card v-if="operateType==='update'||updated">
       <header slot="header">变更原因</header>
       <el-form ref="updateForm" :model="updateForm" label-width="100px" :rules="updateForm.rules">
@@ -1745,13 +1733,6 @@
       }
 
       return {
-        tableTest:[
-          {
-            id:1,
-            name:'1',
-            cb:true,
-          }
-        ],
         updated:false,//在变更合同提交后是否显示变更原因
         previewData: {},//预览数据
         visible: false,//预览
@@ -3485,9 +3466,6 @@
         let enabled=true
         fileName?enabled=false:enabled=true
         return enabled
-      },
-      handleCbChange(event){
-        console.log('event',event);
       },
       handleSeriousPaymentsChange(item,event){
         item.seriousPayments=event.target.checked
