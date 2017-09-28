@@ -127,7 +127,6 @@
             <el-form-item label="相关附件">
               <Upload
                 :fileList.sync="fileList"
-                :data="uploadData"
                 multiple>
                 <!--<div class="el-upload__tip" slot="tip">文件不超过10M</div>-->
               </Upload>
@@ -164,7 +163,6 @@
         compensateType: null,
         compensateMoney: '',
         fileList: [],
-        uploadData: {},
         options: [{label: '供应商向我方赔付', value: 0}, {label: '我方向供应商佩服', value: 1}],
         info: {},
         toDetail: {name: routerNames.con_Check, query: {contractId: ''}},
@@ -215,7 +213,7 @@
         })
       },
       getResult() {
-        this.fileIds = this.fileList.map((file) => {
+        this.handleForm.fileIds = this.fileList.map((file) => {
           if (file.status === 'success') {
             return file.fileId
           }
@@ -247,6 +245,7 @@
         const result = this.getResult()
         console.log(result)
         if (!this.check(result)) {
+          this.$message.warning('表单信息不完整！')
           return
         }
         this.comLoading(1)

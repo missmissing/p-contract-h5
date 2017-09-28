@@ -276,6 +276,17 @@ const router = new Router({
           }
         },
         {
+          path: '/conperf/inspectionreject',
+          component: function (resolve) {
+            require(['../pages/performance/inspectionRejectSee.vue'], resolve)
+          },
+          name: routerNames.con_check_reject_see,
+          meta: {
+            auth: true,
+            hidden: true
+          }
+        },
+        {
           path: '/conperf/compensate',
           component: function (resolve) {
             require(['../pages/performance/compensate.vue'], resolve)

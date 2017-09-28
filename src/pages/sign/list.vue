@@ -1,5 +1,7 @@
 <style type="text/scss" lang="scss" scoped>
-
+  .router-link {
+    color: #20a0ff;
+  }
 </style>
 
 <template>
@@ -19,12 +21,7 @@
       <el-row>
         <el-col :span="6">
           <el-form-item label="订单类型">
-            <el-select v-model="form.orderType">
-              <el-option
-                :key="null"
-                label="请选择"
-                :value="null">
-              </el-option>
+            <el-select v-model="form.category" clearable>
               <el-option
                 v-for="item in options"
                 :key="item.value"
@@ -63,13 +60,16 @@
         min-width="150"
         label="采购订单号">
         <template scope="scope">
-          <el-button type="text" @click.native.prevent="see(scope.row)">{{scope.row.templateCode}}</el-button>
+          <router-link class="router-link" :to="see(scope.row)">
+            {{scope.row.pr}}
+          </router-link>
         </template>
       </el-table-column>
       <el-table-column
-        prop="creatorName"
+        prop="category"
         min-width="100"
-        label="订单类型">
+        label="订单类型"
+        :formatter="formatType">
       </el-table-column>
       <el-table-column
         prop="itemNo"
@@ -77,24 +77,29 @@
         label="行项目">
       </el-table-column>
       <el-table-column
-        prop="creatorName"
+        prop="materialCode"
         min-width="100"
         label="物料编码">
       </el-table-column>
       <el-table-column
-        prop="creatorName"
+        prop="materialName"
         min-width="100"
         label="物料描述">
       </el-table-column>
       <el-table-column
-        prop="creatorName"
+        prop="total"
         min-width="100"
         label="数量">
       </el-table-column>
       <el-table-column
-        prop="creatorName"
+        prop="price"
         min-width="100"
         label="含税单价">
+      </el-table-column>
+      <el-table-column
+        prop="taxRate"
+        min-width="100"
+        label="税率">
       </el-table-column>
       <el-table-column
         prop="creatorName"
@@ -127,7 +132,7 @@
 
 <script>
   import Api from '@/api/sign'
-  import {routerNames} from '@/core/consts'
+  import {routerNames, prTypeMap} from '@/core/consts'
   import comLoading from '@/mixins/comLoading'
   import {formatDate} from '@/filters/moment'
   import SelectPerson from '@/components/selectPerson.vue'
@@ -138,12 +143,11 @@
       return {
         form: {
           fuzzySearch: '',
-          orderType: '',
+          category: '',
           createDateStart: '',
           createDateEnd: '',
           initiator: '',
-          orderSource: 0,
-          category: 0,
+          orderSource: '',
           pageNo: 1,
           pageSize: 10
         },
@@ -172,6 +176,9 @@
       selectPerson(val) {
         this.form.initiator = val
       },
+      formatType(row, column, cellValue) {
+        return [1, 3].indexOf(cellValue) > -1 ? prTypeMap[1] : prTypeMap[2]
+      },
       getList() {
         this.comLoading(1)
         Api.query(this.form).then((res) => {
@@ -182,13 +189,13 @@
           this.totalPage = total
         })
       },
-      see(index, row) {
+      see(row) {
         console.log(row)
-        const id = row.id
-        this.$router.push({
+        const id = row.purchaseOrderId
+        return {
           name: routerNames.con_purchase_see,
           query: {id}
-        })
+        }
       },
       formatDateRange(value) {
         const daterange = value.split(' ')

@@ -1,5 +1,7 @@
 <style type="text/scss" lang="scss" scoped>
-
+  .router-link {
+    color: #20a0ff;
+  }
 </style>
 
 <template>
@@ -20,9 +22,10 @@
         <el-col :span="7">
           <el-form-item label="模板类型">
             <el-select
+              clearable
               v-model="form.templateType"
+              @clear="form.templateType=null"
               class="wp100">
-              <el-option label="请选择" :value="null"></el-option>
               <el-option label="合同模板" value="0"></el-option>
               <el-option label="合同文本" value="1"></el-option>
             </el-select>
@@ -65,18 +68,19 @@
       highlight-current-row
       class="wp100">
       <el-table-column
-        prop="templateName"
-        min-width="150"
-        label="模板名称">
-        <template scope="scope">
-          <el-button type="text" @click.native.prevent="see(scope.$index,scope.row)">{{scope.row.templateName}}
-          </el-button>
-        </template>
-      </el-table-column>
-      <el-table-column
         prop="templateCode"
         min-width="150"
         label="模板编号">
+        <template scope="scope">
+          <router-link class="router-link" :to="see(scope.row)">
+            {{scope.row.templateCode}}
+          </router-link>
+        </template>
+      </el-table-column>
+      <el-table-column
+        prop="templateName"
+        min-width="150"
+        label="模板名称">
       </el-table-column>
       <el-table-column
         prop="templateType"
@@ -173,14 +177,13 @@
           this.comLoading()
         })
       },
-      see(index, row) {
-        console.log(row)
-        this.$router.push({
+      see(row) {
+        return {
           name: routerNames.con_tpl_see,
           query: {
             id: row.id
           }
-        })
+        }
       },
       formatDateRange(value) {
         const daterange = value.split(' ')

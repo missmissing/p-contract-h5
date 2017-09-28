@@ -162,7 +162,6 @@
         fileList: [],
         uploadData: {},
         options: [{label: '供应商向我方赔付', value: 0}, {label: '我方向供应商赔付', value: 1}],
-        info: {},
         toDetail: {name: routerNames.con_Check, query: {contractId: ''}},
         basicForm: {
           contractNo: ''
@@ -179,21 +178,23 @@
       getInfo(id) {
         this.comLoading(1)
         Api.getViolateByProcInstId({procInstId: id}).then((res) => {
+          this.comLoading()
           const data = res.data.dataMap
           console.log(data)
-          this.info = data
-          const {startTime, endTime, businessOperator, businessDept, signTime, contractId} = data
-          this.startTime = startTime
-          this.endTime = endTime
-          this.signTime = signTime
-          this.businessDept = businessDept
-          this.businessOperator = businessOperator
-          this.toDetail.query.contractId = contractId
-          this.comLoading()
+          this.setData(data)
         }, () => {
           this.comLoading()
         })
       }
+    },
+    setData(data) {
+      const {startTime, endTime, businessOperator, businessDept, signTime, contractId} = data
+      this.startTime = startTime
+      this.endTime = endTime
+      this.signTime = signTime
+      this.businessDept = businessDept
+      this.businessOperator = businessOperator
+      this.toDetail.query.contractId = contractId
     },
     created() {
       const {id} = this.$route.query

@@ -16,11 +16,11 @@
           <span class="common-title">基本信息</span>
         </div>
         <div class="basic-info">
-          <el-form label-width="120px">
+          <el-form label-width="120px" :model="basicForm" :rules="basicRules" ref="basicForm">
             <el-row>
               <el-col :span="8">
-                <el-form-item label="采购订单编号">
-                  <el-input v-model="prCode" icon="search" :on-icon-click="search"></el-input>
+                <el-form-item label="采购订单号" prop="orderId">
+                  <el-input v-model="basicForm.orderId" icon="search" :on-icon-click="search" @keyup.enter.native="search"></el-input>
                 </el-form-item>
               </el-col>
               <el-button type="primary" class="ml20" v-show="toDetail.query.id">
@@ -82,7 +82,7 @@
                 <el-form-item label="合同验收日期">
                   <el-date-picker
                     style="width:100%;"
-                    v-model="checkDate"
+                    v-model="contractCheckDate"
                     type="date"
                     :editable="false"
                     placeholder="选择日期">
@@ -111,15 +111,15 @@
               width="80">
             </el-table-column>
             <el-table-column
-              prop="acceptRequire"
+              prop="serviceName"
               label="验收要素">
             </el-table-column>
             <el-table-column
-              prop="referStandar"
+              prop="serviceRequire"
               label="参考标准">
             </el-table-column>
             <el-table-column
-              prop="inspectResult"
+              prop="checkResult"
               label="检查结果">
             </el-table-column>
             <el-table-column
@@ -147,29 +147,29 @@
           <span class="common-title">处理结论</span>
         </div>
         <div class="handle-info">
-          <el-form label-width="120px">
+          <el-form label-width="120px" :model="handleForm" :rules="handleFormRules" ref="handleForm">
             <el-form-item label="">
-              <el-radio class="radio" v-model="radio" label="1">继续履行</el-radio>
-              <el-radio class="radio" v-model="radio" label="2">变更合同</el-radio>
-              <el-radio class="radio" v-model="radio" label="3">按验收实际结果履行合同</el-radio>
-              <el-radio class="radio" v-model="radio" label="4">转合同违约处理</el-radio>
+              <el-radio class="radio" v-model="handleForm.schemeType" :label="0">继续履行</el-radio>
+              <el-radio class="radio" v-model="handleForm.schemeType" :label="1">变更合同</el-radio>
+              <el-radio class="radio" v-model="handleForm.schemeType" :label="2">按验收实际结果履行合同</el-radio>
+              <el-radio class="radio" v-model="handleForm.schemeType" :label="3">转合同违约处理</el-radio>
             </el-form-item>
-            <el-form-item label="不合格原因">
+            <el-form-item label="不合格原因" prop="unqualifiedReason">
               <el-input
                 type="textarea"
                 :maxlength="300"
                 :autosize="{ minRows: 2 }"
                 resize="none"
-                v-model="reason">
+                v-model="handleForm.unqualifiedReason">
               </el-input>
             </el-form-item>
-            <el-form-item label="处理方案">
+            <el-form-item label="处理方案" prop="treatmentScheme">
               <el-input
                 type="textarea"
                 :maxlength="300"
                 :autosize="{ minRows: 2 }"
                 resize="none"
-                v-model="handleResult">
+                v-model="handleForm.treatmentScheme">
               </el-input>
             </el-form-item>
             <el-form-item label="相关附件">
@@ -186,7 +186,7 @@
     </div>
     <div class="mt20 mb20 ml20">
       <!--<el-button>保 存</el-button>-->
-      <el-button type="primary">提 交</el-button>
+      <el-button type="primary" @click="submit">提 交</el-button>
     </div>
 
     <el-dialog
@@ -197,28 +197,28 @@
         :model="addNotQualityDialogForm"
         :rules="qualityRules"
         label-width="80px">
-        <el-form-item label="验收要求" prop="acceptRequire">
+        <el-form-item label="验收要求" prop="serviceName">
           <el-input
             type="textarea"
             :autosize="{ minRows: 2,maxRows:4 }"
             resize="none"
-            v-model="addNotQualityDialogForm.acceptRequire">
+            v-model="addNotQualityDialogForm.serviceName">
           </el-input>
         </el-form-item>
-        <el-form-item label="参考标准" prop="referStandar">
+        <el-form-item label="参考标准" prop="serviceRequire">
           <el-input
             type="textarea"
             :autosize="{ minRows: 2,maxRows:4 }"
             resize="none"
-            v-model="addNotQualityDialogForm.referStandar">
+            v-model="addNotQualityDialogForm.serviceRequire">
           </el-input>
         </el-form-item>
-        <el-form-item label="检查结果" prop="inspectResult">
+        <el-form-item label="检查结果" prop="checkResult">
           <el-input
             type="textarea"
             :autosize="{ minRows: 2,maxRows:4 }"
             resize="none"
-            v-model="addNotQualityDialogForm.inspectResult">
+            v-model="addNotQualityDialogForm.checkResult">
           </el-input>
         </el-form-item>
         <el-form-item label="备注" prop="remark">
@@ -248,23 +248,19 @@
     mixins: [comLoading],
     data() {
       return {
-        prCode: '',
-        checkDate: '',
-        radio: '1',
-        reason: '',
-        handleResult: '',
+        contractCheckDate: '',
         fileList: [],
         uploadData: {},
         nonconformity: [],
         addNotQualityDialogForm: {
-          acceptRequire: '',
-          referStandar: '',
-          inspectResult: '',
+          serviceName: '',
+          serviceRequire: '',
+          checkResult: '',
           remark: ''
         },
         addNotQualityDialogVisible: false,
         qualityRules: {
-          acceptRequire: [{
+          serviceName: [{
             required: true,
             message: '请输入验收要求',
             trigger: 'blur'
@@ -273,7 +269,7 @@
             message: '长度不超过300个字符',
             trigger: 'change'
           }],
-          referStandar: [{
+          serviceRequire: [{
             required: true,
             message: '请输入参考标准',
             trigger: 'blur'
@@ -282,7 +278,7 @@
             message: '长度不超过300个字符',
             trigger: 'change'
           }],
-          inspectResult: [{
+          checkResult: [{
             required: true,
             message: '请输入检查结果',
             trigger: 'blur'
@@ -293,19 +289,41 @@
           }],
           remark: [{max: 300, message: '长度不超过300个字符', trigger: 'change'}]
         },
+        basicForm: {
+          orderId: ''
+        },
+        basicRules: {
+          orderId: [{required: true, message: '请输入采购订单号', trigger: 'change'}]
+        },
+        handleForm: {
+          schemeType: 1,
+          unqualifiedReason: '',
+          treatmentScheme: '',
+          fileIds: null
+        },
+        handleFormRules: {
+          unqualifiedReason: [{required: true, message: '请输入违约/赔付原因'}, {
+            max: 300,
+            message: '长度不超过300个字符'
+          }],
+          treatmentScheme: [{required: true, message: '请输入处理方案'}, {
+            max: 300,
+            message: '长度不超过300个字符'
+          }]
+        },
         toDetail: {name: routerNames.con_Check, query: {id: ''}}
       }
     },
     methods: {
       search() {
-        console.log(this.prCode)
-        if (!this.prCode) {
+        if (!this.basicForm.orderId) {
           this.$message.warning('请输入采购订单号！')
           return
         }
         this.comLoading(1)
-        Api.detail({id: this.prCode}).then((res) => {
+        Api.getUnqualifiedByOrderId({orderId: this.basicForm.orderId}).then((res) => {
           const data = res.data.dataMap
+          console.log(data)
           const {contractId} = data
           this.toDetail.query.id = contractId
           this.comLoading()
@@ -336,6 +354,38 @@
       },
       deleteRow(index, rows) {
         rows.splice(index, 1)
+      },
+      getResult() {
+        this.handleForm.fileIds = this.fileList.map((file) => {
+          if (file.status === 'success') {
+            return file.fileId
+          }
+        })
+      },
+      check(result) {
+        let flag = false
+        this.$refs['basicForm'].validate((valid) => {
+          if (valid) {
+            this.$refs['handleForm'].validate((valid) => {
+              if (valid) {
+                flag = true
+              }
+            })
+          }
+        })
+
+        return flag
+      },
+      submit() {
+        this.comLoading(1)
+        const result = this.getResult()
+        if (!this.check(result)) {
+          this.$message.warning('表单信息不完整！')
+          return
+        }
+        Api.unqualifiedSave(result).then((res) => {
+          this.comLoading()
+        })
       }
     },
     components: {

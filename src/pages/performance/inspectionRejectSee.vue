@@ -1,0 +1,224 @@
+<style type="text/scss" lang="scss" scoped>
+  .form-container {
+    .router-link {
+      color: #FFFFFF;
+    }
+  }
+</style>
+
+<template>
+  <div class="form-container"
+       v-loading="loadingFlag"
+       :element-loading-text="loadingText">
+    <div>
+      <el-card>
+        <div slot="header">
+          <span class="common-title">基本信息</span>
+        </div>
+        <div class="basic-info">
+          <el-form label-width="120px">
+            <el-row>
+              <el-col :span="8">
+                <el-form-item label="采购订单号" prop="orderId">
+                  <el-input v-model="orderId" disabled></el-input>
+                </el-form-item>
+              </el-col>
+              <el-button type="primary" class="ml20" v-show="toDetail.query.id">
+                <router-link class="router-link" :to="toDetail" target="_blank">详 情</router-link>
+              </el-button>
+            </el-row>
+            <el-row>
+              <el-col :span="6">
+                <el-form-item label="业务经办人">
+                  <el-input disabled></el-input>
+                </el-form-item>
+              </el-col>
+              <el-col :span="6">
+                <el-form-item label="业务部门">
+                  <el-input disabled></el-input>
+                </el-form-item>
+              </el-col>
+              <el-col :span="6">
+                <el-form-item label="合同编号">
+                  <el-input disabled></el-input>
+                </el-form-item>
+              </el-col>
+              <el-col :span="6">
+                <el-form-item label="合同模式">
+                  <el-input disabled></el-input>
+                </el-form-item>
+              </el-col>
+              <el-col :span="6">
+                <el-form-item label="合同版本">
+                  <el-input disabled></el-input>
+                </el-form-item>
+              </el-col>
+              <el-col :span="6">
+                <el-form-item label="合同类型">
+                  <el-input disabled></el-input>
+                </el-form-item>
+              </el-col>
+              <el-col :span="6">
+                <el-form-item label="所属项目">
+                  <el-input disabled></el-input>
+                </el-form-item>
+              </el-col>
+              <el-col :span="6">
+                <el-form-item label="验收责任人">
+                  <el-input disabled></el-input>
+                </el-form-item>
+              </el-col>
+              <el-col :span="6">
+                <el-form-item label="合同生效日期">
+                  <el-input disabled></el-input>
+                </el-form-item>
+              </el-col>
+              <el-col :span="6">
+                <el-form-item label="合同终止日期">
+                  <el-input disabled></el-input>
+                </el-form-item>
+              </el-col>
+              <el-col :span="6">
+                <el-form-item label="合同验收日期">
+                  <el-input :value="contractCheckDate | formatDate" disabled></el-input>
+                </el-form-item>
+              </el-col>
+            </el-row>
+          </el-form>
+        </div>
+      </el-card>
+      <el-card>
+        <div slot="header">
+          <span class="common-title">不合格事项</span>
+        </div>
+        <div class="checkItems-info">
+          <el-table
+            :data="checkItems"
+            border
+            style="width: 100%">
+            <el-table-column
+              type="index"
+              label="序号"
+              width="80">
+            </el-table-column>
+            <el-table-column
+              prop="serviceName"
+              label="验收要素">
+            </el-table-column>
+            <el-table-column
+              prop="serviceRequire"
+              label="参考标准">
+            </el-table-column>
+            <el-table-column
+              prop="checkResult"
+              label="检查结果">
+            </el-table-column>
+            <el-table-column
+              prop="remark"
+              label="备注">
+            </el-table-column>
+          </el-table>
+        </div>
+      </el-card>
+      <el-card>
+        <div slot="header">
+          <span class="common-title">处理结论</span>
+        </div>
+        <div class="handle-info">
+          <el-form label-width="120px">
+            <el-form-item label="">
+              <el-radio class="radio" v-model="schemeType" :label="0" disabled>继续履行</el-radio>
+              <el-radio class="radio" v-model="schemeType" :label="1" disabled>变更合同</el-radio>
+              <el-radio class="radio" v-model="schemeType" :label="2" disabled>按验收实际结果履行合同</el-radio>
+              <el-radio class="radio" v-model="schemeType" :label="3" disabled>转合同违约处理</el-radio>
+            </el-form-item>
+            <el-form-item label="不合格原因" prop="unqualifiedReason">
+              <el-input
+                disabled
+                type="textarea"
+                :maxlength="300"
+                :autosize="{ minRows: 2 }"
+                resize="none"
+                v-model="unqualifiedReason">
+              </el-input>
+            </el-form-item>
+            <el-form-item label="处理方案" prop="treatmentScheme">
+              <el-input
+                type="textarea"
+                :maxlength="300"
+                :autosize="{ minRows: 2 }"
+                resize="none"
+                v-model="treatmentScheme">
+              </el-input>
+            </el-form-item>
+            <el-form-item label="相关附件">
+              <Upload
+                :fileList.sync="fileList"
+                disabled
+                multiple>
+                <!--<div class="el-upload__tip" slot="tip">文件不超过10M</div>-->
+              </Upload>
+            </el-form-item>
+          </el-form>
+        </div>
+      </el-card>
+      <Process></Process>
+    </div>
+  </div>
+</template>
+
+<script>
+  import Api from '@/api/performance'
+  import Upload from '@/components/upload.vue'
+  import {routerNames} from '@/core/consts'
+  import comLoading from '@/mixins/comLoading'
+  import {formatDate} from '@/filters/moment'
+  import Process from '@/components/process'
+
+  export default {
+    mixins: [comLoading],
+    data() {
+      return {
+        contractCheckDate: '',
+        checkItems: [],
+        orderId: '',
+        schemeType: 1,
+        unqualifiedReason: '',
+        treatmentScheme: '',
+        fileList: [],
+        toDetail: {name: routerNames.con_Check, query: {id: ''}}
+      }
+    },
+    methods: {
+      getInfo(procInstId) {
+        this.comLoading(1)
+        Api.getUnqualifiedByProcInstId({procInstId}).then((res) => {
+          this.comLoading()
+          const data = res.data.dataMap
+          console.log(data)
+          this.setData(data)
+        })
+      },
+      setData(data) {
+        const {contractCheckDate, checkItems, unqualifiedReason, treatmentScheme, schemeType, files} = data
+        this.checkItems = checkItems
+        this.contractCheckDate = contractCheckDate
+        this.unqualifiedReason = unqualifiedReason
+        this.treatmentScheme = treatmentScheme
+        this.schemeType = schemeType
+        this.fileList = files
+      }
+    },
+    created() {
+      const {id} = this.$route.query
+      this.getInfo(id)
+    },
+    components: {
+      Upload,
+      Process
+    },
+    filters: {
+      formatDate
+    }
+  }
+</script>

@@ -10,6 +10,8 @@
   <el-select
     v-model="value"
     :multiple="multiple"
+    clearable
+    @clear="value=null"
     filterable
     remote
     placeholder="请输入关键词"
@@ -44,7 +46,7 @@
     },
     data() {
       return {
-        value: {},
+        value: null,
         options: [],
         loading: false
       }

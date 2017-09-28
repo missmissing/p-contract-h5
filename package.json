@@ -19,7 +19,7 @@
   },
   "dependencies": {
     "axios": "^0.16.2",
-    "element-ui": "^1.4.4",
+    "element-ui": "^1.4.6",
     "js-cookie": "^2.1.4",
     "lodash": "^4.17.4",
     "mitt": "^1.1.2",
@@ -35,7 +35,7 @@
     "autoprefixer": "^7.1.2",
     "axios-mock-adapter": "^1.9.0",
     "babel-core": "^6.22.1",
-    "babel-eslint": "^8.0.0",
+    "babel-eslint": "^8.0.1",
     "babel-helper-vue-jsx-merge-props": "^2.0.2",
     "babel-loader": "^7.1.1",
     "babel-plugin-component": "^0.10.1",

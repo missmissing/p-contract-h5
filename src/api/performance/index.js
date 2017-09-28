@@ -18,5 +18,14 @@ export default {
   },
   getViolateByProcInstId(params) {
     return Http.get(`${contract}/contract-web/contEnforcing/getViolateByProcInstId`, params)
+  },
+  getUnqualifiedByOrderId(params) {
+    return Http.get(`${contract}/contract-web/contEnforcing/getUnqualifiedByOrderId`, params)
+  },
+  unqualifiedSave(params) {
+    return Http.post(`${contract}/contract-web/contEnforcing/unqualifiedSave`, params)
+  },
+  getUnqualifiedByProcInstId(params) {
+    return Http.get(`${contract}/contract-web/contEnforcing/getUnqualifiedByProcInstId`, params)
   }
 }
