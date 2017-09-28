@@ -435,13 +435,13 @@
                 </el-form-item>
               </el-col>
             </el-row>
-            <el-card v-if="cardFinanceInfoForm.moneyInvolved===true">
+            <el-card v-if="cardFinanceInfoForm.moneyInvolved">
               <header slot="header">付款方式</header>
               <el-table :data="cardFinanceInfoForm.paymentMethods.advance"
                         v-if="!cardFinanceInfoForm.oneOffPay"
                         style="width: 100%"
               >
-                <!--<el-table-column type="expand" v-if="cardFinanceInfoForm.paymentMethods.advance[0].seriousPayments">
+                <el-table-column type="expand" v-if="cardFinanceInfoForm.paymentMethods.advance[0].seriousPayments">
                   <template scope="props">
                     <div v-if="cardFinanceInfoForm.paymentMethods.advance[0].seriousPayments" v-bind:class="{tdPd:cardFinanceInfoForm.paymentMethods.advance[0].seriousPayments}">
                       <el-button icon="plus" type="primary"
@@ -515,19 +515,15 @@
                       </el-table>
                     </div>
                   </template>
-                </el-table-column>-->
+                </el-table-column>
                 <el-table-column prop="type" label="类型" width="100px"></el-table-column>
                 <el-table-column width="90px" prop="seriousPayments" label="是否多次付款">
                   <template scope="scope">
                     <el-checkbox
-                      @change="handleSeriousPaymentsChange"
                       :disabled="operateType==='query'"
-                      v-model="cardFinanceInfoForm.paymentMethods.advance[scope.$index].seriousPayments"
+                      :checked="cardFinanceInfoForm.paymentMethods.advance[scope.$index].seriousPayments"
+                      @change="handleSeriousPaymentsChange(cardFinanceInfoForm.paymentMethods.advance[scope.$index],$event)"
                       ></el-checkbox>
-                    <!--<el-checkbox v-model="cardFinanceInfoForm.paymentMethods.advance[scope.$index].seriousPayments"
-                    @change="handleSeriousPaymentsChange">
-                    </el-checkbox>
-                    {{cardFinanceInfoForm.paymentMethods.advance[scope.$index].seriousPayments}}-->
                   </template>
                 </el-table-column>
                 <el-table-column
@@ -536,7 +532,7 @@
                   width="150px">
                   <template scope="scope">
                     <el-input
-                      :disabled="operateType==='query'"
+                      :disabled="operateType==='query'||cardFinanceInfoForm.paymentMethods.advance[scope.$index].seriousPayments"
                       v-model="cardFinanceInfoForm.paymentMethods.advance[scope.$index].paymentAmount"></el-input>
                   </template>
                 </el-table-column>
@@ -545,19 +541,19 @@
                   label="付款条件"
                   width="250px">
                   <template scope="scope">
-                      <el-select
-                        v-model="cardFinanceInfoForm.paymentMethods.advance[scope.$index].paymentCondition"
-                        placeholder="请选择付款条件"
-                        :disabled="operateType==='query'"
+                    <el-select
+                      v-model="cardFinanceInfoForm.paymentMethods.advance[scope.$index].paymentCondition"
+                      placeholder="请选择付款条件"
+                      :disabled="operateType==='query'||cardFinanceInfoForm.paymentMethods.advance[scope.$index].seriousPayments"
+                    >
+                      <el-option
+                        v-for="item in cardFinanceInfoForm.paymentConditions"
+                        :key="item.id"
+                        :value="item.id"
+                        :label="item.name"
                       >
-                        <el-option
-                          v-for="item in cardFinanceInfoForm.paymentConditions"
-                          :key="item.id"
-                          :value="item.id"
-                          :label="item.name"
-                        >
-                        </el-option>
-                      </el-select>
+                      </el-option>
+                    </el-select>
                   </template>
                 </el-table-column>
                 <el-table-column
@@ -568,7 +564,7 @@
                     <el-input
                       type="textarea"
                       :rows="2"
-                      :disabled="operateType==='query'"
+                      :disabled="operateType==='query'||cardFinanceInfoForm.paymentMethods.advance[scope.$index].seriousPayments"
                       v-model="cardFinanceInfoForm.paymentMethods.advance[scope.$index].remark"></el-input>
                   </template>
                 </el-table-column>
@@ -658,7 +654,9 @@
                   <template scope="scope">
                     <el-checkbox
                       :disabled="operateType==='query'"
-                      v-model="cardFinanceInfoForm.paymentMethods.progress[scope.$index].seriousPayments"></el-checkbox>
+                      :checked="cardFinanceInfoForm.paymentMethods.progress[scope.$index].seriousPayments"
+                      @change="handleSeriousPaymentsChange(cardFinanceInfoForm.paymentMethods.progress[scope.$index],$event)"
+                    ></el-checkbox>
                   </template>
                 </el-table-column>
                 <el-table-column
@@ -667,7 +665,7 @@
                   width="150px">
                   <template scope="scope">
                     <el-input
-                      :disabled="operateType==='query'"
+                      :disabled="operateType==='query'||cardFinanceInfoForm.paymentMethods.progress[scope.$index].seriousPayments"
                       v-model="cardFinanceInfoForm.paymentMethods.progress[scope.$index].paymentAmount"></el-input>
                   </template>
                 </el-table-column>
@@ -679,7 +677,7 @@
                     <el-select
                       v-model="cardFinanceInfoForm.paymentMethods.progress[scope.$index].paymentCondition"
                       placeholder="请选择付款条件"
-                      :disabled="operateType==='query'"
+                      :disabled="operateType==='query'||cardFinanceInfoForm.paymentMethods.progress[scope.$index].seriousPayments"
                     >
                       <el-option
                         v-for="item in cardFinanceInfoForm.paymentConditions"
@@ -699,7 +697,7 @@
                     <el-input
                       type="textarea"
                       :rows="2"
-                      :disabled="operateType==='query'"
+                      :disabled="operateType==='query'||cardFinanceInfoForm.paymentMethods.progress[scope.$index].seriousPayments"
                       v-model="cardFinanceInfoForm.paymentMethods.progress[scope.$index].remark"></el-input>
                   </template>
                 </el-table-column>
@@ -793,7 +791,9 @@
                   <template scope="scope">
                     <el-checkbox
                       :disabled="operateType==='query'"
-                      v-model="cardFinanceInfoForm.paymentMethods._final[scope.$index].seriousPayments"></el-checkbox>
+                      :checked="cardFinanceInfoForm.paymentMethods._final[scope.$index].seriousPayments"
+                      @change="handleSeriousPaymentsChange(cardFinanceInfoForm.paymentMethods._final[scope.$index],$event)"
+                    ></el-checkbox>
                   </template>
                 </el-table-column>
                 <el-table-column
@@ -802,7 +802,7 @@
                   width="150px">
                   <template scope="scope">
                     <el-input
-                      :disabled="operateType==='query'"
+                      :disabled="operateType==='query'||cardFinanceInfoForm.paymentMethods._final[scope.$index].seriousPayments"
                       v-model="cardFinanceInfoForm.paymentMethods._final[scope.$index].paymentAmount"></el-input>
                   </template>
                 </el-table-column>
@@ -814,7 +814,7 @@
                     <el-select
                       v-model="cardFinanceInfoForm.paymentMethods._final[scope.$index].paymentCondition"
                       placeholder="请选择付款条件"
-                      :disabled="operateType==='query'"
+                      :disabled="operateType==='query'||cardFinanceInfoForm.paymentMethods._final[scope.$index].seriousPayments"
                     >
                       <el-option
                         v-for="item in cardFinanceInfoForm.paymentConditions"
@@ -834,7 +834,7 @@
                     <el-input
                       type="textarea"
                       :rows="2"
-                      :disabled="operateType==='query'"
+                      :disabled="operateType==='query'||cardFinanceInfoForm.paymentMethods._final[scope.$index].seriousPayments"
                       v-model="cardFinanceInfoForm.paymentMethods._final[scope.$index].remark"></el-input>
                   </template>
                 </el-table-column>
@@ -1905,7 +1905,7 @@
           paymentMethods: {
             advance: [{
               type: '预付款',
-              test:false,
+              paymentCondition:'',
               seriousPayments: true,//是否多次付款
               paymentAmount: 0,//付款金额
               paymentTimePeriod: null,//付款方式
@@ -1949,41 +1949,6 @@
                   remark: '',
                   ratio: ''
                 }
-              ],
-              paymentCondition:'',//付款条件
-              paymentConditions:[
-                {
-                  id:'Z015',
-                  name:'到票日后15天付款'
-                },
-                {
-                  id:'Z020',
-                  name:'到票日后16天付款'
-                },
-                {
-                  id:'Z025',
-                  name:'到票日后17天付款'
-                },
-                {
-                  id:'Z030',
-                  name:'到票日后18天付款'
-                },
-                {
-                  id:'Z035',
-                  name:'到票日后19天付款'
-                },
-                {
-                  id:'Z040',
-                  name:'到票日后20天付款'
-                },
-                {
-                  id:'Z045',
-                  name:'到票日后21天付款'
-                },
-                {
-                  id:'Z000',
-                  name:'到票日后22天付款'
-                },
               ],
             }],
             progress: [{
@@ -2398,8 +2363,6 @@
       enaledMoneyInvolved:function(){
         let enabled=true
         const contractType=this.baseInfoForm.contractType
-        console.log('contractType',contractType);
-        console.log('contractType-typeof',typeof(contractType));
         if(contractType===2||contractType===4){
           enabled=false
         }
@@ -2443,10 +2406,10 @@
       }
     },
     methods: {
-      initData(data, params){console.log('initData');
+      initData(data, params){
         Object.assign(this.baseInfoForm, data.baseInfoForm);
         Object.assign(this.cardContentInfoForm, data.cardContentInfoForm);
-        Object.assign(this.cardFinanceInfoForm, data.cardFinanceInfoForm);
+        //Object.assign(this.cardFinanceInfoForm, data.cardFinanceInfoForm);
         Object.assign(this.cardContCheckInfoForm, data.cardContCheckInfoForm);
         Object.assign(this.cardSealInfoForm, data.cardSealInfoForm);
         Object.assign(this.cardRemarkInfoForm, data.cardRemarkInfoForm);
@@ -3523,18 +3486,17 @@
         fileName?enabled=false:enabled=true
         return enabled
       },
-      //多次付款时，清空付款金额，付款条件，备注
-      handleSeriousPaymentsChange(item){
-        console.log('handleSeriousPaymentsChange-item',item);
-          /*if(item.seriousPayments){
-            item.paymentAmount=null
-            item.paymentCondition=null
-            item.remark=null
-          }*/
-      },
       handleCbChange(event){
         console.log('event',event);
       },
+      handleSeriousPaymentsChange(item,event){
+        item.seriousPayments=event.target.checked
+        if(item.seriousPayments){
+          item.paymentAmount=null
+          item.paymentCondition=null
+          item.remark=null
+        }
+      }
     },
     components: {
       Preview,
@@ -3582,7 +3544,7 @@
         if(val===4){
           this.cardFinanceInfoForm.moneyInvolved=false
         }
-      }
+      },
     }
   }
 </script>
