@@ -5,6 +5,9 @@
     font-size: 12px;
     margin-left: 20px;
   }
+  .createSlaveProtocal table{
+    width: 100% !important;
+  }
 </style>
 <template>
   <div class="createSlaveProtocal">
@@ -31,6 +34,7 @@
             <el-table-column prop="id" label="供应商编号"></el-table-column>
             <el-table-column prop="name" label="供应商名称"></el-table-column>
             <el-table-column
+              v-if="enabledInupdated"
               fixed="right"
               label="操作"
               width="100">
@@ -51,6 +55,7 @@
             <el-table-column prop="id" label="公司代码"></el-table-column>
             <el-table-column prop="name" label="公司名称"></el-table-column>
             <el-table-column
+              v-if="enabledInupdated"
               fixed="right"
               label="操作"
               width="100">
@@ -87,7 +92,7 @@
       <el-form  rel="cardSealInfoForm" :model="cardSealInfoForm" label-width="100px" :rules="cardSealInfoForm.rules">
         <el-button type="primary" @click="handleNewOtherSealFile" icon="plus" class="mb20" v-if="enabledInupdated">新增其他附件</el-button>
         <template v-if="cardSealInfoForm.sealAttachments.length" v-for="(item,index) in cardSealInfoForm.sealAttachments">
-          <el-table :data="item" :show-header="index===0?true:false">
+          <el-table :data="item" :show-header="index===0?true:false" style="width:100%">
             <el-table-column type="expand" v-if="item[0].haveSale">
               <template scope="props" v-if="item[0].haveSale">
                 <div v-if="item[0].haveSale" v-bind:class="{tdPd:item[0].haveSale}">
@@ -103,10 +108,10 @@
                     <el-table-column
                       fixed="right"
                       label="操作"
-                      v-if="props.row.filesSealed[0].operate"
+                      v-if="enabledInupdated"
                     >
                       <template scope="scope">
-                        <el-button @click="handleRemoveItem(index, props.row.filesSealed)"
+                        <el-button v-if="props.row.filesSealed[0].operate" @click="handleRemoveItem(index, props.row.filesSealed)"
                                    type="text" size="small">移除
                         </el-button>
                       </template>
@@ -212,7 +217,8 @@
             </el-table-column>
             <el-table-column
               fixed="right"
-              label="操作">
+              label="操作"
+              v-if="enabledInupdated">
               <template scope="scope">
                 <el-button v-if="item[scope.$index].operate"
                            @click="handleRemoveItem(index, cardSealInfoForm.sealAttachments)"
@@ -665,9 +671,9 @@
           params.protocolNo=''
           Api.createAgreenment(params).then((data)=>{
             this.btnStatus=true
-            if(data.data.code===200){
+            if(parseInt(data.data.code)===200){
               this.operateType='query'
-              $message.success(data.data.message)
+              this.$message.success(data.data.message)
             }
           })
             .catch(()=>{
