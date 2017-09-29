@@ -403,12 +403,12 @@
         return flag
       },
       submit() {
-        this.comLoading(1)
         const result = this.getResult()
         if (!this.check(result)) {
           this.$message.warning('表单信息不完整！')
           return
         }
+        this.comLoading(1)
         Api.unqualifiedSave(result).then((res) => {
           this.comLoading()
           this.$router.push({
