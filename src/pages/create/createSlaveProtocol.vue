@@ -270,7 +270,7 @@
         </el-button>
       </el-col>-->
       <el-col style="text-align: center" class="mt20">
-        <el-button type="primary" :disabled="!enabledInupdated" @click="handleSubmit" style="display:inline-block">提交</el-button>
+        <el-button type="primary" :disabled="!enabledInupdated||!btnStatus" @click="handleSubmit" style="display:inline-block">提交</el-button>
       </el-col>
     </el-row>
     <el-dialog title="新增合同供应商信息" :visible.sync="baseInfoForm.dialogAddContractSupplier" size="small">
@@ -403,7 +403,8 @@
           search: '',
           subjects: [],
           loading: false
-        }
+        },
+        btnStatus:true,//提交按钮状态（提交中不可用）
       }
     },
     computed:{
@@ -652,6 +653,7 @@
         })
       },
       handleSubmit() {
+        this.btnStatus=false
         this.isSubmit=true
         this.validateForms().then(()=>{
           this.cardSealInfoForm.sealAttachments = this.combineSealsInfo()
@@ -660,23 +662,27 @@
           params.baseInfoForm=this.baseInfoForm
           params.cardSealInfoForm=this.cardSealInfoForm
           params.cardRemarkInfoForm=this.cardRemarkInfoForm
+          params.protocolNo=''
           Api.createAgreenment(params).then((data)=>{
+            this.btnStatus=true
             if(data.data.code===200){
               this.operateType='query'
               $message.success(data.data.message)
             }
           })
+            .catch(()=>{
+              this.btnStatus=true
+            })
         })
       },
       combineSealsInfo(){
         if (this.operateType !== 'query') {
-          const others = this.cardSealInfoForm.others
           let sealAttachments = this.cardSealInfoForm.sealAttachments
-
           const sealAttachment=[]
           if(sealAttachments&&sealAttachments.length){
             for(let i=0,len=sealAttachments.length;i<len;i++){
               const item=sealAttachments[i]
+
               if(item[0]&&item[0].fileName){
                 sealAttachment.push(item)
               }

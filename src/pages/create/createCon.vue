@@ -1683,7 +1683,7 @@
     <Process></Process>
     <el-row class="mt20">
       <el-col :span="4" :offset="4">
-        <el-button v-if="operateType!=='query'" type="primary" @click="handleSave('')">保存</el-button>
+        <el-button v-if="operateType!=='query'" :disabled="!btnSaveStatus" type="primary" @click="handleSave('')">保存</el-button>
       </el-col>
       <el-col :span="6">
         <el-button type="primary" @click="handlePreview" style="margin-left:33px"
@@ -1691,7 +1691,7 @@
         </el-button>
       </el-col>
       <el-col :span="4">
-        <el-button v-if="operateType!=='query'" type="primary" @click="handleSubmit">提交</el-button>
+        <el-button v-if="operateType!=='query'" :disabled="!btnSubmitStatus" type="primary" @click="handleSubmit">提交</el-button>
       </el-col>
     </el-row>
     <Preview :visible.sync="visible" :datas="previewData"></Preview>
@@ -2203,7 +2203,9 @@
           ],
           rules: {}
         },
-        isSubmit: false
+        isSubmit: false,
+        btnSubmitStatus:true,//提交按钮状态
+        btnSaveStatus:true,//保存按钮状态
       }
     },
     created() {},
@@ -2967,9 +2969,11 @@
         }
       },
       handleSave() {
+        this.btnSaveStatus=false
         this.isSubmit = true
         this.comLoading(1)
         this.validateForms().then(()=> {
+          this.btnSaveStatus=true
           this.cardSealInfoForm.sealAttachments = this.combineSealsInfo()
           this.formatTime(this.cardContentInfoForm,this.cardFinanceInfoForm)
           const paras = {};
@@ -2987,6 +2991,7 @@
             this.comLoading()
           })
         }).catch(()=> {
+          this.btnSaveStatus=true
           this.comLoading()
         })
       },
@@ -3009,6 +3014,7 @@
         }
       },
       handleSubmit() {
+        this.btnSubmitStatus=false
         this.isSubmit = true
         this.comLoading(1)
         this.validateForms().then(()=> {
@@ -3025,12 +3031,16 @@
           if(this.operateType==='create'){
             Api.submit(paras).then((data)=> {
               if (data.data.dataMap.id) {
+                this.btnSubmitStatus=true
                 this.$message.success('提交成功！')
                 this.operateType = 'query'
                 this.$router.push({name:routerNames.con_index})
               }
               this.comLoading()
             })
+              .catch(()=>{
+                this.btnSubmitStatus=true
+              })
           }else{
             const updateForm=this.updateForm
             const updateParams={}
