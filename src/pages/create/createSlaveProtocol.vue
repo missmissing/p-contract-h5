@@ -654,6 +654,7 @@
       handleSubmit() {
         this.isSubmit=true
         this.validateForms().then(()=>{
+          this.cardSealInfoForm.sealAttachments = this.combineSealsInfo()
           const params={};
           params.id=parseInt(this.id)
           params.baseInfoForm=this.baseInfoForm
@@ -666,6 +667,23 @@
             }
           })
         })
+      },
+      combineSealsInfo(){
+        if (this.operateType !== 'query') {
+          const others = this.cardSealInfoForm.others
+          let sealAttachments = this.cardSealInfoForm.sealAttachments
+
+          const sealAttachment=[]
+          if(sealAttachments&&sealAttachments.length){
+            for(let i=0,len=sealAttachments.length;i<len;i++){
+              const item=sealAttachments[i]
+              if(item[0]&&item[0].fileName){
+                sealAttachment.push(item)
+              }
+            }
+          }
+          return sealAttachment
+        }
       },
       handleContractDetail(index, row) {
         console.log('详情', index, row)
