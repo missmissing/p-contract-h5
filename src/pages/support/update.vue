@@ -121,7 +121,6 @@
               <el-form-item label="文本上传" v-show="showUpload">
                 <Upload
                   :fileList.sync="fileList"
-                  :data="uploadData"
                   multiple>
                   <!--<div class="el-upload__tip" slot="tip">文件不超过10M</div>-->
                 </Upload>
@@ -189,7 +188,6 @@
     data() {
       return Object.assign({
         endDate: '9999-12-31',
-        uploadData: {},
         pickerOptions: {
           disabledDate(time) {
             return time.getTime() < Date.now() - 8.64e7

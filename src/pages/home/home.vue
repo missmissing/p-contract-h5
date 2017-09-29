@@ -28,17 +28,7 @@
     .userInfo {
       float: right;
       margin-right: 10px;
-      .avatar {
-        display: inline-block;
-        padding-top: 10px;
-      }
-      img {
-        border-radius: 50%;
-        width: 40px;
-        height: 40px;
-        vertical-align: middle;
-        margin-left: 5px;
-      }
+      line-height: 60px;
     }
   }
 
@@ -103,15 +93,9 @@
         </el-tooltip>
       </div>
       <div class="userInfo">
-        <el-dropdown @command="handleCommand">
-          <span class="avatar">
-            {{username}}({{userId}})
-             <img :src="userPhoto" alt=""/>
-          </span>
-          <el-dropdown-menu slot="dropdown">
-            <el-dropdown-item command="logout" divided>退出</el-dropdown-item>
-          </el-dropdown-menu>
-        </el-dropdown>
+        <span class="mr10">{{timeText}}</span>
+        <span class="mr10">{{username}}({{userId}})</span>
+        <el-button type="text" @click="logout">注销</el-button>
       </div>
     </div>
     <div class="main">
@@ -149,16 +133,16 @@
 <script>
   import localStore from 'store'
   import Api from '@/api'
+  import {formatTimeText} from '@/filters/moment'
 
   const user = localStore.get('user') || {}
-  const logo = require('../../assets/img/main-logo.png')
-  const userPhoto = require('../../assets/img/user.jpg')
+  const logo = require('../../assets/img/logo.png')
 
   export default {
     data() {
       return {
         logo,
-        userPhoto,
+        timeText: formatTimeText(),
         username: user.userName,
         userId: user.userId,
         isCollapse: false
@@ -185,15 +169,13 @@
       collapse() {
         this.isCollapse = !this.isCollapse
       },
-      handleCommand(command) {
-        if (command === 'logout') {
-          Api.logout().then((res) => {
-            const {dataMap} = res.data
-            localStore.remove('user')
-            const currentUrl = encodeURIComponent(`${window.location.origin}/#/con/index`)
-            window.location.href = `${dataMap}${currentUrl}`
-          })
-        }
+      logout() {
+        Api.logout().then((res) => {
+          const {dataMap} = res.data
+          localStore.remove('user')
+          const currentUrl = encodeURIComponent(`${window.location.origin}/#/con/index`)
+          window.location.href = `${dataMap}${currentUrl}`
+        })
       }
     }
   }

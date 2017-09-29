@@ -124,7 +124,6 @@
             <el-form-item label="相关附件">
               <Upload
                 :fileList.sync="fileList"
-                :data="uploadData"
                 disabled
                 multiple>
                 <!--<div class="el-upload__tip" slot="tip">文件不超过10M</div>-->
@@ -160,7 +159,6 @@
         compensateType: null,
         compensateMoney: '',
         fileList: [],
-        uploadData: {},
         options: [{label: '供应商向我方赔付', value: 0}, {label: '我方向供应商赔付', value: 1}],
         toDetail: {name: routerNames.con_Check, query: {contractId: ''}},
         basicForm: {
