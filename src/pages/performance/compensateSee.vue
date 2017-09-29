@@ -97,9 +97,12 @@
         <div class="handle-info">
           <el-form label-width="120px">
             <el-form-item label="">
-              <el-radio class="radio" v-model="handleForm.schemeType" label="CONTINUE_TO_PERFORM" disabled>继续履行</el-radio>
+              <el-radio class="radio" v-model="handleForm.schemeType" label="CONTINUE_TO_PERFORM" disabled>继续履行
+              </el-radio>
               <el-radio class="radio" v-model="handleForm.schemeType" label="UPDATED_CONTRACT" disabled>变更合同</el-radio>
-              <el-radio class="radio" v-model="handleForm.schemeType" label="PERFORM_WITH_CHECK_RESULT" disabled>按验收实际结果履行合同</el-radio>
+              <el-radio class="radio" v-model="handleForm.schemeType" label="PERFORM_WITH_CHECK_RESULT" disabled>
+                按验收实际结果履行合同
+              </el-radio>
               <el-radio class="radio" v-model="handleForm.schemeType" label="BREACH" disabled>转合同违约处理</el-radio>
             </el-form-item>
             <el-form-item label="违约/赔付原因" prop="violateReason">
@@ -186,8 +189,9 @@
       },
       setData(data) {
         const {contractBasic, violateDispose} = data
-        const {startTime, endTime, businessOperator, businessDept, signTime, contractId} = contractBasic
+        const {startTime, endTime, businessOperator, businessDept, signTime, contractId, contractNo} = contractBasic
         const {files, schemeType, defaulter, compensateType, compensateStatus, compensateMoney, treatmentScheme, violateReason} = violateDispose
+        this.basicForm.contractNo = contractNo
         this.fileList = files || []
         this.startTime = startTime
         this.endTime = endTime
