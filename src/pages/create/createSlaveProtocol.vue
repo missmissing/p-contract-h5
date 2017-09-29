@@ -259,6 +259,7 @@
         </el-table>
       </el-form>
     </el-card>
+    <Process></Process>
     <el-row>
       <!--<el-col :span="4" :offset="4">
         <el-button type="primary" @click="handleSave('')">保存</el-button>
@@ -338,6 +339,7 @@
   import store from 'store'
   import {downloadUrl, uploadUrl} from '@/api/consts'
   import _ from 'lodash'
+  import Process from '@/components/process.vue'
 
   const user = store.get('user')
 
@@ -434,6 +436,9 @@
         this.operateType='query'
         this.requestQueryData()
       }
+    },
+    components: {
+      Process
     },
     methods: {
       requestQueryData(){
