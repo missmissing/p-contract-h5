@@ -7,7 +7,16 @@
 </template>
 
 <script>
-  import {routerNames, tplMap, prMap, contractMap, processListMap, compensateMap} from '@/core/consts'
+  import {
+    routerNames,
+    tplMap,
+    prMap,
+    contractMap,
+    processListMap,
+    compensateMap,
+    inspectRejectMap,
+    protocolMap
+  } from '@/core/consts'
   import Api from '@/api/process'
 
   export default {
@@ -78,6 +87,17 @@
             id: procInstId
           }
           name = routerNames.con_compensate_see
+        } else if (inspectRejectMap.indexOf(procCode) > -1) {
+          param = {
+            id: procInstId
+          }
+          name = routerNames.con_check_reject_see
+        } else if (protocolMap.indexOf(procCode) > -1) {
+          const {id} = approveInfo
+          param = {
+            id
+          }
+          name = routerNames.con_querySlaveProtocol
         } else {
           console.log('找不到相应类型', procCode)
           return

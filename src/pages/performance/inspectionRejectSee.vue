@@ -20,7 +20,7 @@
             <el-row>
               <el-col :span="8">
                 <el-form-item label="采购订单号" prop="orderId">
-                  <el-input v-model="orderId" disabled></el-input>
+                  <el-input v-model="orderNo" disabled></el-input>
                 </el-form-item>
               </el-col>
               <el-button type="primary" class="ml20" v-show="toDetail.query.id">
@@ -30,52 +30,42 @@
             <el-row>
               <el-col :span="6">
                 <el-form-item label="业务经办人">
-                  <el-input disabled></el-input>
+                  <el-input :value="basicForm.businessOperatorName" disabled></el-input>
                 </el-form-item>
               </el-col>
               <el-col :span="6">
                 <el-form-item label="业务部门">
-                  <el-input disabled></el-input>
+                  <el-input :value="basicForm.businessDeptName" disabled></el-input>
                 </el-form-item>
               </el-col>
               <el-col :span="6">
                 <el-form-item label="合同编号">
-                  <el-input disabled></el-input>
+                  <el-input :value="basicForm.contractNo" disabled></el-input>
                 </el-form-item>
               </el-col>
               <el-col :span="6">
                 <el-form-item label="合同模式">
-                  <el-input disabled></el-input>
-                </el-form-item>
-              </el-col>
-              <el-col :span="6">
-                <el-form-item label="合同版本">
-                  <el-input disabled></el-input>
+                  <el-input :value="basicForm.contractType" disabled></el-input>
                 </el-form-item>
               </el-col>
               <el-col :span="6">
                 <el-form-item label="合同类型">
-                  <el-input disabled></el-input>
+                  <el-input :value="basicForm.contractTextType" disabled></el-input>
                 </el-form-item>
               </el-col>
               <el-col :span="6">
                 <el-form-item label="所属项目">
-                  <el-input disabled></el-input>
+                  <el-input :value="basicForm.belongProject" disabled></el-input>
                 </el-form-item>
               </el-col>
               <el-col :span="6">
                 <el-form-item label="验收责任人">
-                  <el-input disabled></el-input>
+                  <el-input :value="basicForm.responsibleName" disabled></el-input>
                 </el-form-item>
               </el-col>
               <el-col :span="6">
                 <el-form-item label="合同生效日期">
-                  <el-input disabled></el-input>
-                </el-form-item>
-              </el-col>
-              <el-col :span="6">
-                <el-form-item label="合同终止日期">
-                  <el-input disabled></el-input>
+                  <el-input :value="basicForm.startTime | formatDate" disabled></el-input>
                 </el-form-item>
               </el-col>
               <el-col :span="6">
@@ -127,10 +117,10 @@
         <div class="handle-info">
           <el-form label-width="120px">
             <el-form-item label="">
-              <el-radio class="radio" v-model="schemeType" :label="0" disabled>继续履行</el-radio>
-              <el-radio class="radio" v-model="schemeType" :label="1" disabled>变更合同</el-radio>
-              <el-radio class="radio" v-model="schemeType" :label="2" disabled>按验收实际结果履行合同</el-radio>
-              <el-radio class="radio" v-model="schemeType" :label="3" disabled>转合同违约处理</el-radio>
+              <el-radio class="radio" v-model="schemeType" label="CONTINUE_TO_PERFORM" disabled>继续履行</el-radio>
+              <el-radio class="radio" v-model="schemeType" label="UPDATED_CONTRACT" disabled>变更合同</el-radio>
+              <el-radio class="radio" v-model="schemeType" label="PERFORM_WITH_CHECK_RESULT" disabled>按验收实际结果履行合同</el-radio>
+              <el-radio class="radio" v-model="schemeType" label="BREACH" disabled>转合同违约处理</el-radio>
             </el-form-item>
             <el-form-item label="不合格原因" prop="unqualifiedReason">
               <el-input
@@ -144,6 +134,7 @@
             </el-form-item>
             <el-form-item label="处理方案" prop="treatmentScheme">
               <el-input
+                disabled
                 type="textarea"
                 :maxlength="300"
                 :autosize="{ minRows: 2 }"
@@ -170,7 +161,7 @@
 <script>
   import Api from '@/api/performance'
   import Upload from '@/components/upload.vue'
-  import {routerNames} from '@/core/consts'
+  import {routerNames, contractTextTypeMap, contractPatternMap} from '@/core/consts'
   import comLoading from '@/mixins/comLoading'
   import {formatDate} from '@/filters/moment'
   import Process from '@/components/process'
@@ -179,6 +170,18 @@
     mixins: [comLoading],
     data() {
       return {
+        orderNo: '',
+        basicForm: {
+          businessOperatorName: '',
+          businessDeptName: '',
+          contractTextType: '',
+          responsibleName: '',
+          belongProject: '',
+          startTime: '',
+          endTime: '',
+          contractType: '',
+          contractNo: ''
+        },
         contractCheckDate: '',
         checkItems: [],
         orderId: '',
@@ -200,13 +203,27 @@
         })
       },
       setData(data) {
-        const {contractCheckDate, checkItems, unqualifiedReason, treatmentScheme, schemeType, files} = data
+        const {unqualifiedBasic, contUnqualified} = data
+        const {businessOperatorName, businessDeptName, responsibleName, belongProject, startTime, endTime, contractTextType, contractType, contractNo} = unqualifiedBasic
+        const {orderNo, contractCheckDate, checkItems, unqualifiedReason, treatmentScheme, schemeType, files} = contUnqualified
+        Object.assign(this.basicForm, {
+          businessOperatorName,
+          businessDeptName,
+          responsibleName,
+          belongProject,
+          startTime,
+          endTime,
+          contractTextType: contractTextTypeMap[contractTextType],
+          contractType: contractPatternMap[contractType],
+          contractNo
+        })
+        this.orderNo = orderNo
         this.checkItems = checkItems
         this.contractCheckDate = contractCheckDate
         this.unqualifiedReason = unqualifiedReason
         this.treatmentScheme = treatmentScheme
         this.schemeType = schemeType
-        this.fileList = files
+        this.fileList = files || []
       }
     },
     created() {

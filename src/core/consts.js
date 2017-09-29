@@ -90,7 +90,16 @@ export const prMap = ['CRS_Contract_CreatePO', 'CRS_Contract_UpdatePO', 'CRS_Con
 
 export const compensateMap = ['CRS_Contract_CompensateManage']
 
+export const inspectRejectMap = ['CRS_Contract_POCheckUnqualified']
+
+export const protocolMap = ['CRS_Contract_CreateProtocol']
+
 export const processListMap = ['BACKLOG', 'STARTED', 'FINISHED']
+
+export const contractTextTypeMap = {
+  1: '模板合同',
+  2: '非模板合同'
+}
 
 export const prTypeMap = {
   1: '一般物资',

@@ -196,7 +196,7 @@
           return
         }
         this.comLoading(1)
-        Api.getContractViolate({contractNo: this.basicForm.contractNo}).then((res) => {
+        Api.getContractViolateBaseByContractNo({contractNo: this.basicForm.contractNo}).then((res) => {
           const data = res.data.dataMap
           console.log(data)
           this.info = data

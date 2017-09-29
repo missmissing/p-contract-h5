@@ -10,8 +10,8 @@ export default {
   getContractCode(params) {
     return Http.post(`${contract}/contract-web/getContractCode/`, params)
   },
-  getContractViolate(params) {
-    return Http.get(`${contract}/contract-web/contEnforcing/getContractViolateByContractNo`, params)
+  getContractViolateBaseByContractNo(params) {
+    return Http.get(`${contract}/contract-web//contEnforcing/getContractViolateBaseByContractNo`, params)
   },
   contractViolateSave(params) {
     return Http.post(`${contract}/contract-web/contEnforcing/contractViolateSave`, params)
@@ -21,6 +21,9 @@ export default {
   },
   getUnqualifiedByOrderId(params) {
     return Http.get(`${contract}/contract-web/contEnforcing/getUnqualifiedByOrderId`, params)
+  },
+  getUnqualifiedByOrderNo(params) {
+    return Http.get(`${contract}/contract-web/contEnforcing/getUnqualifiedByOrderNo`, params)
   },
   unqualifiedSave(params) {
     return Http.post(`${contract}/contract-web/contEnforcing/unqualifiedSave`, params)

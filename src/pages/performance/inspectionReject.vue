@@ -51,7 +51,7 @@
               </el-col>
               <el-col :span="6">
                 <el-form-item label="合同类型">
-                  <el-input :value="basicForm.contractBusinessTypeThirdName" disabled></el-input>
+                  <el-input :value="basicForm.contractTextType" disabled></el-input>
                 </el-form-item>
               </el-col>
               <el-col :span="6">
@@ -128,7 +128,7 @@
               width="100">
               <template scope="scope">
                 <el-button
-                  @click.native.prevent="deleteRow(scope.$index, serverData)"
+                  @click.native.prevent="deleteRow(scope.$index, checkItems)"
                   type="text"
                   size="small">
                   移除
@@ -236,9 +236,9 @@
 <script>
   import Api from '@/api/performance'
   import Upload from '@/components/upload.vue'
-  import {routerNames, contractPatternMap} from '@/core/consts'
+  import {routerNames, contractPatternMap, contractTextTypeMap} from '@/core/consts'
   import comLoading from '@/mixins/comLoading'
-  import {formatDate} from '@/filters/moment'
+  import {formatDate, formatTimeStamp} from '@/filters/moment'
 
   export default {
     mixins: [comLoading],
@@ -285,11 +285,7 @@
         },
         basicForm: {
           orderNo: '',
-          contractCheckDate: ''
-        },
-        basicRules: {
-          orderNo: [{required: true, message: '请输入采购订单号', trigger: 'change'}],
-          contractCheckDate: [{required: true, message: '请选择日期'}],
+          contractCheckDate: '',
           businessOperatorName: '',
           businessDeptName: '',
           contractTextType: '',
@@ -298,8 +294,11 @@
           startTime: '',
           endTime: '',
           contractType: '',
-          contractNo: '',
-          contractBusinessTypeThirdName: ''
+          contractNo: ''
+        },
+        basicRules: {
+          orderNo: [{required: true, message: '请输入采购订单号', trigger: 'change'}],
+          contractCheckDate: [{required: true, message: '请选择日期'}],
         },
         handleForm: {
           schemeType: 1,
@@ -328,7 +327,7 @@
           return
         }
         this.comLoading(1)
-        Api.getUnqualifiedByOrderId({orderId: this.basicForm.orderNo}).then((res) => {
+        Api.getUnqualifiedByOrderNo({orderNo: this.basicForm.orderNo}).then((res) => {
           const data = res.data.dataMap
           console.log(data)
           const {purchaseOrderId} = data
@@ -341,7 +340,7 @@
         })
       },
       setBasicForm() {
-        const {businessOperatorName, businessDeptName, responsibleName, belongProject, startTime, endTime, contractType, contractNo, contractBusinessTypeThirdName} = this.info
+        const {businessOperatorName, businessDeptName, responsibleName, belongProject, startTime, endTime, contractTextType, contractType, contractNo} = this.info
         Object.assign(this.basicForm, {
           businessOperatorName,
           businessDeptName,
@@ -349,9 +348,9 @@
           belongProject,
           startTime,
           endTime,
+          contractTextType: contractTextTypeMap[contractTextType],
           contractType: contractPatternMap[contractType],
-          contractNo,
-          contractBusinessTypeThirdName
+          contractNo
         })
       },
       addNotQualityDialogOk() {
@@ -383,7 +382,8 @@
         })
         return {
           orderNo: this.info.orderNo,
-          contractCheckDate: this.contractCheckDate,
+          contractNo: this.info.contractNo,
+          contractCheckDate: formatTimeStamp(this.basicForm.contractCheckDate),
           checkItems: this.checkItems,
           ...this.handleForm
         }
@@ -411,6 +411,9 @@
         }
         Api.unqualifiedSave(result).then((res) => {
           this.comLoading()
+          this.$router.push({
+            name: routerNames.con_index
+          })
         })
       }
     },

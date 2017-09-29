@@ -56,12 +56,13 @@
               </el-col>
             </el-row>
             <el-form-item label="违约方">
-              <el-radio class="radio" v-model="defaulter" :label="0" disabled>我方</el-radio>
-              <el-radio class="radio" v-model="defaulter" :label="1" disabled>对方</el-radio>
-              <el-radio class="radio" v-model="defaulter" :label="2" disabled>双方</el-radio>
+              <el-radio class="radio" v-model="defaulter" label="US" disabled>我方</el-radio>
+              <el-radio class="radio" v-model="defaulter" label="PARTNER" disabled>对方</el-radio>
+              <el-radio class="radio" v-model="defaulter" label="BOTH" disabled>双方</el-radio>
             </el-form-item>
             <el-form-item label="涉及赔付">
               <el-switch
+                disabled
                 v-model="compensateStatus"
                 on-text=""
                 off-text="">
@@ -96,10 +97,10 @@
         <div class="handle-info">
           <el-form label-width="120px">
             <el-form-item label="">
-              <el-radio class="radio" v-model="handleForm.schemeType" :label="0" disabled>继续履行</el-radio>
-              <el-radio class="radio" v-model="handleForm.schemeType" :label="1" disabled>变更合同</el-radio>
-              <el-radio class="radio" v-model="handleForm.schemeType" :label="2" disabled>按验收实际结果履行合同</el-radio>
-              <el-radio class="radio" v-model="handleForm.schemeType" :label="3" disabled>转合同违约处理</el-radio>
+              <el-radio class="radio" v-model="handleForm.schemeType" label="CONTINUE_TO_PERFORM" disabled>继续履行</el-radio>
+              <el-radio class="radio" v-model="handleForm.schemeType" label="UPDATED_CONTRACT" disabled>变更合同</el-radio>
+              <el-radio class="radio" v-model="handleForm.schemeType" label="PERFORM_WITH_CHECK_RESULT" disabled>按验收实际结果履行合同</el-radio>
+              <el-radio class="radio" v-model="handleForm.schemeType" label="BREACH" disabled>转合同违约处理</el-radio>
             </el-form-item>
             <el-form-item label="违约/赔付原因" prop="violateReason">
               <el-input
@@ -159,7 +160,7 @@
         compensateType: null,
         compensateMoney: '',
         fileList: [],
-        options: [{label: '供应商向我方赔付', value: 0}, {label: '我方向供应商赔付', value: 1}],
+        options: [{label: '供应商向我方赔付', value: 'PARTNER_GIVE_US'}, {label: '我方向供应商赔付', value: 'US_GIVE_PARTNER'}],
         toDetail: {name: routerNames.con_Check, query: {contractId: ''}},
         basicForm: {
           contractNo: ''
@@ -167,8 +168,7 @@
         handleForm: {
           schemeType: null,
           violateReason: '',
-          treatmentScheme: '',
-          fileIds: null
+          treatmentScheme: ''
         }
       }
     },
@@ -183,16 +183,28 @@
         }, () => {
           this.comLoading()
         })
+      },
+      setData(data) {
+        const {contractBasic, violateDispose} = data
+        const {startTime, endTime, businessOperator, businessDept, signTime, contractId} = contractBasic
+        const {files, schemeType, defaulter, compensateType, compensateStatus, compensateMoney, treatmentScheme, violateReason} = violateDispose
+        this.fileList = files || []
+        this.startTime = startTime
+        this.endTime = endTime
+        this.signTime = signTime
+        this.businessDept = businessDept
+        this.businessOperator = businessOperator
+        this.defaulter = defaulter
+        this.compensateType = compensateType
+        this.compensateStatus = compensateStatus
+        this.compensateMoney = compensateMoney
+        Object.assign(this.handleForm, {
+          schemeType,
+          violateReason,
+          treatmentScheme
+        })
+        this.toDetail.query.contractId = contractId
       }
-    },
-    setData(data) {
-      const {startTime, endTime, businessOperator, businessDept, signTime, contractId} = data
-      this.startTime = startTime
-      this.endTime = endTime
-      this.signTime = signTime
-      this.businessDept = businessDept
-      this.businessOperator = businessOperator
-      this.toDetail.query.contractId = contractId
     },
     created() {
       const {id} = this.$route.query

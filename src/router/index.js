@@ -276,7 +276,7 @@ const router = new Router({
           }
         },
         {
-          path: '/conperf/inspectionreject',
+          path: '/conperf/inspectionreject/see',
           component: function (resolve) {
             require(['../pages/performance/inspectionRejectSee.vue'], resolve)
           },

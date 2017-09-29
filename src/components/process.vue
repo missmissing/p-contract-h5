@@ -113,7 +113,7 @@
           approveRemark: this.approveRemark
         }).then((res) => {
           console.log(res)
-          this.$router.push({name: routerNames.con_handing_process})
+          this.$router.push({name: routerNames.con_index})
         })
       }
     },
