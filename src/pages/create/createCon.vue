@@ -2787,7 +2787,7 @@
       getProportion(money) {
         let result = 0, totalAmount = this.cardFinanceInfoForm.totalAmount ? parseFloat(this.cardFinanceInfoForm.totalAmount) : 0
         if (totalAmount === 0) {
-          return 100 + '%'
+          return 0 + '%'
         }
         if (money) {
           result = parseFloat(money) / totalAmount
@@ -3470,7 +3470,7 @@
       handleSeriousPaymentsChange(item,event){
         item.seriousPayments=event.target.checked
         if(item.seriousPayments){
-          item.paymentAmount=null
+          item.paymentAmount=0
           item.paymentCondition=null
           item.remark=null
         }
