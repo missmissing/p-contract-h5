@@ -360,7 +360,7 @@
               </el-col>
               <el-col :span="8" v-if="cardFinanceInfoForm.moneyInvolved===true">
                 <el-form-item label="是否一次性付款" label-width="120px">
-                  <el-radio-group v-model="cardFinanceInfoForm.oneOffPay" :disabled="operateType==='query'">
+                  <el-radio-group v-model="cardFinanceInfoForm.oneOffPay" :disabled="operateType==='query'" @change="handleOneOffPayChange">
                     <el-radio :label="true">是</el-radio>
                     <el-radio :label="false">否</el-radio>
                   </el-radio-group>
@@ -2100,6 +2100,7 @@
             }
           ],
         },
+        paymentMethods:{},//支付方式备份
         formNewSubject: {
           rules: {
             search: [
@@ -2390,7 +2391,8 @@
       initData(data, params){
         Object.assign(this.baseInfoForm, data.baseInfoForm);
         Object.assign(this.cardContentInfoForm, data.cardContentInfoForm);
-        //Object.assign(this.cardFinanceInfoForm, data.cardFinanceInfoForm);
+        Object.assign(this.cardFinanceInfoForm, data.cardFinanceInfoForm);
+        this.paymentMethods=data.cardFinanceInfoForm.paymentMethods
         Object.assign(this.cardContCheckInfoForm, data.cardContCheckInfoForm);
         Object.assign(this.cardSealInfoForm, data.cardSealInfoForm);
         Object.assign(this.cardRemarkInfoForm, data.cardRemarkInfoForm);
@@ -3474,6 +3476,10 @@
           item.paymentCondition=null
           item.remark=null
         }
+      },
+      handleOneOffPayChange(val){
+        console.log('val',val)
+
       }
     },
     components: {
@@ -3523,6 +3529,110 @@
           this.cardFinanceInfoForm.moneyInvolved=false
         }
       },
+      'cardFinanceInfoForm.oneOffPay':function(){
+        this.cardFinanceInfoForm.totalAmount=0
+        const paymentMethods= {
+            advance: [{
+              type: '预付款',
+              paymentCondition:'',
+              seriousPayments: true,//是否多次付款
+              paymentAmount: 0,//付款金额
+              paymentTimePeriod: null,//付款方式
+              paymentTime: '',//付款时间
+              times: [
+                {
+                  value: 1,
+                  label: '合同签约15天'
+                },
+                {
+                  value: 2,
+                  label: '合同签约30天'
+                },
+                {
+                  value: 3,
+                  label: '合同签约90天'
+                }
+                ],
+              remark: '',
+              ratio: '',
+              subItem: [
+                {
+                  paymentCondition:'',
+                  paymentAmount: 0,
+                  paymentTimePeriod: null,
+                  paymentTime: '',
+                  times: [
+                    {
+                      value: 1,
+                      label: '合同签约15天'
+                    },
+                    {
+                      value: 2,
+                      label: '合同签约30天'
+                    },
+                    {
+                      value: 3,
+                      label: '合同签约90天'
+                    }
+                    ],
+                  remark: '',
+                  ratio: ''
+                }
+                ],
+            }],
+            progress: [{
+              type: '进度款',
+              paymentCondition:'',
+              seriousPayments: false,
+              paymentAmount: 0,
+              paymentTimePeriod: null,
+              paymentTime: '',
+              times: [
+                {
+                  value: 1,
+                  label: '验收后15天'
+                },
+                {
+                  value: 2,
+                  label: '验收后30天'
+                }
+                ],
+              remark: '',
+              ratio: '',
+              subItem: []
+            }],
+            _final: [{
+              type: '尾款',
+              paymentCondition:'',
+              seriousPayments: true,
+              paymentAmount: 0,
+              paymentTimePeriod: null,
+              paymentTime: '',
+              times: [
+                {
+                  value: 1,
+                  label: '合同结束后15天'
+                },
+                {
+                  value: 2,
+                  label: '合同结束后30天'
+                },
+                {
+                  value: 3,
+                  label: '合同结束后90天'
+                },
+                {
+                  value: 4,
+                  label: '合同结束后180天'
+                }
+                ],
+              remark: '',
+              ratio: '',
+              subItem: []
+            }]
+          }
+        this.cardFinanceInfoForm.paymentMethods=paymentMethods
+      }
     }
   }
 </script>
