@@ -69,6 +69,8 @@ a {
   font-weight: 700;
 }
 
+
+
 /**
 vue-router
 router-link
@@ -76,6 +78,10 @@ default
  */
 .router-link-active {
   text-decoration: none;
+}
+
+.router-link {
+  color: #20a0ff;
 }
 
 /**

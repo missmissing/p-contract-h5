@@ -1,8 +1,6 @@
 <style type="text/scss" lang="scss" scoped>
   .form-container {
-    .router-link {
-      color: #FFFFFF;
-    }
+
   }
 </style>
 
@@ -90,49 +88,6 @@
       </el-card>
       <el-card>
         <el-tabs>
-          <el-tab-pane label="合同信息">
-            <div class="contract-info">
-              <el-form label-width="100px">
-                <el-row>
-                  <el-col :span="8">
-                    <el-form-item label="合同编号">
-                      <el-input :value="contractForm.contractNo" disabled></el-input>
-                    </el-form-item>
-                  </el-col>
-                  <el-button type="primary" class="ml20" v-show="toDetail.query.contractId">
-                    <router-link class="router-link" :to="toDetail" target="_blank">详 情</router-link>
-                  </el-button>
-                </el-row>
-                <el-row>
-                  <el-col :span="8">
-                    <el-form-item label="合同模式">
-                      <el-input :value="contractForm.contractType" disabled></el-input>
-                    </el-form-item>
-                  </el-col>
-                  <el-col :span="8">
-                    <el-form-item label="合同类型">
-                      <el-input :value="contractForm.contractBusinessTypeThirdName" disabled></el-input>
-                    </el-form-item>
-                  </el-col>
-                  <el-col :span="8">
-                    <el-form-item label="所属项目">
-                      <el-input :value="contractForm.belongProject" disabled></el-input>
-                    </el-form-item>
-                  </el-col>
-                  <el-col :span="8">
-                    <el-form-item label="生效日期">
-                      <el-input :value="contractForm.startTime | formatDate" disabled></el-input>
-                    </el-form-item>
-                  </el-col>
-                  <el-col :span="8">
-                    <el-form-item label="终止日期">
-                      <el-input :value="contractForm.endTime | formatDate" disabled></el-input>
-                    </el-form-item>
-                  </el-col>
-                </el-row>
-              </el-form>
-            </div>
-          </el-tab-pane>
           <el-tab-pane label="订单信息">
             <div class="order-info">
               <el-form label-width="100px">
@@ -253,6 +208,49 @@
                   </template>
                 </el-table-column>
               </el-table>
+            </div>
+          </el-tab-pane>
+          <el-tab-pane label="合同信息">
+            <div class="contract-info">
+              <el-form label-width="100px">
+                <el-row>
+                  <el-col :span="8">
+                    <el-form-item label="合同编号">
+                      <el-input :value="contractForm.contractNo" disabled></el-input>
+                    </el-form-item>
+                  </el-col>
+                  <el-button type="primary" class="ml20" v-show="toDetail.query.contractId">
+                    <router-link class="router-link" :to="toDetail" target="_blank">详 情</router-link>
+                  </el-button>
+                </el-row>
+                <el-row>
+                  <el-col :span="8">
+                    <el-form-item label="合同模式">
+                      <el-input :value="contractForm.contractType" disabled></el-input>
+                    </el-form-item>
+                  </el-col>
+                  <el-col :span="8">
+                    <el-form-item label="合同类型">
+                      <el-input :value="contractForm.contractBusinessTypeThirdName" disabled></el-input>
+                    </el-form-item>
+                  </el-col>
+                  <el-col :span="8">
+                    <el-form-item label="所属项目">
+                      <el-input :value="contractForm.belongProject" disabled></el-input>
+                    </el-form-item>
+                  </el-col>
+                  <el-col :span="8">
+                    <el-form-item label="生效日期">
+                      <el-input :value="contractForm.startTime | formatDate" disabled></el-input>
+                    </el-form-item>
+                  </el-col>
+                  <el-col :span="8">
+                    <el-form-item label="终止日期">
+                      <el-input :value="contractForm.endTime | formatDate" disabled></el-input>
+                    </el-form-item>
+                  </el-col>
+                </el-row>
+              </el-form>
             </div>
           </el-tab-pane>
           <template v-if="showService">

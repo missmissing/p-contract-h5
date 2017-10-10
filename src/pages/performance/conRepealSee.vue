@@ -1,8 +1,6 @@
 <style type="text/scss" lang="scss" scoped>
   .basic-info {
-    .router-link {
-      color: #FFFFFF;
-    }
+
   }
 </style>
 

@@ -1,7 +1,5 @@
 <style type="text/scss" lang="scss" scoped>
-  .router-link {
-    color: #20a0ff;
-  }
+
 </style>
 
 <template>

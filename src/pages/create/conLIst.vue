@@ -117,10 +117,10 @@
       border
       highlight-current-row
       class="wp100">
-      <el-table-column type="index" label="序号" width="70"></el-table-column>
-      <el-table-column prop="id" label="合同编号" width="150px">
+      <el-table-column type="index" label="序号" width="80"></el-table-column>
+      <el-table-column prop="id" label="合同编号" min-width="200px">
         <template scope="scope">
-          <router-link :to="{path:'/ConCreate/conCheck', query:{contractId:''+tableData[scope.$index].id}}">
+          <router-link class="router-link" :to="{path:'/ConCreate/conCheck', query:{contractId:''+tableData[scope.$index].id}}">
             {{tableData[scope.$index].contractNo}}
           </router-link>
         </template>
@@ -138,23 +138,46 @@
       <el-table-column prop="creator" label="发起人" width="100"></el-table-column>
       <el-table-column prop="businessDept" label="业务部门" width="100"></el-table-column>
       <el-table-column prop="businessOperator" label="经办人" width="100"></el-table-column>
-      <el-table-column prop="submitTime" label="创建日期" width="120"></el-table-column>
-      <el-table-column prop="approvalDate" label="批准日期" width="120"></el-table-column>
-      <el-table-column prop="sealTime" label="盖章日期" width="120"></el-table-column>
-      <el-table-column prop="startTime" label="生效日期" width="120"></el-table-column>
-      <el-table-column prop="prNo" label="终止日期" width="120"></el-table-column>
+      <el-table-column prop="submitTime" label="创建日期" width="120">
+        <template scope="scope">
+          {{scope.row.submitTime | formatDate}}
+        </template>
+      </el-table-column>
+      <el-table-column prop="approvalDate" label="批准日期" width="120">
+        <template scope="scope">
+          {{scope.row.approvalDate | formatDate}}
+        </template>
+      </el-table-column>
+      <el-table-column prop="sealTime" label="盖章日期" width="120">
+        <template scope="scope">
+          {{scope.row.sealTime | formatDate}}
+        </template>
+      </el-table-column>
+      <el-table-column prop="startTime" label="生效日期" width="120">
+        <template scope="scope">
+          {{scope.row.startTime | formatDate}}
+        </template>
+      </el-table-column>
+      <el-table-column prop="endTime" label="终止日期" width="120">
+        <template scope="scope">
+          {{scope.row.endTime | formatDate}}
+        </template>
+      </el-table-column>
       <el-table-column prop="contractStatusName" label="合同状态" width="120"></el-table-column>
       <el-table-column prop="slaveProtocolNo" label="从协议编号" width="120"></el-table-column>
     </el-table>
-    <el-row class="mt20">
-      <el-col :span="8" :offset="8">
-        <el-pagination
-          @current-change="handleCurrentChange"
-          layout="prev, pager, next,jumper"
-          :total="total">
-        </el-pagination>
-      </el-col>
-    </el-row>
+    <div class="mt20">
+      <el-pagination
+        class="fr"
+        @size-change="handleSizeChange"
+        @current-change="handleCurrentChange"
+        :current-page="form.pageNo"
+        :page-size="form.pageSize"
+        :page-sizes="[10, 20, 30, 50]"
+        layout="total, sizes, prev, pager, next, jumper"
+        :total="totalPage">
+      </el-pagination>
+    </div>
     <TreeModal
       nodeKey="id"
       title="选择业务类型"
@@ -171,6 +194,7 @@
   import Api from '@/api/manageContract'
   import TreeModal from '@/components/treeModal.vue'
   import getBusiType from '@/mixins/getBusiType'
+  import {formatDate} from '@/filters/moment'
 
   export default {
     mixins: [getBusiType],
@@ -213,8 +237,7 @@
         creators: [],
         loading: false,
 
-        total: 0, // 总条目数
-        pageCount: 0// 总页数
+        totalPage: 0
       }
     },
     watch: {},
@@ -225,7 +248,7 @@
           const dataMap = data.data.dataMap
           if (dataMap) {
             this.tableData = dataMap.data
-            this.total = dataMap.total
+            this.totalPage = dataMap.total
           }
           this.loading = false
         })
@@ -304,6 +327,11 @@
           }
         }
       },
+      handleSizeChange(val) {
+        console.log(`每页 ${val} 条`)
+        this.form.pageSize = val
+        this.search()
+      },
       handleCurrentChange(page) {
         this.form.pageNo = page
         this.search()
@@ -331,6 +359,9 @@
     },
     mounted() {
       this.search()
+    },
+    filters: {
+      formatDate
     }
   }
 </script>

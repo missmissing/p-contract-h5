@@ -31,7 +31,7 @@
             type="primary" class="mb20">新增
           </el-button>
           <el-table :data="baseInfoForm.tableSupplierInfo">
-            <el-table-column type="index"></el-table-column>
+            <el-table-column type="index" label="序号" width="80"></el-table-column>
             <el-table-column prop="id" label="供应商编号"></el-table-column>
             <el-table-column prop="name" label="供应商名称"></el-table-column>
             <el-table-column

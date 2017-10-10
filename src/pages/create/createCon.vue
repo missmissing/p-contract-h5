@@ -214,7 +214,7 @@
                          type="primary">新增
               </el-button>
               <el-table :data="cardContentInfoForm.tableSupplierInfo">
-                <el-table-column type="index"></el-table-column>
+                <el-table-column type="index" label="序号" width="80"></el-table-column>
                 <el-table-column prop="code" label="供应商编号"></el-table-column>
                 <el-table-column prop="name" label="供应商名称"></el-table-column>
                 <el-table-column
@@ -287,7 +287,7 @@
                          type="primary">新增
               </el-button>
               <el-table :data="cardContentInfoForm.conStandard">
-                <el-table-column type="index"></el-table-column>
+                <el-table-column type="index" label="序号" width="80"></el-table-column>
                 <el-table-column v-if="baseInfoForm.contractBusinessTypeFirst!==2" prop="materialCode" label="物料编码"></el-table-column>
                 <el-table-column prop="materialName" :label="baseInfoForm.contractBusinessTypeFirst===2?'服务名称':'物料名称'"></el-table-column>
                 <el-table-column v-if="baseInfoForm.contractType!==3" prop="total" label="数量"></el-table-column>
@@ -1091,7 +1091,7 @@
             <el-card v-if="showMaterialItems">
               <header slot="header">物资验收事项</header>
               <el-table :data="cardContCheckInfoForm.materialMatters">
-                <el-table-column type="index" label="序号" width="100px"></el-table-column>
+                <el-table-column type="index" label="序号" width="80"></el-table-column>
                 <el-table-column prop="sampleCode" label="物料编码"></el-table-column>
                 <el-table-column prop="sampleDesc" label="物料描述"></el-table-column>
               </el-table>
@@ -1103,7 +1103,7 @@
                 添加
               </el-button>
               <el-table :data="cardContCheckInfoForm.serviceMatters">
-                <el-table-column type="index" label="序号" width="100px"></el-table-column>
+                <el-table-column type="index" label="序号" width="80"></el-table-column>
                 <el-table-column prop="serviceName" label="服务名称"></el-table-column>
                 <el-table-column prop="serviceRequire" label="验收要求"></el-table-column>
                 <el-table-column prop="remark" label="备注"></el-table-column>
@@ -1433,7 +1433,7 @@
                      v-if="cardRelatedInfoForm.contractList.length">
           <el-form rel="cardRelatedInfoForm" :model="cardRelatedInfoForm" label-width="100px">
             <el-table :data="cardRelatedInfoForm.contractList">
-              <el-table-column type="index" label="序号" width="100px"></el-table-column>
+              <el-table-column type="index" label="序号" width="80"></el-table-column>
               <el-table-column prop="contractCode" label="合同号"></el-table-column>
               <el-table-column prop="type" label="类型"></el-table-column>
               <el-table-column prop="status" label="状态"></el-table-column>
