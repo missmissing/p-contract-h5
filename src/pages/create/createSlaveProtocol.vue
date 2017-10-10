@@ -521,6 +521,10 @@
           this.formNewSubject.subjects = []
         }
       },
+      handleCancelAddNewSubject(formName) {
+        this.$refs[formName].resetFields()
+        this.baseInfoForm.dialogNewSubjectVisible = false
+      },
       handleAddNewSubject(formName) {
         let curForm = this.$refs[formName]
         curForm.validate((valid) => {
