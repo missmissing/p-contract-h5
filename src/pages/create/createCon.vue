@@ -1498,9 +1498,8 @@
         </el-form-item>
       </el-form>
       <footer slot="footer">
+        <el-button @click="handleNewContractSupplierCancel('formContractSupplier')">取消</el-button>
         <el-button type="primary" @click="handleNewContractSupplier('formContractSupplier')">确定</el-button>
-        <el-button type="primary" @click="handleNewContractSupplierCancel('formContractSupplier')">取消
-        </el-button>
       </footer>
     </el-dialog>
     <el-dialog title="新增合同我方主体" :visible.sync="baseInfoForm.dialogNewSubjectVisible" size="small">
@@ -1528,8 +1527,8 @@
         </el-form-item>
       </el-form>
       <footer slot="footer">
+        <el-button @click="handleCancelAddNewSubject('formNewSubject')">取消</el-button>
         <el-button type="primary" @click="handleAddNewSubject('formNewSubject')">确定</el-button>
-        <el-button type="primary" @click="handleCancelAddNewSubject('formNewSubject')">取消</el-button>
       </footer>
     </el-dialog>
     <el-dialog title="第三方信息" :visible.sync="cardContentInfoForm.dialogNewThirdPartyVisible" size="small">
@@ -1557,8 +1556,8 @@
         </el-form-item>
       </el-form>
       <footer slot="footer">
+        <el-button @click="handleCancelAddNewThirdParty('formNewThirdParty')">取消</el-button>
         <el-button type="primary" @click="handleAddNewThirdParty('formNewThirdParty')">确定</el-button>
-        <el-button type="primary" @click="handleCancelAddNewThirdParty('formNewThirdParty')">取消</el-button>
       </footer>
     </el-dialog>
     <el-dialog title="新增联合验收人" :visible.sync="cardContCheckInfoForm.dialogAddUnionCheckVisible"
@@ -1597,8 +1596,8 @@
         </el-form-item>
       </el-form>
       <footer slot="footer">
+        <el-button @click="handleCancelAddUnionCheck('formAddUnionCheck')">取消</el-button>
         <el-button type="primary" @click="handleAddUnionCheckItem('formAddUnionCheck')">确定</el-button>
-        <el-button type="primary" @click="handleCancelAddUnionCheck('formAddUnionCheck')">取消</el-button>
       </footer>
     </el-dialog>
     <el-dialog title="新增服务验收事项" :visible.sync="cardContCheckInfoForm.dialogAddServiceVisible"
@@ -1616,8 +1615,8 @@
         </el-form-item>
       </el-form>
       <footer slot="footer">
+        <el-button @click="handleCancelAddServiceCheck('formAddServiceCheck')">取消</el-button>
         <el-button type="primary" @click="handleAddServiceCheckItem('formAddServiceCheck')">确定</el-button>
-        <el-button type="primary" @click="handleCancelAddServiceCheck('formAddServiceCheck')">取消</el-button>
       </footer>
     </el-dialog>
     <el-dialog title="新增合同标的" :visible.sync="cardContentInfoForm.dialogAddConStandard"
@@ -1676,8 +1675,8 @@
         </el-form-item>
       </el-form>
       <footer slot="footer">
+        <el-button @click="handleCancelAddConStandard('formAddConStandard')">取消</el-button>
         <el-button type="primary" @click="handleAddConStandardItem('formAddConStandard')">确定</el-button>
-        <el-button type="primary" @click="handleCancelAddConStandard('formAddConStandard')">取消</el-button>
       </footer>
     </el-dialog>
     <Process></Process>

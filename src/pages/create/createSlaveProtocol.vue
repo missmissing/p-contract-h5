@@ -314,9 +314,8 @@
         </el-form-item>
       </el-form>
       <footer slot="footer">
+        <el-button @click="handleNewContractSupplierCancel('formContractSupplier')">取消</el-button>
         <el-button type="primary" @click="handleNewContractSupplier('formContractSupplier')">确定</el-button>
-        <el-button type="primary" @click="handleNewContractSupplierCancel('formContractSupplier')">取消
-        </el-button>
       </footer>
     </el-dialog>
     <el-dialog title="新增合同我方主体" :visible.sync="baseInfoForm.dialogNewSubjectVisible" size="small">
@@ -344,8 +343,8 @@
         </el-form-item>
       </el-form>
       <footer slot="footer">
+        <el-button @click="handleCancelAddNewSubject('formNewSubject')">取消</el-button>
         <el-button type="primary" @click="handleAddNewSubject('formNewSubject')">确定</el-button>
-        <el-button type="primary" @click="handleCancelAddNewSubject('formNewSubject')">取消</el-button>
       </footer>
     </el-dialog>
   </div>

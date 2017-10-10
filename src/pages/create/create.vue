@@ -102,7 +102,6 @@
             <el-form-item label="创建人" prop="createPerson">
               <el-select
                 style="width:300px"
-                size="small"
                 v-model="prForm.createPerson"
                 filterable
                 remote
@@ -115,7 +114,7 @@
                   :label="item.userName"
                   :value="item.userId">
                   <span style="float: left">{{ item.userName }}</span>
-                  <span style="float: right; color: #8492a6; font-size: 13px">{{ item.deptName }}</span>
+                  <span style="float: right; font-size: 13px">{{ item.deptName }}</span>
                 </el-option>
               </el-select>
             </el-form-item>
@@ -200,7 +199,7 @@
         </el-col>
       </el-row>-->
       <template slot="footer">
-        <el-button type="primary" @click="handleCloseDialog">关闭</el-button>
+        <el-button @click="handleCloseDialog">取消</el-button>
         <el-button type="primary" @click="handleOKDialog">确定</el-button>
       </template>
     </el-dialog>
@@ -266,7 +265,7 @@
                 onClick(picker) {
                   const end = new Date()
                   const start = new Date()
-                  start.setTime(start.getTime() - 3600 * 1000 * 24 * 7)
+                  start.setTime(start.getTime() - 3600 * 1000 * 24 * 6)
                   picker.$emit('pick', [start, end])
                 }
               }, {
@@ -275,14 +274,6 @@
                   const end = new Date()
                   const start = new Date()
                   start.setTime(start.getTime() - 3600 * 1000 * 24 * 30)
-                  picker.$emit('pick', [start, end])
-                }
-              }, {
-                text: '最近三个月',
-                onClick(picker) {
-                  const end = new Date()
-                  const start = new Date()
-                  start.setTime(start.getTime() - 3600 * 1000 * 24 * 90)
                   picker.$emit('pick', [start, end])
                 }
               }
