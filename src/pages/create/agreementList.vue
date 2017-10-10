@@ -126,14 +126,14 @@
           creatorLoading: false,
           creatorName: '',
           creators: [],
-          pageNo:1,
-          pageSize:10,
+          pageNo: 1,
+          pageSize: 10
         },
         agreementList: [],
-        total:0,
+        total: 0
       }
     },
-    mounted:function(){
+    mounted: function() {
       this.handleQuery()
     },
     methods: {
@@ -164,15 +164,14 @@
       handleQuery() {
         Api.getAgreementList(this.agreementForm)
           .then((data) => {
-            const dataMap=data.data.dataMap
-            if(dataMap){
-              this.agreementList =dataMap.data||[]
-              this.total=dataMap.total
+            const dataMap = data.data.dataMap
+            if (dataMap) {
+              this.agreementList = dataMap.data || []
+              this.total = dataMap.total
             }
-
-      })
+          })
       },
-      getRemoteCreatorsByKeyWord(query){
+      getRemoteCreatorsByKeyWord(query) {
         if (query !== '') {
           this.agreementForm.creatorLoading = true
           Api.getRemoteCreatePersonsByKeyWord({keyword: query})
@@ -184,10 +183,10 @@
           this.agreementForm.creators = []
         }
       },
-      handleCurrentChange(page){
-        this.agreementForm.pageNo=page
+      handleCurrentChange(page) {
+        this.agreementForm.pageNo = page
         this.search()
-      },
+      }
     }
   }
 </script>

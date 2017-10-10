@@ -1,40 +1,34 @@
 /**
- * 局部loading
- * 依赖属性v-loading="loadingFlag",:element-loading-text="loadingText",可加修饰符body,fullscreen,lock
- * 使用方法：在需要显示的标签上添加
- * @param {number}type 不传则关闭
+ * 全屏loading
+ * @param {object} options 同element-ui loading选项
+ * @param false 则关闭
  */
 
-class support {
-  static comLoading(type) {
-    if (!type) {
-      this.loadingFlag = false
+let loadingInstance = null
+
+const defaultOpts = {
+  target: document.body,
+  body: false,
+  fullscreen: false,
+  lock: false,
+  text: '拼命加载中',
+  customClass: ''
+}
+
+class loading {
+  static init(options = {}) {
+    if (!options) {
+      loadingInstance && loadingInstance.close()
       return
     }
-    this.loadingFlag = true
-    let text = ''
-    switch (type) {
-      case 1:
-        text = '拼命加载中'
-        break
-      case 2:
-        text = '正在提交中'
-        break
-      default:
-        text = 'loading'
-    }
-    this.loadingText = text
+    const config = Object.assign(defaultOpts, options)
+    loadingInstance = this.$loading(config)
+    return loadingInstance
   }
 }
 
 export default {
-  data() {
-    return {
-      loadingFlag: false,
-      loadingText: ''
-    }
-  },
   methods: {
-    comLoading: support.comLoading
+    comLoading: loading.init
   }
 }

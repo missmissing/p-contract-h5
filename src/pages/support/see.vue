@@ -3,9 +3,7 @@
 </style>
 
 <template>
-  <div
-    v-loading="loadingFlag"
-    :element-loading-text="loadingText">
+  <div>
     <transition name="component-fade" mode="out-in">
       <div v-show="!showTmpl">
         <el-card class="mb20">
@@ -179,14 +177,14 @@
         }
       },
       getTplData(id) {
-        this.comLoading(1)
+        this.comLoading()
         supportModel.getTplData({
           templateId: id
         }).then((res) => {
           console.log(res)
           const tplInfo = res.data.dataMap
           this.setData(tplInfo)
-          this.comLoading()
+          this.comLoading(false)
         })
       },
       getAllVersions() {

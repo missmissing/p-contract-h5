@@ -7,9 +7,7 @@
 </style>
 
 <template>
-  <div class="form-container"
-       v-loading="loadingFlag"
-       :element-loading-text="loadingText">
+  <div class="form-container">
     <div>
       <el-card>
         <div slot="header">
@@ -194,9 +192,9 @@
     },
     methods: {
       getInfo(procInstId) {
-        this.comLoading(1)
+        this.comLoading()
         Api.getUnqualifiedByProcInstId({procInstId}).then((res) => {
-          this.comLoading()
+          this.comLoading(false)
           const data = res.data.dataMap
           console.log(data)
           this.setData(data)

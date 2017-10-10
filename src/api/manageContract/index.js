@@ -84,20 +84,20 @@ export default {
   },
   /** ****变更合同接口end******/
   /** ***从协议接口****/
-  //从协议列表
+  // 从协议列表
   getAgreementList(params) {
     return Http.post(`${contract}/contract-web/protocol/list/search`, params)
   },
-  //创建从协议
-  createAgreenment(params){
+  // 创建从协议
+  createAgreenment(params) {
     return Http.post(`${contract}/contract-web/protocol/add`, params)
   },
-  //根据从协议ID查询从协议详情
-  getAgreenmentDetail(params){
-    return Http.get(`${contract}/contract-web/protocol/detail/id/${params}` )
+  // 根据从协议ID查询从协议详情
+  getAgreenmentDetail(params) {
+    return Http.get(`${contract}/contract-web/protocol/detail/id/${params}`)
   },
-  //根据从协议编号查询从协议详情
-  getAgreenmentDetailByAgreenmentNo(params){
+  // 根据从协议编号查询从协议详情
+  getAgreenmentDetailByAgreenmentNo(params) {
     return Http.get(`${contract}/contract-web/protocol/detail/protocolNO/${params}`)
   },
   /** ***从协议接口****/

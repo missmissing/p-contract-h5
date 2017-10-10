@@ -168,13 +168,13 @@
         this.getList(this.form)
       },
       getList(params) {
-        this.comLoading(1)
+        this.comLoading()
         supportModel.getList(params).then((res) => {
           console.log(res)
-          this.comLoading()
+          this.comLoading(false)
           this.tableData = res.data.dataMap
         }, () => {
-          this.comLoading()
+          this.comLoading(false)
         })
       },
       see(row) {

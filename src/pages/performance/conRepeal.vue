@@ -7,9 +7,7 @@
 </style>
 
 <template>
-  <div class="pd20"
-       v-loading="loadingFlag"
-       :element-loading-text="loadingText">
+  <div class="pd20">
     <div class="basic-info">
       <el-form :model="form" :rules="rules" ref="form" label-width="120px">
         <el-row>
@@ -135,7 +133,7 @@
           this.$message.warning('请输入合同编号！')
           return
         }
-        this.comLoading(1)
+        this.comLoading()
         Api.getContractDetailByCode({id: this.contractCode}).then((res) => {
           const data = res.data.dataMap
           console.log(data)
@@ -145,7 +143,7 @@
           this.startTime = startTime
           this.endTime = endTime
           this.toDetail.query.contractId = id
-          this.comLoading()
+          this.comLoading(false)
         })
       },
       submit() {
@@ -164,8 +162,12 @@
               suspendRemark: this.suspendRemark
             }
             console.log(result)
+            this.comLoading({
+              text: '正在提交中'
+            })
             Api.contractSuspendSubmit(result).then((res) => {
               console.log(res)
+              this.comLoading(false)
             })
           } else {
             console.log('error submit!!')

@@ -29,9 +29,9 @@ if (user || !ticket) {
   init()
 } else {
   Api.login({ticket}).then((res) => {
-    let  reg=/(^[\w:\/\.#]+)[\?]?/gi
-    let  path=reg.exec(window.location.toString())
-    window.location.href=path[1]
+    let reg = /(^[\w:\/\.#]+)[\?]?/gi
+    let path = reg.exec(window.location.toString())
+    window.location.href = path[1]
     LocalStore.set('user', res.data.dataMap)
     init()
   })

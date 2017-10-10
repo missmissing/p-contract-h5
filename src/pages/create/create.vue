@@ -8,7 +8,7 @@
         <el-row>
           <el-col :span="8">
             <el-form-item label="比价单" v-if="conForm.isPr" prop="strPC">
-              <el-input v-model="conForm.strPC"  v-on:keyup.enter="handleQuery" placeholder="请输入比价单号"></el-input>
+              <el-input v-model="conForm.strPC" v-on:keyup.enter="handleQuery" placeholder="请输入比价单号"></el-input>
             </el-form-item>
           </el-col>
           <el-col :span="8" v-if="conForm.isPr">
@@ -146,7 +146,8 @@
                 max-height="250" @row-click="handleRowClick">
         <el-table-column prop="ifSelect" label="选择">
           <template scope="scope">
-            <el-checkbox v-model="scope.row.ifSelect" @change.stop.prevent="handleRowClick(priceList[scope.$index])"></el-checkbox>
+            <el-checkbox v-model="scope.row.ifSelect"
+                         @change.stop.prevent="handleRowClick(priceList[scope.$index])"></el-checkbox>
           </template>
         </el-table-column>
         <el-table-column
@@ -287,8 +288,8 @@
               }
             ]
           },
-          pageNo:1,
-          pageSize:10,
+          pageNo: 1,
+          pageSize: 10
         },
         priceList: [],
         currentPr: null, // 当前选择的比价单
@@ -298,13 +299,14 @@
           children: 'children',
           label: 'businessName'
         },
-        total:0,//总条目数
-        pageCount:0,//总页数
+        total: 0, // 总条目数
+        pageCount: 0// 总页数
       }
     },
-    created(){},
+    created() {
+    },
     mounted() {
-      this.prForm.createPerson=user.userId
+      this.prForm.createPerson = user.userId
       this.getRemoteCreatePersonsByKeyWord(user.userId)
     },
     computed: {
@@ -337,7 +339,7 @@
         }
       },
       handleQuery(e) {
-        this.comLoading(1)
+        this.comLoading()
         Api.getQrDetail({
           folio: this.conForm.strPC
         }).then((data) => {
@@ -345,13 +347,13 @@
             this.currentPr = data.data.dataMap
             this.curPriceList = [data.data.dataMap]
           }
-          this.comLoading()
+          this.comLoading(false)
         })
       },
       handleHighQuery() {
         this.dialogVisible = true
       },
-      //????当前比加单列表接口缺少数据导致无法取得当前合同的总价格，需接口调整
+      // 当前比加单列表接口缺少数据导致无法取得当前合同的总价格，需接口调整
       handleNext(formName) {
         this.$refs[formName].validate((valid) => {
           if (valid) {
@@ -362,18 +364,18 @@
               })
               return
             }
-            if(parseInt(this.conForm.curConModelId)===2){//判断当前为固定格式合同时，合同总金额》=10000时，不让其创建固定格式合同
-              const items=this.curPriceList[0].items
-              if(items&&items.length){
-                let total=0
-                for(let i=0,len=items.length;i<len;i++){
-                  total+=parseFloat(items[0].amount)
+            if (parseInt(this.conForm.curConModelId) === 2) { // 判断当前为固定格式合同时，合同总金额》=10000时，不让其创建固定格式合同
+              const items = this.curPriceList[0].items
+              if (items && items.length) {
+                let total = 0
+                for (let i = 0, len = items.length; i < len; i++) {
+                  total += parseFloat(items[0].amount)
                 }
-                if(total>=10000){
+                if (total >= 10000) {
                   this.$message({
                     message: '合同金额大于一万元，请调整合同模式',
                     type: 'warning'
-                  });
+                  })
                   return
                 }
               }
@@ -451,23 +453,23 @@
         this.visible = false
       },
       handleQueryPriceList() {
-        this.comLoading(1)
-        this.priceList=[]
+        this.comLoading()
+        this.priceList = []
         let startTime = this.prForm.createTime[0] ? formatDate(this.prForm.createTime[0].toLocaleDateString()) : ''
         let endTime = this.prForm.createTime[1] ? formatDate(this.prForm.createTime[1].toLocaleDateString()) : ''
-        let times=[],day=null,endDay=''
-        if(endTime){
-          times=endTime.split('-')
-          day=parseInt(times[2])+1
-          endDay=times[0]+'-'+times[1]+'-'+[day]
+        let times = [], day = null, endDay = ''
+        if (endTime) {
+          times = endTime.split('-')
+          day = parseInt(times[2]) + 1
+          endDay = times[0] + '-' + times[1] + '-' + [day]
         }
-        const params={
+        const params = {
           pr: this.prForm.prCode,
           originator: this.prForm.createPerson,
           fromDate: startTime,
           toDate: endDay,
-          pageNo:this.prForm.pageNo,
-          pageSize:this.prForm.pageSize
+          pageNo: this.prForm.pageNo,
+          pageSize: this.prForm.pageSize
         }
         this.$refs['prForm'].validate((valid) => {
           if (valid) {
@@ -479,7 +481,7 @@
                 }
                 this.priceList = arr
               }
-              this.comLoading()
+              this.comLoading(false)
             })
           } else {
             console.log('error submit!!')
@@ -497,18 +499,18 @@
           oldRow.clicked = false
         }
       },
-      handleRowClick(row,event) {
-        if(event){
+      handleRowClick(row, event) {
+        if (event) {
           event.stopPropagation()
           event.preventDefault()
         }
         if (row.clicked) {
           row.clicked = false
-          this.$refs.priceList.setCurrentRow();
+          this.$refs.priceList.setCurrentRow()
           this.currentPr = null
         } else {
           row.clicked = true
-          this.$refs.priceList.setCurrentRow(row);
+          this.$refs.priceList.setCurrentRow(row)
         }
       },
       closeTree() {
@@ -524,17 +526,16 @@
             })
         } else {
           this.prForm.createPersons = []
-          this.prForm.createPerson=''
-
+          this.prForm.createPerson = ''
         }
       },
-      handleIfSelectChange(val){
-        console.log('val',val);
+      handleIfSelectChange(val) {
+        console.log('val', val)
       },
-      handleCurrentChange(page){
-        this.prForm.pageNo=page
+      handleCurrentChange(page) {
+        this.prForm.pageNo = page
         this.handleQueryPriceList()
-      },
+      }
     }
   }
 </script>

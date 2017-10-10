@@ -8,9 +8,7 @@
 
 <template>
   <div class="form-container">
-    <div
-      v-loading="loadingFlag"
-      :element-loading-text="loadingText">
+    <div>
       <el-card>
         <div slot="header">
           <span class="common-title">基本信息</span>
@@ -538,11 +536,11 @@
           return
         }
 
-        this.comLoading(1)
+        this.comLoading()
         signModel.getPr({
           pr: prCode
         }).then((res) => {
-          this.comLoading()
+          this.comLoading(false)
           const data = res.data.dataMap
           console.log(data)
           if (this.prData.length) {
@@ -557,7 +555,7 @@
           }
           this.prData.push(data)
         }, () => {
-          this.comLoading()
+          this.comLoading(false)
         })
       },
       match() {
@@ -571,12 +569,12 @@
           return item.pr
         })
 
-        this.comLoading(1)
+        this.comLoading()
         signModel.getMatch({
           pr,
           contractNo: this.contractCode
         }).then((res) => {
-          this.comLoading()
+          this.comLoading(false)
           console.log(res)
           const data = res.data.dataMap
           const {intentionContVos, materialsMatchVoList} = data
@@ -783,14 +781,14 @@
         if (!this.check(result)) {
           return
         }
-        this.comLoading(1)
+        this.comLoading()
         signModel.submit(result).then((res) => {
-          this.comLoading()
+          this.comLoading(false)
           this.$router.push({
             name: routerNames.con_index
           })
         }, () => {
-          this.comLoading()
+          this.comLoading(false)
         })
       }
     },

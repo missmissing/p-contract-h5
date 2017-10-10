@@ -180,10 +180,10 @@
         return [1, 3].indexOf(cellValue) > -1 ? prTypeMap[1] : prTypeMap[2]
       },
       getList() {
-        this.comLoading(1)
+        this.comLoading()
         Api.query(this.form).then((res) => {
           console.log(res)
-          this.comLoading()
+          this.comLoading(false)
           const {total, data} = res.data.dataMap
           this.tableData = data
           this.totalPage = total

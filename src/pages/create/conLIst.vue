@@ -176,7 +176,7 @@
     mixins: [getBusiType],
     data() {
       return {
-        visible:false,
+        visible: false,
         defaultProps: {
           children: 'children',
           label: 'businessName'
@@ -185,9 +185,9 @@
           contractNo: '',
           contractName: '',
           contractTextType: '',
-          conTypeName:'',//业务类型名
-          conTypeId:'',//业务类型id
-          contractType: '',//合同模式
+          conTypeName: '', // 业务类型名
+          conTypeId: '', // 业务类型id
+          contractType: '', // 合同模式
           purchaseOrder: '',
           creatorName: '',
           creatorId: '',
@@ -200,8 +200,8 @@
           daterange: [],
           loading: false,
           opratorLoading: false,
-          pageNo:1,
-          pageSize:10,
+          pageNo: 1,
+          pageSize: 10
         },
         conModels: [
           {id: '1', name: '单一合同'},
@@ -209,17 +209,12 @@
           {id: '3', name: '框架合同'},
           {id: '4', name: '框架意向合同'}
         ],
-        defaultProps: {
-          children: 'children',
-          label: 'businessName'
-        },
         tableData: [],
         creators: [],
         loading: false,
 
-
-        total:0,//总条目数
-        pageCount:0,//总页数
+        total: 0, // 总条目数
+        pageCount: 0// 总页数
       }
     },
     watch: {},
@@ -227,10 +222,10 @@
       search() {
         this.loading = true
         Api.getConList(this.form).then((data) => {
-          const dataMap=data.data.dataMap
-          if(dataMap){
+          const dataMap = data.data.dataMap
+          if (dataMap) {
             this.tableData = dataMap.data
-            this.total=dataMap.total
+            this.total = dataMap.total
           }
           this.loading = false
         })
@@ -309,12 +304,13 @@
           }
         }
       },
-      handleCurrentChange(page){
-        this.form.pageNo=page
+      handleCurrentChange(page) {
+        this.form.pageNo = page
         this.search()
       },
       setBusiType(checkNodes, tree) {
-        const ids = [], names = []
+        const ids = []
+        const names = []
         if (checkNodes.length) {
           for (let i = 0, len = checkNodes.length; i < len; i++) {
             ids.push(checkNodes[i].id)
@@ -328,7 +324,7 @@
       },
       closeTree() {
         this.visible = false
-      },
+      }
     },
     components: {
       TreeModal

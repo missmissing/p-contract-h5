@@ -3,9 +3,7 @@
 </style>
 
 <template>
-  <div
-    v-loading="loadingFlag"
-    :element-loading-text="loadingText">
+  <div>
     <transition name="component-fade" mode="out-in">
       <div v-show="!showTmpl">
         <el-card>
@@ -211,13 +209,13 @@
       save(templateStatus) {
         this.$refs['form'].validate((valid) => {
           if (valid) {
-            this.comLoading(1)
+            this.comLoading()
             const result = this.getResult()
             result.templateStatus = templateStatus
             console.log('click save：', result)
             supportModel.addTpl(result).then((res) => {
               console.log(res)
-              this.comLoading()
+              this.comLoading(false)
               this.$message({
                 message: '提交成功',
                 type: 'success'
@@ -226,7 +224,7 @@
                 this.back()
               }
             }, () => {
-              this.comLoading()
+              this.comLoading(false)
             })
           } else {
             console.log('error submit!!')

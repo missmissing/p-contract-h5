@@ -7,10 +7,7 @@
 </style>
 
 <template>
-  <div
-    class="form-container"
-    v-loading="loadingFlag"
-    :element-loading-text="loadingText">
+  <div class="form-container">
     <div>
       <el-card>
         <div slot="header">
@@ -195,7 +192,7 @@
         if (!this.basicForm.contractNo) {
           return
         }
-        this.comLoading(1)
+        this.comLoading()
         Api.getContractViolateBaseByContractNo({contractNo: this.basicForm.contractNo}).then((res) => {
           const data = res.data.dataMap
           console.log(data)
@@ -207,9 +204,9 @@
           this.businessDept = businessDept
           this.businessOperator = businessOperator
           this.toDetail.query.contractId = contractId
-          this.comLoading()
+          this.comLoading(false)
         }, () => {
-          this.comLoading()
+          this.comLoading(false)
         })
       },
       getResult() {
@@ -248,14 +245,16 @@
           this.$message.warning('表单信息不完整！')
           return
         }
-        this.comLoading(1)
+        this.comLoading({
+          text: '正在提交中'
+        })
         Api.contractViolateSave(result).then((res) => {
-          this.comLoading()
+          this.comLoading(false)
           this.$router.push({
             name: routerNames.con_index
           })
         }, () => {
-          this.comLoading()
+          this.comLoading(false)
         })
       }
     },

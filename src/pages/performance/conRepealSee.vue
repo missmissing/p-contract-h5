@@ -7,9 +7,7 @@
 </style>
 
 <template>
-  <div class="pd20"
-       v-loading="loadingFlag"
-       :element-loading-text="loadingText">
+  <div class="pd20">
     <div class="basic-info">
       <el-form :model="form" :rules="rules" ref="form" label-width="120px">
         <el-row>

@@ -3,10 +3,7 @@
 </style>
 
 <template>
-  <div
-    class="pd20"
-    v-loading="loadingFlag"
-    :element-loading-text="loadingText">
+  <div class="pd20">
     <el-tabs>
       <el-tab-pane label="合同信息">
         <div class="contract-info">
@@ -185,14 +182,14 @@
     },
     methods: {
       getInfo(id) {
-        this.comLoading(1)
-        Api.detail({id}).then((res) => {
+        this.comLoading()
+        Api.detailByPoId({id}).then((res) => {
           console.log(res)
           this.info = res.data.dataMap
           this.setOrderData()
           this.setServerData()
           this.setContractForm()
-          this.comLoading()
+          this.comLoading(false)
         })
       },
       setContractForm() {

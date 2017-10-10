@@ -7,10 +7,7 @@
 </style>
 
 <template>
-  <div
-    class="form-container"
-    v-loading="loadingFlag"
-    :element-loading-text="loadingText">
+  <div class="form-container">
     <div>
       <el-card>
         <div slot="header">
@@ -177,14 +174,14 @@
     },
     methods: {
       getInfo(id) {
-        this.comLoading(1)
+        this.comLoading()
         Api.getViolateByProcInstId({procInstId: id}).then((res) => {
-          this.comLoading()
+          this.comLoading(false)
           const data = res.data.dataMap
           console.log(data)
           this.setData(data)
         }, () => {
-          this.comLoading()
+          this.comLoading(false)
         })
       },
       setData(data) {
