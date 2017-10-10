@@ -57,7 +57,7 @@
               <el-input :disabled="operateType==='query'" v-model="updateForm.code" placeholder="请输入合同编号"></el-input>
             </el-form-item>
           </el-col>
-          <el-col :span="4" :offset="2" v-if="operateType==='update'">
+          <el-col :span="4" :offset="1" v-if="operateType==='update'">
             <el-button :disabled="!updateForm.code" type="primary" @click="handleQuery(updateForm.code)">
               查找
             </el-button>
@@ -66,7 +66,7 @@
         <el-row>
           <el-col :span="8">
             <el-form-item label="变更方式" prop="updateMode">
-              <el-select :disabled="operateType==='query'" v-model="updateForm.updateMode" placeholder="请选择变更方式">
+              <el-select class="wp100" :disabled="operateType==='query'" v-model="updateForm.updateMode" placeholder="请选择变更方式">
                 <el-option
                   v-for="item in updateForm.updateModes"
                   :key="item.id"

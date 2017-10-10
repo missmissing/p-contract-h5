@@ -44,11 +44,15 @@
             <el-table-column
               prop="materialCode"
               label="物料编码"
-              width="100">
+              min-width="150">
+              <template scope="scope">
+                {{scope.row.materialCode | cutZero}}
+              </template>
             </el-table-column>
             <el-table-column
               prop="materialName"
-              label="物料名称">
+              label="物料名称"
+              min-width="150">
             </el-table-column>
             <el-table-column
               prop="total"
@@ -166,6 +170,7 @@
   import {formatDate} from '@/filters/moment'
   import comLoading from '@/mixins/comLoading'
   import Process from '@/components/process'
+  import cutZero from '@/util/cutZero'
   import {routerNames, contractPatternMap, prTypeMap} from '@/core/consts'
 
   export default {
@@ -225,7 +230,8 @@
       this.getInfo(id)
     },
     filters: {
-      formatDate
+      formatDate,
+      cutZero
     },
     components: {
       Process

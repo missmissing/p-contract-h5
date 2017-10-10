@@ -78,6 +78,9 @@
         prop="materialCode"
         min-width="150"
         label="物料编码">
+        <template scope="scope">
+          {{scope.row.materialCode | cutZero}}
+        </template>
       </el-table-column>
       <el-table-column
         prop="materialName"
@@ -134,6 +137,7 @@
   import comLoading from '@/mixins/comLoading'
   import {formatDate} from '@/filters/moment'
   import SelectPerson from '@/components/selectPerson.vue'
+  import cutZero from '@/util/cutZero'
 
   export default {
     mixins: [comLoading],
@@ -216,7 +220,8 @@
       this.getList()
     },
     filters: {
-      formatDate
+      formatDate,
+      cutZero
     },
     components: {
       SelectPerson

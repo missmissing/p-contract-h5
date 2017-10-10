@@ -128,6 +128,9 @@
                   prop="materialCode"
                   label="物料编码"
                   width="100">
+                  <template scope="scope">
+                    {{scope.row.materialCode | cutZero}}
+                  </template>
                 </el-table-column>
                 <el-table-column
                   prop="materialName"
@@ -360,6 +363,9 @@
               <el-table-column
                 prop="materialCode"
                 label="物料编码">
+                <template scope="scope">
+                  {{scope.row.materialCode | cutZero}}
+                </template>
               </el-table-column>
               <el-table-column
                 prop="materialName"
@@ -474,6 +480,7 @@
   import {routerNames, prTypeMap, contractPatternMap} from '@/core/consts'
   import {formatTime, formatDate} from '@/filters/moment'
   import fillZero from '@/util/fillZero'
+  import cutZero from '@/util/cutZero'
   import {nonNegative} from '@/util/reg'
   import comLoading from '@/mixins/comLoading'
 
@@ -792,7 +799,8 @@
     },
     filters: {
       formatTime,
-      formatDate
+      formatDate,
+      cutZero
     },
     watch: {
       radio() {
