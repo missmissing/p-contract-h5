@@ -20,7 +20,7 @@
                 </el-form-item>
               </el-col>
               <el-button type="primary" class="ml20" v-show="toDetail.query.contractId">
-                <router-link class="router-link" :to="toDetail" target="_blank">详 情</router-link>
+                <router-link class="router-link-default" :to="toDetail" target="_blank">详 情</router-link>
               </el-button>
             </el-row>
             <el-row>

@@ -90,6 +90,10 @@
         return this.getNodeDetail(parent, result)
       },
       ok() {
+        if (!this.currentNode) {
+          this.$message.warning('请选择节点!')
+          return
+        }
         if (!this.multiple) {
           if (this.currentNode && this.currentNode.childNodes && this.currentNode.childNodes.length) {
             this.$message.warning('请选择最后一级节点!')

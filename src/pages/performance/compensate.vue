@@ -25,7 +25,7 @@
                 </el-form-item>
               </el-col>
               <el-button type="primary" class="ml20" v-show="toDetail.query.contractId">
-                <router-link class="router-link" :to="toDetail" target="_blank">详 情</router-link>
+                <router-link class="router-link-default" :to="toDetail" target="_blank">详 情</router-link>
               </el-button>
             </el-row>
             <el-row>
@@ -171,7 +171,7 @@
           schemeType: 1,
           violateReason: '',
           treatmentScheme: '',
-          fileIds: null
+          files: null
         },
         handleFormRules: {
           violateReason: [{required: true, message: '请输入违约/赔付原因'}, {
@@ -208,7 +208,7 @@
         })
       },
       getResult() {
-        this.handleForm.fileIds = this.fileList.map((file) => {
+        this.handleForm.files = this.fileList.map((file) => {
           if (file.status === 'success') {
             return file.fileId
           }

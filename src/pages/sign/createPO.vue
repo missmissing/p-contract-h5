@@ -76,7 +76,7 @@
                 <template scope="scope">
                   <el-button
                     @click.native.prevent="deleteRow(scope.$index, prData)"
-                    type="text"
+                    type="danger"
                     size="small">
                     移除
                   </el-button>
@@ -204,7 +204,7 @@
                   <template scope="scope">
                     <el-button
                       @click.native.prevent="deleteRow(scope.$index, orderData)"
-                      type="text"
+                      type="danger"
                       size="small">
                       移除
                     </el-button>
@@ -223,7 +223,7 @@
                     </el-form-item>
                   </el-col>
                   <el-button type="primary" class="ml20" v-show="toDetail.query.contractId">
-                    <router-link class="router-link" :to="toDetail" target="_blank">详 情</router-link>
+                    <router-link class="router-link-default" :to="toDetail" target="_blank">详 情</router-link>
                   </el-button>
                 </el-row>
                 <el-row>
@@ -290,7 +290,7 @@
                     <template scope="scope">
                       <el-button
                         @click.native.prevent="deleteRow(scope.$index, serverData)"
-                        type="text"
+                        type="danger"
                         size="small">
                         移除
                       </el-button>

@@ -70,7 +70,7 @@
         :formatter="formatType">
       </el-table-column>
       <el-table-column
-        prop="itemNo"
+        prop="sapItemNo"
         min-width="100"
         label="行项目">
       </el-table-column>

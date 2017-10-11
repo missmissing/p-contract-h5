@@ -86,7 +86,7 @@
                 </Upload>
               </el-form-item>
               <el-form-item v-show="showTpl">
-                <el-button type="primary" @click="showTmpl=true">模板信息</el-button>
+                <el-button size="small" type="primary" @click="showTmpl=true">模板信息</el-button>
               </el-form-item>
             </el-form>
           </div>

@@ -23,9 +23,10 @@
             </el-form-item>
           </el-col>
         </el-row>
-        <el-card class="mb20 mr20 ml20">
+        <el-card class="mb20">
           <header slot="header">合同供应商信息<i class="errorMsg">{{baseInfoForm.supplierErrorMsg}}</i></header>
           <el-button
+            size="small"
             v-if="baseInfoForm.tableSupplierInfo.length<=0&&enabledInupdated"
             @click="handleAddContractSupplier" icon="plus"
             type="primary" class="mb20">新增
@@ -43,15 +44,16 @@
                 <el-button
                   v-if="baseInfoForm.tableSupplierInfo[scope.$index].type"
                   @click="handleRemoveItem(scope.$index, baseInfoForm.tableSupplierInfo)"
-                  type="text" size="small">移除
+                  type="danger" size="small">移除
                 </el-button>
               </template>
             </el-table-column>
           </el-table>
         </el-card>
-        <el-card class="mb20 mr20 ml20">
+        <el-card class="mb20">
           <header slot="header">我方主体名称<i class="errorMsg">{{baseInfoForm.subjectErrorMsg}}</i></header>
-          <el-button type="primary" @click="handleNewSubjectName" icon="plus" v-if="enabledInupdated" class="mb20">新增
+          <el-button size="small" type="primary" @click="handleNewSubjectName" icon="plus" v-if="enabledInupdated"
+                     class="mb20">新增
           </el-button>
           <el-table :data="baseInfoForm.conSubjctName">
             <el-table-column prop="id" label="公司代码"></el-table-column>
@@ -65,7 +67,7 @@
                 <el-button
                   v-if="baseInfoForm.conSubjctName[scope.$index].type"
                   @click="handleRemoveItem(scope.$index, baseInfoForm.conSubjctName)"
-                  type="text" size="small">移除
+                  type="danger" size="small">移除
                 </el-button>
               </template>
             </el-table-column>
@@ -81,18 +83,20 @@
             </el-form-item>
           </el-col>
         </el-row>
-        <el-row v-if="baseInfoForm.radioSealOrder==0">
-          <el-col :span="16" style="margin-left: 100px">
-            <el-input type="textarea" :rows="4" placeholder="请输入内容"
-                      v-model="baseInfoForm.sealReason" :disabled="!enabledInupdated"></el-input>
-          </el-col>
-        </el-row>
+        <el-form-item v-if="baseInfoForm.radioSealOrder==0">
+          <el-input
+            type="textarea"
+            :rows="4"
+            placeholder="请输入内容"
+            v-model="baseInfoForm.sealReason" :disabled="!enabledInupdated">
+          </el-input>
+        </el-form-item>
       </el-form>
     </el-card>
     <el-card v-if="ifShowNewSeals">
       <header slot="header">合同附件及盖章信息<i class="errorMsg">{{baseInfoForm.attachmentErrorMsg}}</i></header>
       <el-form rel="cardSealInfoForm" :model="cardSealInfoForm" label-width="100px" :rules="cardSealInfoForm.rules">
-        <el-button type="primary" @click="handleNewOtherSealFile" icon="plus" class="mb20" v-if="enabledInupdated">
+        <el-button size="small" type="primary" @click="handleNewOtherSealFile" icon="plus" class="mb20" v-if="enabledInupdated">
           新增其他附件
         </el-button>
         <template v-if="cardSealInfoForm.sealAttachments.length"
@@ -119,7 +123,7 @@
                       <template scope="scope">
                         <el-button v-if="props.row.filesSealed[0].operate"
                                    @click="handleRemoveItem(index, props.row.filesSealed)"
-                                   type="text" size="small">移除
+                                   type="danger" size="small">移除
                         </el-button>
                       </template>
                     </el-table-column>
@@ -208,7 +212,7 @@
                 </el-upload>
               </template>
             </el-table-column>
-            <el-table-column prop="haveSale" label="是否盖章" width="70px">
+            <el-table-column prop="haveSale" label="是否盖章" width="100px">
               <template scope="scope">
                 <el-checkbox
                   :disabled="!enabledInupdated"
@@ -225,11 +229,13 @@
             <el-table-column
               fixed="right"
               label="操作"
+              width="80"
               v-if="enabledInupdated">
               <template scope="scope">
-                <el-button v-if="item[scope.$index].operate"
-                           @click="handleRemoveItem(index, cardSealInfoForm.sealAttachments)"
-                           type="text" size="small">移除
+                <el-button
+                  v-if="item[scope.$index].operate"
+                  @click="handleRemoveItem(index, cardSealInfoForm.sealAttachments)"
+                  type="danger" size="small">移除
                 </el-button>
               </template>
             </el-table-column>
@@ -239,14 +245,15 @@
     </el-card>
     <el-card>
       <header slot="header">补充信息</header>
-      <el-form rel="cardRemarkInfoForm" :model="cardRemarkInfoForm" label-width="100px">
-        <el-card>
-          <header slot="header">备注</header>
-          <el-form-item prop="otherInstruction">
-            <el-input style="margin-left: -100px" type="textarea" placeholder="请输入内容" :rows="6"
-                      v-model="cardRemarkInfoForm.otherInstruction" :disabled="!enabledInupdated"></el-input>
-          </el-form-item>
-        </el-card>
+      <el-form rel="cardRemarkInfoForm" :model="cardRemarkInfoForm">
+        <el-form-item prop="otherInstruction" label="备注">
+          <el-input
+            type="textarea"
+            placeholder="请输入内容"
+            :rows="4"
+            v-model="cardRemarkInfoForm.otherInstruction" :disabled="!enabledInupdated">
+          </el-input>
+        </el-form-item>
       </el-form>
     </el-card>
     <el-card class="mb20"

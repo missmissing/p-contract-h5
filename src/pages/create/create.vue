@@ -32,6 +32,7 @@
                   :key="item.id"
                   :value="item.id"
                   :label="item.name"
+                  :disabled="item.disabled"
                 >
                 </el-option>
               </el-select>
@@ -143,7 +144,7 @@
       </el-form>
       <el-table ref="priceList" :data="priceList" highlight-current-row border @current-change="handleSelectCurrent"
                 max-height="250" @row-click="handleRowClick">
-        <el-table-column prop="ifSelect" label="选择">
+        <el-table-column prop="ifSelect" label="选择" width="80">
           <template scope="scope">
             <el-checkbox v-model="scope.row.ifSelect"
                          @change.stop.prevent="handleRowClick(priceList[scope.$index])"></el-checkbox>
@@ -160,7 +161,8 @@
         </el-table-column>
         <el-table-column
           property="originatorName"
-          label="发起人">
+          label="发起人"
+          width="80">
         </el-table-column>
         <el-table-column
           :show-overflow-tooltip="true"
@@ -169,21 +171,24 @@
         </el-table-column>
         <el-table-column
           property="startTime"
-          label="发起时间">
+          label="发起时间"
+          width="120">
           <template scope="scope">
             {{transformDataFormat(priceList[scope.$index].startTime)}}
           </template>
         </el-table-column>
         <el-table-column
           property="finishTime"
-          label="结束时间">
+          label="结束时间"
+          width="120">
           <template scope="scope">
             {{transformDataFormat(priceList[scope.$index].finishTime)}}
           </template>
         </el-table-column>
         <el-table-column
           fixed="right"
-          label="操作">
+          label="操作"
+          width="80">
           <template scope="scope">
             <el-button @click.stop="handleDetailPR(scope.$index,scope.row)" type="text">查看</el-button>
           </template>
@@ -210,7 +215,7 @@
       :regions="regions"
       :defaultProps="defaultProps"
       @ok="setBusiType"
-      v-on:close="closeTree">
+      @close="closeTree">
     </TreeModal>
   </div>
 </template>
@@ -291,7 +296,8 @@
           label: 'businessName'
         },
         total: 0, // 总条目数
-        pageCount: 0// 总页数
+        pageCount: 0, // 总页数,
+        regionSource: null
       }
     },
     created() {
@@ -310,6 +316,7 @@
       'conForm.isPr': function (val, oldVal) {
         if (!val) {
           this.curPriceList = []
+          this.regions = this.regionSource ? this.regionSource : this.regions
         }
       }
     },
@@ -329,10 +336,10 @@
           this.conForm.conType = ''
         }
       },
-      handleQuery(e) {
+      handleQuery(folio) {
         this.comLoading()
         Api.getQrDetail({
-          folio: this.conForm.strPC
+          folio: folio || this.conForm.strPC
         }).then((data) => {
           if (data.data.dataMap) {
             this.currentPr = data.data.dataMap
@@ -418,7 +425,30 @@
       handleOKDialog() {
         this.dialogVisible = false
         if (this.currentPr) {
-          this.curPriceList = [this.currentPr]
+          const {folio, createFixedFormatContractFlag, purchaseType} = this.currentPr
+          this.handleQuery(folio)
+          this.conModels[1] = {...this.conModels[1], disabled: !createFixedFormatContractFlag}
+          this.conForm.curConModelId = createFixedFormatContractFlag ? this.conForm.curConModelId : null
+          if (!this.regionSource) {
+            this.regionSource = this.regions
+          }
+          if (this.conForm.conType) {
+            const conType = this.conForm.conType.split('-')[0]
+            if (purchaseType === 1 && conType === '2') {
+              this.conForm.conTypeName = ''
+            } else if (purchaseType === 2 && conType !== '2') {
+              this.conForm.conTypeName = ''
+            }
+          }
+          this.regions = this.regionSource.filter((item) => {
+            if (!purchaseType) {
+              return true
+            } else if (purchaseType === 1 && item.id !== 2) {
+              return true
+            } else if (purchaseType === 2 && item.id === 2) {
+              return true
+            }
+          })
           this.conForm.strPC = ''
         }
         this.currentPr.clicked = false
@@ -444,7 +474,6 @@
         this.visible = false
       },
       handleQueryPriceList() {
-        this.comLoading()
         this.priceList = []
         let startTime = this.prForm.createTime[0] ? formatDate(this.prForm.createTime[0].toLocaleDateString()) : ''
         let endTime = this.prForm.createTime[1] ? formatDate(this.prForm.createTime[1].toLocaleDateString()) : ''
@@ -464,6 +493,9 @@
         }
         this.$refs['prForm'].validate((valid) => {
           if (valid) {
+            this.comLoading({
+              target: this.$refs['priceList'].$el
+            })
             Api.getQrList(params).then((data) => {
               if (data.data.dataMap && data.data.dataMap.length > 0) {
                 let arr = data.data.dataMap
@@ -472,6 +504,8 @@
                 }
                 this.priceList = arr
               }
+              this.comLoading(false)
+            }, () => {
               this.comLoading(false)
             })
           } else {

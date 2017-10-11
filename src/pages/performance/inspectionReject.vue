@@ -21,7 +21,7 @@
                 </el-form-item>
               </el-col>
               <el-button type="primary" class="ml20" v-show="toDetail.query.id">
-                <router-link class="router-link" :to="toDetail" target="_blank">详 情</router-link>
+                <router-link class="router-link-default" :to="toDetail" target="_blank">详 情</router-link>
               </el-button>
             </el-row>
             <el-row>
@@ -91,7 +91,7 @@
         </div>
         <div class="checkItems-info">
           <div class="mb20">
-            <el-button type="primary" @click="addItem">新 增</el-button>
+            <el-button size="small" type="primary" @click="addItem">新 增</el-button>
           </div>
           <el-table
             :data="checkItems"
@@ -125,7 +125,7 @@
               <template scope="scope">
                 <el-button
                   @click.native.prevent="deleteRow(scope.$index, checkItems)"
-                  type="text"
+                  type="danger"
                   size="small">
                   移除
                 </el-button>
