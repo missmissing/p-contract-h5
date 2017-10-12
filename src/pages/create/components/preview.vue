@@ -266,7 +266,8 @@
       getTplData(templateId) {
         const tplData = this.tplData[templateId]
         if (tplData) {
-          this.currentTpl = tplData
+          const {content} = tplData
+          this.currentTpl = content
           return
         }
         if (!templateId) {
