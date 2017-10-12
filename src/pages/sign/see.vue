@@ -4,6 +4,7 @@
 
 <template>
   <div class="pd20">
+    <el-row class="mb20">采购订单号{{info.orderNo}}</el-row>
     <el-tabs>
       <el-tab-pane label="订单信息">
         <div class="order-info">

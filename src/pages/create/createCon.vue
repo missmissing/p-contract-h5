@@ -158,7 +158,7 @@
             </el-form-item>
           </el-col>
           <el-col :span="8">
-            <el-form-item label="模版名称" prop="templateId">
+            <el-form-item label="模板名称" prop="templateId">
               <el-select class="wp100" :disabled="isEnabled1" v-model="baseInfoForm.templateId" placeholder="请选择合同模版"
                          @change="handleTemplateChange">
                 <el-option
@@ -1869,7 +1869,7 @@
           dialogNewSubjectVisible: false,
           rules: {
             businessOperatorId: [{required: true, message: '请输入业务经办人', trigger: 'blur'}],
-            templateId: [{required: true, message: '请选择模版名称', trigger: 'blur'}]
+            templateId: [{required: true, message: '请选择模版名称'}]
           }
         },
         activeTabName: 'tabContInfo',
@@ -3351,6 +3351,7 @@
         const params = {}
         params.bizTypeId = this.baseInfoForm.contractBusinessTypeThird
         params.templateType = (val === 1 ? 'TEMPLATE' : 'TEXT')
+        this.baseInfoForm.templateId = ''
         Api.getTemplateByBizTypeId(params).then((data) => {
           this.baseInfoForm.templateOptions = data.data.dataMap || []
         })
