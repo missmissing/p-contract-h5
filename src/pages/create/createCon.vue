@@ -3351,7 +3351,9 @@
         const params = {}
         params.bizTypeId = this.baseInfoForm.contractBusinessTypeThird
         params.templateType = (val === 1 ? 'TEMPLATE' : 'TEXT')
-        this.baseInfoForm.templateId = ''
+        if (this.operateType === 'create') {
+          this.baseInfoForm.templateId = ''
+        }
         Api.getTemplateByBizTypeId(params).then((data) => {
           this.baseInfoForm.templateOptions = data.data.dataMap || []
         })
