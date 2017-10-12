@@ -107,6 +107,15 @@
       }
     },
     created() {
+      if (this.fileList.length) {
+        this.fileList = this.fileList.map((item) => {
+          return {
+            name: item.fileName,
+            url: `${this.download}${item.fileId}`,
+            status: 'success'
+          }
+        })
+      }
       this.uploadFiles = this.fileList
     }
   }

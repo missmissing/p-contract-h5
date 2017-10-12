@@ -412,6 +412,8 @@
           this.$router.push({
             name: routerNames.con_index
           })
+        }, () => {
+          this.comLoading(false)
         })
       }
     },

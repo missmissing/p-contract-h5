@@ -86,8 +86,12 @@
           </el-col>
         </el-row>
         <el-form-item label="备注" prop="remark">
-          <el-input :disabled="operateType==='query'" v-model="updateForm.remark" placeholder="请输入备注" type="textarea"
-                    :rows="4"></el-input>
+          <el-input
+            :disabled="operateType==='query'"
+            v-model="updateForm.remark"
+            placeholder="请输入备注"
+            type="textarea"
+            :rows="4"></el-input>
         </el-form-item>
       </el-form>
     </el-card>
@@ -1767,8 +1771,8 @@
   </div>
 </template>
 <script>
-  import Api from '../../api/manageContract'
   import _ from 'lodash'
+  import Api from '../../api/manageContract'
   import Preview from './components/preview.vue'
   import comLoading from '@/mixins/comLoading'
   import {downloadUrl, uploadUrl} from '@/api/consts'

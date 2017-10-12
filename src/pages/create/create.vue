@@ -362,22 +362,7 @@
               })
               return
             }
-            if (parseInt(this.conForm.curConModelId) === 2) { // 判断当前为固定格式合同时，合同总金额》=10000时，不让其创建固定格式合同
-              const items = this.curPriceList[0].items
-              if (items && items.length) {
-                let total = 0
-                for (let i = 0, len = items.length; i < len; i++) {
-                  total += parseFloat(items[0].amount)
-                }
-                if (total >= 10000) {
-                  this.$message({
-                    message: '合同金额大于一万元，请调整合同模式',
-                    type: 'warning'
-                  })
-                  return
-                }
-              }
-            }
+
             let routePath = ''
             switch (this.conForm.curConModelId) {
               case '4':

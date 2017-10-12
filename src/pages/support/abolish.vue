@@ -114,11 +114,32 @@
                 </el-input>
               </el-form-item>
               <el-form-item label="文本上传" v-show="showUpload">
-                <Upload
-                  :fileList.sync="fileList"
-                  multiple>
-                  <!--<div class="el-upload__tip" slot="tip">文件不超过10M</div>-->
-                </Upload>
+                <el-table
+                  :data="fileList"
+                  border
+                  highlight-current-row
+                  class="wp100">
+                  <el-table-column
+                    prop="fileName"
+                    label="文件名">
+                    <template scope="scope">
+                      <a class="router-link" :href="`${download}${scope.row.fileId}`">{{scope.row.fileName}}</a>
+                    </template>
+                  </el-table-column>
+                  <el-table-column
+                    prop="operatorName"
+                    width="150"
+                    label="上传人">
+                  </el-table-column>
+                  <el-table-column
+                    prop="createTime"
+                    width="150"
+                    label="上传时间">
+                    <template scope="scope">
+                      {{scope.row.createTime | formatDate}}
+                    </template>
+                  </el-table-column>
+                </el-table>
               </el-form-item>
               <el-form-item v-show="showTpl">
                 <el-button size="small" type="primary" @click="showTmpl=true">模板信息</el-button>
@@ -168,6 +189,7 @@
   import supportModel from '@/api/support'
   import {formatDate, formatTimeStamp, formatToDate} from '@/filters/moment'
   import {tplTypeMap} from '@/core/consts'
+  import {downloadUrl} from '@/api/consts'
 
   const defaultData = {
     form: {
@@ -198,7 +220,8 @@
           templateCode: [{required: true, message: '请输入模板编号', trigger: 'blur'}],
           abolishDate: [{type: 'date', required: true, message: '请选择停用日期', trigger: 'change'}],
           abolishReason: [{required: true, max: 300, message: '请填写停用原因', trigger: 'change'}]
-        }
+        },
+        download: downloadUrl
       }, _.cloneDeep(defaultData))
     },
     methods: {
@@ -227,15 +250,7 @@
         this.form['operatorName'] = operatorName
         this.form['creatorName'] = creatorName
         this.form['description'] = description
-        if (files.length) {
-          files.forEach((item) => {
-            this.fileList.push({
-              name: item.fileName,
-              url: `${this.download}${item.fileId}`,
-              status: 'success'
-            })
-          })
-        }
+        this.fileList = files
       },
       resetForm() {
         const {id} = this.tplInfo

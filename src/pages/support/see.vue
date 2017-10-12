@@ -83,12 +83,32 @@
               {{form.description}}
             </el-form-item>
             <el-form-item label="文本上传" v-show="tplTypeShow">
-              <Upload
-                :fileList.sync="fileList"
-                disabled
-                multiple>
-                <!--<div class="el-upload__tip" slot="tip">文件不超过10M</div>-->
-              </Upload>
+              <el-table
+                :data="fileList"
+                border
+                highlight-current-row
+                class="wp100">
+                <el-table-column
+                  prop="fileName"
+                  label="文件名">
+                  <template scope="scope">
+                    <a class="router-link" :href="`${download}${scope.row.fileId}`">{{scope.row.fileName}}</a>
+                  </template>
+                </el-table-column>
+                <el-table-column
+                  prop="operatorName"
+                  width="150"
+                  label="上传人">
+                </el-table-column>
+                <el-table-column
+                  prop="createTime"
+                  width="150"
+                  label="上传时间">
+                  <template scope="scope">
+                    {{scope.row.createTime | formatDate}}
+                  </template>
+                </el-table-column>
+              </el-table>
             </el-form-item>
             <div v-if="showAbolish">
               <el-form-item label="废除日期">
@@ -107,7 +127,7 @@
       </div>
     </transition>
     <transition name="component-fade" mode="out-in">
-      <Tmpl v-show="showTmpl" :tplInfo="tplInfo" :showTmpl.sync="showTmpl"></Tmpl>
+      <Tmpl v-if="showTmpl" :tplInfo="tplInfo" :showTmpl.sync="showTmpl"></Tmpl>
     </transition>
   </div>
 </template>
@@ -121,6 +141,7 @@
   import comLoading from '@/mixins/comLoading'
   import {formatDate} from '@/filters/moment'
   import {tplMap} from '@/core/consts'
+  import {downloadUrl} from '@/api/consts'
 
   const defaultData = {
     form: {
@@ -147,7 +168,8 @@
       return Object.assign({
         showTmpl: false,
         templateId: this.$route.query.id,
-        showAbolish: false
+        showAbolish: false,
+        download: downloadUrl
       }, _.cloneDeep(defaultData))
     },
     methods: {
@@ -166,15 +188,7 @@
         this.form['operatorName'] = operatorName
         this.form['creatorName'] = creatorName
         this.form['description'] = description
-        if (files.length) {
-          files.forEach((item) => {
-            this.fileList.push({
-              name: item.fileName,
-              url: `${this.download}${item.fileId}`,
-              status: 'success'
-            })
-          })
-        }
+        this.fileList = files
       },
       getTplData(id) {
         this.comLoading()
@@ -208,6 +222,9 @@
       if (processData) {
         this.showAbolish = JSON.parse(processData).procCode === tplMap[2]
       }
+    },
+    filters: {
+      formatDate
     },
     computed: {
       tplTypeShow() {
