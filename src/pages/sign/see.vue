@@ -192,6 +192,7 @@
         Api.detailByPoId({id}).then((res) => {
           console.log(res)
           this.info = res.data.dataMap
+          this.toDetail.query.contractId = this.info.contractId
           this.setOrderData()
           this.setServerData()
           this.setContractForm()
