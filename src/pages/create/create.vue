@@ -344,7 +344,33 @@
           if (data.data.dataMap) {
             this.currentPr = data.data.dataMap
             this.curPriceList = [data.data.dataMap]
+
+            const {createFixedFormatContractFlag, purchaseType} = this.currentPr
+            this.conModels[1] = {...this.conModels[1], disabled: !createFixedFormatContractFlag}
+            this.conForm.curConModelId = createFixedFormatContractFlag ? this.conForm.curConModelId : null
+            if (!this.regionSource) {
+              this.regionSource = this.regions
+            }
+            if (this.conForm.conType) {
+              const conType = this.conForm.conType.split('-')[0]
+              if (purchaseType === 1 && conType === '2') {
+                this.conForm.conTypeName = ''
+              } else if (purchaseType === 2 && conType !== '2') {
+                this.conForm.conTypeName = ''
+              }
+            }
+            this.regions = this.regionSource.filter((item) => {
+              if (!purchaseType) {
+                return true
+              } else if (purchaseType === 1 && item.id !== 2) {
+                return true
+              } else if (purchaseType === 2 && item.id === 2) {
+                return true
+              }
+            })
           }
+          this.comLoading(false)
+        }, () => {
           this.comLoading(false)
         })
       },
@@ -410,30 +436,8 @@
       handleOKDialog() {
         this.dialogVisible = false
         if (this.currentPr) {
-          const {folio, createFixedFormatContractFlag, purchaseType} = this.currentPr
+          const {folio} = this.currentPr
           this.handleQuery(folio)
-          this.conModels[1] = {...this.conModels[1], disabled: !createFixedFormatContractFlag}
-          this.conForm.curConModelId = createFixedFormatContractFlag ? this.conForm.curConModelId : null
-          if (!this.regionSource) {
-            this.regionSource = this.regions
-          }
-          if (this.conForm.conType) {
-            const conType = this.conForm.conType.split('-')[0]
-            if (purchaseType === 1 && conType === '2') {
-              this.conForm.conTypeName = ''
-            } else if (purchaseType === 2 && conType !== '2') {
-              this.conForm.conTypeName = ''
-            }
-          }
-          this.regions = this.regionSource.filter((item) => {
-            if (!purchaseType) {
-              return true
-            } else if (purchaseType === 1 && item.id !== 2) {
-              return true
-            } else if (purchaseType === 2 && item.id === 2) {
-              return true
-            }
-          })
           this.conForm.strPC = ''
         }
         this.currentPr.clicked = false
