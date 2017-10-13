@@ -85,7 +85,7 @@
               width="100">
             </el-table-column>
             <el-table-column
-              prop="sapItemNo"
+              prop="itemNo"
               label="行项目号"
               width="100">
             </el-table-column>

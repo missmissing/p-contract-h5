@@ -92,7 +92,8 @@
       <el-table-column type="index" label="序号" width="80"></el-table-column>
       <el-table-column prop="protocolNo" label="从协议编码">
         <template scope="scope">
-          <router-link class="router-link" :to="{path:'/ConCreate/querySlaveProtocol', query:{id:''+agreementList[scope.$index].id}}">
+          <router-link class="router-link"
+                       :to="{path:'/ConCreate/querySlaveProtocol', query:{id:''+agreementList[scope.$index].id}}">
             {{agreementList[scope.$index].protocolNo}}
           </router-link>
         </template>
@@ -121,7 +122,7 @@
   </div>
 </template>
 <script>
-  import Api from '../../api/manageContract'
+  import Api from '@/api/manageContract'
   import {formatDate} from '@/filters/moment'
 
   export default {
@@ -176,7 +177,8 @@
         }
       },
       handleQuery() {
-        Api.getAgreementList(this.agreementForm)
+        const params = this.agreementForm
+        Api.getAgreementList(params)
           .then((data) => {
             const dataMap = data.data.dataMap
             if (dataMap) {
