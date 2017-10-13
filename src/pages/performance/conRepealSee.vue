@@ -104,15 +104,23 @@
       }
     },
     methods: {
-      getInfo() {
-        this.setData()
+      getInfo(id) {
+        this.comLoading()
+        Api.getContractDetailByCode({id}).then((res) => {
+          this.comLoading(false)
+          const data = res.data.dataMap
+          this.setData(data)
+        }, () => {
+          this.comLoading(false)
+        })
       },
-      setData() {
+      setData(data) {
 
       }
     },
     created() {
-
+      const {id} = this.$route.query
+      this.getInfo(id)
     },
     filters: {
       formatDate

@@ -129,6 +129,18 @@
         label="使用次数">
       </el-table-column>
     </el-table>
+    <div class="mt20">
+      <el-pagination
+        class="fr"
+        @size-change="handleSizeChange"
+        @current-change="handleCurrentChange"
+        :current-page="form.pageNumber"
+        :page-sizes="[10, 20, 30, 50]"
+        :page-size="form.pageSize"
+        layout="total, sizes, prev, pager, next, jumper"
+        :total="totalPage">
+      </el-pagination>
+    </div>
   </div>
 </template>
 
@@ -149,8 +161,11 @@
           startTime: '',
           endTime: '',
           operatorName: '',
-          valid: true
+          valid: true,
+          pageSize: 10,
+          pageNumber: 1
         },
+        totalPage: 0,
         daterange: [],
         pickerOptions: {
           disabledDate(time) {
@@ -162,18 +177,30 @@
     },
     methods: {
       search() {
-        console.log(JSON.stringify(this.form))
-        this.getList(this.form)
+        this.getList()
       },
-      getList(params) {
+      getList() {
         this.comLoading()
-        supportModel.getList(params).then((res) => {
+        supportModel.getList(this.form).then((res) => {
           console.log(res)
           this.comLoading(false)
-          this.tableData = res.data.dataMap
+
+          const {total, data} = res.data.dataMap
+          this.tableData = data
+          this.totalPage = total
         }, () => {
           this.comLoading(false)
         })
+      },
+      handleSizeChange(val) {
+        console.log(`每页 ${val} 条`)
+        this.form.pageSize = val
+        this.getList()
+      },
+      handleCurrentChange(val) {
+        console.log(`当前页: ${val}`)
+        this.form.pageNumber = val
+        this.getList()
       },
       see(row) {
         return {

@@ -162,10 +162,19 @@
                   <template scope="scope">
                     <div v-if="radio">{{scope.row.taxRate ? `${scope.row.taxRate}%` : ''}}</div>
                     <div v-else>
-                      <el-input
-                        style="width:50px"
-                        v-model.trim="scope.row.taxRate"
-                        @blur="nonNegative"></el-input>
+                      <el-select
+                        style="width:50px;"
+                        v-model="scope.row.taxRate"
+                        @change="selectTaxRate(scope.row)">
+                        <el-option
+                          v-for="item in taxRates"
+                          :key="item.value"
+                          :label="item.code"
+                          :value="item.value">
+                          <span class="fl">{{ item.value}}</span>
+                          <span class="fr">{{ item.desc }}</span>
+                        </el-option>
+                      </el-select>
                       %
                     </div>
                   </template>
@@ -526,6 +535,43 @@
         contractForm: {},
         orderForm: {},
         showService: false,
+        taxRates: [
+          {
+            code: 'J0',
+            value: 0,
+            desc: '0%进税项'
+          },
+          {
+            code: 'J1',
+            value: 3,
+            desc: '3%进税项'
+          },
+          {
+            code: 'J2',
+            value: 6,
+            desc: '6%进税项'
+          },
+          {
+            code: 'J3',
+            value: 11,
+            desc: '11%进税项'
+          },
+          {
+            code: 'J4',
+            value: 17,
+            desc: '17%进税项'
+          },
+          {
+            code: 'J5',
+            value: '13',
+            desc: '13%进税项'
+          },
+          {
+            code: 'J6',
+            value: 5,
+            desc: '5%进税项'
+          }
+        ],
         toDetail: {name: routerNames.con_Check, query: {contractId: ''}}
       }
     },
@@ -707,6 +753,13 @@
       },
       addService() {
         this.serverDialogVisible = true
+      },
+      selectTaxRate(row) {
+        this.taxRates.some((item) => {
+          if (item.value === row.taxRate) {
+            row.taxCode = item.code
+          }
+        })
       },
       rowClick(row) {
         console.log(row)

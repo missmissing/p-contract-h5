@@ -214,6 +214,9 @@
         console.log(`当前页: ${val}`)
         this.form.pageNo = val
         this.getList()
+      },
+      select(row, val) {
+        console.log(row, val)
       }
     },
     created() {
