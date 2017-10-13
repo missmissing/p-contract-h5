@@ -2682,7 +2682,6 @@
             if (subjects.length) {
               for (let i = 0, len = subjects.length; i < len; i++) {
                 if (key === subjects[i].companyCode) {
-<<<<<<< HEAD
                   this.cardFinanceInfoForm.jiaBillingInfo.push(subjects[i]);
                   this.cardContentInfoForm.conSubjctName.push({
                     code: subjects[i].companyCode,
@@ -2692,17 +2691,6 @@
                 }
               }
             }
-=======
-                  this.cardFinanceInfoForm.jiaBillingInfo.push(subjects[i])
-                }
-              }
-            }
-            this.cardContentInfoForm.conSubjctName.push({
-              code: subjects[0].companyCode,
-              name: subjects[0].company,
-              type: 'add'
-            })
->>>>>>> 9a6c8b43d791b573628326f1c0925c1bd37d422f
 
             curForm.resetFields()
             this.baseInfoForm.dialogNewSubjectVisible = false
@@ -2743,16 +2731,12 @@
             if (suppliers.length) {
               for (let i = 0, len = suppliers.length; i < len; i++) {
                 if (key === suppliers[i].companyCode) {
-<<<<<<< HEAD
                   this.cardFinanceInfoForm.yiBillingInfo = [suppliers[i]];
                   this.cardContentInfoForm.tableSupplierInfo = [{
                     code: suppliers[i].companyCode,
                     name: suppliers[i].company,
                     type: 'add'
                   }]
-=======
-                  this.cardFinanceInfoForm.yiBillingInfo = [suppliers[i]]
->>>>>>> 9a6c8b43d791b573628326f1c0925c1bd37d422f
                 }
               }
             }

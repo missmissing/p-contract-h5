@@ -699,19 +699,6 @@
         this.isSubmit = true
         this.validateForms().then(() => {
           this.cardSealInfoForm.sealAttachments = this.combineSealsInfo()
-<<<<<<< HEAD
-          const params={};
-          params.id=parseInt(this.id)
-          params.baseInfoForm=this.baseInfoForm
-          params.cardSealInfoForm=this.cardSealInfoForm
-          params.cardRemarkInfoForm=this.cardRemarkInfoForm
-          params.protocolNo=''
-          console.log(JSON.stringify(params))
-          Api.createAgreenment(params).then((data)=>{
-            this.btnStatus=true
-            if(parseInt(data.data.code)===200){
-              this.operateType='query'
-=======
           const params = {}
           params.id = parseInt(this.id)
           params.baseInfoForm = this.baseInfoForm
@@ -722,7 +709,6 @@
             this.btnStatus = true
             if (parseInt(data.data.code) === 200) {
               this.operateType = 'query'
->>>>>>> 9a6c8b43d791b573628326f1c0925c1bd37d422f
               this.$message.success(data.data.message)
             }
           })
@@ -838,13 +824,8 @@
             users: user,
             downloadUrl: downloadUrl,
             uploadUrl: uploadUrl,
-<<<<<<< HEAD
             protocolNo:null,//从协议编号
             operateType:'create',//默认创建状态，query：查看
-=======
-            id: null, // 从协议编号
-            operateType: 'create', // 默认创建状态，query：查看
->>>>>>> 9a6c8b43d791b573628326f1c0925c1bd37d422f
             activeTabName: 'tabBaseInfo',
             baseInfoForm: {
               tableSupplierInfo: [],
