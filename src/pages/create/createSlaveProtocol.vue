@@ -12,7 +12,24 @@
 </style>
 <template>
   <div class="createSlaveProtocal">
-    <el-card>
+    <el-card v-if="operateType==='create'">
+      <header slot="header">合同查询</header>
+      <el-form rel="queryContractForm" :model="queryContractForm" label-width="100px" :rules="queryContractForm.rules">
+        <el-row>
+          <el-col :span="8">
+            <el-form-item label="合同编号" prop="code">
+              <el-input :disabled="contentVisible" v-model="queryContractForm.code" placeholder="请输入合同编号"></el-input>
+            </el-form-item>
+          </el-col>
+          <el-col :span="4" :offset="1" v-if="operateType==='create'">
+            <el-button :disabled="!queryContractForm.code" type="primary" @click="handleQuery(queryContractForm.code)">
+              查找
+            </el-button>
+          </el-col>
+        </el-row>
+      </el-form>
+    </el-card>
+    <el-card v-if="contentVisible">
       <header slot="header">基本信息</header>
       <el-form ref="baseInfoForm" :model="baseInfoForm" label-width="100px"
                :rules="baseInfoForm.rules">
@@ -93,7 +110,7 @@
         </el-form-item>
       </el-form>
     </el-card>
-    <el-card v-if="ifShowNewSeals">
+    <el-card v-if="contentVisible&&ifShowNewSeals">
       <header slot="header">合同附件及盖章信息<i class="errorMsg">{{baseInfoForm.attachmentErrorMsg}}</i></header>
       <el-form rel="cardSealInfoForm" :model="cardSealInfoForm" label-width="100px" :rules="cardSealInfoForm.rules">
         <el-button size="small" type="primary" @click="handleNewOtherSealFile" icon="plus" class="mb20" v-if="enabledInupdated">
@@ -243,7 +260,7 @@
         </template>
       </el-form>
     </el-card>
-    <el-card>
+    <el-card v-if="contentVisible">
       <header slot="header">补充信息</header>
       <el-form rel="cardRemarkInfoForm" :model="cardRemarkInfoForm">
         <el-form-item prop="otherInstruction" label="备注">
@@ -281,17 +298,9 @@
       </el-form>
     </el-card>
     <Process></Process>
-    <el-row>
-      <!--<el-col :span="4" :offset="4">
-        <el-button type="primary" @click="handleSave('')">保存</el-button>
-      </el-col>-->
-      <!--<el-col>
-        <el-button type="primary" @click="handlePreview" style="margin-left:33px"
-                   v-if="baseInfoForm.conTextType==1">预览
-        </el-button>
-      </el-col>-->
+    <el-row v-if="contentVisible">
       <el-col style="text-align: center" class="mt20">
-        <el-button type="primary" :disabled="!enabledInupdated||!btnStatus" @click="handleSubmit"
+        <el-button v-if="enabledInupdated" type="primary" :disabled="!enabledInupdated||!btnStatus" @click="handleSubmit"
                    style="display:inline-block">提交
         </el-button>
       </el-col>
@@ -368,6 +377,13 @@
   export default {
     data: function () {
       return {
+        queryContractForm:{
+          visible: false, // 在创建从协议时控制从协议页面数据的显示与否
+          code: '',
+          rules: {
+            code: [{required: true, message: '请输入合同编号', trigger: 'blur'}]
+          }
+        },
         isSubmit: false,
         users: user,
         downloadUrl: downloadUrl,
@@ -430,6 +446,15 @@
       }
     },
     computed: {
+      contentVisible: function () {
+        let visible = false
+        if (this.operateType === 'query') {
+          visible = true
+        } else if (this.queryContractForm.visible) {
+          visible = true
+        }
+        return visible
+      },
       enabledInupdated: function () { // 在各种操作类型下，控制元素的是否可见和是否可用
         let result = false
         if (this.operateType === 'query') {
@@ -808,7 +833,15 @@
       },
       handleRemoveItem(index, rows) {
         rows.splice(index, 1)
-      }
+      },
+      handleQuery(code) {
+        Api.getUpdateInfo(code).then((data) => {
+          const dataMap = data.data.dataMap
+          if (dataMap && dataMap.baseInfoForm.id) {
+            this.queryContractForm.visible = true
+          }
+        })
+      },
     },
     watch: {
       '$route'(to, from) {
