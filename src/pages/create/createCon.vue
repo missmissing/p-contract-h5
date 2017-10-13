@@ -1187,7 +1187,7 @@
               class="mb20">
               新增其他附件
             </el-button>
-            <el-button
+            <!--<el-button
               type="primary"
               @click="handleNewAgreenmentSealFile"
               size="small"
@@ -1195,7 +1195,7 @@
               v-if="enabledInupdated"
               class="mb20">
               新增从协议
-            </el-button>
+            </el-button>-->
             <el-table v-if="cardSealInfoForm.contract&&cardSealInfoForm.contract.length"
                       :data="cardSealInfoForm.contract" class="mb20">
               <el-table-column type="expand"
@@ -1454,7 +1454,7 @@
                 </el-table-column>
               </el-table>
             </template>
-            <el-table v-if="cardSealInfoForm.agreenments.length" :data="cardSealInfoForm.agreenments" class="mt20">
+            <!--<el-table v-if="cardSealInfoForm.agreenments.length" :data="cardSealInfoForm.agreenments" class="mt20">
               <el-table-column prop="attachType" label="附件类型" width="150px">
                 <template scope="scope">
                   {{getContractAgreenmentName(cardSealInfoForm.agreenments[scope.$index].attachType)}}
@@ -1488,7 +1488,7 @@
                   </el-button>
                 </template>
               </el-table-column>
-            </el-table>
+            </el-table>-->
           </el-form>
           <h4 v-else>请选择合同基本信息的模版名称！</h4>
         </el-tab-pane>
@@ -3252,7 +3252,7 @@
         }]
         this.cardSealInfoForm.others.push(file)
       },
-      handleNewAgreenmentSealFile() {
+      /*handleNewAgreenmentSealFile() {
         const file = {
           operate: 'add',
           agreementId: '',
@@ -3294,7 +3294,7 @@
           filesSealed: []// 上传的盖章后的文件信息
         }
         this.cardSealInfoForm.agreenments.push(file)
-      },
+      },*/
       handleQuery(code) {
         this.operateType = 'update'
         // 根据合同编号获取合同模式设置当前合同模式及合同类型
