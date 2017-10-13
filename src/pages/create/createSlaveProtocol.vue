@@ -42,17 +42,17 @@
         </el-row>
         <el-card class="mb20">
           <header slot="header">合同供应商信息<i class="errorMsg">{{baseInfoForm.supplierErrorMsg}}</i></header>
-          <el-button
+          <!--<el-button
             size="small"
             v-if="baseInfoForm.tableSupplierInfo.length<=0&&enabledInupdated"
             @click="handleAddContractSupplier" icon="plus"
             type="primary" class="mb20">新增
-          </el-button>
+          </el-button>-->
           <el-table :data="baseInfoForm.tableSupplierInfo">
             <el-table-column type="index" label="序号" width="80"></el-table-column>
             <el-table-column prop="id" label="供应商编号"></el-table-column>
             <el-table-column prop="name" label="供应商名称"></el-table-column>
-            <el-table-column
+            <!--<el-table-column
               v-if="enabledInupdated"
               fixed="right"
               label="操作"
@@ -64,18 +64,18 @@
                   type="danger" size="small">移除
                 </el-button>
               </template>
-            </el-table-column>
+            </el-table-column>-->
           </el-table>
         </el-card>
         <el-card class="mb20">
           <header slot="header">我方主体名称<i class="errorMsg">{{baseInfoForm.subjectErrorMsg}}</i></header>
-          <el-button size="small" type="primary" @click="handleNewSubjectName" icon="plus" v-if="enabledInupdated"
+          <!--<el-button size="small" type="primary" @click="handleNewSubjectName" icon="plus" v-if="enabledInupdated"
                      class="mb20">新增
-          </el-button>
+          </el-button>-->
           <el-table :data="baseInfoForm.conSubjctName">
             <el-table-column prop="id" label="公司代码"></el-table-column>
             <el-table-column prop="name" label="公司名称"></el-table-column>
-            <el-table-column
+            <!--<el-table-column
               v-if="enabledInupdated"
               fixed="right"
               label="操作"
@@ -87,7 +87,7 @@
                   type="danger" size="small">移除
                 </el-button>
               </template>
-            </el-table-column>
+            </el-table-column>-->
           </el-table>
         </el-card>
         <el-row>
@@ -114,7 +114,7 @@
       <header slot="header">合同附件及盖章信息<i class="errorMsg">{{baseInfoForm.attachmentErrorMsg}}</i></header>
       <el-form rel="cardSealInfoForm" :model="cardSealInfoForm" label-width="100px" :rules="cardSealInfoForm.rules">
         <el-button size="small" type="primary" @click="handleNewOtherSealFile" icon="plus" class="mb20" v-if="enabledInupdated">
-          新增其他附件
+          新增
         </el-button>
         <template v-if="cardSealInfoForm.sealAttachments.length"
                   v-for="(item,index) in cardSealInfoForm.sealAttachments">
@@ -730,6 +730,7 @@
           params.cardSealInfoForm = this.cardSealInfoForm
           params.cardRemarkInfoForm = this.cardRemarkInfoForm
           params.protocolNo = ''
+          params.code = this.queryContractForm.code
           Api.createAgreenment(params).then((data) => {
             this.btnStatus = true
             if (parseInt(data.data.code) === 200) {
@@ -839,6 +840,12 @@
           const dataMap = data.data.dataMap
           if (dataMap && dataMap.baseInfoForm.id) {
             this.queryContractForm.visible = true
+            if(dataMap.cardContentInfoForm.tableSupplierInfo&&dataMap.cardContentInfoForm.tableSupplierInfo.length){
+              this.baseInfoForm.tableSupplierInfo=dataMap.cardContentInfoForm.tableSupplierInfo
+            }
+            if(dataMap.cardContentInfoForm.conSubjctName&&dataMap.cardContentInfoForm.conSubjctName.length){
+              this.baseInfoForm.conSubjctName=dataMap.cardContentInfoForm.conSubjctName
+            }
           }
         })
       },

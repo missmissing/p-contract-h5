@@ -396,16 +396,11 @@
             </el-row>
             <el-row>
               <el-col :span="8">
-                <el-form-item label="币种" prop="currency">
-                  <el-select class="wp100" v-model="cardFinanceInfoForm.currency" placeholder="请选择币种"
-                             :disabled="operateType==='query'">
-                    <el-option
-                      v-for="item in cardFinanceInfoForm.currencyOptions"
-                      :key="item.value"
-                      :label="item.label"
-                      :value="item.value">
-                    </el-option>
-                  </el-select>
+                <el-form-item label="合同总金额" prop="totalAmount">
+                  <el-input :disabled="!cardFinanceInfoForm.oneOffPay||operateType==='query'"
+                            v-model="cardFinanceInfoForm.totalAmount"
+                            placeholder="根据上表累加(含税价)">{{totalConMoney}}
+                  </el-input>
                 </el-form-item>
               </el-col>
               <el-col :span="8">
@@ -423,11 +418,16 @@
                 </el-form-item>
               </el-col>
               <el-col :span="8">
-                <el-form-item label="合同总金额" prop="totalAmount">
-                  <el-input :disabled="!cardFinanceInfoForm.oneOffPay||operateType==='query'"
-                            v-model="cardFinanceInfoForm.totalAmount"
-                            placeholder="根据上表累加(含税价)">{{totalConMoney}}
-                  </el-input>
+                <el-form-item label="币种" prop="currency">
+                  <el-select class="wp100" v-model="cardFinanceInfoForm.currency" placeholder="请选择币种"
+                             :disabled="operateType==='query'">
+                    <el-option
+                      v-for="item in cardFinanceInfoForm.currencyOptions"
+                      :key="item.value"
+                      :label="item.label"
+                      :value="item.value">
+                    </el-option>
+                  </el-select>
                 </el-form-item>
               </el-col>
             </el-row>
@@ -3296,7 +3296,6 @@
         this.cardSealInfoForm.agreenments.push(file)
       },*/
       handleQuery(code) {
-        this.operateType = 'update'
         // 根据合同编号获取合同模式设置当前合同模式及合同类型
         Api.getUpdateInfo(code).then((data) => {
           const dataMap = data.data.dataMap

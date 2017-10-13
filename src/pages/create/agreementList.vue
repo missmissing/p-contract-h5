@@ -11,6 +11,11 @@
           </el-form-item>
         </el-col>
         <el-col :span="8">
+          <el-form-item label="合同编号">
+            <el-input class="wp100"  v-model="agreementForm.contractNo" placeholder="请输入合同编号"></el-input>
+          </el-form-item>
+        </el-col>
+        <el-col :span="8">
           <el-form-item label="供应商名称/编码" prop="search">
             <el-select
               class="wp100"
@@ -85,13 +90,14 @@
               highlight-current-row
               style="width:100%">
       <el-table-column type="index" label="序号" width="80"></el-table-column>
-      <el-table-column prop="protocolNo" label="从协议编码" min-width="200">
+      <el-table-column prop="protocolNo" label="从协议编码">
         <template scope="scope">
           <router-link class="router-link" :to="{path:'/ConCreate/querySlaveProtocol', query:{id:''+agreementList[scope.$index].id}}">
             {{agreementList[scope.$index].protocolNo}}
           </router-link>
         </template>
       </el-table-column>
+      <el-table-column prop="contractNo" label="合同编号"></el-table-column>
       <el-table-column prop="creatorName" label="发起人" width="100"></el-table-column>
       <el-table-column prop="deptName" label="发起部门"></el-table-column>
       <el-table-column prop="createTime" label="发起时间" width="120">
@@ -123,6 +129,7 @@
       return {
         agreementForm: {
           protocolNo: '',
+          contractNo:'',
           suppliers: [],
           loading: false,
           supplierName: '',
