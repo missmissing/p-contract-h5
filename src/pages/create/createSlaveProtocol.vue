@@ -477,12 +477,21 @@
         let curForm = this.$refs[formName]
         curForm.validate((valid) => {
           if (valid) {
-            let suppliers = this.formContractSupplier.suppliers
-            this.baseInfoForm.tableSupplierInfo = [{
-              id: suppliers[0].companyCode,
-              name: suppliers[0].company,
-              type: 'add'
-            }]
+            let key=this.formContractSupplier.search
+            const suppliers=this.formContractSupplier.suppliers
+            if(suppliers&&suppliers.length){
+              for(let i=0,len=suppliers.length;i<len;i++){
+                if(parseInt(suppliers[i].companyCode)===parseInt(key)){
+                  this.baseInfoForm.tableSupplierInfo = [{
+                    id: suppliers[i].companyCode,
+                    name: suppliers[i].company,
+                    type: 'add'
+                  }]
+                }
+              }
+            }
+
+            console.log('this.baseInfoForm.tableSupplierInfo',this.baseInfoForm.tableSupplierInfo);
             curForm.resetFields()
             this.baseInfoForm.dialogAddContractSupplier = false
             if(this.isSubmit){
@@ -526,11 +535,17 @@
               this.$message.error('这条数据已存在咯！')
               return false
             }
-            this.baseInfoForm.conSubjctName.push({
-              id: subjects[0].companyCode,
-              name: subjects[0].company,
-              type: 'add'
-            })
+            if(subjects&&subjects.length){
+              for(let i=0,len=subjects.length;i<len;i++){
+                if(subjects[i].companyCode===key){
+                  this.baseInfoForm.conSubjctName.push({
+                    id: subjects[i].companyCode,
+                    name: subjects[i].company,
+                    type: 'add'
+                  })
+                }
+              }
+            }
 
             curForm.resetFields()
             if(this.isSubmit){
@@ -669,6 +684,7 @@
           params.cardSealInfoForm=this.cardSealInfoForm
           params.cardRemarkInfoForm=this.cardRemarkInfoForm
           params.protocolNo=''
+          console.log(JSON.stringify(params))
           Api.createAgreenment(params).then((data)=>{
             this.btnStatus=true
             if(parseInt(data.data.code)===200){
@@ -788,7 +804,7 @@
             users: user,
             downloadUrl: downloadUrl,
             uploadUrl: uploadUrl,
-            id:null,//从协议编号
+            protocolNo:null,//从协议编号
             operateType:'create',//默认创建状态，query：查看
             activeTabName: 'tabBaseInfo',
             baseInfoForm: {

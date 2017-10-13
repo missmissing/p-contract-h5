@@ -2615,15 +2615,14 @@
               for (let i = 0, len = subjects.length; i < len; i++) {
                 if (key === subjects[i].companyCode) {
                   this.cardFinanceInfoForm.jiaBillingInfo.push(subjects[i]);
+                  this.cardContentInfoForm.conSubjctName.push({
+                    code: subjects[i].companyCode,
+                    name: subjects[i].company,
+                    type: 'add'
+                  })
                 }
               }
             }
-            this.cardContentInfoForm.conSubjctName.push({
-              code: subjects[0].companyCode,
-              name: subjects[0].company,
-              type: 'add'
-            })
-
 
             curForm.resetFields()
             this.baseInfoForm.dialogNewSubjectVisible = false
@@ -2665,14 +2664,15 @@
               for (let i = 0, len = suppliers.length; i < len; i++) {
                 if (key === suppliers[i].companyCode) {
                   this.cardFinanceInfoForm.yiBillingInfo = [suppliers[i]];
+                  this.cardContentInfoForm.tableSupplierInfo = [{
+                    code: suppliers[i].companyCode,
+                    name: suppliers[i].company,
+                    type: 'add'
+                  }]
                 }
               }
             }
-            this.cardContentInfoForm.tableSupplierInfo = [{
-              code: suppliers[0].companyCode,
-              name: suppliers[0].company,
-              type: 'add'
-            }]
+
             curForm.resetFields()
             this.cardContentInfoForm.dialogAddContractSupplier = false
             if (this.isSubmit) {
@@ -2737,11 +2737,18 @@
               this.$message.error('这条数据已存在咯！')
               return false
             }
-            this.cardContentInfoForm.thirdPartyInfo.push({
-              code: thirdParties[0].companyCode,
-              name: thirdParties[0].company,
-              type: 'add'
-            })
+            if(thirdParties&&thirdParties.length){
+              for(let i=0,len=thirdParties.length;i<len;i++){
+                if(thirdParties[i].companyCode===key){
+                  this.cardContentInfoForm.thirdPartyInfo.push({
+                    code: thirdParties[i].companyCode,
+                    name: thirdParties[i].company,
+                    type: 'add'
+                  })
+                }
+              }
+            }
+
             curForm.resetFields()
             this.cardContentInfoForm.dialogNewThirdPartyVisible = false
           } else {
