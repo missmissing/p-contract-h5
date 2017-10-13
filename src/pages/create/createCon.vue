@@ -210,7 +210,7 @@
       </el-form>
     </el-card>
     <el-card v-if="contentVisible">
-      <el-tabs v-model="activeTabName" @tab-click="handleTabClick">
+      <el-tabs v-model="activeTabName">
         <el-tab-pane name="tabContInfo">
           <span slot="label" class="title">合同内容信息<i v-if="cardContentInfoForm.errorCount"
                                                     class="errorCount">{{cardContentInfoForm.errorCount}}</i></span>
@@ -386,8 +386,7 @@
               </el-col>
               <el-col :span="8" v-if="cardFinanceInfoForm.moneyInvolved===true">
                 <el-form-item label="是否一次性付款">
-                  <el-radio-group v-model="cardFinanceInfoForm.oneOffPay" :disabled="operateType==='query'"
-                                  @change="handleOneOffPayChange">
+                  <el-radio-group v-model="cardFinanceInfoForm.oneOffPay" :disabled="operateType==='query'">
                     <el-radio :label="true">是</el-radio>
                     <el-radio :label="false">否</el-radio>
                   </el-radio-group>
@@ -435,13 +434,13 @@
               <el-col :span="8">
                 <el-form-item label="付款条件">
                   <el-select
-                    v-model="cardFinanceInfoForm.paymentCondition"
+                    v-model="cardFinanceInfoForm.paymentTimePeriod"
                     placeholder="请选择付款条件"
                     class="wp100"
                     :disabled="operateType==='query'"
                   >
                     <el-option
-                      v-for="item in cardFinanceInfoForm.paymentConditions"
+                      v-for="item in cardFinanceInfoForm.paymentTimePeriods"
                       :key="item.id"
                       :value="item.id"
                       :label="item.name"
@@ -489,12 +488,12 @@
                           width="250px">
                           <template scope="scope">
                             <el-select
-                              v-model="props.row.subItem[scope.$index].paymentCondition"
+                              v-model="props.row.subItem[scope.$index].paymentTimePeriod"
                               placeholder="请选择付款条件"
                               :disabled="operateType==='query'"
                             >
                               <el-option
-                                v-for="item in cardFinanceInfoForm.paymentConditions"
+                                v-for="item in cardFinanceInfoForm.paymentTimePeriods"
                                 :key="item.id"
                                 :value="item.id"
                                 :label="item.name"
@@ -553,21 +552,21 @@
                   <template scope="scope">
                     <el-input
                       :disabled="operateType==='query'||cardFinanceInfoForm.paymentMethods.advance[scope.$index].seriousPayments"
-                      v-model="cardFinanceInfoForm.paymentMethods.advance[scope.$index].paymentAmount"></el-input>
+                      v-model="advancePaymentAmount"></el-input>
                   </template>
                 </el-table-column>
                 <el-table-column
-                  prop="paymentCondition"
+                  prop="paymentTimePeriod"
                   label="付款条件"
                   width="250px">
                   <template scope="scope">
                     <el-select
-                      v-model="cardFinanceInfoForm.paymentMethods.advance[scope.$index].paymentCondition"
+                      v-model="cardFinanceInfoForm.paymentMethods.advance[scope.$index].paymentTimePeriod"
                       placeholder="请选择付款条件"
                       :disabled="operateType==='query'||cardFinanceInfoForm.paymentMethods.advance[scope.$index].seriousPayments"
                     >
                       <el-option
-                        v-for="item in cardFinanceInfoForm.paymentConditions"
+                        v-for="item in cardFinanceInfoForm.paymentTimePeriods"
                         :key="item.id"
                         :value="item.id"
                         :label="item.name"
@@ -628,12 +627,12 @@
                           width="250px">
                           <template scope="scope">
                             <el-select
-                              v-model="props.row.subItem[scope.$index].paymentCondition"
+                              v-model="props.row.subItem[scope.$index].paymentTimePeriod"
                               placeholder="请选择付款条件"
                               :disabled="operateType==='query'"
                             >
                               <el-option
-                                v-for="item in cardFinanceInfoForm.paymentConditions"
+                                v-for="item in cardFinanceInfoForm.paymentTimePeriods"
                                 :key="item.id"
                                 :value="item.id"
                                 :label="item.name"
@@ -692,7 +691,7 @@
                   <template scope="scope">
                     <el-input
                       :disabled="operateType==='query'||cardFinanceInfoForm.paymentMethods.progress[scope.$index].seriousPayments"
-                      v-model="cardFinanceInfoForm.paymentMethods.progress[scope.$index].paymentAmount"></el-input>
+                      v-model="progressPaymentAmount"></el-input>
                   </template>
                 </el-table-column>
                 <el-table-column
@@ -701,12 +700,12 @@
                   width="250px">
                   <template scope="scope">
                     <el-select
-                      v-model="cardFinanceInfoForm.paymentMethods.progress[scope.$index].paymentCondition"
+                      v-model="cardFinanceInfoForm.paymentMethods.progress[scope.$index].paymentTimePeriod"
                       placeholder="请选择付款条件"
                       :disabled="operateType==='query'||cardFinanceInfoForm.paymentMethods.progress[scope.$index].seriousPayments"
                     >
                       <el-option
-                        v-for="item in cardFinanceInfoForm.paymentConditions"
+                        v-for="item in cardFinanceInfoForm.paymentTimePeriods"
                         :key="item.id"
                         :value="item.id"
                         :label="item.name"
@@ -767,12 +766,12 @@
                           width="250px">
                           <template scope="scope">
                             <el-select
-                              v-model="props.row.subItem[scope.$index].paymentCondition"
+                              v-model="props.row.subItem[scope.$index].paymentTimePeriod"
                               placeholder="请选择付款条件"
                               :disabled="operateType==='query'"
                             >
                               <el-option
-                                v-for="item in cardFinanceInfoForm.paymentConditions"
+                                v-for="item in cardFinanceInfoForm.paymentTimePeriods"
                                 :key="item.id"
                                 :value="item.id"
                                 :label="item.name"
@@ -834,7 +833,7 @@
                   <template scope="scope">
                     <el-input
                       :disabled="operateType==='query'||cardFinanceInfoForm.paymentMethods._final[scope.$index].seriousPayments"
-                      v-model="cardFinanceInfoForm.paymentMethods._final[scope.$index].paymentAmount"></el-input>
+                      v-model="finalPaymentAmount"></el-input>
                   </template>
                 </el-table-column>
                 <el-table-column
@@ -843,12 +842,12 @@
                   width="250px">
                   <template scope="scope">
                     <el-select
-                      v-model="cardFinanceInfoForm.paymentMethods._final[scope.$index].paymentCondition"
+                      v-model="cardFinanceInfoForm.paymentMethods._final[scope.$index].paymentTimePeriod"
                       placeholder="请选择付款条件"
                       :disabled="operateType==='query'||cardFinanceInfoForm.paymentMethods._final[scope.$index].seriousPayments"
                     >
                       <el-option
-                        v-for="item in cardFinanceInfoForm.paymentConditions"
+                        v-for="item in cardFinanceInfoForm.paymentTimePeriods"
                         :key="item.id"
                         :value="item.id"
                         :label="item.name"
@@ -1959,7 +1958,6 @@
           paymentMethods: {
             advance: [{
               type: '预付款',
-              paymentCondition: '',
               seriousPayments: true, // 是否多次付款
               paymentAmount: 0, // 付款金额
               paymentTimePeriod: null, // 付款方式
@@ -1982,7 +1980,6 @@
               ratio: '',
               subItem: [
                 {
-                  paymentCondition: '',
                   paymentAmount: 0,
                   paymentTimePeriod: null,
                   paymentTime: '',
@@ -2007,7 +2004,6 @@
             }],
             progress: [{
               type: '进度款',
-              paymentCondition: '',
               seriousPayments: false,
               paymentAmount: 0,
               paymentTimePeriod: null,
@@ -2028,7 +2024,7 @@
             }],
             _final: [{
               type: '尾款',
-              paymentCondition: '',
+              paymentTimePeriod: '',
               seriousPayments: true,
               paymentAmount: 0,
               paymentTimePeriod: null,
@@ -2056,8 +2052,8 @@
               subItem: []
             }]
           },
-          paymentCondition: '',
-          paymentConditions: [
+          paymentTimePeriod: '',
+          paymentTimePeriods: [
             {
               id: 'Z015',
               name: '到票日后15天付款'
@@ -2306,6 +2302,7 @@
         this.cardFinanceInfoForm.totalAmount = advance + progress + _final
         return advance + progress + _final
       },
+
       showMaterialItems: function () {
         let result = false
         let arrConStandard = this.cardContentInfoForm.conStandard
@@ -2423,7 +2420,40 @@
           enabled = false
         }
         return enabled
-      }
+      },
+      advancePaymentAmount:function(){
+        const items=this.cardFinanceInfoForm.paymentMethods.advance[0].subItem
+        let sum=0
+        if(items&&items.length){
+          for(let i=0,len=items.length;i<len;i++){
+            sum+=items[0].paymentAmount
+          }
+        }
+        this.cardFinanceInfoForm.paymentMethods.advance[0].paymentAmount=parseFloat(sum)
+        return parseFloat(sum)
+      },
+      progressPaymentAmount:function(){
+        const items=this.cardFinanceInfoForm.paymentMethods.progress[0].subItem
+        let sum=0
+        if(items&&items.length){
+          for(let i=0,len=items.length;i<len;i++){
+            sum+=items[0].paymentAmount
+          }
+        }
+        this.cardFinanceInfoForm.paymentMethods.progress[0].paymentAmount=parseFloat(sum)
+        return parseFloat(sum)
+      },
+      finalPaymentAmount:function(){
+        const items=this.cardFinanceInfoForm.paymentMethods._final[0].subItem
+        let sum=0
+        if(items&&items.length){
+          for(let i=0,len=items.length;i<len;i++){
+            sum+=items[0].paymentAmount
+          }
+        }
+        this.cardFinanceInfoForm.paymentMethods._final[0].paymentAmount=parseFloat(sum)
+        return parseFloat(sum)
+      },
     },
     mounted() {
       const query = this.$route.query
@@ -2466,7 +2496,6 @@
         Object.assign(this.baseInfoForm, data.baseInfoForm)
         Object.assign(this.cardContentInfoForm, data.cardContentInfoForm)
         Object.assign(this.cardFinanceInfoForm, data.cardFinanceInfoForm)
-        this.paymentMethods = data.cardFinanceInfoForm.paymentMethods
         Object.assign(this.cardContCheckInfoForm, data.cardContCheckInfoForm)
         Object.assign(this.cardSealInfoForm, data.cardSealInfoForm)
         Object.assign(this.cardRemarkInfoForm, data.cardRemarkInfoForm)
@@ -2559,9 +2588,6 @@
         }).catch(() => {
           this.$message.error('请填写完整信息再预览！')
         })
-      },
-      handleTabClick(tab, event) {
-        console.log('handleTabClick')
       },
       handleNewSubjectName() {
         this.baseInfoForm.dialogNewSubjectVisible = true
@@ -2833,7 +2859,7 @@
         let paymentMethods = this.cardFinanceInfoForm.paymentMethods
         const item = {
           paymentAmount: 0,
-          paymentCondition: '',
+          paymentTimePeriod: '',
           paymentTimePeriod: null,
           paymentTime: '',
           times: [
@@ -3554,12 +3580,9 @@
         item.seriousPayments = event.target.checked
         if (item.seriousPayments) {
           item.paymentAmount = 0
-          item.paymentCondition = null
+          item.paymentTimePeriod = null
           item.remark = null
         }
-      },
-      handleOneOffPayChange(val) {
-        console.log('val', val)
       }
     },
     components: {
@@ -3613,8 +3636,8 @@
         const paymentMethods = {
           advance: [{
             type: '预付款',
-            paymentCondition: '',
-            seriousPayments: true, // 是否多次付款
+            paymentTimePeriod: '',
+            seriousPayments: null, // 是否多次付款
             paymentAmount: 0, // 付款金额
             paymentTimePeriod: null, // 付款方式
             paymentTime: '', // 付款时间
@@ -3636,7 +3659,7 @@
             ratio: '',
             subItem: [
               {
-                paymentCondition: '',
+                paymentTimePeriod: '',
                 paymentAmount: 0,
                 paymentTimePeriod: null,
                 paymentTime: '',
@@ -3661,8 +3684,8 @@
           }],
           progress: [{
             type: '进度款',
-            paymentCondition: '',
-            seriousPayments: false,
+            paymentTimePeriod: '',
+            seriousPayments: null,
             paymentAmount: 0,
             paymentTimePeriod: null,
             paymentTime: '',
@@ -3682,8 +3705,8 @@
           }],
           _final: [{
             type: '尾款',
-            paymentCondition: '',
-            seriousPayments: true,
+            paymentTimePeriod: '',
+            seriousPayments: null,
             paymentAmount: 0,
             paymentTimePeriod: null,
             paymentTime: '',
@@ -3711,7 +3734,7 @@
           }]
         }
         this.cardFinanceInfoForm.paymentMethods = paymentMethods
-      }
+      },
     }
   }
 </script>
