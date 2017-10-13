@@ -8,7 +8,7 @@
         <el-row>
           <el-col :span="8">
             <el-form-item label="比价单" v-if="conForm.isPr" prop="strPC">
-              <el-input v-model="conForm.strPC"  v-on:keyup.enter="handleQuery" placeholder="请输入比价单号"></el-input>
+              <el-input v-model="conForm.strPC" v-on:keyup.enter="handleQuery" placeholder="请输入比价单号"></el-input>
             </el-form-item>
           </el-col>
           <el-col :span="8" v-if="conForm.isPr">
@@ -32,6 +32,7 @@
                   :key="item.id"
                   :value="item.id"
                   :label="item.name"
+                  :disabled="item.disabled"
                 >
                 </el-option>
               </el-select>
@@ -102,7 +103,6 @@
             <el-form-item label="创建人" prop="createPerson">
               <el-select
                 style="width:300px"
-                size="small"
                 v-model="prForm.createPerson"
                 filterable
                 remote
@@ -115,7 +115,7 @@
                   :label="item.userName"
                   :value="item.userId">
                   <span style="float: left">{{ item.userName }}</span>
-                  <span style="float: right; color: #8492a6; font-size: 13px">{{ item.deptName }}</span>
+                  <span style="float: right; font-size: 13px">{{ item.deptName }}</span>
                 </el-option>
               </el-select>
             </el-form-item>
@@ -144,9 +144,10 @@
       </el-form>
       <el-table ref="priceList" :data="priceList" highlight-current-row border @current-change="handleSelectCurrent"
                 max-height="250" @row-click="handleRowClick">
-        <el-table-column prop="ifSelect" label="选择">
+        <el-table-column prop="ifSelect" label="选择" width="80">
           <template scope="scope">
-            <el-checkbox v-model="scope.row.ifSelect" @change.stop.prevent="handleRowClick(priceList[scope.$index])"></el-checkbox>
+            <el-checkbox v-model="scope.row.ifSelect"
+                         @change.stop.prevent="handleRowClick(priceList[scope.$index])"></el-checkbox>
           </template>
         </el-table-column>
         <el-table-column
@@ -160,7 +161,8 @@
         </el-table-column>
         <el-table-column
           property="originatorName"
-          label="发起人">
+          label="发起人"
+          width="80">
         </el-table-column>
         <el-table-column
           :show-overflow-tooltip="true"
@@ -169,21 +171,24 @@
         </el-table-column>
         <el-table-column
           property="startTime"
-          label="发起时间">
+          label="发起时间"
+          width="120">
           <template scope="scope">
             {{transformDataFormat(priceList[scope.$index].startTime)}}
           </template>
         </el-table-column>
         <el-table-column
           property="finishTime"
-          label="结束时间">
+          label="结束时间"
+          width="120">
           <template scope="scope">
             {{transformDataFormat(priceList[scope.$index].finishTime)}}
           </template>
         </el-table-column>
         <el-table-column
           fixed="right"
-          label="操作">
+          label="操作"
+          width="80">
           <template scope="scope">
             <el-button @click.stop="handleDetailPR(scope.$index,scope.row)" type="text">查看</el-button>
           </template>
@@ -199,7 +204,7 @@
         </el-col>
       </el-row>-->
       <template slot="footer">
-        <el-button type="primary" @click="handleCloseDialog">关闭</el-button>
+        <el-button @click="handleCloseDialog">取消</el-button>
         <el-button type="primary" @click="handleOKDialog">确定</el-button>
       </template>
     </el-dialog>
@@ -210,7 +215,7 @@
       :regions="regions"
       :defaultProps="defaultProps"
       @ok="setBusiType"
-      v-on:close="closeTree">
+      @close="closeTree">
     </TreeModal>
   </div>
 </template>
@@ -265,7 +270,7 @@
                 onClick(picker) {
                   const end = new Date()
                   const start = new Date()
-                  start.setTime(start.getTime() - 3600 * 1000 * 24 * 7)
+                  start.setTime(start.getTime() - 3600 * 1000 * 24 * 6)
                   picker.$emit('pick', [start, end])
                 }
               }, {
@@ -276,19 +281,11 @@
                   start.setTime(start.getTime() - 3600 * 1000 * 24 * 30)
                   picker.$emit('pick', [start, end])
                 }
-              }, {
-                text: '最近三个月',
-                onClick(picker) {
-                  const end = new Date()
-                  const start = new Date()
-                  start.setTime(start.getTime() - 3600 * 1000 * 24 * 90)
-                  picker.$emit('pick', [start, end])
-                }
               }
             ]
           },
-          pageNo:1,
-          pageSize:10,
+          pageNo: 1,
+          pageSize: 10
         },
         priceList: [],
         currentPr: null, // 当前选择的比价单
@@ -298,13 +295,15 @@
           children: 'children',
           label: 'businessName'
         },
-        total:0,//总条目数
-        pageCount:0,//总页数
+        total: 0, // 总条目数
+        pageCount: 0, // 总页数,
+        regionSource: null
       }
     },
-    created(){},
+    created() {
+    },
     mounted() {
-      this.prForm.createPerson=user.userId
+      this.prForm.createPerson = user.userId
       this.getRemoteCreatePersonsByKeyWord(user.userId)
     },
     computed: {
@@ -317,6 +316,7 @@
       'conForm.isPr': function (val, oldVal) {
         if (!val) {
           this.curPriceList = []
+          this.regions = this.regionSource ? this.regionSource : this.regions
         }
       }
     },
@@ -336,22 +336,48 @@
           this.conForm.conType = ''
         }
       },
-      handleQuery(e) {
-        this.comLoading(1)
+      handleQuery(folio) {
+        this.comLoading()
         Api.getQrDetail({
-          folio: this.conForm.strPC
+          folio: folio || this.conForm.strPC
         }).then((data) => {
           if (data.data.dataMap) {
             this.currentPr = data.data.dataMap
             this.curPriceList = [data.data.dataMap]
+
+            const {createFixedFormatContractFlag, purchaseType} = this.currentPr
+            this.conModels[1] = {...this.conModels[1], disabled: !createFixedFormatContractFlag}
+            this.conForm.curConModelId = createFixedFormatContractFlag ? this.conForm.curConModelId : null
+            if (!this.regionSource) {
+              this.regionSource = this.regions
+            }
+            if (this.conForm.conType) {
+              const conType = this.conForm.conType.split('-')[0]
+              if (purchaseType === 1 && conType === '2') {
+                this.conForm.conTypeName = ''
+              } else if (purchaseType === 2 && conType !== '2') {
+                this.conForm.conTypeName = ''
+              }
+            }
+            this.regions = this.regionSource.filter((item) => {
+              if (!purchaseType) {
+                return true
+              } else if (purchaseType === 1 && item.id !== 2) {
+                return true
+              } else if (purchaseType === 2 && item.id === 2) {
+                return true
+              }
+            })
           }
-          this.comLoading()
+          this.comLoading(false)
+        }, () => {
+          this.comLoading(false)
         })
       },
       handleHighQuery() {
         this.dialogVisible = true
       },
-      //????当前比加单列表接口缺少数据导致无法取得当前合同的总价格，需接口调整
+      // 当前比加单列表接口缺少数据导致无法取得当前合同的总价格，需接口调整
       handleNext(formName) {
         this.$refs[formName].validate((valid) => {
           if (valid) {
@@ -362,22 +388,7 @@
               })
               return
             }
-            if(parseInt(this.conForm.curConModelId)===2){//判断当前为固定格式合同时，合同总金额》=10000时，不让其创建固定格式合同
-              const items=this.curPriceList[0].items
-              if(items&&items.length){
-                let total=0
-                for(let i=0,len=items.length;i<len;i++){
-                  total+=parseFloat(items[0].amount)
-                }
-                if(total>=10000){
-                  this.$message({
-                    message: '合同金额大于一万元，请调整合同模式',
-                    type: 'warning'
-                  });
-                  return
-                }
-              }
-            }
+
             let routePath = ''
             switch (this.conForm.curConModelId) {
               case '4':
@@ -425,7 +436,8 @@
       handleOKDialog() {
         this.dialogVisible = false
         if (this.currentPr) {
-          this.curPriceList = [this.currentPr]
+          const {folio} = this.currentPr
+          this.handleQuery(folio)
           this.conForm.strPC = ''
         }
         this.currentPr.clicked = false
@@ -451,26 +463,28 @@
         this.visible = false
       },
       handleQueryPriceList() {
-        this.comLoading(1)
-        this.priceList=[]
+        this.priceList = []
         let startTime = this.prForm.createTime[0] ? formatDate(this.prForm.createTime[0].toLocaleDateString()) : ''
         let endTime = this.prForm.createTime[1] ? formatDate(this.prForm.createTime[1].toLocaleDateString()) : ''
-        let times=[],day=null,endDay=''
-        if(endTime){
-          times=endTime.split('-')
-          day=parseInt(times[2])+1
-          endDay=times[0]+'-'+times[1]+'-'+[day]
+        let times = [], day = null, endDay = ''
+        if (endTime) {
+          times = endTime.split('-')
+          day = parseInt(times[2]) + 1
+          endDay = times[0] + '-' + times[1] + '-' + [day]
         }
-        const params={
+        const params = {
           pr: this.prForm.prCode,
           originator: this.prForm.createPerson,
           fromDate: startTime,
           toDate: endDay,
-          pageNo:this.prForm.pageNo,
-          pageSize:this.prForm.pageSize
+          pageNo: this.prForm.pageNo,
+          pageSize: this.prForm.pageSize
         }
         this.$refs['prForm'].validate((valid) => {
           if (valid) {
+            this.comLoading({
+              target: this.$refs['priceList'].$el
+            })
             Api.getQrList(params).then((data) => {
               if (data.data.dataMap && data.data.dataMap.length > 0) {
                 let arr = data.data.dataMap
@@ -479,7 +493,9 @@
                 }
                 this.priceList = arr
               }
-              this.comLoading()
+              this.comLoading(false)
+            }, () => {
+              this.comLoading(false)
             })
           } else {
             console.log('error submit!!')
@@ -497,18 +513,18 @@
           oldRow.clicked = false
         }
       },
-      handleRowClick(row,event) {
-        if(event){
+      handleRowClick(row, event) {
+        if (event) {
           event.stopPropagation()
           event.preventDefault()
         }
         if (row.clicked) {
           row.clicked = false
-          this.$refs.priceList.setCurrentRow();
+          this.$refs.priceList.setCurrentRow()
           this.currentPr = null
         } else {
           row.clicked = true
-          this.$refs.priceList.setCurrentRow(row);
+          this.$refs.priceList.setCurrentRow(row)
         }
       },
       closeTree() {
@@ -524,17 +540,16 @@
             })
         } else {
           this.prForm.createPersons = []
-          this.prForm.createPerson=''
-
+          this.prForm.createPerson = ''
         }
       },
-      handleIfSelectChange(val){
-        console.log('val',val);
+      handleIfSelectChange(val) {
+        console.log('val', val)
       },
-      handleCurrentChange(page){
-        this.prForm.pageNo=page
+      handleCurrentChange(page) {
+        this.prForm.pageNo = page
         this.handleQueryPriceList()
-      },
+      }
     }
   }
 </script>

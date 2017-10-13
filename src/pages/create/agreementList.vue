@@ -3,115 +3,122 @@
 </style>
 <template>
   <div class="agreementList">
-    <el-card>
-      <el-form ref="agreementForm" :model="agreementForm" :rules="agreementForm.rules" label-width="100px">
-        <el-row>
-          <el-col :span="8">
-            <el-form-item prop="id" label="从协议编号" label-width="150px">
-              <el-input v-model="agreementForm.protocolNo" placeholder="请输入从协议编号"></el-input>
-            </el-form-item>
-          </el-col>
-          <el-col :span="8">
-            <el-form-item label="供应商名称/编码" prop="search" label-width="150px">
-              <el-select
-                size="small"
-                v-model="agreementForm.supplierName"
-                filterable
-                remote
-                placeholder="请输入关键词搜索"
-                :remote-method="getRemoteSuppliersByKeyWord"
-                :loading="agreementForm.loading">
-                <el-option
-                  v-for="item in agreementForm.suppliers"
-                  :key="item.companyCode"
-                  :label="item.company"
-                  :value="item.companyCode">
-                  <span style="float: right">{{ item.company }}</span>
-                  <span style="float: left; color: #8492a6; font-size: 13px">{{ item.companyCode }}</span>
-                </el-option>
-              </el-select>
-            </el-form-item>
-          </el-col>
-        </el-row>
-        <el-row>
-          <el-col :span="8">
-            <el-form-item label="公司名称/编码" prop="conSubjctName" label-width="150px">
-              <el-select
-                size="small"
-                v-model="agreementForm.conSubjctName"
-                filterable
-                remote
-                placeholder="请输入关键词搜索"
-                :remote-method="getRemoteCompanyByKeyWord"
-                :loading="agreementForm.agreementLoading">
-                <el-option
-                  v-for="item in agreementForm.companies"
-                  :key="item.companyCode"
-                  :label="item.company"
-                  :value="item.companyCode">
-                  <span style="float: right">{{ item.company }}</span>
-                  <span style="float: left; color: #8492a6; font-size: 13px">{{ item.companyCode }}</span>
-                </el-option>
-              </el-select>
-            </el-form-item>
-          </el-col>
-          <el-col :span="8">
-            <el-form-item label="创建人" prop="creatorName" label-width="150px">
-              <el-select
-                size="small"
-                v-model="agreementForm.creatorName"
-                filterable
-                remote
-                placeholder="请输入创建人"
-                :remote-method="getRemoteCreatorsByKeyWord"
-                :loading="agreementForm.creatorLoading">
-                <el-option
-                  v-for="item in agreementForm.creators"
-                  :key="item.userId"
-                  :label="item.userName"
-                  :value="item.userId">
-                  <span style="float: left">{{ item.userName }}</span>
-                  <span style="float: right; color: #8492a6; font-size: 13px">{{ item.deptName }}</span>
-                </el-option>
-              </el-select>
-            </el-form-item>
-          </el-col>
-          <el-col :span="4" :offset="2">
-            <el-button size="large" type="primary" @click="handleQuery">查找</el-button>
-          </el-col>
-        </el-row>
-      </el-form>
-    </el-card>
-    <el-card v-if="agreementList.length">
-      <el-table :data="agreementList" style="width:100%">
-        <el-table-column type="index"></el-table-column>
-        <el-table-column prop="protocolNo" label="从协议编码">
-          <template scope="scope">
-            <router-link :to="{path:'/ConCreate/querySlaveProtocol', query:{id:''+agreementList[scope.$index].id}}">
-              {{agreementList[scope.$index].protocolNo}}
-            </router-link>
-          </template>
-        </el-table-column>
-        <el-table-column prop="creatorName" label="发起人"></el-table-column>
-        <el-table-column prop="deptName" label="发起部门"></el-table-column>
-        <el-table-column prop="createTime" label="发起时间"></el-table-column>
-      </el-table>
-      <el-row class="mt20">
-        <el-col :span="8" :offset="8">
-          <el-pagination
-            @current-change="handleCurrentChange"
-            layout="prev, pager, next,jumper"
-            :total="total">
-          </el-pagination>
+    <el-form ref="agreementForm" :model="agreementForm" :rules="agreementForm.rules" label-width="150px">
+      <el-row>
+        <el-col :span="8">
+          <el-form-item prop="id" label="从协议编号">
+            <el-input class="wp100" v-model="agreementForm.protocolNo" placeholder="请输入从协议编号"></el-input>
+          </el-form-item>
+        </el-col>
+        <el-col :span="8">
+          <el-form-item label="供应商名称/编码" prop="search">
+            <el-select
+              class="wp100"
+              v-model="agreementForm.supplierName"
+              filterable
+              remote
+              placeholder="请输入关键词搜索"
+              :remote-method="getRemoteSuppliersByKeyWord"
+              :loading="agreementForm.loading">
+              <el-option
+                v-for="item in agreementForm.suppliers"
+                :key="item.companyCode"
+                :label="item.company"
+                :value="item.companyCode">
+                <span style="float: right">{{ item.company }}</span>
+                <span style="float: left; color: #8492a6; font-size: 13px">{{ item.companyCode }}</span>
+              </el-option>
+            </el-select>
+          </el-form-item>
         </el-col>
       </el-row>
-    </el-card>
+      <el-row>
+        <el-col :span="8">
+          <el-form-item label="公司名称/编码" prop="conSubjctName">
+            <el-select
+              class="wp100"
+              v-model="agreementForm.conSubjctName"
+              filterable
+              remote
+              placeholder="请输入关键词搜索"
+              :remote-method="getRemoteCompanyByKeyWord"
+              :loading="agreementForm.agreementLoading">
+              <el-option
+                v-for="item in agreementForm.companies"
+                :key="item.companyCode"
+                :label="item.company"
+                :value="item.companyCode">
+                <span style="float: right">{{ item.company }}</span>
+                <span style="float: left; color: #8492a6; font-size: 13px">{{ item.companyCode }}</span>
+              </el-option>
+            </el-select>
+          </el-form-item>
+        </el-col>
+        <el-col :span="8">
+          <el-form-item label="创建人" prop="creatorName">
+            <el-select
+              class="wp100"
+              v-model="agreementForm.creatorName"
+              filterable
+              remote
+              placeholder="请输入创建人"
+              :remote-method="getRemoteCreatorsByKeyWord"
+              :loading="agreementForm.creatorLoading">
+              <el-option
+                v-for="item in agreementForm.creators"
+                :key="item.userId"
+                :label="item.userName"
+                :value="item.userId">
+                <span style="float: left">{{ item.userName }}</span>
+                <span style="float: right; color: #8492a6; font-size: 13px">{{ item.deptName }}</span>
+              </el-option>
+            </el-select>
+          </el-form-item>
+        </el-col>
+        <el-col :span="4" :offset="1">
+          <el-button type="primary" @click="handleQuery">查找</el-button>
+        </el-col>
+      </el-row>
+    </el-form>
+    <el-table :data="agreementList"
+              border
+              highlight-current-row
+              style="width:100%">
+      <el-table-column type="index" label="序号" width="80"></el-table-column>
+      <el-table-column prop="protocolNo" label="从协议编码" min-width="200">
+        <template scope="scope">
+          <router-link class="router-link" :to="{path:'/ConCreate/querySlaveProtocol', query:{id:''+agreementList[scope.$index].id}}">
+            {{agreementList[scope.$index].protocolNo}}
+          </router-link>
+        </template>
+      </el-table-column>
+      <el-table-column prop="creatorName" label="发起人" width="100"></el-table-column>
+      <el-table-column prop="deptName" label="发起部门"></el-table-column>
+      <el-table-column prop="createTime" label="发起时间" width="120">
+        <template scope="scope">
+          {{scope.row.createTime | formatDate}}
+        </template>
+      </el-table-column>
+    </el-table>
+    <div class="mt20">
+      <el-pagination
+        class="fr"
+        @size-change="handleSizeChange"
+        @current-change="handleCurrentChange"
+        :current-page="agreementForm.pageNo"
+        :page-size="agreementForm.pageSize"
+        :page-sizes="[10, 20, 30, 50]"
+        layout="total, sizes, prev, pager, next, jumper"
+        :total="totalPage">
+      </el-pagination>
+    </div>
   </div>
 </template>
 <script>
   import Api from '../../api/manageContract'
+  import {formatDate} from '@/filters/moment'
 
-  export default{
+  export default {
     data: function () {
       return {
         agreementForm: {
@@ -126,14 +133,14 @@
           creatorLoading: false,
           creatorName: '',
           creators: [],
-          pageNo:1,
-          pageSize:10,
+          pageNo: 1,
+          pageSize: 10
         },
         agreementList: [],
-        total:0,
+        totalPage: 0
       }
     },
-    mounted:function(){
+    mounted: function () {
       this.handleQuery()
     },
     methods: {
@@ -164,15 +171,14 @@
       handleQuery() {
         Api.getAgreementList(this.agreementForm)
           .then((data) => {
-            const dataMap=data.data.dataMap
-            if(dataMap){
-              this.agreementList =dataMap.data||[]
-              this.total=dataMap.total
+            const dataMap = data.data.dataMap
+            if (dataMap) {
+              this.agreementList = dataMap.data || []
+              this.totalPage = dataMap.total
             }
-
-      })
+          })
       },
-      getRemoteCreatorsByKeyWord(query){
+      getRemoteCreatorsByKeyWord(query) {
         if (query !== '') {
           this.agreementForm.creatorLoading = true
           Api.getRemoteCreatePersonsByKeyWord({keyword: query})
@@ -184,10 +190,18 @@
           this.agreementForm.creators = []
         }
       },
-      handleCurrentChange(page){
-        this.agreementForm.pageNo=page
-        this.search()
+      handleSizeChange(val) {
+        console.log(`每页 ${val} 条`)
+        this.agreementForm.pageSize = val
+        this.handleQuery()
       },
+      handleCurrentChange(page) {
+        this.agreementForm.pageNo = page
+        this.handleQuery()
+      }
+    },
+    filters: {
+      formatDate
     }
   }
 </script>

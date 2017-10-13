@@ -266,7 +266,8 @@
       getTplData(templateId) {
         const tplData = this.tplData[templateId]
         if (tplData) {
-          this.currentTpl = tplData
+          const {content} = tplData
+          this.currentTpl = content
           return
         }
         if (!templateId) {
@@ -289,7 +290,6 @@
         if (!Object.keys(this.datas).length) {
           return null
         }
-        debugger
         const {conStandard, cardFinanceInfoForm, endTime, startTime, templateId, contractType, contractBusinessTypeFirst} = this.datas
         const {jiaBillingInfo, yiBillingInfo, deposit, payTime, moneyInvolved, depositRatio, totalAmount, paymentMethods, oneOffPay} = cardFinanceInfoForm
         const {advance, progress, _final} = paymentMethods

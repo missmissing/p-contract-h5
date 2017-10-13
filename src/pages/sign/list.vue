@@ -1,7 +1,5 @@
 <style type="text/scss" lang="scss" scoped>
-  .router-link {
-    color: #20a0ff;
-  }
+
 </style>
 
 <template>
@@ -57,11 +55,11 @@
       class="wp100">
       <el-table-column
         prop="pr"
-        min-width="150"
+        min-width="180"
         label="采购订单号">
         <template scope="scope">
           <router-link class="router-link" :to="see(scope.row)">
-            {{scope.row.pr}}
+            {{scope.row.purchaseOrderNo}}
           </router-link>
         </template>
       </el-table-column>
@@ -72,23 +70,26 @@
         :formatter="formatType">
       </el-table-column>
       <el-table-column
-        prop="itemNo"
+        prop="sapItemNo"
         min-width="100"
         label="行项目">
       </el-table-column>
       <el-table-column
         prop="materialCode"
-        min-width="100"
+        min-width="150"
         label="物料编码">
+        <template scope="scope">
+          {{scope.row.materialCode | cutZero}}
+        </template>
       </el-table-column>
       <el-table-column
         prop="materialName"
-        min-width="100"
+        min-width="150"
         label="物料描述">
       </el-table-column>
       <el-table-column
         prop="total"
-        min-width="100"
+        min-width="80"
         label="数量">
       </el-table-column>
       <el-table-column
@@ -98,7 +99,7 @@
       </el-table-column>
       <el-table-column
         prop="taxRate"
-        min-width="100"
+        min-width="80"
         label="税率">
       </el-table-column>
       <el-table-column
@@ -108,7 +109,7 @@
       </el-table-column>
       <el-table-column
         prop="createTime"
-        width="180"
+        width="120"
         label="创建日期">
         <template scope="scope">
           {{scope.row.createTime | formatDate}}
@@ -136,6 +137,7 @@
   import comLoading from '@/mixins/comLoading'
   import {formatDate} from '@/filters/moment'
   import SelectPerson from '@/components/selectPerson.vue'
+  import cutZero from '@/util/cutZero'
 
   export default {
     mixins: [comLoading],
@@ -180,10 +182,10 @@
         return [1, 3].indexOf(cellValue) > -1 ? prTypeMap[1] : prTypeMap[2]
       },
       getList() {
-        this.comLoading(1)
+        this.comLoading()
         Api.query(this.form).then((res) => {
           console.log(res)
-          this.comLoading()
+          this.comLoading(false)
           const {total, data} = res.data.dataMap
           this.tableData = data
           this.totalPage = total
@@ -205,12 +207,12 @@
       },
       handleSizeChange(val) {
         console.log(`每页 ${val} 条`)
-        this.pageSize = val
+        this.form.pageSize = val
         this.getList()
       },
       handleCurrentChange(val) {
         console.log(`当前页: ${val}`)
-        this.pageNo = val
+        this.form.pageNo = val
         this.getList()
       }
     },
@@ -218,7 +220,8 @@
       this.getList()
     },
     filters: {
-      formatDate
+      formatDate,
+      cutZero
     },
     components: {
       SelectPerson

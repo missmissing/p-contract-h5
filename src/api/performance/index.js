@@ -11,7 +11,7 @@ export default {
     return Http.post(`${contract}/contract-web/getContractCode/`, params)
   },
   getContractViolateBaseByContractNo(params) {
-    return Http.get(`${contract}/contract-web//contEnforcing/getContractViolateBaseByContractNo`, params)
+    return Http.get(`${contract}/contract-web/contEnforcing/getContractViolateBaseByContractNo`, params)
   },
   contractViolateSave(params) {
     return Http.post(`${contract}/contract-web/contEnforcing/contractViolateSave`, params)

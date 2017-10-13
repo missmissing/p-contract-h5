@@ -1,15 +1,11 @@
 <style type="text/scss" lang="scss" scoped>
   .form-container {
-    .router-link {
-      color: #FFFFFF;
-    }
+
   }
 </style>
 
 <template>
-  <div class="form-container"
-       v-loading="loadingFlag"
-       :element-loading-text="loadingText">
+  <div class="form-container">
     <div>
       <el-card>
         <div slot="header">
@@ -24,7 +20,7 @@
                 </el-form-item>
               </el-col>
               <el-button type="primary" class="ml20" v-show="toDetail.query.id">
-                <router-link class="router-link" :to="toDetail" target="_blank">详 情</router-link>
+                <router-link class="router-link-default" :to="toDetail" target="_blank">详 情</router-link>
               </el-button>
             </el-row>
             <el-row>
@@ -119,7 +115,8 @@
             <el-form-item label="">
               <el-radio class="radio" v-model="schemeType" label="CONTINUE_TO_PERFORM" disabled>继续履行</el-radio>
               <el-radio class="radio" v-model="schemeType" label="UPDATED_CONTRACT" disabled>变更合同</el-radio>
-              <el-radio class="radio" v-model="schemeType" label="PERFORM_WITH_CHECK_RESULT" disabled>按验收实际结果履行合同</el-radio>
+              <el-radio class="radio" v-model="schemeType" label="PERFORM_WITH_CHECK_RESULT" disabled>按验收实际结果履行合同
+              </el-radio>
               <el-radio class="radio" v-model="schemeType" label="BREACH" disabled>转合同违约处理</el-radio>
             </el-form-item>
             <el-form-item label="不合格原因" prop="unqualifiedReason">
@@ -143,12 +140,32 @@
               </el-input>
             </el-form-item>
             <el-form-item label="相关附件">
-              <Upload
-                :fileList.sync="fileList"
-                disabled
-                multiple>
-                <!--<div class="el-upload__tip" slot="tip">文件不超过10M</div>-->
-              </Upload>
+              <el-table
+                :data="fileList"
+                border
+                highlight-current-row
+                class="wp100">
+                <el-table-column
+                  prop="fileName"
+                  label="文件名">
+                  <template scope="scope">
+                    <a class="router-link" :href="`${download}${scope.row.fileId}`">{{scope.row.fileName}}</a>
+                  </template>
+                </el-table-column>
+                <el-table-column
+                  prop="operatorName"
+                  width="150"
+                  label="上传人">
+                </el-table-column>
+                <el-table-column
+                  prop="createTime"
+                  width="150"
+                  label="上传时间">
+                  <template scope="scope">
+                    {{scope.row.createTime | formatDate}}
+                  </template>
+                </el-table-column>
+              </el-table>
             </el-form-item>
           </el-form>
         </div>
@@ -165,6 +182,7 @@
   import comLoading from '@/mixins/comLoading'
   import {formatDate} from '@/filters/moment'
   import Process from '@/components/process'
+  import {downloadUrl} from '@/api/consts'
 
   export default {
     mixins: [comLoading],
@@ -189,14 +207,15 @@
         unqualifiedReason: '',
         treatmentScheme: '',
         fileList: [],
-        toDetail: {name: routerNames.con_Check, query: {id: ''}}
+        toDetail: {name: routerNames.con_Check, query: {id: ''}},
+        download: downloadUrl
       }
     },
     methods: {
       getInfo(procInstId) {
-        this.comLoading(1)
+        this.comLoading()
         Api.getUnqualifiedByProcInstId({procInstId}).then((res) => {
-          this.comLoading()
+          this.comLoading(false)
           const data = res.data.dataMap
           console.log(data)
           this.setData(data)

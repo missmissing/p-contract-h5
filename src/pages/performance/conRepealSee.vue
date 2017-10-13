@@ -1,15 +1,11 @@
 <style type="text/scss" lang="scss" scoped>
   .basic-info {
-    .router-link {
-      color: #FFFFFF;
-    }
+
   }
 </style>
 
 <template>
-  <div class="pd20"
-       v-loading="loadingFlag"
-       :element-loading-text="loadingText">
+  <div class="pd20">
     <div class="basic-info">
       <el-form :model="form" :rules="rules" ref="form" label-width="120px">
         <el-row>
@@ -20,7 +16,7 @@
             </el-form-item>
           </el-col>
           <el-button type="primary" class="ml20" v-show="toDetail.query.contractId">
-            <router-link class="router-link" :to="toDetail" target="_blank">详 情</router-link>
+            <router-link class="router-link-default" :to="toDetail" target="_blank">详 情</router-link>
           </el-button>
         </el-row>
         <el-row>

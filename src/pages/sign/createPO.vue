@@ -1,16 +1,12 @@
 <style type="text/scss" lang="scss" scoped>
   .form-container {
-    .router-link {
-      color: #FFFFFF;
-    }
+
   }
 </style>
 
 <template>
   <div class="form-container">
-    <div
-      v-loading="loadingFlag"
-      :element-loading-text="loadingText">
+    <div>
       <el-card>
         <div slot="header">
           <span class="common-title">基本信息</span>
@@ -80,7 +76,7 @@
                 <template scope="scope">
                   <el-button
                     @click.native.prevent="deleteRow(scope.$index, prData)"
-                    type="text"
+                    type="danger"
                     size="small">
                     移除
                   </el-button>
@@ -92,49 +88,6 @@
       </el-card>
       <el-card>
         <el-tabs>
-          <el-tab-pane label="合同信息">
-            <div class="contract-info">
-              <el-form label-width="100px">
-                <el-row>
-                  <el-col :span="8">
-                    <el-form-item label="合同编号">
-                      <el-input :value="contractForm.contractNo" disabled></el-input>
-                    </el-form-item>
-                  </el-col>
-                  <el-button type="primary" class="ml20" v-show="toDetail.query.contractId">
-                    <router-link class="router-link" :to="toDetail" target="_blank">详 情</router-link>
-                  </el-button>
-                </el-row>
-                <el-row>
-                  <el-col :span="8">
-                    <el-form-item label="合同模式">
-                      <el-input :value="contractForm.contractType" disabled></el-input>
-                    </el-form-item>
-                  </el-col>
-                  <el-col :span="8">
-                    <el-form-item label="合同类型">
-                      <el-input :value="contractForm.contractBusinessTypeThirdName" disabled></el-input>
-                    </el-form-item>
-                  </el-col>
-                  <el-col :span="8">
-                    <el-form-item label="所属项目">
-                      <el-input :value="contractForm.belongProject" disabled></el-input>
-                    </el-form-item>
-                  </el-col>
-                  <el-col :span="8">
-                    <el-form-item label="生效日期">
-                      <el-input :value="contractForm.startTime | formatDate" disabled></el-input>
-                    </el-form-item>
-                  </el-col>
-                  <el-col :span="8">
-                    <el-form-item label="终止日期">
-                      <el-input :value="contractForm.endTime | formatDate" disabled></el-input>
-                    </el-form-item>
-                  </el-col>
-                </el-row>
-              </el-form>
-            </div>
-          </el-tab-pane>
           <el-tab-pane label="订单信息">
             <div class="order-info">
               <el-form label-width="100px">
@@ -175,6 +128,9 @@
                   prop="materialCode"
                   label="物料编码"
                   width="100">
+                  <template scope="scope">
+                    {{scope.row.materialCode | cutZero}}
+                  </template>
                 </el-table-column>
                 <el-table-column
                   prop="materialName"
@@ -248,13 +204,56 @@
                   <template scope="scope">
                     <el-button
                       @click.native.prevent="deleteRow(scope.$index, orderData)"
-                      type="text"
+                      type="danger"
                       size="small">
                       移除
                     </el-button>
                   </template>
                 </el-table-column>
               </el-table>
+            </div>
+          </el-tab-pane>
+          <el-tab-pane label="合同信息">
+            <div class="contract-info">
+              <el-form label-width="100px">
+                <el-row>
+                  <el-col :span="8">
+                    <el-form-item label="合同编号">
+                      <el-input :value="contractForm.contractNo" disabled></el-input>
+                    </el-form-item>
+                  </el-col>
+                  <el-button type="primary" class="ml20" v-show="toDetail.query.contractId">
+                    <router-link class="router-link-default" :to="toDetail" target="_blank">详 情</router-link>
+                  </el-button>
+                </el-row>
+                <el-row>
+                  <el-col :span="8">
+                    <el-form-item label="合同模式">
+                      <el-input :value="contractForm.contractType" disabled></el-input>
+                    </el-form-item>
+                  </el-col>
+                  <el-col :span="8">
+                    <el-form-item label="合同类型">
+                      <el-input :value="contractForm.contractBusinessTypeThirdName" disabled></el-input>
+                    </el-form-item>
+                  </el-col>
+                  <el-col :span="8">
+                    <el-form-item label="所属项目">
+                      <el-input :value="contractForm.belongProject" disabled></el-input>
+                    </el-form-item>
+                  </el-col>
+                  <el-col :span="8">
+                    <el-form-item label="生效日期">
+                      <el-input :value="contractForm.startTime | formatDate" disabled></el-input>
+                    </el-form-item>
+                  </el-col>
+                  <el-col :span="8">
+                    <el-form-item label="终止日期">
+                      <el-input :value="contractForm.endTime | formatDate" disabled></el-input>
+                    </el-form-item>
+                  </el-col>
+                </el-row>
+              </el-form>
             </div>
           </el-tab-pane>
           <template v-if="showService">
@@ -291,7 +290,7 @@
                     <template scope="scope">
                       <el-button
                         @click.native.prevent="deleteRow(scope.$index, serverData)"
-                        type="text"
+                        type="danger"
                         size="small">
                         移除
                       </el-button>
@@ -364,6 +363,9 @@
               <el-table-column
                 prop="materialCode"
                 label="物料编码">
+                <template scope="scope">
+                  {{scope.row.materialCode | cutZero}}
+                </template>
               </el-table-column>
               <el-table-column
                 prop="materialName"
@@ -478,6 +480,7 @@
   import {routerNames, prTypeMap, contractPatternMap} from '@/core/consts'
   import {formatTime, formatDate} from '@/filters/moment'
   import fillZero from '@/util/fillZero'
+  import cutZero from '@/util/cutZero'
   import {nonNegative} from '@/util/reg'
   import comLoading from '@/mixins/comLoading'
 
@@ -538,11 +541,11 @@
           return
         }
 
-        this.comLoading(1)
+        this.comLoading()
         signModel.getPr({
           pr: prCode
         }).then((res) => {
-          this.comLoading()
+          this.comLoading(false)
           const data = res.data.dataMap
           console.log(data)
           if (this.prData.length) {
@@ -557,7 +560,7 @@
           }
           this.prData.push(data)
         }, () => {
-          this.comLoading()
+          this.comLoading(false)
         })
       },
       match() {
@@ -571,12 +574,12 @@
           return item.pr
         })
 
-        this.comLoading(1)
+        this.comLoading()
         signModel.getMatch({
           pr,
           contractNo: this.contractCode
         }).then((res) => {
-          this.comLoading()
+          this.comLoading(false)
           console.log(res)
           const data = res.data.dataMap
           const {intentionContVos, materialsMatchVoList} = data
@@ -783,20 +786,21 @@
         if (!this.check(result)) {
           return
         }
-        this.comLoading(1)
+        this.comLoading()
         signModel.submit(result).then((res) => {
-          this.comLoading()
+          this.comLoading(false)
           this.$router.push({
             name: routerNames.con_index
           })
         }, () => {
-          this.comLoading()
+          this.comLoading(false)
         })
       }
     },
     filters: {
       formatTime,
-      formatDate
+      formatDate,
+      cutZero
     },
     watch: {
       radio() {

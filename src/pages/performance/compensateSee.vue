@@ -1,16 +1,11 @@
 <style type="text/scss" lang="scss" scoped>
   .form-container {
-    .router-link {
-      color: #FFFFFF;
-    }
+
   }
 </style>
 
 <template>
-  <div
-    class="form-container"
-    v-loading="loadingFlag"
-    :element-loading-text="loadingText">
+  <div class="form-container">
     <div>
       <el-card>
         <div slot="header">
@@ -25,7 +20,7 @@
                 </el-form-item>
               </el-col>
               <el-button type="primary" class="ml20" v-show="toDetail.query.contractId">
-                <router-link class="router-link" :to="toDetail" target="_blank">详 情</router-link>
+                <router-link class="router-link-default" :to="toDetail" target="_blank">详 情</router-link>
               </el-button>
             </el-row>
             <el-row>
@@ -126,12 +121,32 @@
               </el-input>
             </el-form-item>
             <el-form-item label="相关附件">
-              <Upload
-                :fileList.sync="fileList"
-                disabled
-                multiple>
-                <!--<div class="el-upload__tip" slot="tip">文件不超过10M</div>-->
-              </Upload>
+              <el-table
+                :data="fileList"
+                border
+                highlight-current-row
+                class="wp100">
+                <el-table-column
+                  prop="fileName"
+                  label="文件名">
+                  <template scope="scope">
+                    <a class="router-link" :href="`${download}${scope.row.fileId}`">{{scope.row.fileName}}</a>
+                  </template>
+                </el-table-column>
+                <el-table-column
+                  prop="operatorName"
+                  width="150"
+                  label="上传人">
+                </el-table-column>
+                <el-table-column
+                  prop="createTime"
+                  width="150"
+                  label="上传时间">
+                  <template scope="scope">
+                    {{scope.row.createTime | formatDate}}
+                  </template>
+                </el-table-column>
+              </el-table>
             </el-form-item>
           </el-form>
         </div>
@@ -148,6 +163,7 @@
   import {routerNames} from '@/core/consts'
   import comLoading from '@/mixins/comLoading'
   import Process from '@/components/process'
+  import {downloadUrl} from '@/api/consts'
 
   export default {
     mixins: [comLoading],
@@ -172,19 +188,20 @@
           schemeType: null,
           violateReason: '',
           treatmentScheme: ''
-        }
+        },
+        download: downloadUrl
       }
     },
     methods: {
       getInfo(id) {
-        this.comLoading(1)
+        this.comLoading()
         Api.getViolateByProcInstId({procInstId: id}).then((res) => {
-          this.comLoading()
+          this.comLoading(false)
           const data = res.data.dataMap
           console.log(data)
           this.setData(data)
         }, () => {
-          this.comLoading()
+          this.comLoading(false)
         })
       },
       setData(data) {

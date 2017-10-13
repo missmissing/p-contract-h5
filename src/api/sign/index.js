@@ -16,8 +16,8 @@ export default {
   query(params) {
     return Http.post(`${contract}/contract-web/purchaseOrder/query`, params)
   },
-  detail(params) {
+  detailByPoId(params) {
     const {id} = params
-    return Http.get(`${contract}/contract-web/purchaseOrder/detail/${id}`)
+    return Http.get(`${contract}/contract-web/purchaseOrder/detailByPoId/${id}`)
   }
 }

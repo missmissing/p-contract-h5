@@ -1,15 +1,11 @@
 <style type="text/scss" lang="scss" scoped>
   .form-container {
-    .router-link {
-      color: #FFFFFF;
-    }
+
   }
 </style>
 
 <template>
-  <div class="form-container"
-       v-loading="loadingFlag"
-       :element-loading-text="loadingText">
+  <div class="form-container">
     <div>
       <el-card>
         <div slot="header">
@@ -25,7 +21,7 @@
                 </el-form-item>
               </el-col>
               <el-button type="primary" class="ml20" v-show="toDetail.query.id">
-                <router-link class="router-link" :to="toDetail" target="_blank">详 情</router-link>
+                <router-link class="router-link-default" :to="toDetail" target="_blank">详 情</router-link>
               </el-button>
             </el-row>
             <el-row>
@@ -95,7 +91,7 @@
         </div>
         <div class="checkItems-info">
           <div class="mb20">
-            <el-button type="primary" @click="addItem">新 增</el-button>
+            <el-button size="small" type="primary" @click="addItem">新 增</el-button>
           </div>
           <el-table
             :data="checkItems"
@@ -129,7 +125,7 @@
               <template scope="scope">
                 <el-button
                   @click.native.prevent="deleteRow(scope.$index, checkItems)"
-                  type="text"
+                  type="danger"
                   size="small">
                   移除
                 </el-button>
@@ -298,7 +294,7 @@
         },
         basicRules: {
           orderNo: [{required: true, message: '请输入采购订单号', trigger: 'change'}],
-          contractCheckDate: [{required: true, message: '请选择日期'}],
+          contractCheckDate: [{required: true, message: '请选择日期'}]
         },
         handleForm: {
           schemeType: 1,
@@ -326,7 +322,7 @@
           this.$message.warning('请输入采购订单号！')
           return
         }
-        this.comLoading(1)
+        this.comLoading()
         Api.getUnqualifiedByOrderNo({orderNo: this.basicForm.orderNo}).then((res) => {
           const data = res.data.dataMap
           console.log(data)
@@ -334,9 +330,9 @@
           this.toDetail.query.id = purchaseOrderId
           this.info = data
           this.setBasicForm()
-          this.comLoading()
+          this.comLoading(false)
         }, () => {
-          this.comLoading()
+          this.comLoading(false)
         })
       },
       setBasicForm() {
@@ -408,12 +404,16 @@
           this.$message.warning('表单信息不完整！')
           return
         }
-        this.comLoading(1)
+        this.comLoading({
+          text: '正在提交中'
+        })
         Api.unqualifiedSave(result).then((res) => {
-          this.comLoading()
+          this.comLoading(false)
           this.$router.push({
             name: routerNames.con_index
           })
+        }, () => {
+          this.comLoading(false)
         })
       }
     },

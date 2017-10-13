@@ -3,9 +3,7 @@
 </style>
 
 <template>
-  <div
-    v-loading="loadingFlag"
-    :element-loading-text="loadingText">
+  <div>
     <transition name="component-fade" mode="out-in">
       <div v-show="!showTmpl">
         <el-card>
@@ -126,7 +124,7 @@
                 </Upload>
               </el-form-item>
               <el-form-item v-show="showTpl">
-                <el-button type="primary" @click="showTmpl=true">模板信息</el-button>
+                <el-button size="small" type="primary" @click="showTmpl=true">模板信息</el-button>
               </el-form-item>
             </el-form>
           </div>
@@ -209,17 +207,17 @@
     },
     methods: {
       search() {
-        this.comLoading(1)
+        this.comLoading()
         supportModel.getCurrentTemplateByCode({
           templateCode: this.form.templateCode
         }).then((res) => {
           console.log(res)
-          this.comLoading()
+          this.comLoading(false)
           this.resetForm()
           const tplInfo = res.data.dataMap
           this.setData(tplInfo)
         }, () => {
-          this.comLoading()
+          this.comLoading(false)
         })
       },
       setBusiType(value, tree) {
@@ -318,13 +316,15 @@
       save(templateStatus) {
         this.$refs['form'].validate((valid) => {
           if (valid) {
-            this.comLoading(2)
+            this.comLoading({
+              text: '正在提交中'
+            })
             const result = this.getResult()
             result.templateStatus = templateStatus
             console.log('click save：', result)
             supportModel.updateTemplate(result).then((res) => {
               console.log(res)
-              this.comLoading()
+              this.comLoading(false)
               this.$message({
                 message: '提交成功',
                 type: 'success'
@@ -333,7 +333,7 @@
                 this.back()
               }
             }, () => {
-              this.comLoading()
+              this.comLoading(false)
             })
           } else {
             console.log('error submit!!')

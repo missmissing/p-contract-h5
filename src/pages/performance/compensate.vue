@@ -1,16 +1,11 @@
 <style type="text/scss" lang="scss" scoped>
   .form-container {
-    .router-link {
-      color: #FFFFFF;
-    }
+
   }
 </style>
 
 <template>
-  <div
-    class="form-container"
-    v-loading="loadingFlag"
-    :element-loading-text="loadingText">
+  <div class="form-container">
     <div>
       <el-card>
         <div slot="header">
@@ -30,7 +25,7 @@
                 </el-form-item>
               </el-col>
               <el-button type="primary" class="ml20" v-show="toDetail.query.contractId">
-                <router-link class="router-link" :to="toDetail" target="_blank">详 情</router-link>
+                <router-link class="router-link-default" :to="toDetail" target="_blank">详 情</router-link>
               </el-button>
             </el-row>
             <el-row>
@@ -176,7 +171,7 @@
           schemeType: 1,
           violateReason: '',
           treatmentScheme: '',
-          fileIds: null
+          files: null
         },
         handleFormRules: {
           violateReason: [{required: true, message: '请输入违约/赔付原因'}, {
@@ -195,7 +190,7 @@
         if (!this.basicForm.contractNo) {
           return
         }
-        this.comLoading(1)
+        this.comLoading()
         Api.getContractViolateBaseByContractNo({contractNo: this.basicForm.contractNo}).then((res) => {
           const data = res.data.dataMap
           console.log(data)
@@ -207,13 +202,13 @@
           this.businessDept = businessDept
           this.businessOperator = businessOperator
           this.toDetail.query.contractId = contractId
-          this.comLoading()
+          this.comLoading(false)
         }, () => {
-          this.comLoading()
+          this.comLoading(false)
         })
       },
       getResult() {
-        this.handleForm.fileIds = this.fileList.map((file) => {
+        this.handleForm.files = this.fileList.map((file) => {
           if (file.status === 'success') {
             return file.fileId
           }
@@ -248,14 +243,16 @@
           this.$message.warning('表单信息不完整！')
           return
         }
-        this.comLoading(1)
+        this.comLoading({
+          text: '正在提交中'
+        })
         Api.contractViolateSave(result).then((res) => {
-          this.comLoading()
+          this.comLoading(false)
           this.$router.push({
             name: routerNames.con_index
           })
         }, () => {
-          this.comLoading()
+          this.comLoading(false)
         })
       }
     },

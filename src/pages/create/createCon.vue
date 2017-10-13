@@ -36,18 +36,20 @@
   .createCon table {
     width: 100% !important;
   }
-  .createCon table td{
+
+  .createCon table td {
     height: 0;
-    padding-top:0;
-    padding-bottom:0;
+    padding-top: 0;
+    padding-bottom: 0;
   }
-  .createCon table .tdPd{
-    padding-top:20px;
-    padding-bottom:50px;
+
+  .createCon table .tdPd {
+    padding-top: 20px;
+    padding-bottom: 50px;
   }
 </style>
 <template>
-  <div class="createCon" v-loading="loadingFlag" :element-loading-text="loadingText">
+  <div class="createCon">
     <el-card v-if="operateType==='update'||updated">
       <header slot="header">变更原因</header>
       <el-form ref="updateForm" :model="updateForm" label-width="100px" :rules="updateForm.rules">
@@ -57,7 +59,7 @@
               <el-input :disabled="operateType==='query'" v-model="updateForm.code" placeholder="请输入合同编号"></el-input>
             </el-form-item>
           </el-col>
-          <el-col :span="4" :offset="2" v-if="operateType==='update'">
+          <el-col :span="4" :offset="1" v-if="operateType==='update'">
             <el-button :disabled="!updateForm.code" type="primary" @click="handleQuery(updateForm.code)">
               查找
             </el-button>
@@ -66,7 +68,8 @@
         <el-row>
           <el-col :span="8">
             <el-form-item label="变更方式" prop="updateMode">
-              <el-select :disabled="operateType==='query'" v-model="updateForm.updateMode" placeholder="请选择变更方式">
+              <el-select class="wp100" :disabled="operateType==='query'" v-model="updateForm.updateMode"
+                         placeholder="请选择变更方式">
                 <el-option
                   v-for="item in updateForm.updateModes"
                   :key="item.id"
@@ -83,7 +86,12 @@
           </el-col>
         </el-row>
         <el-form-item label="备注" prop="remark">
-          <el-input :disabled="operateType==='query'" v-model="updateForm.remark" placeholder="请输入备注" type="textarea" :rows="4"></el-input>
+          <el-input
+            :disabled="operateType==='query'"
+            v-model="updateForm.remark"
+            placeholder="请输入备注"
+            type="textarea"
+            :rows="4"></el-input>
         </el-form-item>
       </el-form>
     </el-card>
@@ -94,8 +102,8 @@
           <el-col :span="8">
             <el-form-item label="业务经办人" prop="businessOperator">
               <el-select
+                class="wp100"
                 :disabled="isEnabled1"
-                size="small"
                 v-model="baseInfoForm.businessOperatorId"
                 filterable
                 remote
@@ -138,7 +146,7 @@
         <el-row>
           <el-col :span="8">
             <el-form-item label="合同文本类型">
-              <el-select :disabled="isEnabled1" v-model="baseInfoForm.contractTextType"
+              <el-select class="wp100" :disabled="isEnabled1" v-model="baseInfoForm.contractTextType"
                          placeholder="请选择合同文本类型" @change="handleContractTextTypeChange">
                 <el-option
                   v-for="item in baseInfoForm.contractTextTypeOptions"
@@ -149,9 +157,9 @@
               </el-select>
             </el-form-item>
           </el-col>
-          <el-col :span="16">
-            <el-form-item label="模版名称" prop="templateId">
-              <el-select :disabled="isEnabled1" v-model="baseInfoForm.templateId" placeholder="请选择合同模版"
+          <el-col :span="8">
+            <el-form-item label="模板名称" prop="templateId">
+              <el-select class="wp100" :disabled="isEnabled1" v-model="baseInfoForm.templateId" placeholder="请选择合同模版"
                          @change="handleTemplateChange">
                 <el-option
                   v-for="item in baseInfoForm.templateOptions"
@@ -204,17 +212,19 @@
     <el-card v-if="contentVisible">
       <el-tabs v-model="activeTabName" @tab-click="handleTabClick">
         <el-tab-pane name="tabContInfo">
-          <span slot="label" class="title">合同内容信息<i v-if="cardContentInfoForm.errorCount" class="errorCount">{{cardContentInfoForm.errorCount}}</i></span>
+          <span slot="label" class="title">合同内容信息<i v-if="cardContentInfoForm.errorCount"
+                                                    class="errorCount">{{cardContentInfoForm.errorCount}}</i></span>
           <el-form ref="cardContentInfoForm" :model="cardContentInfoForm" label-width="120px"
                    :rules="cardContentInfoForm.rules">
             <el-card>
               <header slot="header">合同供应商信息<i class="errorMsg">{{cardContentInfoForm.supplierErrorMsg}}</i></header>
               <el-button v-if="isVisibleNewSupplierBtn"
+                         size="small"
                          @click="handleAddContractSupplier" icon="plus" class="mb10"
                          type="primary">新增
               </el-button>
               <el-table :data="cardContentInfoForm.tableSupplierInfo">
-                <el-table-column type="index"></el-table-column>
+                <el-table-column type="index" label="序号" width="80"></el-table-column>
                 <el-table-column prop="code" label="供应商编号"></el-table-column>
                 <el-table-column prop="name" label="供应商名称"></el-table-column>
                 <el-table-column
@@ -225,7 +235,8 @@
                     <el-button
                       v-if="cardContentInfoForm.tableSupplierInfo[scope.$index].type"
                       @click="handleRemoveSupplier(scope.$index, cardContentInfoForm.tableSupplierInfo)"
-                      type="text" size="small">移除
+                      type="danger"
+                      size="small">移除
                     </el-button>
                   </template>
                 </el-table-column>
@@ -233,15 +244,20 @@
             </el-card>
             <el-card class="mt20">
               <header slot="header">合同我方主体名称<i class="errorMsg">{{cardContentInfoForm.subjectsErrorMsg}}</i></header>
-              <el-button v-if="enabledInupdated" type="primary" @click="handleNewSubjectName"
-                         icon="plus" class="mb10">新增
+              <el-button
+                v-if="enabledInupdated"
+                type="primary"
+                size="small"
+                @click="handleNewSubjectName"
+                icon="plus" class="mb10">新增
               </el-button>
               <el-table :data="cardContentInfoForm.conSubjctName">
                 <el-table-column prop="code" label="公司代码"></el-table-column>
                 <el-table-column prop="name" label="公司名称"></el-table-column>
-                <el-table-column prop="wholeCompanyApplies" label="全公司适用">
+                <el-table-column prop="applyAll" label="全公司适用">
                   <template scope="scope">
-                    <el-checkbox  :disabled="cardContentInfoForm.conSubjctName[scope.$index]!=='1001'" v-model="cardContentInfoForm.conSubjctName[scope.$index].wholeCompanyApplies"></el-checkbox>
+                    <el-checkbox :disabled="cardContentInfoForm.conSubjctName[scope.$index]!=='1001'"
+                                 v-model="cardContentInfoForm.conSubjctName[scope.$index].applyAll"></el-checkbox>
                   </template>
                 </el-table-column>
                 <el-table-column
@@ -252,7 +268,7 @@
                     <el-button
                       v-if="cardContentInfoForm.conSubjctName[scope.$index].type"
                       @click="handleRemoveSubect(scope.$index, cardContentInfoForm.conSubjctName)"
-                      type="text" size="small">移除
+                      type="danger" size="small">移除
                     </el-button>
                   </template>
                 </el-table-column>
@@ -260,8 +276,12 @@
             </el-card>
             <el-card v-if="baseInfoForm.contractType!==2" class="mt20">
               <header slot="header">第三方信息</header>
-              <el-button v-if="operateType==='create'" type="primary" @click="handleNewthirdPartyInfo"
-                         icon="plus" class="mb10">新增
+              <el-button
+                v-if="operateType==='create'"
+                type="primary"
+                @click="handleNewthirdPartyInfo"
+                size="small"
+                icon="plus" class="mb10">新增
               </el-button>
               <el-table :data="cardContentInfoForm.thirdPartyInfo">
                 <el-table-column prop="code" label="供应商编号"></el-table-column>
@@ -274,7 +294,7 @@
                     <el-button
                       v-if="cardContentInfoForm.thirdPartyInfo[scope.$index].type"
                       @click="handleRemoveThirdPartyInfo(scope.$index, cardContentInfoForm.thirdPartyInfo)"
-                      type="text" size="small">移除
+                      type="danger" size="small">移除
                     </el-button>
                   </template>
                 </el-table-column>
@@ -282,14 +302,20 @@
             </el-card>
             <el-card v-if="baseInfoForm.contractType!==4" class="mt20">
               <header slot="header">合同标的</header>
-              <el-button v-if="baseInfoForm.contractType===3&&!baseInfoForm.prNo&&operateType!=='query'"
-                         @click="handleAddConStandard" icon="plus" class="mb10"
-                         type="primary">新增
+              <el-button
+                v-if="baseInfoForm.contractType===3&&!baseInfoForm.prNo&&operateType!=='query'"
+                @click="handleAddConStandard"
+                size="small"
+                icon="plus"
+                class="mb10"
+                type="primary">新增
               </el-button>
               <el-table :data="cardContentInfoForm.conStandard">
-                <el-table-column type="index"></el-table-column>
-                <el-table-column v-if="baseInfoForm.contractBusinessTypeFirst!==2" prop="materialCode" label="物料编码"></el-table-column>
-                <el-table-column prop="materialName" :label="baseInfoForm.contractBusinessTypeFirst===2?'服务名称':'物料名称'"></el-table-column>
+                <el-table-column type="index" label="序号" width="80"></el-table-column>
+                <el-table-column v-if="baseInfoForm.contractBusinessTypeFirst!==2" prop="materialCode"
+                                 label="物料编码"></el-table-column>
+                <el-table-column prop="materialName"
+                                 :label="baseInfoForm.contractBusinessTypeFirst===2?'服务名称':'物料名称'"></el-table-column>
                 <el-table-column v-if="baseInfoForm.contractType!==3" prop="total" label="数量"></el-table-column>
                 <el-table-column prop="price" label="价格"></el-table-column>
                 <el-table-column prop="taxRate" label="税率">
@@ -305,7 +331,7 @@
                     <el-button
                       v-if="cardContentInfoForm.conStandard[scope.$index].operate"
                       @click="handleRemoveConStandard(scope.$index,cardContentInfoForm.conStandard)"
-                      type="text" size="small">移除
+                      type="danger" size="small">移除
                     </el-button>
                   </template>
                 </el-table-column>
@@ -347,7 +373,7 @@
         </el-tab-pane>
         <el-tab-pane label="合同财务信息" name="tabContFinanceInfo">
           <el-form rel="cardFinanceInfoForm" :model="cardFinanceInfoForm" :rules="cardFinanceInfoForm.rules"
-                   label-width="100px">
+                   label-width="120px">
             <el-row>
               <el-col :span="8">
                 <el-form-item label="是否涉及金额">
@@ -359,18 +385,19 @@
                 </el-form-item>
               </el-col>
               <el-col :span="8" v-if="cardFinanceInfoForm.moneyInvolved===true">
-                <el-form-item label="是否一次性付款" label-width="120px">
-                  <el-radio-group v-model="cardFinanceInfoForm.oneOffPay" :disabled="operateType==='query'" @change="handleOneOffPayChange">
+                <el-form-item label="是否一次性付款">
+                  <el-radio-group v-model="cardFinanceInfoForm.oneOffPay" :disabled="operateType==='query'"
+                                  @change="handleOneOffPayChange">
                     <el-radio :label="true">是</el-radio>
                     <el-radio :label="false">否</el-radio>
                   </el-radio-group>
                 </el-form-item>
               </el-col>
             </el-row>
-            <el-row class="mt20">
+            <el-row>
               <el-col :span="8">
                 <el-form-item label="币种" prop="currency">
-                  <el-select v-model="cardFinanceInfoForm.currency" placeholder="请选择币种"
+                  <el-select class="wp100" v-model="cardFinanceInfoForm.currency" placeholder="请选择币种"
                              :disabled="operateType==='query'">
                     <el-option
                       v-for="item in cardFinanceInfoForm.currencyOptions"
@@ -383,7 +410,7 @@
               </el-col>
               <el-col :span="8">
                 <el-form-item label="开票类型" prop="invoiceType">
-                  <el-select v-model="cardFinanceInfoForm.invoiceType"
+                  <el-select class="wp100" v-model="cardFinanceInfoForm.invoiceType"
                              placeholder="请选择开票类型"
                              :disabled="operateType==='query'">
                     <el-option
@@ -397,7 +424,8 @@
               </el-col>
               <el-col :span="8">
                 <el-form-item label="合同总金额" prop="totalAmount">
-                  <el-input :disabled="!cardFinanceInfoForm.oneOffPay||operateType==='query'" v-model="cardFinanceInfoForm.totalAmount"
+                  <el-input :disabled="!cardFinanceInfoForm.oneOffPay||operateType==='query'"
+                            v-model="cardFinanceInfoForm.totalAmount"
                             placeholder="根据上表累加(含税价)">{{totalConMoney}}
                   </el-input>
                 </el-form-item>
@@ -431,16 +459,20 @@
               >
                 <el-table-column type="expand" v-if="cardFinanceInfoForm.paymentMethods.advance[0].seriousPayments">
                   <template scope="props">
-                    <div v-if="cardFinanceInfoForm.paymentMethods.advance[0].seriousPayments" v-bind:class="{tdPd:cardFinanceInfoForm.paymentMethods.advance[0].seriousPayments}">
-                      <el-button icon="plus" type="primary"
-                                 v-if="operateType!=='query'"
-                                 @click="handleAddAdvanceItem(props.row.type)"
-                                 class="mb10">
+                    <div v-if="cardFinanceInfoForm.paymentMethods.advance[0].seriousPayments"
+                         v-bind:class="{tdPd:cardFinanceInfoForm.paymentMethods.advance[0].seriousPayments}">
+                      <el-button
+                        size="small"
+                        icon="plus"
+                        type="primary"
+                        v-if="operateType!=='query'"
+                        @click="handleAddAdvanceItem(props.row.type)"
+                        class="mb10">
                         添加
                       </el-button>
                       <el-table :data="props.row.subItem">
                         <el-table-column width="100px" prop="name" label="名称">
-                          <template scope="scope">{{props.row.type}}{{scope.$index+1}}</template>
+                          <template scope="scope">{{props.row.type}}{{scope.$index + 1}}</template>
                         </el-table-column>
                         <el-table-column
                           prop="paymentAmount"
@@ -485,7 +517,7 @@
                         </el-table-column>
                         <el-table-column prop="ratio" label="占比" width="80px">
                           <template scope="scope">
-                            {{setRatio(props.row.subItem[scope.$index],props.row.subItem[scope.$index].paymentAmount)}}
+                            {{setRatio(props.row.subItem[scope.$index], props.row.subItem[scope.$index].paymentAmount)}}
                           </template>
                         </el-table-column>
                         <el-table-column
@@ -496,7 +528,7 @@
                           <template scope="scope">
                             <el-button
                               @click="handleRemoveAdvanceItem(scope.$index, props.row.subItem)"
-                              type="text" size="small">移除
+                              type="danger" size="small">移除
                             </el-button>
                           </template>
                         </el-table-column>
@@ -511,7 +543,7 @@
                       :disabled="operateType==='query'"
                       :checked="cardFinanceInfoForm.paymentMethods.advance[scope.$index].seriousPayments"
                       @change="handleSeriousPaymentsChange(cardFinanceInfoForm.paymentMethods.advance[scope.$index],$event)"
-                      ></el-checkbox>
+                    ></el-checkbox>
                   </template>
                 </el-table-column>
                 <el-table-column
@@ -558,7 +590,7 @@
                 </el-table-column>
                 <el-table-column prop="ratio" label="占比" width="80px">
                   <template scope="scope">
-                    {{setRatio(cardFinanceInfoForm.paymentMethods.advance[scope.$index],cardFinanceInfoForm.paymentMethods.advance[scope.$index].paymentAmount)}}
+                    {{setRatio(cardFinanceInfoForm.paymentMethods.advance[scope.$index], cardFinanceInfoForm.paymentMethods.advance[scope.$index].paymentAmount)}}
                   </template>
                 </el-table-column>
               </el-table>
@@ -566,14 +598,20 @@
                         v-if="!cardFinanceInfoForm.oneOffPay" style="width: 100%">
                 <el-table-column type="expand" v-if="cardFinanceInfoForm.paymentMethods.progress[0].seriousPayments">
                   <template scope="props">
-                    <div v-if="cardFinanceInfoForm.paymentMethods.progress[0].seriousPayments" v-bind:class="{tdPd:cardFinanceInfoForm.paymentMethods.progress[0].seriousPayments}">
-                      <el-button icon="plus" type="primary" class="mb10" v-if="operateType!=='query'"
-                                 @click="handleAddAdvanceItem(props.row.type)">
+                    <div v-if="cardFinanceInfoForm.paymentMethods.progress[0].seriousPayments"
+                         v-bind:class="{tdPd:cardFinanceInfoForm.paymentMethods.progress[0].seriousPayments}">
+                      <el-button
+                        size="small"
+                        icon="plus"
+                        type="primary"
+                        class="mb10"
+                        v-if="operateType!=='query'"
+                        @click="handleAddAdvanceItem(props.row.type)">
                         添加
                       </el-button>
                       <el-table :data="props.row.subItem">
                         <el-table-column width="100px" prop="name" label="名称">
-                          <template scope="scope">{{props.row.type}}{{scope.$index+1}}</template>
+                          <template scope="scope">{{props.row.type}}{{scope.$index + 1}}</template>
                         </el-table-column>
                         <el-table-column
                           prop="monpaymentAmountey"
@@ -618,7 +656,7 @@
                         </el-table-column>
                         <el-table-column prop="ratio" label="占比" width="80px">
                           <template scope="scope">
-                            {{setRatio(props.row.subItem[scope.$index],props.row.subItem[scope.$index].paymentAmount)}}
+                            {{setRatio(props.row.subItem[scope.$index], props.row.subItem[scope.$index].paymentAmount)}}
                           </template>
                         </el-table-column>
                         <el-table-column
@@ -629,7 +667,7 @@
                           <template scope="scope">
                             <el-button
                               @click="handleRemoveAdvanceItem(scope.$index, props.row.subItem)"
-                              type="text" size="small">移除
+                              type="danger" size="small">移除
                             </el-button>
                           </template>
                         </el-table-column>
@@ -691,7 +729,7 @@
                 </el-table-column>
                 <el-table-column prop="ratio" label="占比" width="80px">
                   <template scope="scope">
-                    {{setRatio(cardFinanceInfoForm.paymentMethods.progress[scope.$index],cardFinanceInfoForm.paymentMethods.progress[scope.$index].paymentAmount)}}
+                    {{setRatio(cardFinanceInfoForm.paymentMethods.progress[scope.$index], cardFinanceInfoForm.paymentMethods.progress[scope.$index].paymentAmount)}}
                   </template>
                 </el-table-column>
               </el-table>
@@ -699,15 +737,20 @@
                         v-if="!cardFinanceInfoForm.oneOffPay" style="width: 100%">
                 <el-table-column type="expand" v-if="cardFinanceInfoForm.paymentMethods._final[0].seriousPayments">
                   <template scope="props">
-                    <div v-if="cardFinanceInfoForm.paymentMethods._final[0].seriousPayments" v-bind:class="{tdPd:cardFinanceInfoForm.paymentMethods._final[0].seriousPayments}">
-                      <el-button icon="plus" type="primary" class="mb10"
-                                 v-if="operateType!=='query'"
-                                 @click="handleAddAdvanceItem(props.row.type)">
+                    <div v-if="cardFinanceInfoForm.paymentMethods._final[0].seriousPayments"
+                         v-bind:class="{tdPd:cardFinanceInfoForm.paymentMethods._final[0].seriousPayments}">
+                      <el-button
+                        size="small"
+                        icon="plus"
+                        type="primary"
+                        class="mb10"
+                        v-if="operateType!=='query'"
+                        @click="handleAddAdvanceItem(props.row.type)">
                         添加
                       </el-button>
                       <el-table :data="props.row.subItem">
                         <el-table-column width="100px" prop="name" label="名称">
-                          <template scope="scope">{{props.row.type}}{{scope.$index+1}}</template>
+                          <template scope="scope">{{props.row.type}}{{scope.$index + 1}}</template>
                         </el-table-column>
                         <el-table-column
                           prop="paymentAmount"
@@ -752,7 +795,7 @@
                         </el-table-column>
                         <el-table-column prop="ratio" label="占比" width="80px">
                           <template scope="scope">
-                            {{setRatio(props.row.subItem[scope.$index],props.row.subItem[scope.$index].paymentAmount)}}
+                            {{setRatio(props.row.subItem[scope.$index], props.row.subItem[scope.$index].paymentAmount)}}
                           </template>
                         </el-table-column>
                         <el-table-column
@@ -763,7 +806,7 @@
                           <template scope="scope">
                             <el-button
                               @click="handleRemoveAdvanceItem(scope.$index, props.row.subItem)"
-                              type="text" size="small">移除
+                              type="danger" size="small">移除
                             </el-button>
                           </template>
                         </el-table-column>
@@ -828,7 +871,7 @@
                 </el-table-column>
                 <el-table-column prop="ratio" label="占比" width="80px">
                   <template scope="scope">
-                    {{setRatio(cardFinanceInfoForm.paymentMethods._final[scope.$index],cardFinanceInfoForm.paymentMethods._final[scope.$index].paymentAmount)}}
+                    {{setRatio(cardFinanceInfoForm.paymentMethods._final[scope.$index], cardFinanceInfoForm.paymentMethods._final[scope.$index].paymentAmount)}}
                   </template>
                 </el-table-column>
               </el-table>
@@ -995,14 +1038,15 @@
         </el-tab-pane>
         <el-tab-pane name="tabContCheckInfo"
                      v-if="baseInfoForm.contractType===3||baseInfoForm.contractType===1">
-          <span slot="label" class="title"><i v-if="cardContCheckInfoForm.errorCount" class="errorCount">{{cardContCheckInfoForm.errorCount}}</i>合同验收与样品信息</span>
-          <el-form ref="cardContCheckInfoForm" :model="cardContCheckInfoForm" label-width="100px">
+          <span slot="label" class="title"><i v-if="cardContCheckInfoForm.errorCount"
+                                              class="errorCount">{{cardContCheckInfoForm.errorCount}}</i>合同验收与样品信息</span>
+          <el-form ref="cardContCheckInfoForm" :model="cardContCheckInfoForm" label-width="120px">
             <el-row>
               <el-col :span="8">
                 <el-form-item label="验收责任人" prop="responsibleId">
                   <el-select
+                    class="wp100"
                     :disabled="operateType==='query'"
-                    size="small"
                     v-model="cardContCheckInfoForm.responsibleId"
                     filterable
                     remote
@@ -1022,16 +1066,14 @@
                 </el-form-item>
               </el-col>
               <el-col :span="8">
-                <el-form-item prop="responsibleDeptName" label="验收责任人部门" label-width="120px">
+                <el-form-item prop="responsibleDeptName" label="验收责任人部门">
                   <el-input :disabled="isEnabled" v-model="cardContCheckInfoForm.responsibleDeptName"
                             placeholder="请输入验收责任人部门"></el-input>
                 </el-form-item>
               </el-col>
               <el-col :span="8" v-if="!showMaterialItems">
-                <el-form-item :disabled="operateType==='query'" prop="checkType" label="服务类验收方式"
-                              label-width="120px">
+                <el-form-item :disabled="operateType==='query'" prop="checkType" label="服务类验收方式">
                   <el-select
-                    size="small"
                     v-model="cardContCheckInfoForm.checkType"
                     placeholder="请选择服务类验收方式">
                     <el-option
@@ -1052,21 +1094,26 @@
                 </el-form-item>
               </el-col>
               <el-col :span="8">
-                <el-form-item prop="supervisorDept" label="验收监督人部门" label-width="120px">
+                <el-form-item prop="supervisorDept" label="验收监督人部门">
                   <el-input :disabled="isEnabled" v-model="cardContCheckInfoForm.supervisorDept"
                             placeholder="请输入验收监督人部门"></el-input>
                 </el-form-item>
               </el-col>
             </el-row>
-            <el-button v-if="operateType!=='query'" @click="handleAddUnionCheck" icon="plus" type="primary"
-                       class="mb20">添加
+            <el-button
+              v-if="operateType!=='query'"
+              @click="handleAddUnionCheck"
+              size="small"
+              icon="plus"
+              type="primary"
+              class="mb10">添加
             </el-button>
-            <el-table :data="cardContCheckInfoForm.unionCheckPersons">
+            <el-table class="mb20" :data="cardContCheckInfoForm.unionCheckPersons">
               <el-table-column prop="personName" label="联合验收人"></el-table-column>
               <el-table-column prop="personDept" label="联合验收人部门"></el-table-column>
               <el-table-column prop="required" label="是否必选">
                 <template scope="scope">
-                  {{cardContCheckInfoForm.unionCheckPersons[scope.$index].required===true?'是':'否'}}
+                  {{cardContCheckInfoForm.unionCheckPersons[scope.$index].required === true ? '是' : '否'}}
                 </template>
               </el-table-column>
               <el-table-column
@@ -1077,7 +1124,7 @@
                   <el-button
                     v-if="cardContCheckInfoForm.unionCheckPersons[scope.$index].operate"
                     @click="handleRemoveUnionCheckPerson(scope.$index,cardContCheckInfoForm.unionCheckPersons)"
-                    type="text" size="small">移除
+                    type="danger" size="small">移除
                   </el-button>
                 </template>
               </el-table-column>
@@ -1091,19 +1138,24 @@
             <el-card v-if="showMaterialItems">
               <header slot="header">物资验收事项</header>
               <el-table :data="cardContCheckInfoForm.materialMatters">
-                <el-table-column type="index" label="序号" width="100px"></el-table-column>
+                <el-table-column type="index" label="序号" width="80"></el-table-column>
                 <el-table-column prop="sampleCode" label="物料编码"></el-table-column>
                 <el-table-column prop="sampleDesc" label="物料描述"></el-table-column>
               </el-table>
             </el-card>
             <el-card v-else>
               <header slot="header">服务验收事项<i class="errorMsg">{{cardContCheckInfoForm.serviceCheckMsg}}</i></header>
-              <el-button v-if="operateType!=='query'" type="primary" @click="handleAddServiceMatter" icon="plus"
-                         class="mb20">
+              <el-button
+                size="small"
+                v-if="operateType!=='query'"
+                type="primary"
+                @click="handleAddServiceMatter"
+                icon="plus"
+                class="mb10">
                 添加
               </el-button>
               <el-table :data="cardContCheckInfoForm.serviceMatters">
-                <el-table-column type="index" label="序号" width="100px"></el-table-column>
+                <el-table-column type="index" label="序号" width="80"></el-table-column>
                 <el-table-column prop="serviceName" label="服务名称"></el-table-column>
                 <el-table-column prop="serviceRequire" label="验收要求"></el-table-column>
                 <el-table-column prop="remark" label="备注"></el-table-column>
@@ -1115,7 +1167,7 @@
                     <el-button
                       v-if="cardContCheckInfoForm.serviceMatters[scope.$index].type"
                       @click="handleRemoveServiceMatter(scope.$index, cardContCheckInfoForm.serviceMatters)"
-                      type="text" size="small">移除
+                      type="danger" size="small">移除
                     </el-button>
                   </template>
                 </el-table-column>
@@ -1126,94 +1178,109 @@
         <el-tab-pane label="合同附件及盖章信息" name="tabSealInfo" v-if="baseInfoForm.contractType!==2">
           <el-form v-if="baseInfoForm.templateId" rel="cardSealInfoForm" :model="cardSealInfoForm" label-width="100px"
                    :rules="cardSealInfoForm.rules">
-            <el-button type="primary" @click="handleNewOtherSealFile" icon="plus" v-if="enabledInupdated"
-                       class="mb20">
+            <el-button
+              type="primary"
+              @click="handleNewOtherSealFile"
+              size="small"
+              icon="plus"
+              v-if="enabledInupdated"
+              class="mb20">
               新增其他附件
             </el-button>
-            <el-button type="primary" @click="handleNewAgreenmentSealFile" icon="plus" v-if="enabledInupdated"
-                       class="mb20">
+            <el-button
+              type="primary"
+              @click="handleNewAgreenmentSealFile"
+              size="small"
+              icon="plus"
+              v-if="enabledInupdated"
+              class="mb20">
               新增从协议
             </el-button>
-            <el-table v-if="cardSealInfoForm.contract&&cardSealInfoForm.contract.length" :data="cardSealInfoForm.contract" class="mb20">
+            <el-table v-if="cardSealInfoForm.contract&&cardSealInfoForm.contract.length"
+                      :data="cardSealInfoForm.contract" class="mb20">
               <el-table-column type="expand"
                                v-if="cardSealInfoForm.contract&&cardSealInfoForm.contract.length&&cardSealInfoForm.contract[0].haveSale">
                 <template scope="props">
-                  <div  v-if="cardSealInfoForm.contract&&cardSealInfoForm.contract.length&&cardSealInfoForm.contract[0].haveSale" v-bind:class="{tdPd:cardSealInfoForm.contract&&cardSealInfoForm.contract.length&&cardSealInfoForm.contract[0].haveSale}">
-                  <el-table :data="props.row.filesSealed" class="mb20"
-                            v-if="props.row.filesSealed&&props.row.filesSealed.length">
-                    <el-table-column label="文件名" prop="sealFileName">
-                      <template scope="scope">
-                        <a :href="props.row.filesSealed[scope.$index].sealFileUrl">{{props.row.filesSealed[scope.$index].sealFileName}}</a>
-                      </template>
-                    </el-table-column>
-                    <el-table-column label="上传人" prop="sealFileCreatorName"></el-table-column>
-                    <el-table-column label="上传时间" prop="sealFileCreateTime"></el-table-column>
-                    <el-table-column
-                      fixed="right"
-                      label="操作"
-                      v-if="props.row.filesSealed[0].operate"
-                    >
-                      <template scope="scope">
-                        <el-button @click="handleRemoveFilesSealedItem(index, props.row.filesSealed)"
-                                   type="text" size="small">移除
-                        </el-button>
-                      </template>
-                    </el-table-column>
-                  </el-table>
-                  <el-row>
-                    <el-col :span="6">
-                      <el-form-item label="用章次数" prop="saleTime">
-                        <el-input :disabled="!enabledInupdated"
-                                  v-model="props.row.saleTime">
-                        </el-input>
-                      </el-form-item>
-                    </el-col>
-                    <el-col :span="6">
-                      <el-form-item label="打印份数" prop="printTime">
-                        <el-input :disabled="!enabledInupdated"
-                                  v-model="props.row.printTime"></el-input>
-                      </el-form-item>
-                    </el-col>
-                    <el-col :span="6">
-                      <el-form-item label="我方留存份数" prop="remainTime">
-                        <el-input :disabled="!enabledInupdated"
-                                  v-model="props.row.remainTime"></el-input>
-                      </el-form-item>
-                    </el-col>
-                    <el-col :span="6">
-                      <el-form-item label="用印后上传">
-                        <el-upload
-                          ref="uploadFileAfterSeal"
-                          :data="{userId:users.userId}"
-                          :show-file-list="false"
-                          :action="uploadUrl"
-                          :with-credentials="true"
-                          :on-success="handleUploadFileAfterSealSuccess"
-                          :on-error="handleUploadFileAfterSealError"
-                        >
-                          <el-button :disabled="!enabledInupdated||!getEnabledUploadBtn(props.row.filesSealed)" size="small"
-                                     type="primary" @click="handleUpload(cardSealInfoForm.contract[0].attachType)">上传
+                  <div
+                    v-if="cardSealInfoForm.contract&&cardSealInfoForm.contract.length&&cardSealInfoForm.contract[0].haveSale"
+                    v-bind:class="{tdPd:cardSealInfoForm.contract&&cardSealInfoForm.contract.length&&cardSealInfoForm.contract[0].haveSale}">
+                    <el-table :data="props.row.filesSealed" class="mb20"
+                              v-if="props.row.filesSealed&&props.row.filesSealed.length">
+                      <el-table-column label="文件名" prop="sealFileName">
+                        <template scope="scope">
+                          <a
+                            :href="props.row.filesSealed[scope.$index].sealFileUrl">{{props.row.filesSealed[scope.$index].sealFileName}}</a>
+                        </template>
+                      </el-table-column>
+                      <el-table-column label="上传人" prop="sealFileCreatorName"></el-table-column>
+                      <el-table-column label="上传时间" prop="sealFileCreateTime"></el-table-column>
+                      <el-table-column
+                        fixed="right"
+                        label="操作"
+                        v-if="props.row.filesSealed[0].operate"
+                      >
+                        <template scope="scope">
+                          <el-button @click="handleRemoveFilesSealedItem(index, props.row.filesSealed)"
+                                     type="danger" size="small">移除
                           </el-button>
-                          </el-button>
-                        </el-upload>
-                      </el-form-item>
-                    </el-col>
-                  </el-row>
-                  <el-row>
-                    <el-col :span="12">
-                      <el-form-item prop="saleInfos">
-                        <el-checkbox-group v-model="props.row.saleInfos">
-                          <el-checkbox
-                            :disabled="!enabledInupdated"
-                            v-for="item in props.row.useSeals"
-                            :label="item.id"
-                            :key="item.id">
-                            {{item.name}}
-                          </el-checkbox>
-                        </el-checkbox-group>
-                      </el-form-item>
-                    </el-col>
-                  </el-row>
+                        </template>
+                      </el-table-column>
+                    </el-table>
+                    <el-row>
+                      <el-col :span="6">
+                        <el-form-item label="用章次数" prop="saleTime">
+                          <el-input :disabled="!enabledInupdated"
+                                    v-model="props.row.saleTime">
+                          </el-input>
+                        </el-form-item>
+                      </el-col>
+                      <el-col :span="6">
+                        <el-form-item label="打印份数" prop="printTime">
+                          <el-input :disabled="!enabledInupdated"
+                                    v-model="props.row.printTime"></el-input>
+                        </el-form-item>
+                      </el-col>
+                      <el-col :span="6">
+                        <el-form-item label="我方留存份数" prop="remainTime">
+                          <el-input :disabled="!enabledInupdated"
+                                    v-model="props.row.remainTime"></el-input>
+                        </el-form-item>
+                      </el-col>
+                      <el-col :span="6">
+                        <el-form-item label="用印后上传">
+                          <el-upload
+                            ref="uploadFileAfterSeal"
+                            :data="{userId:users.userId}"
+                            :show-file-list="false"
+                            :action="uploadUrl"
+                            :with-credentials="true"
+                            :on-success="handleUploadFileAfterSealSuccess"
+                            :on-error="handleUploadFileAfterSealError"
+                          >
+                            <el-button :disabled="!enabledInupdated||!getEnabledUploadBtn(props.row.filesSealed)"
+                                       size="small"
+                                       type="primary" @click="handleUpload(cardSealInfoForm.contract[0].attachType)">上传
+                            </el-button>
+                            </el-button>
+                          </el-upload>
+                        </el-form-item>
+                      </el-col>
+                    </el-row>
+                    <el-row>
+                      <el-col :span="12">
+                        <el-form-item prop="saleInfos">
+                          <el-checkbox-group v-model="props.row.saleInfos">
+                            <el-checkbox
+                              :disabled="!enabledInupdated"
+                              v-for="item in props.row.useSeals"
+                              :label="item.id"
+                              :key="item.id">
+                              {{item.name}}
+                            </el-checkbox>
+                          </el-checkbox-group>
+                        </el-form-item>
+                      </el-col>
+                    </el-row>
                   </div>
                 </template>
               </el-table-column>
@@ -1227,7 +1294,8 @@
                   <el-input v-if="baseInfoForm.contractTextType===1"
                             :disabled="true"
                             v-model="cardSealInfoForm.contract[scope.$index].fileName"></el-input>
-                  <a v-else :href="cardSealInfoForm.contract[scope.$index].fileUrl">{{cardSealInfoForm.contract[scope.$index].fileName}}</a>
+                  <a v-else
+                     :href="cardSealInfoForm.contract[scope.$index].fileUrl">{{cardSealInfoForm.contract[scope.$index].fileName}}</a>
                 </template>
               </el-table-column>
               <el-table-column prop="haveSale" label="是否盖章" width="70px">
@@ -1257,7 +1325,8 @@
                                 v-if="props.row.filesSealed&&props.row.filesSealed.length">
                         <el-table-column label="文件名" prop="sealFileName">
                           <template scope="scope">
-                            <a :href="props.row.filesSealed[scope.$index].sealFileUrl">{{props.row.filesSealed[scope.$index].sealFileName}}</a>
+                            <a
+                              :href="props.row.filesSealed[scope.$index].sealFileUrl">{{props.row.filesSealed[scope.$index].sealFileName}}</a>
                           </template>
                         </el-table-column>
                         <el-table-column label="上传人" prop="sealFileCreatorName"></el-table-column>
@@ -1269,7 +1338,7 @@
                         >
                           <template scope="scope">
                             <el-button @click="handleRemoveFilesSealedItem(index, props.row.filesSealed)"
-                                       type="text" size="small">移除
+                                       type="danger" size="small">移除
                             </el-button>
                           </template>
                         </el-table-column>
@@ -1305,7 +1374,8 @@
                               :on-success="handleUploadFileAfterSealSuccess"
                               :on-error="handleUploadFileAfterSealError"
                             >
-                              <el-button :disabled="!enabledInupdated||!getEnabledUploadBtn(props.row.filesSealed)" size="small"
+                              <el-button :disabled="!enabledInupdated||!getEnabledUploadBtn(props.row.filesSealed)"
+                                         size="small"
                                          type="primary" @click="handleUpload(item[props.$index].attachType,index)">上传
                               </el-button>
                               </el-button>
@@ -1378,7 +1448,7 @@
                   <template scope="scope">
                     <el-button v-if="item[scope.$index].operate"
                                @click="handleRemoveOthersItem(index, cardSealInfoForm.others)"
-                               type="text" size="small">移除
+                               type="danger" size="small">移除
                     </el-button>
                   </template>
                 </el-table-column>
@@ -1392,24 +1462,29 @@
               </el-table-column>
               <el-table-column prop="slaveProtocolNo" label="从协议编号" width="150px">
                 <template scope="scope">
-                  <router-link v-if="cardSealInfoForm.agreenments[scope.$index].id" :to="{path:'/ConCreate/querySlaveProtocol', query:{id:''+cardSealInfoForm.agreenments[scope.$index].id}}">
+                  <router-link v-if="cardSealInfoForm.agreenments[scope.$index].id"
+                               :to="{path:'/ConCreate/querySlaveProtocol', query:{id:''+cardSealInfoForm.agreenments[scope.$index].id}}">
                     {{cardSealInfoForm.agreenments[scope.$index].slaveProtocolNo}}
                   </router-link>
-                  <el-form-item v-else style="margin-left: -100px" prop="slaveProtocolNo">
-                    <el-input :disabled="!enabledInupdated" icon="search"
-                              @keyup.enter.native="handleCodeBlur(cardSealInfoForm.agreenments[scope.$index],cardSealInfoForm.agreenments[scope.$index].slaveProtocolNo)"
-                              v-model="cardSealInfoForm.agreenments[scope.$index].slaveProtocolNo"
+                  <el-form-item v-else style="margin-left: -100px;margin-bottom:0" prop="slaveProtocolNo">
+                    <el-input
+                      :disabled="!enabledInupdated"
+                      icon="search"
+                      @keyup.enter.native="handleCodeBlur(cardSealInfoForm.agreenments[scope.$index],cardSealInfoForm.agreenments[scope.$index].slaveProtocolNo)"
+                      v-model="cardSealInfoForm.agreenments[scope.$index].slaveProtocolNo"
                     ></el-input>
                   </el-form-item>
                 </template>
               </el-table-column>
               <el-table-column
                 fixed="right"
+                width="80"
                 label="操作">
                 <template scope="scope">
-                  <el-button v-if="cardSealInfoForm.agreenments[scope.$index].operate"
-                             @click="handleRemoveAgreenmentsItem(scope.$index, cardSealInfoForm.agreenments)"
-                             type="text" size="small">移除
+                  <el-button
+                    v-if="cardSealInfoForm.agreenments[scope.$index].operate"
+                    @click="handleRemoveAgreenmentsItem(scope.$index, cardSealInfoForm.agreenments)"
+                    type="danger" size="small">移除
                   </el-button>
                 </template>
               </el-table-column>
@@ -1418,22 +1493,19 @@
           <h4 v-else>请选择合同基本信息的模版名称！</h4>
         </el-tab-pane>
         <el-tab-pane label="备注" name="tabRemark">
-          <el-form rel="cardRemarkInfoForm" :model="cardRemarkInfoForm" label-width="100px">
-            <el-card>
-              <header slot="header">其他说明</header>
-              <el-form-item prop="otherInstruction">
-                <el-input :disabled="!enabledInupdated" style="margin-left: -100px" type="textarea"
-                          placeholder="请输入内容" :rows="6"
-                          v-model="cardRemarkInfoForm.otherInstruction"></el-input>
-              </el-form-item>
-            </el-card>
+          <el-form rel="cardRemarkInfoForm" :model="cardRemarkInfoForm">
+            <el-form-item prop="otherInstruction" label="其他说明">
+              <el-input :disabled="!enabledInupdated" type="textarea"
+                        placeholder="请输入内容" :rows="4"
+                        v-model="cardRemarkInfoForm.otherInstruction"></el-input>
+            </el-form-item>
           </el-form>
         </el-tab-pane>
         <el-tab-pane label="相关数据" name="tabRelatedData"
                      v-if="cardRelatedInfoForm.contractList.length">
           <el-form rel="cardRelatedInfoForm" :model="cardRelatedInfoForm" label-width="100px">
             <el-table :data="cardRelatedInfoForm.contractList">
-              <el-table-column type="index" label="序号" width="100px"></el-table-column>
+              <el-table-column type="index" label="序号" width="80"></el-table-column>
               <el-table-column prop="contractCode" label="合同号"></el-table-column>
               <el-table-column prop="type" label="类型"></el-table-column>
               <el-table-column prop="status" label="状态"></el-table-column>
@@ -1498,9 +1570,8 @@
         </el-form-item>
       </el-form>
       <footer slot="footer">
+        <el-button @click="handleNewContractSupplierCancel('formContractSupplier')">取消</el-button>
         <el-button type="primary" @click="handleNewContractSupplier('formContractSupplier')">确定</el-button>
-        <el-button type="primary" @click="handleNewContractSupplierCancel('formContractSupplier')">取消
-        </el-button>
       </footer>
     </el-dialog>
     <el-dialog title="新增合同我方主体" :visible.sync="baseInfoForm.dialogNewSubjectVisible" size="small">
@@ -1528,8 +1599,8 @@
         </el-form-item>
       </el-form>
       <footer slot="footer">
+        <el-button @click="handleCancelAddNewSubject('formNewSubject')">取消</el-button>
         <el-button type="primary" @click="handleAddNewSubject('formNewSubject')">确定</el-button>
-        <el-button type="primary" @click="handleCancelAddNewSubject('formNewSubject')">取消</el-button>
       </footer>
     </el-dialog>
     <el-dialog title="第三方信息" :visible.sync="cardContentInfoForm.dialogNewThirdPartyVisible" size="small">
@@ -1557,8 +1628,8 @@
         </el-form-item>
       </el-form>
       <footer slot="footer">
+        <el-button @click="handleCancelAddNewThirdParty('formNewThirdParty')">取消</el-button>
         <el-button type="primary" @click="handleAddNewThirdParty('formNewThirdParty')">确定</el-button>
-        <el-button type="primary" @click="handleCancelAddNewThirdParty('formNewThirdParty')">取消</el-button>
       </footer>
     </el-dialog>
     <el-dialog title="新增联合验收人" :visible.sync="cardContCheckInfoForm.dialogAddUnionCheckVisible"
@@ -1568,7 +1639,6 @@
         <el-form-item label="联合验收人" prop="name">
           <el-select
             style="width:300px"
-            size="small"
             v-model="formAddUnionCheck.name"
             filterable
             remote
@@ -1587,7 +1657,8 @@
           </el-select>
         </el-form-item>
         <el-form-item prop="depart" label="联合验收人部门">
-          <el-input :disabled="true" v-model="formAddUnionCheck.depart" placeholder="请输入联合验收人部门"></el-input>
+          <el-input style="width:300px" :disabled="true" v-model="formAddUnionCheck.depart"
+                    placeholder="请输入联合验收人部门"></el-input>
         </el-form-item>
         <el-form-item label="是否必选" prop="ifRequired">
           <el-radio-group v-model="formAddUnionCheck.ifRequired">
@@ -1597,8 +1668,8 @@
         </el-form-item>
       </el-form>
       <footer slot="footer">
+        <el-button @click="handleCancelAddUnionCheck('formAddUnionCheck')">取消</el-button>
         <el-button type="primary" @click="handleAddUnionCheckItem('formAddUnionCheck')">确定</el-button>
-        <el-button type="primary" @click="handleCancelAddUnionCheck('formAddUnionCheck')">取消</el-button>
       </footer>
     </el-dialog>
     <el-dialog title="新增服务验收事项" :visible.sync="cardContCheckInfoForm.dialogAddServiceVisible"
@@ -1616,13 +1687,14 @@
         </el-form-item>
       </el-form>
       <footer slot="footer">
+        <el-button @click="handleCancelAddServiceCheck('formAddServiceCheck')">取消</el-button>
         <el-button type="primary" @click="handleAddServiceCheckItem('formAddServiceCheck')">确定</el-button>
-        <el-button type="primary" @click="handleCancelAddServiceCheck('formAddServiceCheck')">取消</el-button>
       </footer>
     </el-dialog>
     <el-dialog title="新增合同标的" :visible.sync="cardContentInfoForm.dialogAddConStandard"
                size="small">
-      <el-form ref="formAddConStandard" :model="formAddConStandard" :rules="formAddConStandard.rules"
+      <el-form ref="formAddConStandard" :model="formAddConStandard"
+               :rules="formAddConStandard.rules"
                label-width="130px">
         <el-form-item label="类型">
           <el-radio-group v-model="formAddConStandard.conStandardType"
@@ -1633,8 +1705,7 @@
         </el-form-item>
         <el-form-item v-if="formAddConStandard.conStandardType===1" label="物料名称/编码" prop="search">
           <el-select
-            style="width:300px"
-            size="small"
+            class="wp100"
             v-model="formAddConStandard.search"
             filterable
             remote
@@ -1662,7 +1733,7 @@
         </el-form-item>
         <el-form-item label="税率" prop="taxRate">
           <el-select
-            size="small"
+            class="wp100"
             v-model="formAddConStandard.taxRate">
             <el-option
               v-for="item in formAddConStandard.taxRates"
@@ -1676,14 +1747,15 @@
         </el-form-item>
       </el-form>
       <footer slot="footer">
+        <el-button @click="handleCancelAddConStandard('formAddConStandard')">取消</el-button>
         <el-button type="primary" @click="handleAddConStandardItem('formAddConStandard')">确定</el-button>
-        <el-button type="primary" @click="handleCancelAddConStandard('formAddConStandard')">取消</el-button>
       </footer>
     </el-dialog>
     <Process></Process>
     <el-row class="mt20">
       <el-col :span="4" :offset="4">
-        <el-button v-if="operateType!=='query'" :disabled="!btnSaveStatus" type="primary" @click="handleSave('')">保存</el-button>
+        <el-button v-if="operateType!=='query'" :disabled="!btnSaveStatus" type="primary" @click="handleSave('')">保存
+        </el-button>
       </el-col>
       <el-col :span="6">
         <el-button type="primary" @click="handlePreview" style="margin-left:33px"
@@ -1691,16 +1763,17 @@
         </el-button>
       </el-col>
       <el-col :span="4">
-        <el-button v-if="operateType!=='query'" :disabled="!btnSubmitStatus" type="primary" @click="handleSubmit">提交</el-button>
+        <el-button v-if="operateType!=='query'" :disabled="!btnSubmitStatus" type="primary" @click="handleSubmit">提交
+        </el-button>
       </el-col>
     </el-row>
     <Preview :visible.sync="visible" :datas="previewData"></Preview>
   </div>
 </template>
 <script>
-  import Api from '../../api/manageContract'
   import _ from 'lodash'
-  import Preview from './components/preview.vue';
+  import Api from '../../api/manageContract'
+  import Preview from './components/preview.vue'
   import comLoading from '@/mixins/comLoading'
   import {downloadUrl, uploadUrl} from '@/api/consts'
   import store from 'store'
@@ -1733,15 +1806,15 @@
       }
 
       return {
-        updated:false,//在变更合同提交后是否显示变更原因
-        previewData: {},//预览数据
-        visible: false,//预览
+        updated: false, // 在变更合同提交后是否显示变更原因
+        previewData: {}, // 预览数据
+        visible: false, // 预览
         users: user,
         downloadUrl: downloadUrl,
         uploadUrl: uploadUrl,
         operateType: '', // create:创建，update:变更，query:查询
         updateForm: {
-          visible: false,//在变更合同中控制合同页面数据的显示与否
+          visible: false, // 在变更合同中控制合同页面数据的显示与否
           code: '',
           updateMode: 1,
           updateModes: [
@@ -1762,18 +1835,18 @@
           }
         },
         baseInfoForm: {
-          id: '',//在更新合同是把合同id传入
-          procInstId: '',//流程编号
-          guid: '',//草稿箱编号
-          //businessOperator: '',
-          businessOperatorId:'',// 业务经办人
-          businessDeptId:'',
+          id: '', // 在更新合同是把合同id传入
+          procInstId: '', // 流程编号
+          guid: '', // 草稿箱编号
+          // businessOperator: '',
+          businessOperatorId: '', // 业务经办人
+          businessDeptId: '',
           businessDeptName: '',
-          contractType: '',//合同模式id
-          contractTypeName: '',//合同模式名称
-          businessOperators: [],//业务操作人数组
-          loading: false,//业务操作人
-          contractBusinessTypeName: '',//业务类型名
+          contractType: '', // 合同模式id
+          contractTypeName: '', // 合同模式名称
+          businessOperators: [], // 业务操作人数组
+          loading: false, // 业务操作人
+          contractBusinessTypeName: '', // 业务类型名
           contractTextType: null,
           contractTextTypeOptions: [
             {
@@ -1787,16 +1860,16 @@
           ],
           sealOrder: 1, // 0：我方先盖章 1：对方先盖章
           ourSealOpinion: '',
-          templateId: '',//当前模版id
+          templateId: '', // 当前模版id
           templateOptions: [],
           belongProject: '',
-          prFlag: 1,//是否有比加单号 1：有 0：无
-          prNo: '',//pr号
-          contractNo: '',//合同编号
+          prFlag: 1, // 是否有比加单号 1：有 0：无
+          prNo: '', // pr号
+          contractNo: '', // 合同编号
           dialogNewSubjectVisible: false,
           rules: {
             businessOperatorId: [{required: true, message: '请输入业务经办人', trigger: 'blur'}],
-            templateId: [{required: true, message: '请选择模版名称', trigger: 'blur'}],
+            templateId: [{required: true, message: '请选择模版名称'}]
           }
         },
         activeTabName: 'tabContInfo',
@@ -1810,7 +1883,7 @@
           errorCount: 0,
           supplierErrorMsg: '',
           subjectsErrorMsg: '',
-          ifFixedTerm: 1,//是否固定期限（仅在变更合同时显示）
+          ifFixedTerm: 1, // 是否固定期限（仅在变更合同时显示）
           dialogAddContractSupplier: false,
           dialogNewThirdPartyVisible: false,
           dialogAddConStandard: false,
@@ -1834,7 +1907,7 @@
         cardFinanceInfoForm: {
           moneyInvolved: true,
           oneOffPay: true,
-          currency: 1,//币种1：人民币；2：美元
+          currency: 1, // 币种1：人民币；2：美元
           currencyOptions: [
             {
               value: 1,
@@ -1845,7 +1918,7 @@
               label: 'USD 美元'
             }
           ],
-          invoiceType: null,//开票类型
+          invoiceType: null, // 开票类型
           invoiceTypeOptions: [
             {
               value: 1,
@@ -1861,7 +1934,7 @@
             }
           ],
           totalAmount: 0,
-          depositFlag: true,//是否收取保证金
+          depositFlag: true, // 是否收取保证金
           deposit: 0,
           depositRatio: '',
           payTime: '',
@@ -1886,11 +1959,11 @@
           paymentMethods: {
             advance: [{
               type: '预付款',
-              paymentCondition:'',
-              seriousPayments: true,//是否多次付款
-              paymentAmount: 0,//付款金额
-              paymentTimePeriod: null,//付款方式
-              paymentTime: '',//付款时间
+              paymentCondition: '',
+              seriousPayments: true, // 是否多次付款
+              paymentAmount: 0, // 付款金额
+              paymentTimePeriod: null, // 付款方式
+              paymentTime: '', // 付款时间
               times: [
                 {
                   value: 1,
@@ -1909,7 +1982,7 @@
               ratio: '',
               subItem: [
                 {
-                  paymentCondition:'',
+                  paymentCondition: '',
                   paymentAmount: 0,
                   paymentTimePeriod: null,
                   paymentTime: '',
@@ -1930,11 +2003,11 @@
                   remark: '',
                   ratio: ''
                 }
-              ],
+              ]
             }],
             progress: [{
               type: '进度款',
-              paymentCondition:'',
+              paymentCondition: '',
               seriousPayments: false,
               paymentAmount: 0,
               paymentTimePeriod: null,
@@ -1955,7 +2028,7 @@
             }],
             _final: [{
               type: '尾款',
-              paymentCondition:'',
+              paymentCondition: '',
               seriousPayments: true,
               paymentAmount: 0,
               paymentTimePeriod: null,
@@ -1983,51 +2056,51 @@
               subItem: []
             }]
           },
-          paymentCondition:'',
-          paymentConditions:[
+          paymentCondition: '',
+          paymentConditions: [
             {
-              id:'Z015',
-              name:'到票日后15天付款'
+              id: 'Z015',
+              name: '到票日后15天付款'
             },
             {
-              id:'Z020',
-              name:'到票日后16天付款'
+              id: 'Z020',
+              name: '到票日后16天付款'
             },
             {
-              id:'Z025',
-              name:'到票日后17天付款'
+              id: 'Z025',
+              name: '到票日后17天付款'
             },
             {
-              id:'Z030',
-              name:'到票日后18天付款'
+              id: 'Z030',
+              name: '到票日后18天付款'
             },
             {
-              id:'Z035',
-              name:'到票日后19天付款'
+              id: 'Z035',
+              name: '到票日后19天付款'
             },
             {
-              id:'Z040',
-              name:'到票日后20天付款'
+              id: 'Z040',
+              name: '到票日后20天付款'
             },
             {
-              id:'Z045',
-              name:'到票日后21天付款'
+              id: 'Z045',
+              name: '到票日后21天付款'
             },
             {
-              id:'Z000',
-              name:'到票日后22天付款'
-            },
+              id: 'Z000',
+              name: '到票日后22天付款'
+            }
           ],
           rules: {
             deposit: [{required: true, message: '请输入保证金金额', trigger: 'blur'}],
             payTime: [{required: true, message: '请输入付款时间'}]
-          },
+          }
         },
         cardContCheckInfoForm: {
-          loading:false,
-          responsibles:[],
+          loading: false,
+          responsibles: [],
           responsibleId: '',
-          responsibleName:'',
+          responsibleName: '',
           responsibleDeptId: '',
           responsibleDeptName: '',
           checkType: '',
@@ -2051,7 +2124,6 @@
           unionCheckPersons: [],
           materialMatters: [],
 
-
           serviceMatters: [],
           serviceCheckMsg: '',
           errorCount: 0,
@@ -2063,21 +2135,20 @@
           contract: [],
           others: [],
           agreenments: [],
-          current: null,//为上传功能保存当前所在附件列表的索引
-          type: null,//为上传功能保存当前附件类型
+          current: null, // 为上传功能保存当前所在附件列表的索引
+          type: null, // 为上传功能保存当前附件类型
           rules: {
             slaveProtocolNo: [{
-             required: true,
-             message: '请输入从协议编号'
-             }]
+              required: true,
+              message: '请输入从协议编号'
+            }]
           }
         },
         cardRemarkInfoForm: {
           otherInstruction: ''
         },
         cardRelatedInfoForm: {
-          contractList: [
-          ]
+          contractList: []
         },
         cardOtherInfo: {
           condition: 1,
@@ -2098,9 +2169,9 @@
               value: 4,
               label: '订单信息'
             }
-          ],
+          ]
         },
-        paymentMethods:{},//支付方式备份
+        paymentMethods: {}, // 支付方式备份
         formNewSubject: {
           rules: {
             search: [
@@ -2199,16 +2270,17 @@
               code: 'J6',
               value: 5,
               desc: '5%进税项'
-            },
+            }
           ],
           rules: {}
         },
         isSubmit: false,
-        btnSubmitStatus:true,//提交按钮状态
-        btnSaveStatus:true,//保存按钮状态
+        btnSubmitStatus: true, // 提交按钮状态
+        btnSaveStatus: true// 保存按钮状态
       }
     },
-    created() {},
+    created() {
+    },
     computed: {
       conVersion: function () {
         let id = this.baseInfoForm.templateId
@@ -2264,39 +2336,39 @@
         }
         return visible
       },
-      //查询及创建操作时不可用，变更操作选择原合同作废时可用，选择原合同有效时不可用，否则都是可用的状态
+      // 查询及创建操作时不可用，变更操作选择原合同作废时可用，选择原合同有效时不可用，否则都是可用的状态
       isEnabled: function () {
-        let enabled = false;
+        let enabled = false
         if (this.operateType === 'update') {
-          this.updateForm.updateMode ? enabled = true : enabled = false;
+          this.updateForm.updateMode ? enabled = true : enabled = false
         }
         if (this.operateType === 'query' || this.operateType === 'create') {
-          enabled = true;
+          enabled = true
         }
-        return enabled;
+        return enabled
       },
-      //查询操作不可用，创建操作可用，变更操作选择原合同作废时可用，选择原合同有效时不可用，否则都是可用的状态
+      // 查询操作不可用，创建操作可用，变更操作选择原合同作废时可用，选择原合同有效时不可用，否则都是可用的状态
       isEnabled1: function () {
-        let enabled = false;
+        let enabled = false
         if (this.operateType === 'update') {
-          this.updateForm.updateMode ? enabled = true : enabled = false;
+          this.updateForm.updateMode ? enabled = true : enabled = false
         }
         if (this.operateType === 'query') {
-          enabled = true;
+          enabled = true
         }
         if (this.operateType === 'create') {
-          enabled = false;
+          enabled = false
         }
-        return enabled;
+        return enabled
       },
       isVisibleNewSupplierBtn: function () {
-        let visible = false;
+        let visible = false
         if (this.operateType === 'query') {
-          visible = false;
+          visible = false
         } else if (this.cardContentInfoForm.tableSupplierInfo.length <= 0) {
-          visible = true;
+          visible = true
         }
-        return visible;
+        return visible
       },
       tabs: function () {
         switch (this.cardOtherInfo.condition) {
@@ -2326,29 +2398,29 @@
         }
         return result
       },
-      depositRatio:function(){
-        const val=this.getProportion(this.cardFinanceInfoForm.deposit)
-        this.cardFinanceInfoForm.depositRatio=val.replace(/\%$/g,'')
+      depositRatio: function () {
+        const val = this.getProportion(this.cardFinanceInfoForm.deposit)
+        this.cardFinanceInfoForm.depositRatio = val.replace(/\%$/g, '')
         return val
       },
-      enabledInupdated:function(){//在各种操作类型下，控制元素的是否可见和是否可用
-        let result=false
-        if(this.operateType==='query'){
-          result=false
+      enabledInupdated: function () { // 在各种操作类型下，控制元素的是否可见和是否可用
+        let result = false
+        if (this.operateType === 'query') {
+          result = false
         }
-        if(this.operateType==='create'){
-          result=true
+        if (this.operateType === 'create') {
+          result = true
         }
-        if(this.operateType==='update'){
-          this.updateForm.updateMode?result= false:result= true
+        if (this.operateType === 'update') {
+          this.updateForm.updateMode ? result = false : result = true
         }
         return result
       },
-      enaledMoneyInvolved:function(){
-        let enabled=true
-        const contractType=this.baseInfoForm.contractType
-        if(contractType===2||contractType===4){
-          enabled=false
+      enaledMoneyInvolved: function () {
+        let enabled = true
+        const contractType = this.baseInfoForm.contractType
+        if (contractType === 2 || contractType === 4) {
+          enabled = false
         }
         return enabled
       }
@@ -2356,16 +2428,16 @@
     mounted() {
       const query = this.$route.query
       if (JSON.stringify(query) !== '{}') {
-        if(query.operateType){
+        if (query.operateType) {
           this.operateType = query.operateType
-          if(query.operateType==='create'){
+          if (query.operateType === 'create') {
             const params = {}
             const types = query.curConTypeId.split('-')
             params.folio = query.currentFolio
-            params.contractType = query.curConModelId;//合同模式
-            params.contractBusinessTypeFirst = types[0];
-            params.contractBusinessTypeSecond = types[1];
-            params.contractBusinessTypeThird = types[2];
+            params.contractType = query.curConModelId// 合同模式
+            params.contractBusinessTypeFirst = types[0]
+            params.contractBusinessTypeSecond = types[1]
+            params.contractBusinessTypeThird = types[2]
             Api.getContractBaseInfo(params).then((data) => {
               const dataMap = data.data.dataMap
               if (dataMap) {
@@ -2376,108 +2448,105 @@
         }
       }
       if (this.$route.path && this.$route.path === '/ConCreate/conCheck') {
-        this.operateType='query'
+        this.operateType = 'query'
         let query = this.$route.query
-          Api.getContractDetailByContractId(query.contractId).then((data)=>{
-            const dataMap = data.data.dataMap
-            if (dataMap) {
-              this.initData(dataMap)
-            }
-          })
+        Api.getContractDetailByContractId(query.contractId).then((data) => {
+          const dataMap = data.data.dataMap
+          if (dataMap) {
+            this.initData(dataMap)
+          }
+        })
       }
       if (this.$route.path && this.$route.path === '/conperf/conupdate') {
         this.operateType = 'update'
       }
     },
     methods: {
-      initData(data, params){
-        Object.assign(this.baseInfoForm, data.baseInfoForm);
-        Object.assign(this.cardContentInfoForm, data.cardContentInfoForm);
-        Object.assign(this.cardFinanceInfoForm, data.cardFinanceInfoForm);
-        this.paymentMethods=data.cardFinanceInfoForm.paymentMethods
-        Object.assign(this.cardContCheckInfoForm, data.cardContCheckInfoForm);
-        Object.assign(this.cardSealInfoForm, data.cardSealInfoForm);
-        Object.assign(this.cardRemarkInfoForm, data.cardRemarkInfoForm);
-        Object.assign(this.cardOtherInfo, data.cardOtherInfo);
-        const baseInfo = data.baseInfoForm;
+      initData(data, params) {
+        Object.assign(this.baseInfoForm, data.baseInfoForm)
+        Object.assign(this.cardContentInfoForm, data.cardContentInfoForm)
+        Object.assign(this.cardFinanceInfoForm, data.cardFinanceInfoForm)
+        this.paymentMethods = data.cardFinanceInfoForm.paymentMethods
+        Object.assign(this.cardContCheckInfoForm, data.cardContCheckInfoForm)
+        Object.assign(this.cardSealInfoForm, data.cardSealInfoForm)
+        Object.assign(this.cardRemarkInfoForm, data.cardRemarkInfoForm)
+        Object.assign(this.cardOtherInfo, data.cardOtherInfo)
+        const baseInfo = data.baseInfoForm
         this.baseInfoForm.contractBusinessTypeName = baseInfo.contractBusinessTypeFirstName + '-' + baseInfo.contractBusinessTypeSecondName + '-' + baseInfo.contractBusinessTypeThirdName
         const param = {}
-        param.bizTypeId = this.baseInfoForm.contractBusinessTypeThird;//业务类型
-        param.templateType = (this.baseInfoForm.contractTextType === 1 ? 'TEMPLATE' : 'TEXT');
-        Api.getTemplateByBizTypeId(param).then((result)=> {
+        param.bizTypeId = this.baseInfoForm.contractBusinessTypeThird// 业务类型
+        param.templateType = (this.baseInfoForm.contractTextType === 1 ? 'TEMPLATE' : 'TEXT')
+        Api.getTemplateByBizTypeId(param).then((result) => {
           this.baseInfoForm.templateOptions = result.data.dataMap || []
-        });
+        })
 
-        const paymentMethods = this.cardFinanceInfoForm.paymentMethods;
-        paymentMethods.advance[0].type = "预付款"
-        paymentMethods.progress[0].type = "进度款"
-        paymentMethods._final[0].type = "尾款"
+        const paymentMethods = this.cardFinanceInfoForm.paymentMethods
+        paymentMethods.advance[0].type = '预付款'
+        paymentMethods.progress[0].type = '进度款'
+        paymentMethods._final[0].type = '尾款'
 
         if (this.operateType !== 'create') {
-          this.baseInfoForm.contractTypeName = this.getContractModelName(parseInt(data.baseInfoForm.contractType))//初始化合同模式
+          this.baseInfoForm.contractTypeName = this.getContractModelName(parseInt(data.baseInfoForm.contractType))// 初始化合同模式
           const sealAttachments = this.cardSealInfoForm.sealAttachments
           let contract = [], agreenments = [], others = []
           if (sealAttachments.length) {
-            for (let i = 0, len = sealAttachments.length; i < len; i++) {//初始化附件类型的数
+            for (let i = 0, len = sealAttachments.length; i < len; i++) { // 初始化附件类型的数
               const item = sealAttachments[i]
               if (item[0].attachType === 3) {
                 contract = item
               }
-              if (item[0].attachType == 1) {
+              if (item[0].attachType === 1) {
                 others.push(item)
               }
-              if (item[0].attachType == 2) {
+              if (item[0].attachType === 2) {
                 agreenments.push(item[0])
               }
             }
-            this.cardSealInfoForm.contract=contract
-            this.cardSealInfoForm.agreenments=agreenments
-            this.cardSealInfoForm.others=others
-
+            this.cardSealInfoForm.contract = contract
+            this.cardSealInfoForm.agreenments = agreenments
+            this.cardSealInfoForm.others = others
           }
-        }
-        else{
-          this.baseInfoForm.contractTypeName = this.getContractModelName(parseInt(params.contractType));//初始化合同模式
-          if(this.baseInfoForm.contractBusinessTypeFirst!==2){//初始化当前可添加的合同标的的类型
-            this.formAddConStandard.conStandardType = 1;
-          }else{
-            this.formAddConStandard.conStandardType = 2;
+        } else {
+          this.baseInfoForm.contractTypeName = this.getContractModelName(parseInt(params.contractType))// 初始化合同模式
+          if (this.baseInfoForm.contractBusinessTypeFirst !== 2) { // 初始化当前可添加的合同标的的类型
+            this.formAddConStandard.conStandardType = 1
+          } else {
+            this.formAddConStandard.conStandardType = 2
           }
-          this.baseInfoForm.prNo = params.folio//比加单号
+          this.baseInfoForm.prNo = params.folio// 比加单号
           this.baseInfoForm.contractType = parseInt(params.contractType)
-          if(params.folio){
+          if (params.folio) {
             this.baseInfoForm.prFlag = 1
           }
         }
       },
-      getEnabledUploadBtn(items){
-        let enabled=true
-        items&&items.length>=1?enabled=false:enabled=true
+      getEnabledUploadBtn(items) {
+        let enabled = true
+        items && items.length >= 1 ? enabled = false : enabled = true
         return enabled
       },
-      setRatio(item,val){
-        let result=this.getProportion(val)
-        item.ratio=result?result.replace(/\%$/g,''):null
+      setRatio(item, val) {
+        let result = this.getProportion(val)
+        item.ratio = result ? result.replace(/\%$/g, '') : null
         return result
       },
-      getContractModelName(id){
+      getContractModelName(id) {
         switch (id) {
           case 1:
             return '单一合同'
           case 2:
-            return '简易合同'
+            return '固定格式合同'
           case 3:
             return '框架合同'
           case 4:
             return '意向合同'
-
         }
       },
       handlePreview() {
         this.isSubmit = true
-        this.validateForms().then(()=> {
-          this.formatTime(this.cardContentInfoForm,this.cardFinanceInfoForm)
-          const previewData = {};
+        this.validateForms().then(() => {
+          this.formatTime(this.cardContentInfoForm, this.cardFinanceInfoForm)
+          const previewData = {}
           previewData.conStandard = this.cardContentInfoForm.conStandard || []
           previewData.contractType = this.baseInfoForm.contractType
           previewData.contractBusinessTypeFirst = this.baseInfoForm.contractBusinessTypeFirst
@@ -2486,11 +2555,10 @@
           previewData.cardFinanceInfoForm = this.cardFinanceInfoForm
           previewData.templateId = this.baseInfoForm.templateId
           this.previewData = previewData
-          this.visible = true;
-        }).catch(()=> {
+          this.visible = true
+        }).catch(() => {
           this.$message.error('请填写完整信息再预览！')
         })
-
       },
       handleTabClick(tab, event) {
         console.log('handleTabClick')
@@ -2614,6 +2682,7 @@
             if (subjects.length) {
               for (let i = 0, len = subjects.length; i < len; i++) {
                 if (key === subjects[i].companyCode) {
+<<<<<<< HEAD
                   this.cardFinanceInfoForm.jiaBillingInfo.push(subjects[i]);
                   this.cardContentInfoForm.conSubjctName.push({
                     code: subjects[i].companyCode,
@@ -2623,6 +2692,17 @@
                 }
               }
             }
+=======
+                  this.cardFinanceInfoForm.jiaBillingInfo.push(subjects[i])
+                }
+              }
+            }
+            this.cardContentInfoForm.conSubjctName.push({
+              code: subjects[0].companyCode,
+              name: subjects[0].company,
+              type: 'add'
+            })
+>>>>>>> 9a6c8b43d791b573628326f1c0925c1bd37d422f
 
             curForm.resetFields()
             this.baseInfoForm.dialogNewSubjectVisible = false
@@ -2663,12 +2743,16 @@
             if (suppliers.length) {
               for (let i = 0, len = suppliers.length; i < len; i++) {
                 if (key === suppliers[i].companyCode) {
+<<<<<<< HEAD
                   this.cardFinanceInfoForm.yiBillingInfo = [suppliers[i]];
                   this.cardContentInfoForm.tableSupplierInfo = [{
                     code: suppliers[i].companyCode,
                     name: suppliers[i].company,
                     type: 'add'
                   }]
+=======
+                  this.cardFinanceInfoForm.yiBillingInfo = [suppliers[i]]
+>>>>>>> 9a6c8b43d791b573628326f1c0925c1bd37d422f
                 }
               }
             }
@@ -2697,7 +2781,7 @@
           Api.getRemoteSubjectsByKeyWord({key: query})
             .then((data) => {
               this.formNewSubject.loading = false
-              this.formNewSubject.subjects = data.data.dataMap || [];
+              this.formNewSubject.subjects = data.data.dataMap || []
             })
         } else {
           this.formNewSubject.subjects = []
@@ -2765,7 +2849,7 @@
         let paymentMethods = this.cardFinanceInfoForm.paymentMethods
         const item = {
           paymentAmount: 0,
-          paymentCondition:'',
+          paymentCondition: '',
           paymentTimePeriod: null,
           paymentTime: '',
           times: [
@@ -2796,7 +2880,8 @@
         rows.splice(index, 1)
       },
       getProportion(money) {
-        let result = 0, totalAmount = this.cardFinanceInfoForm.totalAmount ? parseFloat(this.cardFinanceInfoForm.totalAmount) : 0
+        let result = 0,
+          totalAmount = this.cardFinanceInfoForm.totalAmount ? parseFloat(this.cardFinanceInfoForm.totalAmount) : 0
         if (totalAmount === 0) {
           return 0 + '%'
         }
@@ -2811,7 +2896,7 @@
       handleUploadSealFileSuccess(res, file, fileList) {
         const dataMap = res.dataMap
         if (dataMap.fileId) {
-          const index = this.cardSealInfoForm.current;
+          const index = this.cardSealInfoForm.current
           const curentFile = this.cardSealInfoForm.others[index]
           curentFile[0].fileId = dataMap.fileId
           curentFile[0].fileName = dataMap.fileName
@@ -2824,7 +2909,7 @@
         console.log('file', file)
         console.log('fileList', fileList)
       },
-      getAgreenmentFieldName(id){
+      getAgreenmentFieldName(id) {
         switch (id) {
           case 1:
             return 'others'
@@ -2837,8 +2922,8 @@
       handleUploadFileAfterSealSuccess(res, file, fileList) {
         const dataMap = res.dataMap
         if (dataMap.fileId) {
-          const type = this.cardSealInfoForm.type;
-          const index = this.cardSealInfoForm.current;
+          const type = this.cardSealInfoForm.type
+          const index = this.cardSealInfoForm.current
           let curentFile = this.cardSealInfoForm[this.getAgreenmentFieldName(type)]
           type === 1 ? curentFile = curentFile[index][0] : curentFile = curentFile[index]
           curentFile.filesSealed = [{
@@ -2858,7 +2943,7 @@
         console.log('fileList', fileList)
       },
       validateForms() {
-        return new Promise((resolve, reject)=> {
+        return new Promise((resolve, reject) => {
           const errors = {
             cardContentInfoForm: {
               errorCount: 0,
@@ -2871,9 +2956,9 @@
             },
             baseInfoForm: false
           }
-          if(this.operateType==='update'){
-            errors.updateError=false
-            this.$refs.updateForm.validate((valid)=> {
+          if (this.operateType === 'update') {
+            errors.updateError = false
+            this.$refs.updateForm.validate((valid) => {
               if (!valid) {
                 this.$message.error('请填写完整变更原因再提交！')
               } else {
@@ -2881,7 +2966,7 @@
               }
             })
           }
-          this.$refs.baseInfoForm.validate((valid)=> {
+          this.$refs.baseInfoForm.validate((valid) => {
             if (!valid) {
               this.$message.error('请填写完整合同基本信息再提交！')
             } else {
@@ -2917,7 +3002,7 @@
                   }
                 } else {
                   this.$message.error('请填写完整信息再提交！')
-                  console.log('errors',errors);
+                  console.log('errors', errors)
                   return false
                 }
               })
@@ -2930,19 +3015,18 @@
           this.cardContCheckInfoForm.errorCount = errors.cardContCheckInfoForm.errorCount
           this.cardContCheckInfoForm.serviceCheckMsg = errors.cardContCheckInfoForm.serviceCheckMsg
           if (!this.cardContentInfoForm.errorCount && !this.cardContCheckInfoForm.errorCount && errors.baseInfoForm) {
-            if(this.operateType==='update'&&!errors.updateError){
+            if (this.operateType === 'update' && !errors.updateError) {
               reject()
-            }else{
+            } else {
               resolve()
             }
           } else {
-            console.log('reject',errors);
+            console.log('reject', errors)
             reject()
           }
         })
-
       },
-      combineSealsInfo(){
+      combineSealsInfo() {
         if (this.operateType !== 'query') {
           const contract = this.cardSealInfoForm.contract
           const agreenments = this.cardSealInfoForm.agreenments
@@ -2950,40 +3034,40 @@
           let sealAttachments = this.cardSealInfoForm.sealAttachments
           sealAttachments = []
 
-          const sealOthers=[],sealAgreenments=[]
-          if(others&&others.length){
-            for(let i=0,len=others.length;i<len;i++){
-              const item=others[i]
-              if(item[0]&&item[0].fileName){
+          const sealOthers = [], sealAgreenments = []
+          if (others && others.length) {
+            for (let i = 0, len = others.length; i < len; i++) {
+              const item = others[i]
+              if (item[0] && item[0].fileName) {
                 sealOthers.push(item)
               }
             }
           }
-          if(agreenments&&agreenments.length){
-            for(let i=0,len=agreenments.length;i<len;i++){
-              const item=agreenments[i]
-              if(item&&item.slaveProtocolNo){
+          if (agreenments && agreenments.length) {
+            for (let i = 0, len = agreenments.length; i < len; i++) {
+              const item = agreenments[i]
+              if (item && item.slaveProtocolNo) {
                 sealAgreenments.push([item])
               }
             }
           }
 
-          //判断附件类型，当该附件类型的数据为空是，则该数组为空
+          // 判断附件类型，当该附件类型的数据为空是，则该数组为空
           contract.length ? sealAttachments.push(contract) : null
-          sealOthers.length ? sealAttachments=sealAttachments.concat(sealOthers):null
-          sealAgreenments.length ? sealAttachments=sealAttachments.concat(sealAgreenments):null
+          sealOthers.length ? sealAttachments = sealAttachments.concat(sealOthers) : null
+          sealAgreenments.length ? sealAttachments = sealAttachments.concat(sealAgreenments) : null
           return sealAttachments
         }
       },
       handleSave() {
-        this.btnSaveStatus=false
+        this.btnSaveStatus = false
         this.isSubmit = true
-        this.comLoading(1)
-        this.validateForms().then(()=> {
-          this.btnSaveStatus=true
+        this.comLoading()
+        this.validateForms().then(() => {
+          this.btnSaveStatus = true
           this.cardSealInfoForm.sealAttachments = this.combineSealsInfo()
-          this.formatTime(this.cardContentInfoForm,this.cardFinanceInfoForm)
-          const paras = {};
+          this.formatTime(this.cardContentInfoForm, this.cardFinanceInfoForm)
+          const paras = {}
           paras.baseInfoForm = this.baseInfoForm
           paras.cardContentInfoForm = this.cardContentInfoForm
           paras.cardFinanceInfoForm = this.cardFinanceInfoForm
@@ -2991,43 +3075,43 @@
           paras.cardSealInfoForm = this.cardSealInfoForm
           paras.cardRemarkInfoForm = this.cardRemarkInfoForm
           paras.cardOtherInfo = this.cardOtherInfo
-          Api.saveContract(paras).then((data)=> {
+          Api.saveContract(paras).then((data) => {
             if (data.data.dataMap.id) {
               this.$message.success('保存成功！')
             }
-            this.comLoading()
+            this.comLoading(false)
           })
-        }).catch(()=> {
-          this.btnSaveStatus=true
-          this.comLoading()
+        }).catch(() => {
+          this.btnSaveStatus = true
+          this.comLoading(false)
         })
       },
-      formatTime(content,finance){
-        content.startTime=formatDate(content.startTime)
-        content.endTime=formatDate(content.endTime)
-        finance.payTime=formatDate(finance.payTime)
+      formatTime(content, finance) {
+        content.startTime = formatDate(content.startTime)
+        content.endTime = formatDate(content.endTime)
+        finance.payTime = formatDate(finance.payTime)
         this.formatItemTime(finance.paymentMethods.advance)
         this.formatItemTime(finance.paymentMethods.progress)
         this.formatItemTime(finance.paymentMethods._final)
       },
-      formatItemTime(arr){
-        if(arr&&arr.length){
-          for(let i=0,len=arr.length;i<len;i++){
-            arr[i].paymentTime=formatDate(arr[i].paymentTime)
-            if(arr[i].subItem&&arr[i].subItem.length){
-                this.formatItemTime(arr[i].subItem)
+      formatItemTime(arr) {
+        if (arr && arr.length) {
+          for (let i = 0, len = arr.length; i < len; i++) {
+            arr[i].paymentTime = formatDate(arr[i].paymentTime)
+            if (arr[i].subItem && arr[i].subItem.length) {
+              this.formatItemTime(arr[i].subItem)
             }
           }
         }
       },
       handleSubmit() {
-        this.btnSubmitStatus=false
+        this.btnSubmitStatus = false
         this.isSubmit = true
-        this.comLoading(1)
-        this.validateForms().then(()=> {
-          this.formatTime(this.cardContentInfoForm,this.cardFinanceInfoForm)
+        this.comLoading()
+        this.validateForms().then(() => {
+          this.formatTime(this.cardContentInfoForm, this.cardFinanceInfoForm)
           this.cardSealInfoForm.sealAttachments = this.combineSealsInfo()
-          const paras = {};
+          const paras = {}
           paras.baseInfoForm = this.baseInfoForm
           paras.cardContentInfoForm = this.cardContentInfoForm
           paras.cardFinanceInfoForm = this.cardFinanceInfoForm
@@ -3035,39 +3119,37 @@
           paras.cardSealInfoForm = this.cardSealInfoForm
           paras.cardRemarkInfoForm = this.cardRemarkInfoForm
           paras.cardOtherInfo = this.cardOtherInfo
-          if(this.operateType==='create'){
-            Api.submit(paras).then((data)=> {
+          if (this.operateType === 'create') {
+            Api.submit(paras).then((data) => {
               if (data.data.dataMap.id) {
-                this.btnSubmitStatus=true
+                this.btnSubmitStatus = true
                 this.$message.success('提交成功！')
                 this.operateType = 'query'
-                this.$router.push({name:routerNames.con_index})
+                this.$router.push({name: routerNames.con_index})
               }
-              this.comLoading()
+              this.comLoading(false)
             })
-              .catch(()=>{
-                this.btnSubmitStatus=true
+              .catch(() => {
+                this.btnSubmitStatus = true
               })
-          }else{
-            const updateForm=this.updateForm
-            const updateParams={}
-            updateParams.alterMode=updateForm.updateMode
-            updateParams.alterRemark=updateForm.remark
-            updateParams.contractVo=paras
-            Api.updatedSubmit(updateParams).then((data)=> {
+          } else {
+            const updateForm = this.updateForm
+            const updateParams = {}
+            updateParams.alterMode = updateForm.updateMode
+            updateParams.alterRemark = updateForm.remark
+            updateParams.contractVo = paras
+            Api.updatedSubmit(updateParams).then((data) => {
               if (data.data.dataMap.id) {
-                this.operateType==='update'?this.updated=true:null
+                this.operateType === 'update' ? this.updated = true : null
                 this.$message.success('提交成功！')
                 this.operateType = 'query'
               }
-              this.comLoading()
+              this.comLoading(false)
             })
           }
-
-        }).catch(()=> {
-          this.comLoading()
+        }).catch(() => {
+          this.comLoading(false)
         })
-
       },
 
       handleCurTimeChange(value, row) {
@@ -3095,9 +3177,9 @@
           operate: 'add',
           id: '',
           fileName: '',
-          fileUrl: '',//合同文本类型为非模版合同时，附件类型的合同的文件下载地址
-          attachType: 1,//附件类型
-          slaveProtocolNo: '0011001',//从协议编号
+          fileUrl: '', // 合同文本类型为非模版合同时，附件类型的合同的文件下载地址
+          attachType: 1, // 附件类型
+          slaveProtocolNo: '0011001', // 从协议编号
           types: [
             {
               id: 1,
@@ -3107,13 +3189,13 @@
               id: 2,
               name: '从协议'
             }
-          ],//附件类型集合
-          haveSale: true,//是否用章
+          ], // 附件类型集合
+          haveSale: true, // 是否用章
           remark: '',
-          saleTime: '',//用章次数
-          printTime: '',//打印份数
-          remainTime: '',//我方留存份数
-          saleInfos: [1, 2],//当前选中的张
+          saleTime: '', // 用章次数
+          printTime: '', // 打印份数
+          remainTime: '', // 我方留存份数
+          saleInfos: [1, 2], // 当前选中的张
           useSeals: [
             {
               id: 1,
@@ -3127,32 +3209,31 @@
               id: 3,
               name: '人事章'
             }
-          ],//章列表
-          filesSealed: []//上传的盖章后的文件信息
+          ], // 章列表
+          filesSealed: []// 上传的盖章后的文件信息
         }
         const sealAttachments = this.cardSealInfoForm.sealAttachments
 
         if (sealAttachments.length) {
           for (let i = sealAttachments.length - 1; i >= 0; i--) {
-            const item = sealAttachments[i];
+            const item = sealAttachments[i]
             if (item[0].attachType !== 2) {
               sealAttachments.splice(i + 1, 0, [file])
               return
             }
           }
         }
-        /*const sealAttachments=this.cardSealInfoForm.sealAttachments
-         sealAttachments.push(file);*/
-
+        /* const sealAttachments=this.cardSealInfoForm.sealAttachments
+         sealAttachments.push(file); */
       },
-      handleNewOtherSealFile(){
+      handleNewOtherSealFile() {
         const file = [{
           operate: 'add',
           id: '',
           fileName: '',
-          fileUrl: '',//合同文本类型为非模版合同时，附件类型的合同的文件下载地址
-          attachType: 1,//附件类型
-          slaveProtocolNo: '0011001',//从协议编号
+          fileUrl: '', // 合同文本类型为非模版合同时，附件类型的合同的文件下载地址
+          attachType: 1, // 附件类型
+          slaveProtocolNo: '0011001', // 从协议编号
           types: [
             {
               id: 1,
@@ -3162,13 +3243,13 @@
               id: 2,
               name: '从协议'
             }
-          ],//附件类型集合
-          haveSale: true,//是否用章
+          ], // 附件类型集合
+          haveSale: true, // 是否用章
           remark: '',
-          saleTime: '',//用章次数
-          printTime: '',//打印份数
-          remainTime: '',//我方留存份数
-          saleInfos: [1, 2],//当前选中的张
+          saleTime: '', // 用章次数
+          printTime: '', // 打印份数
+          remainTime: '', // 我方留存份数
+          saleInfos: [1, 2], // 当前选中的张
           useSeals: [
             {
               id: 1,
@@ -3182,20 +3263,20 @@
               id: 3,
               name: '人事章'
             }
-          ],//章列表
-          filesSealed: []//上传的盖章后的文件信息
+          ], // 章列表
+          filesSealed: []// 上传的盖章后的文件信息
         }]
         this.cardSealInfoForm.others.push(file)
       },
-      handleNewAgreenmentSealFile(){
+      handleNewAgreenmentSealFile() {
         const file = {
           operate: 'add',
-          agreementId:'',
+          agreementId: '',
           id: '',
           fileName: '',
-          fileUrl: '',//合同文本类型为非模版合同时，附件类型的合同的文件下载地址
-          attachType: 2,//附件类型
-          slaveProtocolNo: '',//从协议编号
+          fileUrl: '', // 合同文本类型为非模版合同时，附件类型的合同的文件下载地址
+          attachType: 2, // 附件类型
+          slaveProtocolNo: '', // 从协议编号
           types: [
             {
               id: 1,
@@ -3205,13 +3286,13 @@
               id: 2,
               name: '从协议'
             }
-          ],//附件类型集合
-          haveSale: true,//是否用章
+          ], // 附件类型集合
+          haveSale: true, // 是否用章
           remark: '',
-          saleTime: '',//用章次数
-          printTime: '',//打印份数
-          remainTime: '',//我方留存份数
-          saleInfos: [1, 2],//当前选中的张
+          saleTime: '', // 用章次数
+          printTime: '', // 打印份数
+          remainTime: '', // 我方留存份数
+          saleInfos: [1, 2], // 当前选中的张
           useSeals: [
             {
               id: 1,
@@ -3225,31 +3306,31 @@
               id: 3,
               name: '人事章'
             }
-          ],//章列表
-          filesSealed: []//上传的盖章后的文件信息
+          ], // 章列表
+          filesSealed: []// 上传的盖章后的文件信息
         }
         this.cardSealInfoForm.agreenments.push(file)
       },
       handleQuery(code) {
-        this.operateType='update'
-        //根据合同编号获取合同模式设置当前合同模式及合同类型
-        Api.getUpdateInfo(code).then((data)=> {
+        this.operateType = 'update'
+        // 根据合同编号获取合同模式设置当前合同模式及合同类型
+        Api.getUpdateInfo(code).then((data) => {
           const dataMap = data.data.dataMap
           if (dataMap && dataMap.baseInfoForm.id) {
-            this.initData(dataMap);
+            this.initData(dataMap)
             this.updateForm.visible = true
           }
         })
       },
-      handleChangeType(index, row, rows){
-        const currentType = row.attachType;
+      handleChangeType(index, row, rows) {
+        const currentType = row.attachType
         currentType === 2 ? row.haveSale = false : row.haveSale = true
         const file = [row]
-//        rows.splice(index, 1)
+        //        rows.splice(index, 1)
         const sealAttachments = this.cardSealInfoForm.sealAttachments
-        //sealAttachments.splice(index,1)
+        // sealAttachments.splice(index,1)
 
-        /*if(currentType===2){
+        /* if(currentType===2){
          sealAttachments.push(file);
          }else{
          for(let i=sealAttachments.length;i>0;i--){
@@ -3259,15 +3340,14 @@
          return
          }
          }
-         }*/
-
+         } */
       },
       handleRemoveSealItem(index, rows) {
-        console.log('index', index);
-        console.log('rows', rows);
+        console.log('index', index)
+        console.log('rows', rows)
         rows.splice(index, 1)
       },
-      getRemotebusinessOperatorsByKeyWord(query){
+      getRemotebusinessOperatorsByKeyWord(query) {
         if (query !== '') {
           this.baseInfoForm.loading = true
           Api.getRemoteCreatePersonsByKeyWord({keyword: query})
@@ -3279,7 +3359,7 @@
           this.baseInfoForm.businessOperators = []
         }
       },
-      getRemoteResponsiblesByKeyWord(query){
+      getRemoteResponsiblesByKeyWord(query) {
         if (query !== '') {
           this.cardContCheckInfoForm.loading = true
           Api.getRemoteCreatePersonsByKeyWord({keyword: query})
@@ -3291,28 +3371,33 @@
           this.cardContCheckInfoForm.responsibles = []
         }
       },
-      handleContractTextTypeChange(val){
-        const params = {};
+      handleContractTextTypeChange(val) {
+        const params = {}
         params.bizTypeId = this.baseInfoForm.contractBusinessTypeThird
         params.templateType = (val === 1 ? 'TEMPLATE' : 'TEXT')
-        Api.getTemplateByBizTypeId(params).then((data)=> {
-          this.baseInfoForm.templateOptions = data.data.dataMap || [];
-        });
+        if (this.operateType === 'create') {
+          this.baseInfoForm.templateId = ''
+        }
+        Api.getTemplateByBizTypeId(params).then((data) => {
+          this.baseInfoForm.templateOptions = data.data.dataMap || []
+        })
       },
-      handleBusinessOperatorChange(val){
+      handleBusinessOperatorChange(val) {
         const businessOperators = this.baseInfoForm.businessOperators
         if (businessOperators.length) {
           for (let i = 0, len = businessOperators.length; i < len; i++) {
             if (val === businessOperators[i].userId) {
               this.baseInfoForm.businessDeptName = businessOperators[i].deptName
               this.baseInfoForm.businessDeptId = businessOperators[i].deptCode
-              this.cardContCheckInfoForm.responsibleId = responsibles[i].superiorId
-              this.cardContCheckInfoForm.responsibleName = responsibles[i].superiorName
+              this.cardContCheckInfoForm.responsibleId = businessOperators[i].superiorId
+              this.cardContCheckInfoForm.responsibleName = businessOperators[i].superiorName
+              this.cardContCheckInfoForm.responsibleDeptName = businessOperators[i].deptName
+              this.cardContCheckInfoForm.responsibleDeptId = businessOperators[i].deptCode
             }
           }
         }
       },
-      handleResponsibleChange(val){
+      handleResponsibleChange(val) {
         const responsibles = this.cardContCheckInfoForm.responsibles
         if (responsibles.length) {
           for (let i = 0, len = responsibles.length; i < len; i++) {
@@ -3323,7 +3408,7 @@
           }
         }
       },
-      getRemoteCheckPersonsByKeyWord(query){
+      getRemoteCheckPersonsByKeyWord(query) {
         if (query !== '') {
           this.formAddUnionCheck.loading = true
           Api.getRemoteCreatePersonsByKeyWord({keyword: query})
@@ -3335,7 +3420,7 @@
           this.formAddUnionCheck.checkPersons = []
         }
       },
-      handleCheckPersonsChange(val){
+      handleCheckPersonsChange(val) {
         const checkPersons = this.formAddUnionCheck.checkPersons
         if (checkPersons.length) {
           for (let i = 0, len = checkPersons.length; i < len; i++) {
@@ -3347,7 +3432,7 @@
           }
         }
       },
-      handleTemplateChange(val){
+      handleTemplateChange(val) {
         if (val) {
           const contractTextType = this.baseInfoForm.contractTextType
           const templateOptions = this.baseInfoForm.templateOptions
@@ -3358,7 +3443,7 @@
             }
           }
           const params = {templateId: val, templateName: templateName, contractTextType: contractTextType}
-          Api.getSealAttachments(params).then((data)=> {
+          Api.getSealAttachments(params).then((data) => {
             if (data.data.dataMap) {
               const item = [data.data.dataMap]
               this.cardSealInfoForm.sealAttachments = [item]
@@ -3367,13 +3452,13 @@
           })
         }
       },
-      handleCodeBlur(item, val){
+      handleCodeBlur(item, val) {
         if (val) {
-          Api.getAgreenmentDetailByAgreenmentNo(val).then((data)=>{
-            const dataMap=data.data.dataMap
-            if(dataMap&&dataMap.id) {
-              const agreenments=this.cardSealInfoForm.agreenments
-              if(agreenments&&agreenments.length){
+          Api.getAgreenmentDetailByAgreenmentNo(val).then((data) => {
+            const dataMap = data.data.dataMap
+            if (dataMap && dataMap.id) {
+              const agreenments = this.cardSealInfoForm.agreenments
+              if (agreenments && agreenments.length) {
                 let index = _.findIndex(agreenments, function (chr) {
                   return chr.id === dataMap.id
                 })
@@ -3385,28 +3470,28 @@
               item.id = dataMap.id
             }
           })
-            .catch(()=>{
-              item.slaveProtocolNo=''
+            .catch(() => {
+              item.slaveProtocolNo = ''
             })
         }
       },
-      handleRemoveFilesSealedItem(index, rows){
+      handleRemoveFilesSealedItem(index, rows) {
         rows.splice(index, 1)
       },
-      handleUpload(type, index){
+      handleUpload(type, index) {
         this.cardSealInfoForm.type = type
         this.cardSealInfoForm.current = index || 0
       },
-      handleUploadOuter(index){
+      handleUploadOuter(index) {
         this.cardSealInfoForm.current = index
       },
-      handleRemoveUnionCheckPerson(index, rows){
+      handleRemoveUnionCheckPerson(index, rows) {
         rows.splice(index, 1)
       },
-      handleAddConStandard(){
+      handleAddConStandard() {
         this.cardContentInfoForm.dialogAddConStandard = true
       },
-      handleAddConStandardItem(formName){
+      handleAddConStandardItem(formName) {
         const curFormName = this.$refs[formName]
         const conStandards = this.cardContentInfoForm.conStandard
         const key = this.formAddConStandard.search
@@ -3418,7 +3503,7 @@
           return false
         }
         const conStandard = this.cardContentInfoForm.conStandard
-        const item = {};
+        const item = {}
         item.id = curFormName.model.id
         item.materialCode = curFormName.model.materialCode
         item.materialName = curFormName.model.materialName
@@ -3426,15 +3511,15 @@
         item.price = curFormName.model.price
         item.taxRate = curFormName.model.taxRate
         item.operate = 'add'
-        conStandard.push(item);
+        conStandard.push(item)
         this.cardContentInfoForm.dialogAddConStandard = false
         this.$refs[formName].resetFields()
       },
-      handleCancelAddConStandard(formName){
+      handleCancelAddConStandard(formName) {
         this.$refs[formName].resetFields()
         this.cardContentInfoForm.dialogAddConStandard = false
       },
-      getRemoteMaterialsByKeyWord(query){
+      getRemoteMaterialsByKeyWord(query) {
         if (query !== '') {
           this.formAddConStandard.loading = true
           Api.getRemoteMaterialsByKeyWord({key: query})
@@ -3446,26 +3531,22 @@
           this.formAddConStandard.materials = []
         }
       },
-      handleMaterialChange(val){
+      handleMaterialChange(val) {
         const materials = this.formAddConStandard.materials
 
         if (materials.length) {
           for (let i = 0, len = materials.length; i < len; i++) {
             if (val === materials[i].materialCode) {
-              this.formAddConStandard.id = materials[i].id
               this.formAddConStandard.materialCode = materials[i].materialCode
               this.formAddConStandard.materialName = materials[i].materialName
-              this.formAddConStandard.price = materials[i].price
-              this.formAddConStandard.taxRate = materials[i].taxRate
-              this.formAddConStandard.total = materials[i].total
             }
           }
         }
       },
-      handleRemoveConStandard(index, rows){
-        rows.splice(index, 1);
+      handleRemoveConStandard(index, rows) {
+        rows.splice(index, 1)
       },
-      getContractAgreenmentName(id){
+      getContractAgreenmentName(id) {
         switch (id) {
           case 1:
             return '其他'
@@ -3475,28 +3556,27 @@
             return '合同'
         }
       },
-      handleRemoveOthersItem(index, rows){
-        rows.splice(index, 1);
+      handleRemoveOthersItem(index, rows) {
+        rows.splice(index, 1)
       },
-      handleRemoveAgreenmentsItem(index, rows){
-        rows.splice(index, 1);
+      handleRemoveAgreenmentsItem(index, rows) {
+        rows.splice(index, 1)
       },
-      getEnabledUploadBtnOuter(fileName){
-        let enabled=true
-        fileName?enabled=false:enabled=true
+      getEnabledUploadBtnOuter(fileName) {
+        let enabled = true
+        fileName ? enabled = false : enabled = true
         return enabled
       },
-      handleSeriousPaymentsChange(item,event){
-        item.seriousPayments=event.target.checked
-        if(item.seriousPayments){
-          item.paymentAmount=0
-          item.paymentCondition=null
-          item.remark=null
+      handleSeriousPaymentsChange(item, event) {
+        item.seriousPayments = event.target.checked
+        if (item.seriousPayments) {
+          item.paymentAmount = 0
+          item.paymentCondition = null
+          item.remark = null
         }
       },
-      handleOneOffPayChange(val){
-        console.log('val',val)
-
+      handleOneOffPayChange(val) {
+        console.log('val', val)
       }
     },
     components: {
@@ -3521,134 +3601,133 @@
         if (path && path === '/conperf/conupdate') {
           this.operateType = 'update'
         }
-
       },
-      'cardContentInfoForm.conStandard':function(conStandards,oldVal){
-        const result=[]
-        if(conStandards && conStandards.length){
-          for(let i=0,len=conStandards.length;i<len;i++){
-            const item=conStandards[i]
-            if(item.materialCode){
+      'cardContentInfoForm.conStandard': function (conStandards, oldVal) {
+        const result = []
+        if (conStandards && conStandards.length) {
+          for (let i = 0, len = conStandards.length; i < len; i++) {
+            const item = conStandards[i]
+            if (item.materialCode) {
               result.push({
-                sampleCode:item.materialCode,
-                sampleDesc:item.materialName
-              });
+                sampleCode: item.materialCode,
+                sampleDesc: item.materialName
+              })
             }
           }
         }
-        this.cardContCheckInfoForm.materialMatters=result
+        this.cardContCheckInfoForm.materialMatters = result
       },
-      'baseInfoForm.contractType':function(val){
-        if(val===2){//固定格式合同
-          this.cardFinanceInfoForm.moneyInvolved=true
+      'baseInfoForm.contractType': function (val) {
+        if (val === 2) { // 固定格式合同
+          this.cardFinanceInfoForm.moneyInvolved = true
         }
-        if(val===4){
-          this.cardFinanceInfoForm.moneyInvolved=false
+        if (val === 4) {
+          this.cardFinanceInfoForm.moneyInvolved = false
         }
       },
-      'cardFinanceInfoForm.oneOffPay':function(){
-        this.cardFinanceInfoForm.totalAmount=0
-        const paymentMethods= {
-            advance: [{
-              type: '预付款',
-              paymentCondition:'',
-              seriousPayments: true,//是否多次付款
-              paymentAmount: 0,//付款金额
-              paymentTimePeriod: null,//付款方式
-              paymentTime: '',//付款时间
-              times: [
-                {
-                  value: 1,
-                  label: '合同签约15天'
-                },
-                {
-                  value: 2,
-                  label: '合同签约30天'
-                },
-                {
-                  value: 3,
-                  label: '合同签约90天'
-                }
+      'cardFinanceInfoForm.oneOffPay': function () {
+        this.cardFinanceInfoForm.totalAmount = 0
+        const paymentMethods = {
+          advance: [{
+            type: '预付款',
+            paymentCondition: '',
+            seriousPayments: true, // 是否多次付款
+            paymentAmount: 0, // 付款金额
+            paymentTimePeriod: null, // 付款方式
+            paymentTime: '', // 付款时间
+            times: [
+              {
+                value: 1,
+                label: '合同签约15天'
+              },
+              {
+                value: 2,
+                label: '合同签约30天'
+              },
+              {
+                value: 3,
+                label: '合同签约90天'
+              }
+            ],
+            remark: '',
+            ratio: '',
+            subItem: [
+              {
+                paymentCondition: '',
+                paymentAmount: 0,
+                paymentTimePeriod: null,
+                paymentTime: '',
+                times: [
+                  {
+                    value: 1,
+                    label: '合同签约15天'
+                  },
+                  {
+                    value: 2,
+                    label: '合同签约30天'
+                  },
+                  {
+                    value: 3,
+                    label: '合同签约90天'
+                  }
                 ],
-              remark: '',
-              ratio: '',
-              subItem: [
-                {
-                  paymentCondition:'',
-                  paymentAmount: 0,
-                  paymentTimePeriod: null,
-                  paymentTime: '',
-                  times: [
-                    {
-                      value: 1,
-                      label: '合同签约15天'
-                    },
-                    {
-                      value: 2,
-                      label: '合同签约30天'
-                    },
-                    {
-                      value: 3,
-                      label: '合同签约90天'
-                    }
-                    ],
-                  remark: '',
-                  ratio: ''
-                }
-                ],
-            }],
-            progress: [{
-              type: '进度款',
-              paymentCondition:'',
-              seriousPayments: false,
-              paymentAmount: 0,
-              paymentTimePeriod: null,
-              paymentTime: '',
-              times: [
-                {
-                  value: 1,
-                  label: '验收后15天'
-                },
-                {
-                  value: 2,
-                  label: '验收后30天'
-                }
-                ],
-              remark: '',
-              ratio: '',
-              subItem: []
-            }],
-            _final: [{
-              type: '尾款',
-              paymentCondition:'',
-              seriousPayments: true,
-              paymentAmount: 0,
-              paymentTimePeriod: null,
-              paymentTime: '',
-              times: [
-                {
-                  value: 1,
-                  label: '合同结束后15天'
-                },
-                {
-                  value: 2,
-                  label: '合同结束后30天'
-                },
-                {
-                  value: 3,
-                  label: '合同结束后90天'
-                },
-                {
-                  value: 4,
-                  label: '合同结束后180天'
-                }
-                ],
-              remark: '',
-              ratio: '',
-              subItem: []
-            }]
-          }
-        this.cardFinanceInfoForm.paymentMethods=paymentMethods
+                remark: '',
+                ratio: ''
+              }
+            ]
+          }],
+          progress: [{
+            type: '进度款',
+            paymentCondition: '',
+            seriousPayments: false,
+            paymentAmount: 0,
+            paymentTimePeriod: null,
+            paymentTime: '',
+            times: [
+              {
+                value: 1,
+                label: '验收后15天'
+              },
+              {
+                value: 2,
+                label: '验收后30天'
+              }
+            ],
+            remark: '',
+            ratio: '',
+            subItem: []
+          }],
+          _final: [{
+            type: '尾款',
+            paymentCondition: '',
+            seriousPayments: true,
+            paymentAmount: 0,
+            paymentTimePeriod: null,
+            paymentTime: '',
+            times: [
+              {
+                value: 1,
+                label: '合同结束后15天'
+              },
+              {
+                value: 2,
+                label: '合同结束后30天'
+              },
+              {
+                value: 3,
+                label: '合同结束后90天'
+              },
+              {
+                value: 4,
+                label: '合同结束后180天'
+              }
+            ],
+            remark: '',
+            ratio: '',
+            subItem: []
+          }]
+        }
+        this.cardFinanceInfoForm.paymentMethods = paymentMethods
       }
     }
   }

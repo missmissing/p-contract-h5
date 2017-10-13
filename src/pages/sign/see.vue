@@ -3,54 +3,9 @@
 </style>
 
 <template>
-  <div
-    class="pd20"
-    v-loading="loadingFlag"
-    :element-loading-text="loadingText">
+  <div class="pd20">
+    <el-row class="mb20">采购订单号{{info.orderNo}}</el-row>
     <el-tabs>
-      <el-tab-pane label="合同信息">
-        <div class="contract-info">
-          <el-form label-width="100px">
-            <el-row>
-              <el-col :span="8">
-                <el-form-item label="合同编号">
-                  <el-input :value="contractForm.contractNo" disabled></el-input>
-                </el-form-item>
-              </el-col>
-              <el-button type="primary" class="ml20" v-show="toDetail.query.contractId">
-                <router-link class="router-link" :to="toDetail" target="_blank">详 情</router-link>
-              </el-button>
-            </el-row>
-            <el-row>
-              <el-col :span="8">
-                <el-form-item label="合同模式">
-                  <el-input :value="contractForm.contractBusinessTypeThirdName" disabled></el-input>
-                </el-form-item>
-              </el-col>
-              <el-col :span="8">
-                <el-form-item label="合同类型">
-                  <el-input :value="contractForm.contractType" disabled></el-input>
-                </el-form-item>
-              </el-col>
-              <el-col :span="8">
-                <el-form-item label="所属项目">
-                  <el-input :value="contractForm.belongProject" disabled></el-input>
-                </el-form-item>
-              </el-col>
-              <el-col :span="8">
-                <el-form-item label="生效日期">
-                  <el-input :value="contractForm.startTime | formatDate" disabled></el-input>
-                </el-form-item>
-              </el-col>
-              <el-col :span="8">
-                <el-form-item label="终止日期">
-                  <el-input :value="contractForm.endTime | formatDate" disabled></el-input>
-                </el-form-item>
-              </el-col>
-            </el-row>
-          </el-form>
-        </div>
-      </el-tab-pane>
       <el-tab-pane label="订单信息">
         <div class="order-info">
           <el-form label-width="100px">
@@ -90,11 +45,15 @@
             <el-table-column
               prop="materialCode"
               label="物料编码"
-              width="100">
+              min-width="150">
+              <template scope="scope">
+                {{scope.row.materialCode | cutZero}}
+              </template>
             </el-table-column>
             <el-table-column
               prop="materialName"
-              label="物料名称">
+              label="物料名称"
+              min-width="150">
             </el-table-column>
             <el-table-column
               prop="total"
@@ -126,11 +85,54 @@
               width="100">
             </el-table-column>
             <el-table-column
-              prop="itemNo"
+              prop="sapItemNo"
               label="行项目号"
               width="100">
             </el-table-column>
           </el-table>
+        </div>
+      </el-tab-pane>
+      <el-tab-pane label="合同信息">
+        <div class="contract-info">
+          <el-form label-width="100px">
+            <el-row>
+              <el-col :span="8">
+                <el-form-item label="合同编号">
+                  <el-input :value="contractForm.contractNo" disabled></el-input>
+                </el-form-item>
+              </el-col>
+              <el-button type="primary" class="ml20" v-show="toDetail.query.contractId">
+                <router-link class="router-link-default" :to="toDetail" target="_blank">详 情</router-link>
+              </el-button>
+            </el-row>
+            <el-row>
+              <el-col :span="8">
+                <el-form-item label="合同模式">
+                  <el-input :value="contractForm.contractBusinessTypeThirdName" disabled></el-input>
+                </el-form-item>
+              </el-col>
+              <el-col :span="8">
+                <el-form-item label="合同类型">
+                  <el-input :value="contractForm.contractType" disabled></el-input>
+                </el-form-item>
+              </el-col>
+              <el-col :span="8">
+                <el-form-item label="所属项目">
+                  <el-input :value="contractForm.belongProject" disabled></el-input>
+                </el-form-item>
+              </el-col>
+              <el-col :span="8">
+                <el-form-item label="生效日期">
+                  <el-input :value="contractForm.startTime | formatDate" disabled></el-input>
+                </el-form-item>
+              </el-col>
+              <el-col :span="8">
+                <el-form-item label="终止日期">
+                  <el-input :value="contractForm.endTime | formatDate" disabled></el-input>
+                </el-form-item>
+              </el-col>
+            </el-row>
+          </el-form>
         </div>
       </el-tab-pane>
       <el-tab-pane label="服务验收信息" v-if="serverData.length>0">
@@ -169,6 +171,7 @@
   import {formatDate} from '@/filters/moment'
   import comLoading from '@/mixins/comLoading'
   import Process from '@/components/process'
+  import cutZero from '@/util/cutZero'
   import {routerNames, contractPatternMap, prTypeMap} from '@/core/consts'
 
   export default {
@@ -185,14 +188,14 @@
     },
     methods: {
       getInfo(id) {
-        this.comLoading(1)
-        Api.detail({id}).then((res) => {
+        this.comLoading()
+        Api.detailByPoId({id}).then((res) => {
           console.log(res)
           this.info = res.data.dataMap
           this.setOrderData()
           this.setServerData()
           this.setContractForm()
-          this.comLoading()
+          this.comLoading(false)
         })
       },
       setContractForm() {
@@ -228,7 +231,8 @@
       this.getInfo(id)
     },
     filters: {
-      formatDate
+      formatDate,
+      cutZero
     },
     components: {
       Process

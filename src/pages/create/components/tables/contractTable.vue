@@ -1,7 +1,5 @@
 <template>
-  <div
-    v-loading="loadingFlag"
-    :element-loading-text="loadingText">
+  <div>
     <el-table
       :data="tableData"
       border
@@ -62,15 +60,15 @@
     },
     methods: {
       getData() {
-        this.comLoading(1)
+        this.comLoading()
         Api.getContractTableData({}).then((res) => {
           const {list, total, pageSize} = res.data.dataMap
           this.tableData = list
           this.total = total
           this.pageSize = pageSize
-          this.comLoading()
+          this.comLoading(false)
         }, () => {
-          this.comLoading()
+          this.comLoading(false)
         })
       },
       formatDate(value) {

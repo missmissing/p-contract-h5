@@ -1,15 +1,11 @@
 <style type="text/scss" lang="scss" scoped>
   .basic-info {
-    .router-link {
-      color: #FFFFFF;
-    }
+
   }
 </style>
 
 <template>
-  <div class="pd20"
-       v-loading="loadingFlag"
-       :element-loading-text="loadingText">
+  <div class="pd20">
     <div class="basic-info">
       <el-form :model="form" :rules="rules" ref="form" label-width="120px">
         <el-row>
@@ -24,18 +20,18 @@
             </el-form-item>
           </el-col>
           <el-button type="primary" class="ml20" v-show="toDetail.query.contractId">
-            <router-link class="router-link" :to="toDetail" target="_blank">详 情</router-link>
+            <router-link class="router-link-default" :to="toDetail" target="_blank">详 情</router-link>
           </el-button>
         </el-row>
         <el-row>
           <el-col :span="8">
             <el-form-item label="合同签署日期">
-              <el-input :value="signDate | formatDate" disabled></el-input>
+              <el-input :value="approvalDate | formatDate" disabled></el-input>
             </el-form-item>
           </el-col>
           <el-col :span="8" :offset="1">
             <el-form-item label="合同状态">
-              <el-input :value="contractStatus" disabled></el-input>
+              <el-input :value="contractStatusName" disabled></el-input>
             </el-form-item>
           </el-col>
           <el-col :span="8">
@@ -119,8 +115,8 @@
           ]
         },
         contractCode: '',
-        signDate: '',
-        contractStatus: '',
+        approvalDate: '',
+        contractStatusName: '',
         startTime: '',
         endTime: '',
         options: [{value: 1, label: '合同违约中止'}, {value: 2, label: '合同变更后中止'}, {value: 3, label: '固定期限合同正常履行完成后中止'}],
@@ -135,17 +131,19 @@
           this.$message.warning('请输入合同编号！')
           return
         }
-        this.comLoading(1)
+        this.comLoading()
         Api.getContractDetailByCode({id: this.contractCode}).then((res) => {
           const data = res.data.dataMap
           console.log(data)
           const {baseInfoForm, cardContentInfoForm} = data
-          const {id} = baseInfoForm
+          const {id, approvalDate, contractStatusName} = baseInfoForm
           const {startTime, endTime} = cardContentInfoForm
+          this.approvalDate = approvalDate
+          this.contractStatusName = contractStatusName
           this.startTime = startTime
           this.endTime = endTime
           this.toDetail.query.contractId = id
-          this.comLoading()
+          this.comLoading(false)
         })
       },
       submit() {
@@ -164,8 +162,12 @@
               suspendRemark: this.suspendRemark
             }
             console.log(result)
+            this.comLoading({
+              text: '正在提交中'
+            })
             Api.contractSuspendSubmit(result).then((res) => {
               console.log(res)
+              this.comLoading(false)
             })
           } else {
             console.log('error submit!!')

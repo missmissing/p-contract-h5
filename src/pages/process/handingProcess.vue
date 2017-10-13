@@ -7,8 +7,6 @@
     <el-table
       :data="tableData"
       highlight-current-row
-      v-loading="loadingFlag"
-      :element-loading-text="loadingText"
       border
       class="wp100">
       <el-table-column
@@ -73,13 +71,13 @@
     },
     methods: {
       getProcess() {
-        this.comLoading(1)
+        this.comLoading()
         Api.getProcess({
           pageNumber: this.pageNumber,
           pageSize: this.pageSize,
           dataType: this.dataType
         }).then((res) => {
-          this.comLoading()
+          this.comLoading(false)
           const {procList, totalPage} = res.data.dataMap
           this.tableData = procList
           this.totalPage = totalPage
