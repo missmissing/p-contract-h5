@@ -1838,7 +1838,8 @@
           procInstId: '', // 流程编号
           guid: '', // 草稿箱编号
           // businessOperator: '',
-          businessOperatorId: '', // 业务经办人
+          businessOperatorId: '', // 业务经办人id
+          businessOperatorName: '', //业务经办人
           businessDeptId: '',
           businessDeptName: '',
           contractType: '', // 合同模式id
@@ -3396,6 +3397,7 @@
         if (businessOperators.length) {
           for (let i = 0, len = businessOperators.length; i < len; i++) {
             if (val === businessOperators[i].userId) {
+              this.baseInfoForm.businessOperatorName = businessOperators[i].userName
               this.baseInfoForm.businessDeptName = businessOperators[i].deptName
               this.baseInfoForm.businessDeptId = businessOperators[i].deptCode
               this.cardContCheckInfoForm.responsibleId = businessOperators[i].superiorId

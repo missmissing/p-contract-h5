@@ -8,7 +8,8 @@
         <el-row>
           <el-col :span="8">
             <el-form-item label="比价单" v-if="conForm.isPr" prop="strPC">
-              <el-input v-model="conForm.strPC" v-on:keyup.enter="handleQuery" placeholder="请输入比价单号"></el-input>
+              <el-input v-model="conForm.strPC" v-on:keyup.enter.native="handleQuery(conForm.strPC)"
+                        placeholder="请输入比价单号"></el-input>
             </el-form-item>
           </el-col>
           <el-col :span="8" v-if="conForm.isPr">
@@ -339,7 +340,7 @@
       handleQuery(folio) {
         this.comLoading()
         Api.getQrDetail({
-          folio: folio || this.conForm.strPC
+          folio
         }).then((data) => {
           if (data.data.dataMap) {
             this.currentPr = data.data.dataMap
