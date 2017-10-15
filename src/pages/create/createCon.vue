@@ -2421,37 +2421,37 @@
         }
         return enabled
       },
-      advancePaymentAmount:function(){
-        const items=this.cardFinanceInfoForm.paymentMethods.advance[0].subItem
-        let sum=0
-        if(items&&items.length){
-          for(let i=0,len=items.length;i<len;i++){
-            sum+=items[0].paymentAmount
+      advancePaymentAmount: function () {
+        const items = this.cardFinanceInfoForm.paymentMethods.advance[0].subItem
+        let sum = 0
+        if (items && items.length) {
+          for (let i = 0, len = items.length; i < len; i++) {
+            sum += items[0].paymentAmount
           }
         }
-        this.cardFinanceInfoForm.paymentMethods.advance[0].paymentAmount=parseFloat(sum)
+        this.cardFinanceInfoForm.paymentMethods.advance[0].paymentAmount = parseFloat(sum)
         return parseFloat(sum)
       },
-      progressPaymentAmount:function(){
-        const items=this.cardFinanceInfoForm.paymentMethods.progress[0].subItem
-        let sum=0
-        if(items&&items.length){
-          for(let i=0,len=items.length;i<len;i++){
-            sum+=items[0].paymentAmount
+      progressPaymentAmount: function () {
+        const items = this.cardFinanceInfoForm.paymentMethods.progress[0].subItem
+        let sum = 0
+        if (items && items.length) {
+          for (let i = 0, len = items.length; i < len; i++) {
+            sum += items[0].paymentAmount
           }
         }
-        this.cardFinanceInfoForm.paymentMethods.progress[0].paymentAmount=parseFloat(sum)
+        this.cardFinanceInfoForm.paymentMethods.progress[0].paymentAmount = parseFloat(sum)
         return parseFloat(sum)
       },
-      finalPaymentAmount:function(){
-        const items=this.cardFinanceInfoForm.paymentMethods._final[0].subItem
-        let sum=0
-        if(items&&items.length){
-          for(let i=0,len=items.length;i<len;i++){
-            sum+=items[0].paymentAmount
+      finalPaymentAmount: function () {
+        const items = this.cardFinanceInfoForm.paymentMethods._final[0].subItem
+        let sum = 0
+        if (items && items.length) {
+          for (let i = 0, len = items.length; i < len; i++) {
+            sum += items[0].paymentAmount
           }
         }
-        this.cardFinanceInfoForm.paymentMethods._final[0].paymentAmount=parseFloat(sum)
+        this.cardFinanceInfoForm.paymentMethods._final[0].paymentAmount = parseFloat(sum)
         return parseFloat(sum)
       },
     },
@@ -2831,9 +2831,9 @@
               this.$message.error('这条数据已存在咯！')
               return false
             }
-            if(thirdParties&&thirdParties.length){
-              for(let i=0,len=thirdParties.length;i<len;i++){
-                if(thirdParties[i].companyCode===key){
+            if (thirdParties && thirdParties.length) {
+              for (let i = 0, len = thirdParties.length; i < len; i++) {
+                if (thirdParties[i].companyCode === key) {
                   this.cardContentInfoForm.thirdPartyInfo.push({
                     code: thirdParties[i].companyCode,
                     name: thirdParties[i].company,
@@ -3400,8 +3400,10 @@
               this.baseInfoForm.businessDeptId = businessOperators[i].deptCode
               this.cardContCheckInfoForm.responsibleId = businessOperators[i].superiorId
               this.cardContCheckInfoForm.responsibleName = businessOperators[i].superiorName
-              this.cardContCheckInfoForm.responsibleDeptName = businessOperators[i].deptName
-              this.cardContCheckInfoForm.responsibleDeptId = businessOperators[i].deptCode
+              this.getPerson(this.cardContCheckInfoForm.responsibleName, (data) => {
+                this.cardContCheckInfoForm.responsibleDeptName = data[0].deptName
+                this.cardContCheckInfoForm.responsibleDeptId = data[0].deptCode
+              })
             }
           }
         }
@@ -3583,6 +3585,12 @@
           item.paymentTimePeriod = null
           item.remark = null
         }
+      },
+      getPerson(keyword, callback) {
+        Api.getRemoteCreatePersonsByKeyWord({keyword}).then((res) => {
+          const data = res.data.dataMap
+          callback && callback(data)
+        })
       }
     },
     components: {

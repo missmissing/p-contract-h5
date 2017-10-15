@@ -127,7 +127,7 @@
       </div>
     </transition>
     <transition name="component-fade" mode="out-in">
-      <Tmpl v-if="showTmpl" :tplInfo="tplInfo" :showTmpl.sync="showTmpl"></Tmpl>
+      <Tmpl v-show="showTmpl" :tplInfo="tplInfo" :showTmpl.sync="showTmpl"></Tmpl>
     </transition>
   </div>
 </template>

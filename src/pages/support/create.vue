@@ -198,8 +198,16 @@
           departmentId: 12,
           departmentName: 'hehe'
         })
-        console.log(result)
         return result
+      },
+      check(result) {
+        if (result.templateType === 'TEXT') {
+          if (!result.files.length) {
+            this.$message.warning('请上传附件！')
+            return false
+          }
+        }
+        return true
       },
       back() { // 返回列表页
         this.$router.push({
@@ -209,10 +217,13 @@
       save(templateStatus) {
         this.$refs['form'].validate((valid) => {
           if (valid) {
-            this.comLoading()
             const result = this.getResult()
+            if (!this.check(result)) {
+              return
+            }
             result.templateStatus = templateStatus
             console.log('click save：', result)
+            this.comLoading()
             supportModel.addTpl(result).then((res) => {
               console.log(res)
               this.comLoading(false)
