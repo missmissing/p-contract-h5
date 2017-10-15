@@ -127,14 +127,14 @@
                 <el-table-column
                   prop="materialCode"
                   label="物料编码"
-                  width="100">
+                  width="130">
                   <template scope="scope">
                     {{scope.row.materialCode | cutZero}}
                   </template>
                 </el-table-column>
                 <el-table-column
                   prop="materialName"
-                  min-width="100"
+                  width="300"
                   label="物料名称">
                 </el-table-column>
                 <el-table-column
@@ -199,11 +199,11 @@
                 <el-table-column
                   prop="pr"
                   label="采购申请"
-                  width="100">
+                  width="130">
                 </el-table-column>
                 <el-table-column
                   prop="itemNo"
-                  label="行项目号"
+                  label="行项目"
                   width="100">
                 </el-table-column>
                 <el-table-column

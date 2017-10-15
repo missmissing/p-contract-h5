@@ -27,7 +27,7 @@
 
 <template>
   <div v-if="processData">
-    <div>
+    <div style="margin-top:30px;">
       <div class="title">审批意见</div>
       <div class="main">
         <div class="item" v-for="list in lists" :key="list.commentId">

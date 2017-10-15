@@ -113,7 +113,8 @@
     <el-card v-if="contentVisible&&ifShowNewSeals">
       <header slot="header">合同附件及盖章信息<i class="errorMsg">{{baseInfoForm.attachmentErrorMsg}}</i></header>
       <el-form rel="cardSealInfoForm" :model="cardSealInfoForm" label-width="100px" :rules="cardSealInfoForm.rules">
-        <el-button size="small" type="primary" @click="handleNewOtherSealFile" icon="plus" class="mb20" v-if="enabledInupdated">
+        <el-button size="small" type="primary" @click="handleNewOtherSealFile" icon="plus" class="mb20"
+                   v-if="enabledInupdated">
           新增
         </el-button>
         <template v-if="cardSealInfoForm.sealAttachments.length"
@@ -300,7 +301,8 @@
     <Process></Process>
     <el-row v-if="contentVisible">
       <el-col style="text-align: center" class="mt20">
-        <el-button v-if="enabledInupdated" type="primary" :disabled="!enabledInupdated||!btnStatus" @click="handleSubmit"
+        <el-button v-if="enabledInupdated" type="primary" :disabled="!enabledInupdated||!btnStatus"
+                   @click="handleSubmit"
                    style="display:inline-block">提交
         </el-button>
       </el-col>
@@ -371,13 +373,14 @@
   import {downloadUrl, uploadUrl} from '@/api/consts'
   import _ from 'lodash'
   import Process from '@/components/process.vue'
+  import {routerNames} from '@/core/consts'
 
   const user = store.get('user')
 
   export default {
     data: function () {
       return {
-        queryContractForm:{
+        queryContractForm: {
           visible: false, // 在创建从协议时控制从协议页面数据的显示与否
           code: '',
           rules: {
@@ -517,11 +520,11 @@
         let curForm = this.$refs[formName]
         curForm.validate((valid) => {
           if (valid) {
-            let key=this.formContractSupplier.search
-            const suppliers=this.formContractSupplier.suppliers
-            if(suppliers&&suppliers.length){
-              for(let i=0,len=suppliers.length;i<len;i++){
-                if(parseInt(suppliers[i].companyCode)===parseInt(key)){
+            let key = this.formContractSupplier.search
+            const suppliers = this.formContractSupplier.suppliers
+            if (suppliers && suppliers.length) {
+              for (let i = 0, len = suppliers.length; i < len; i++) {
+                if (parseInt(suppliers[i].companyCode) === parseInt(key)) {
                   this.baseInfoForm.tableSupplierInfo = [{
                     id: suppliers[i].companyCode,
                     name: suppliers[i].company,
@@ -531,7 +534,7 @@
               }
             }
 
-            console.log('this.baseInfoForm.tableSupplierInfo',this.baseInfoForm.tableSupplierInfo);
+            console.log('this.baseInfoForm.tableSupplierInfo', this.baseInfoForm.tableSupplierInfo)
             curForm.resetFields()
             this.baseInfoForm.dialogAddContractSupplier = false
             if (this.isSubmit) {
@@ -579,9 +582,9 @@
               this.$message.error('这条数据已存在咯！')
               return false
             }
-            if(subjects&&subjects.length){
-              for(let i=0,len=subjects.length;i<len;i++){
-                if(subjects[i].companyCode===key){
+            if (subjects && subjects.length) {
+              for (let i = 0, len = subjects.length; i < len; i++) {
+                if (subjects[i].companyCode === key) {
                   this.baseInfoForm.conSubjctName.push({
                     id: subjects[i].companyCode,
                     name: subjects[i].company,
@@ -736,6 +739,9 @@
             if (parseInt(data.data.code) === 200) {
               this.operateType = 'query'
               this.$message.success(data.data.message)
+              this.$router.push({
+                name: routerNames.con_index
+              })
             }
           })
             .catch(() => {
@@ -840,11 +846,11 @@
           const dataMap = data.data.dataMap
           if (dataMap && dataMap.baseInfoForm.id) {
             this.queryContractForm.visible = true
-            if(dataMap.cardContentInfoForm.tableSupplierInfo&&dataMap.cardContentInfoForm.tableSupplierInfo.length){
-              this.baseInfoForm.tableSupplierInfo=dataMap.cardContentInfoForm.tableSupplierInfo
+            if (dataMap.cardContentInfoForm.tableSupplierInfo && dataMap.cardContentInfoForm.tableSupplierInfo.length) {
+              this.baseInfoForm.tableSupplierInfo = dataMap.cardContentInfoForm.tableSupplierInfo
             }
-            if(dataMap.cardContentInfoForm.conSubjctName&&dataMap.cardContentInfoForm.conSubjctName.length){
-              this.baseInfoForm.conSubjctName=dataMap.cardContentInfoForm.conSubjctName
+            if (dataMap.cardContentInfoForm.conSubjctName && dataMap.cardContentInfoForm.conSubjctName.length) {
+              this.baseInfoForm.conSubjctName = dataMap.cardContentInfoForm.conSubjctName
             }
           }
         })
@@ -864,8 +870,8 @@
             users: user,
             downloadUrl: downloadUrl,
             uploadUrl: uploadUrl,
-            protocolNo:null,//从协议编号
-            operateType:'create',//默认创建状态，query：查看
+            protocolNo: null, // 从协议编号
+            operateType: 'create', // 默认创建状态，query：查看
             activeTabName: 'tabBaseInfo',
             baseInfoForm: {
               tableSupplierInfo: [],

@@ -67,7 +67,7 @@
       class="wp100">
       <el-table-column
         prop="templateCode"
-        min-width="150"
+        width="150"
         label="模板编号">
         <template scope="scope">
           <router-link class="router-link" :to="see(scope.row)">
@@ -77,12 +77,12 @@
       </el-table-column>
       <el-table-column
         prop="templateName"
-        min-width="150"
+        min-width="200"
         label="模板名称">
       </el-table-column>
       <el-table-column
         prop="templateType"
-        min-width="120"
+        width="100"
         label="文本类型">
         <template scope="scope">
           {{scope.row.templateType === 'TEXT' ? '合同文本' : '合同模板'}}
@@ -91,20 +91,20 @@
       <el-table-column
         prop="creatorName"
         min-width="100"
-        label="创建人">
+        label="发起人">
       </el-table-column>
       <el-table-column
         prop="departmentName"
-        min-width="100"
-        label="业务部门"
+        width="180"
+        label="部门"
       >
       </el-table-column>
       <el-table-column
         prop="createTime"
-        width="180"
+        width="120"
         label="创建日期">
         <template scope="scope">
-          {{scope.row.createTime | formatTime}}
+          {{scope.row.createTime | formatDate}}
         </template>
       </el-table-column>
       <el-table-column

@@ -100,14 +100,14 @@
       <el-form ref="baseInfoForm" :model="baseInfoForm" label-width="100px" :rules="baseInfoForm.rules">
         <el-row>
           <el-col :span="8">
-            <el-form-item label="业务经办人" prop="businessOperator">
+            <el-form-item label="经办人" prop="businessOperator">
               <el-select
                 class="wp100"
                 :disabled="isEnabled1"
                 v-model="baseInfoForm.businessOperatorId"
                 filterable
                 remote
-                placeholder="请输入业务经办人"
+                placeholder="请输入经办人"
                 :remote-method="getRemotebusinessOperatorsByKeyWord"
                 :loading="baseInfoForm.loading"
                 @change="handleBusinessOperatorChange">
@@ -145,7 +145,7 @@
         </el-row>
         <el-row>
           <el-col :span="8">
-            <el-form-item label="合同文本类型">
+            <el-form-item label="文本类型">
               <el-select class="wp100" :disabled="isEnabled1" v-model="baseInfoForm.contractTextType"
                          placeholder="请选择合同文本类型" @change="handleContractTextTypeChange">
                 <el-option
@@ -1851,11 +1851,11 @@
           contractTextTypeOptions: [
             {
               id: 1,
-              name: '模板合同'
+              name: '合同模板'
             },
             {
               id: 2,
-              name: '非模板合同'
+              name: '合同文本'
             }
           ],
           sealOrder: 1, // 0：我方先盖章 1：对方先盖章
@@ -2025,7 +2025,6 @@
             }],
             _final: [{
               type: '尾款',
-              paymentTimePeriod: '',
               seriousPayments: true,
               paymentAmount: 0,
               paymentTimePeriod: null,
@@ -2056,35 +2055,35 @@
           paymentTimePeriod: '',
           paymentTimePeriods: [
             {
-              id: 'Z015',
+              id: 1,
               name: '到票日后15天付款'
             },
             {
-              id: 'Z020',
+              id: 2,
               name: '到票日后16天付款'
             },
             {
-              id: 'Z025',
+              id: 3,
               name: '到票日后17天付款'
             },
             {
-              id: 'Z030',
+              id: 4,
               name: '到票日后18天付款'
             },
             {
-              id: 'Z035',
+              id: 5,
               name: '到票日后19天付款'
             },
             {
-              id: 'Z040',
+              id: 6,
               name: '到票日后20天付款'
             },
             {
-              id: 'Z045',
+              id: 7,
               name: '到票日后21天付款'
             },
             {
-              id: 'Z000',
+              id: 8,
               name: '到票日后22天付款'
             }
           ],
@@ -2860,7 +2859,6 @@
         let paymentMethods = this.cardFinanceInfoForm.paymentMethods
         const item = {
           paymentAmount: 0,
-          paymentTimePeriod: '',
           paymentTimePeriod: null,
           paymentTime: '',
           times: [
@@ -3073,7 +3071,6 @@
       handleSave() {
         this.btnSaveStatus = false
         this.isSubmit = true
-        this.comLoading()
         this.validateForms().then(() => {
           this.btnSaveStatus = true
           this.cardSealInfoForm.sealAttachments = this.combineSealsInfo()
@@ -3086,7 +3083,9 @@
           paras.cardSealInfoForm = this.cardSealInfoForm
           paras.cardRemarkInfoForm = this.cardRemarkInfoForm
           paras.cardOtherInfo = this.cardOtherInfo
+          this.comLoading()
           Api.saveContract(paras).then((data) => {
+            this.comLoading()
             if (data.data.dataMap.id) {
               this.$message.success('保存成功！')
             }
@@ -3151,7 +3150,9 @@
             updateParams.contractVo = paras
             Api.updatedSubmit(updateParams).then((data) => {
               if (data.data.dataMap.id) {
-                this.operateType === 'update' ? this.updated = true : null
+                if (this.operateType === 'update') {
+                  this.updated = true
+                }
                 this.$message.success('提交成功！')
                 this.operateType = 'query'
               }
@@ -3646,7 +3647,6 @@
         const paymentMethods = {
           advance: [{
             type: '预付款',
-            paymentTimePeriod: '',
             seriousPayments: null, // 是否多次付款
             paymentAmount: 0, // 付款金额
             paymentTimePeriod: null, // 付款方式
@@ -3669,7 +3669,6 @@
             ratio: '',
             subItem: [
               {
-                paymentTimePeriod: '',
                 paymentAmount: 0,
                 paymentTimePeriod: null,
                 paymentTime: '',
@@ -3694,7 +3693,6 @@
           }],
           progress: [{
             type: '进度款',
-            paymentTimePeriod: '',
             seriousPayments: null,
             paymentAmount: 0,
             paymentTimePeriod: null,
@@ -3715,7 +3713,6 @@
           }],
           _final: [{
             type: '尾款',
-            paymentTimePeriod: '',
             seriousPayments: null,
             paymentAmount: 0,
             paymentTimePeriod: null,

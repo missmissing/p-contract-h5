@@ -4,25 +4,42 @@
 
 <template>
   <div class="pd20">
-    <el-row class="mb20">采购订单号{{info.orderNo}}</el-row>
     <el-tabs>
       <el-tab-pane label="订单信息">
         <div class="order-info">
           <el-form label-width="100px">
             <el-row>
-              <el-col :span="7">
-                <el-form-item label="供应商">
-                  <el-input :value="orderForm.supplierName" disabled></el-input>
+              <el-col :span="8">
+                <el-form-item label="采购订单">
+                  <el-input :value="orderForm.purchaseOrderNo" disabled></el-input>
                 </el-form-item>
               </el-col>
-              <el-col :span="7">
+            </el-row>
+            <el-row>
+              <el-col :span="8">
+                <el-form-item label="供应商编码">
+                  <el-input :value="orderForm.supplierCode" disabled></el-input>
+                </el-form-item>
+              </el-col>
+              <el-col :span="8">
+                <el-form-item label="供应商名称">
+                  <el-tooltip effect="light" :content="orderForm.supplierName" placement="top-end">
+                    <el-input :value="orderForm.supplierName" disabled></el-input>
+                  </el-tooltip>
+                </el-form-item>
+              </el-col>
+            </el-row>
+            <el-row>
+              <el-col :span="8">
                 <el-form-item label="订单类型">
                   <el-input :value="orderForm.type" disabled></el-input>
                 </el-form-item>
               </el-col>
-              <el-col :span="7">
+              <el-col :span="8">
                 <el-form-item label="公司编码">
-                  <el-input :value="orderForm.companyCode" disabled></el-input>
+                  <el-tooltip effect="light" :content="orderForm.companyCode" placement="top-end">
+                    <el-input :value="orderForm.companyCode" disabled></el-input>
+                  </el-tooltip>
                 </el-form-item>
               </el-col>
             </el-row>
@@ -34,7 +51,7 @@
             <el-table-column
               type="index"
               label="序号"
-              width="80">
+              width="65">
             </el-table-column>
             <el-table-column
               prop="category"
@@ -45,7 +62,7 @@
             <el-table-column
               prop="materialCode"
               label="物料编码"
-              min-width="150">
+              width="130">
               <template scope="scope">
                 {{scope.row.materialCode | cutZero}}
               </template>
@@ -53,7 +70,7 @@
             <el-table-column
               prop="materialName"
               label="物料名称"
-              min-width="150">
+              width="300">
             </el-table-column>
             <el-table-column
               prop="total"
@@ -82,12 +99,12 @@
             <el-table-column
               prop="pr"
               label="采购申请"
-              width="100">
+              width="130">
             </el-table-column>
             <el-table-column
               prop="itemNo"
-              label="行项目号"
-              width="100">
+              label="行项目"
+              width="80">
             </el-table-column>
           </el-table>
         </div>
@@ -211,10 +228,16 @@
         }
       },
       setOrderData() {
-        const {purOrderMaterials, supplierName, companyCode} = this.info
+        const {purOrderMaterials, supplierName, companyCode, companyName, supplierCode, purchaseOrderNo} = this.info
         const type = purOrderMaterials.length ? [1, 3].indexOf(purOrderMaterials[0].category) > -1 ? prTypeMap[1] : prTypeMap[2] : ''
         this.orderData = purOrderMaterials
-        this.orderForm = {supplierName, type, companyCode}
+        this.orderForm = {
+          supplierName,
+          type,
+          companyCode: `${companyCode} ${companyName}`,
+          supplierCode,
+          purchaseOrderNo
+        }
       },
       setServerData() {
         const {orderCheckItems} = this.info

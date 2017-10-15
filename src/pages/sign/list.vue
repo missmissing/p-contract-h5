@@ -55,7 +55,7 @@
       class="wp100">
       <el-table-column
         prop="pr"
-        min-width="180"
+        width="130"
         label="采购订单号">
         <template scope="scope">
           <router-link class="router-link" :to="see(scope.row)">
@@ -71,12 +71,12 @@
       </el-table-column>
       <el-table-column
         prop="sapItemNo"
-        min-width="100"
+        width="80"
         label="行项目">
       </el-table-column>
       <el-table-column
         prop="materialCode"
-        min-width="150"
+        width="130"
         label="物料编码">
         <template scope="scope">
           {{scope.row.materialCode | cutZero}}
@@ -84,27 +84,27 @@
       </el-table-column>
       <el-table-column
         prop="materialName"
-        min-width="150"
+        min-width="300"
         label="物料描述">
       </el-table-column>
       <el-table-column
         prop="total"
-        min-width="80"
+        width="80"
         label="数量">
       </el-table-column>
       <el-table-column
         prop="price"
-        min-width="100"
+        width="100"
         label="含税单价">
       </el-table-column>
       <el-table-column
         prop="taxRate"
-        min-width="80"
+        width="70"
         label="税率">
       </el-table-column>
       <el-table-column
         prop="creatorName"
-        min-width="100"
+        width="80"
         label="发起人">
       </el-table-column>
       <el-table-column
