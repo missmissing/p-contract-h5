@@ -101,3 +101,11 @@ vuejs
 [v-cloak] {
   display: none;
 }
+
+/**
+vue-quill-editor
+ */
+.ql-editor {
+  min-height: 280px;
+  max-height: 500px;
+}

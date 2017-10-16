@@ -18,7 +18,7 @@
       </el-row>
       <el-row>
         <el-col :span="7">
-          <el-form-item label="模板类型">
+          <el-form-item label="文本类型">
             <el-select
               clearable
               v-model="form.templateType"
@@ -30,7 +30,7 @@
           </el-form-item>
         </el-col>
         <el-col :span="7">
-          <el-form-item label="文本编号">
+          <el-form-item label="模板编号">
             <el-input v-model="form.templateCode"></el-input>
           </el-form-item>
         </el-col>

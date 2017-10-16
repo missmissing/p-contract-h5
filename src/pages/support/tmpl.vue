@@ -5,10 +5,6 @@
       margin-top: -7px;
     }
 
-    .quill-editor {
-      height: 280px;
-    }
-
     .pre-title {
       height: 36px;
       line-height: 36px;
@@ -34,6 +30,9 @@
           clear: both;
           display: table;
         }
+      }
+      .content {
+        white-space: pre-wrap;
       }
       .footer {
         margin-top: 20px;
@@ -66,12 +65,12 @@
               </el-select>
             </div>
             <div class="mb20">
-              <el-transfer
+              <!--<el-transfer
                 :titles="['可选模块', '已选模块']"
                 v-model="form.contentModule"
                 :props="{key: 'id',label: 'moduleName'}"
                 :data="modulesData | setItemDisabled(this)">
-              </el-transfer>
+              </el-transfer>-->
             </div>
             <div>
               <quill-editor
@@ -87,7 +86,7 @@
             <div class="preview">
               <div class="title">合同</div>
               <div v-html="header" class="header"></div>
-              <div v-html="form.content"></div>
+              <div v-html="form.content" class="content"></div>
               <div v-html="footer" class="footer"></div>
             </div>
           </el-col>

@@ -4,8 +4,8 @@
 
 <template>
   <div class="pd20">
-    <div class="clearfix">
-      <div class="fr">流程编号--{{procInstId}}</div>
+    <div class="clearfix" v-if="procInstId">
+      <div class="fr mr20">流程编号 {{procInstId}}</div>
     </div>
     <el-tabs>
       <el-tab-pane label="订单信息">

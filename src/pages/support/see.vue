@@ -4,8 +4,8 @@
 
 <template>
   <div>
-    <div class="mb10 clearfix">
-      <div class="fr">流程编号--{{procInstId}}</div>
+    <div class="mb10 clearfix" v-if="procInstId">
+      <div class="fr mr20">流程编号 {{procInstId}}</div>
     </div>
     <transition name="component-fade" mode="out-in">
       <div v-show="!showTmpl">
@@ -115,10 +115,10 @@
             </el-form-item>
             <div v-if="showAbolish">
               <el-form-item label="废除日期">
-                {{form.updateTime}}
+                {{form.endDate}}
               </el-form-item>
               <el-form-item label="废除原因">
-                {{form.updateReason}}
+                {{form.abolishReason}}
               </el-form-item>
             </div>
             <el-form-item v-show="!tplTypeShow">
@@ -155,6 +155,7 @@
       startDate: '',
       endDate: '',
       description: '',
+      abolishReason: '',
       files: [],
       busiTypeText: '',
       operatorName: '',
@@ -178,7 +179,7 @@
     },
     methods: {
       setData(tplInfo) {
-        const {templateCode, templateName, templateType, bizTypes, startDate, endDate, updateTime, updateReason, version, operatorName, creatorName, description, files} = tplInfo
+        const {templateCode, templateName, templateType, bizTypes, startDate, endDate, updateTime, abolishReason, version, operatorName, creatorName, description, files} = tplInfo
         this.tplInfo = tplInfo
         this.form['templateCode'] = templateCode
         this.form['templateName'] = templateName
@@ -187,7 +188,7 @@
         this.form['startDate'] = formatDate(startDate)
         this.form['endDate'] = formatDate(endDate)
         this.form['updateTime'] = formatDate(updateTime)
-        this.form['updateReason'] = updateReason
+        this.form['abolishReason'] = abolishReason
         this.form['version'] = `V${version}`
         this.form['operatorName'] = operatorName
         this.form['creatorName'] = creatorName
