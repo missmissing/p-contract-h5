@@ -1260,7 +1260,7 @@
                     <el-row>
                       <el-col :span="6">
                         <el-form-item label="用章次数" prop="saleTime">
-                          <el-input :disabled="!enabledInupdated"
+                          <el-input :disabled="true"
                                     v-model="props.row.saleTime">
                           </el-input>
                         </el-form-item>
@@ -1377,7 +1377,7 @@
                       <el-row>
                         <el-col :span="6">
                           <el-form-item label="用章次数" prop="saleTime">
-                            <el-input :disabled="!enabledInupdated"
+                            <el-input :disabled="true"
                                       v-model="props.row.saleTime">
                             </el-input>
                           </el-form-item>
@@ -1759,7 +1759,7 @@
           <el-input v-model="formAddConStandard.materialCode" :disabled="formAddConStandard.conStandardType===1"
                     placeholder="请输入物料编码"></el-input>
         </el-form-item>
-        <el-form-item prop="price" label="价格">
+        <el-form-item  prop="price" label="价格">
           <el-input v-model="formAddConStandard.price" placeholder="请输入物料价格"></el-input>
         </el-form-item>
         <el-form-item label="税率" prop="taxRate">
@@ -3253,10 +3253,10 @@
           ], // 附件类型集合
           haveSale: true, // 是否用章
           remark: '',
-          saleTime: '', // 用章次数
+          saleTime: 1, // 用章次数
           printTime: '', // 打印份数
           remainTime: '', // 我方留存份数
-          saleInfos: [1, 2], // 当前选中的张
+          saleInfos: [], // 当前选中的张
           useSeals: [
             {
               id: 1,
@@ -3265,10 +3265,6 @@
             {
               id: 2,
               name: '法人章'
-            },
-            {
-              id: 3,
-              name: '人事章'
             }
           ], // 章列表
           filesSealed: []// 上传的盖章后的文件信息
@@ -3307,10 +3303,10 @@
           ], // 附件类型集合
           haveSale: true, // 是否用章
           remark: '',
-          saleTime: '', // 用章次数
+          saleTime: 1, // 用章次数
           printTime: '', // 打印份数
           remainTime: '', // 我方留存份数
-          saleInfos: [1, 2], // 当前选中的张
+          saleInfos: [], // 当前选中的张
           useSeals: [
             {
               id: 1,
@@ -3319,10 +3315,6 @@
             {
               id: 2,
               name: '法人章'
-            },
-            {
-              id: 3,
-              name: '人事章'
             }
           ], // 章列表
           filesSealed: []// 上传的盖章后的文件信息
@@ -3350,10 +3342,10 @@
           ], // 附件类型集合
           haveSale: true, // 是否用章
           remark: '',
-          saleTime: '', // 用章次数
+          saleTime: 1, // 用章次数
           printTime: '', // 打印份数
           remainTime: '', // 我方留存份数
-          saleInfos: [1, 2], // 当前选中的张
+          saleInfos: [], // 当前选中的张
           useSeals: [
             {
               id: 1,
@@ -3362,10 +3354,6 @@
             {
               id: 2,
               name: '法人章'
-            },
-            {
-              id: 3,
-              name: '人事章'
             }
           ], // 章列表
           filesSealed: []// 上传的盖章后的文件信息

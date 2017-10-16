@@ -60,13 +60,13 @@
           </el-form-item>
         </el-col>
         <el-col :span="8">
-          <el-form-item label="创建人" prop="creatorName">
+          <el-form-item label="发起人" prop="creatorName">
             <el-select
               class="wp100"
               v-model="agreementForm.creatorName"
               filterable
               remote
-              placeholder="请输入创建人"
+              placeholder="请输入发起人"
               :remote-method="getRemoteCreatorsByKeyWord"
               :loading="agreementForm.creatorLoading">
               <el-option
@@ -85,10 +85,7 @@
         </el-col>
       </el-row>
     </el-form>
-    <el-table :data="agreementList"
-              border
-              highlight-current-row
-              style="width:100%">
+    <el-table :data="agreementList" border highlight-current-row style="width:100%">
       <el-table-column prop="protocolNo" label="从协议编码" width="180">
         <template scope="scope">
           <router-link class="router-link"

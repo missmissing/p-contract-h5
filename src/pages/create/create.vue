@@ -53,7 +53,7 @@
           property="folio"
           label="比价单编码">
           <template scope="scope">
-            {{scope.row.folio}}
+            <a href="###" @click.stop="handleDetailPR(scope.$index,scope.row)">{{scope.row.folio}}</a>
           </template>
         </el-table-column>
         <el-table-column
@@ -77,13 +77,6 @@
           label="结束时间">
           <template scope="scope">
             {{transformDataFormat(curPriceList[scope.$index].finishTime)}}
-          </template>
-        </el-table-column>
-        <el-table-column
-          fixed="right"
-          label="操作">
-          <template scope="scope">
-            <el-button @click.stop="handleDetailPR(scope.$index,scope.row)" type="text">查看</el-button>
           </template>
         </el-table-column>
       </el-table>

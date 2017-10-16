@@ -100,7 +100,7 @@
       </el-table-column>
       <el-table-column prop="creator" label="发起人" width="100"></el-table-column>
       <el-table-column prop="businessOperatorName" label="经办人" width="100"></el-table-column>
-      <el-table-column prop="businessDeptName" label="业务部门" width="100"></el-table-column>
+      <el-table-column prop="businessDeptName" label="经办人的部门" width="100"></el-table-column>
       <el-table-column prop="approvalDate" label="创建日期" width="130">
         <template scope="scope">
           {{scope.row.approvalDate | formatDate}}
@@ -119,7 +119,7 @@
       <el-table-column prop="contractStatusName" label="合同状态" width="120"></el-table-column>
       <el-table-column prop="haveProtocol" label="从协议" width="80">
         <template scope="scope">
-          {{scope.row.haveProtocol ? '是' : ''}}
+          {{scope.row.haveProtocol ? '有' : ''}}
         </template>
       </el-table-column>
     </el-table>
