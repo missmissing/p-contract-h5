@@ -50,6 +50,9 @@
 </style>
 <template>
   <div class="createCon">
+    <div class="mb10 clearfix" v-if="procInstId">
+      <div class="fr mr20">流程编号 {{procInstId}}</div>
+    </div>
     <el-card v-if="operateType==='update'||updated">
       <header slot="header">变更原因</header>
       <el-form ref="updateForm" :model="updateForm" label-width="100px" :rules="updateForm.rules">
@@ -517,7 +520,7 @@
                         <el-table-column
                           prop="paymentTimePeriod"
                           label="付款条件"
-                          width="250px">
+                          width="200px">
                           <template scope="scope">
                             <el-select
                               v-model="props.row.subItem[scope.$index].paymentTimePeriod"
@@ -546,7 +549,7 @@
                               v-model="props.row.subItem[scope.$index].remark"></el-input>
                           </template>
                         </el-table-column>
-                        <el-table-column prop="ratio" label="占比" width="80px">
+                        <el-table-column prop="ratio" label="占比" width="100px">
                           <template scope="scope">
                             {{setRatio(props.row.subItem[scope.$index], props.row.subItem[scope.$index].paymentAmount)}}
                           </template>
@@ -577,20 +580,22 @@
                     ></el-checkbox>
                   </template>
                 </el-table-column>
-                <el-table-column
-                  prop="paymentAmount"
-                  label="付款金额"
-                  width="150px">
+                <el-table-column prop="paymentAmount" label="付款金额" width="150px">
                   <template scope="scope">
                     <el-input
+                      v-if="cardFinanceInfoForm.paymentMethods.advance[scope.$index].seriousPayments"
                       :disabled="operateType==='query'||cardFinanceInfoForm.paymentMethods.advance[scope.$index].seriousPayments"
                       v-model="advancePaymentAmount"></el-input>
+                    <el-input
+                      v-else
+                      :disabled="operateType==='query'||cardFinanceInfoForm.paymentMethods.advance[scope.$index].seriousPayments"
+                      v-model="cardFinanceInfoForm.paymentMethods.advance[scope.$index].paymentAmount"></el-input>
                   </template>
                 </el-table-column>
                 <el-table-column
                   prop="paymentTimePeriod"
                   label="付款条件"
-                  width="250px">
+                  width="200px">
                   <template scope="scope">
                     <el-select
                       v-model="cardFinanceInfoForm.paymentMethods.advance[scope.$index].paymentTimePeriod"
@@ -619,7 +624,7 @@
                       v-model="cardFinanceInfoForm.paymentMethods.advance[scope.$index].remark"></el-input>
                   </template>
                 </el-table-column>
-                <el-table-column prop="ratio" label="占比" width="80px">
+                <el-table-column prop="ratio" label="占比" width="100px">
                   <template scope="scope">
                     {{setRatio(cardFinanceInfoForm.paymentMethods.advance[scope.$index], cardFinanceInfoForm.paymentMethods.advance[scope.$index].paymentAmount)}}
                   </template>
@@ -656,7 +661,7 @@
                         <el-table-column
                           prop="paymentTimePeriod"
                           label="付款条件"
-                          width="250px">
+                          width="200px">
                           <template scope="scope">
                             <el-select
                               v-model="props.row.subItem[scope.$index].paymentTimePeriod"
@@ -685,7 +690,7 @@
                               v-model="props.row.subItem[scope.$index].remark"></el-input>
                           </template>
                         </el-table-column>
-                        <el-table-column prop="ratio" label="占比" width="80px">
+                        <el-table-column prop="ratio" label="占比" width="100px">
                           <template scope="scope">
                             {{setRatio(props.row.subItem[scope.$index], props.row.subItem[scope.$index].paymentAmount)}}
                           </template>
@@ -722,14 +727,19 @@
                   width="150px">
                   <template scope="scope">
                     <el-input
+                      v-if="cardFinanceInfoForm.paymentMethods.progress[scope.$index].seriousPayments"
                       :disabled="operateType==='query'||cardFinanceInfoForm.paymentMethods.progress[scope.$index].seriousPayments"
                       v-model="progressPaymentAmount"></el-input>
+                    <el-input
+                      v-else
+                      :disabled="operateType==='query'||cardFinanceInfoForm.paymentMethods.progress[scope.$index].seriousPayments"
+                      v-model="cardFinanceInfoForm.paymentMethods.progress[scope.$index].paymentAmount"></el-input>
                   </template>
                 </el-table-column>
                 <el-table-column
                   prop="paymentTimePeriod"
                   label="付款条件"
-                  width="250px">
+                  width="200px">
                   <template scope="scope">
                     <el-select
                       v-model="cardFinanceInfoForm.paymentMethods.progress[scope.$index].paymentTimePeriod"
@@ -758,7 +768,7 @@
                       v-model="cardFinanceInfoForm.paymentMethods.progress[scope.$index].remark"></el-input>
                   </template>
                 </el-table-column>
-                <el-table-column prop="ratio" label="占比" width="80px">
+                <el-table-column prop="ratio" label="占比" width="100px">
                   <template scope="scope">
                     {{setRatio(cardFinanceInfoForm.paymentMethods.progress[scope.$index], cardFinanceInfoForm.paymentMethods.progress[scope.$index].paymentAmount)}}
                   </template>
@@ -795,7 +805,7 @@
                         <el-table-column
                           prop="paymentTimePeriod"
                           label="付款条件"
-                          width="250px">
+                          width="200px">
                           <template scope="scope">
                             <el-select
                               v-model="props.row.subItem[scope.$index].paymentTimePeriod"
@@ -824,7 +834,7 @@
                               v-model="props.row.subItem[scope.$index].remark"></el-input>
                           </template>
                         </el-table-column>
-                        <el-table-column prop="ratio" label="占比" width="80px">
+                        <el-table-column prop="ratio" label="占比" width="100px">
                           <template scope="scope">
                             {{setRatio(props.row.subItem[scope.$index], props.row.subItem[scope.$index].paymentAmount)}}
                           </template>
@@ -864,14 +874,19 @@
                   width="150px">
                   <template scope="scope">
                     <el-input
+                      v-if="cardFinanceInfoForm.paymentMethods._final[scope.$index].seriousPayments"
                       :disabled="operateType==='query'||cardFinanceInfoForm.paymentMethods._final[scope.$index].seriousPayments"
                       v-model="finalPaymentAmount"></el-input>
+                    <el-input
+                      v-else
+                      :disabled="operateType==='query'||cardFinanceInfoForm.paymentMethods._final[scope.$index].seriousPayments"
+                      v-model="cardFinanceInfoForm.paymentMethods._final[scope.$index].paymentAmount"></el-input>
                   </template>
                 </el-table-column>
                 <el-table-column
                   prop="paymentTimePeriod"
                   label="付款时间"
-                  width="250px">
+                  width="200px">
                   <template scope="scope">
                     <el-select
                       v-model="cardFinanceInfoForm.paymentMethods._final[scope.$index].paymentTimePeriod"
@@ -900,7 +915,7 @@
                       v-model="cardFinanceInfoForm.paymentMethods._final[scope.$index].remark"></el-input>
                   </template>
                 </el-table-column>
-                <el-table-column prop="ratio" label="占比" width="80px">
+                <el-table-column prop="ratio" label="占比" width="100px">
                   <template scope="scope">
                     {{setRatio(cardFinanceInfoForm.paymentMethods._final[scope.$index], cardFinanceInfoForm.paymentMethods._final[scope.$index].paymentAmount)}}
                   </template>
@@ -1837,6 +1852,7 @@
       }
 
       return {
+        procInstId:'',//流程id
         updated: false, // 在变更合同提交后是否显示变更原因
         previewData: {}, // 预览数据
         visible: false, // 预览
@@ -2468,33 +2484,33 @@
         let sum = 0
         if (items && items.length) {
           for (let i = 0, len = items.length; i < len; i++) {
-            sum += items[0].paymentAmount
+            sum += parseFloat(items[i].paymentAmount)
           }
         }
-        this.cardFinanceInfoForm.paymentMethods.advance[0].paymentAmount = parseFloat(sum)
-        return parseFloat(sum)
+        this.cardFinanceInfoForm.paymentMethods.advance[0].paymentAmount = sum
+        return sum
       },
       progressPaymentAmount: function () {
         const items = this.cardFinanceInfoForm.paymentMethods.progress[0].subItem
         let sum = 0
         if (items && items.length) {
           for (let i = 0, len = items.length; i < len; i++) {
-            sum += items[0].paymentAmount
+            sum += parseFloat(items[i].paymentAmount)
           }
         }
-        this.cardFinanceInfoForm.paymentMethods.progress[0].paymentAmount = parseFloat(sum)
-        return parseFloat(sum)
+        this.cardFinanceInfoForm.paymentMethods.progress[0].paymentAmount = sum
+        return sum
       },
       finalPaymentAmount: function () {
         const items = this.cardFinanceInfoForm.paymentMethods._final[0].subItem
         let sum = 0
         if (items && items.length) {
           for (let i = 0, len = items.length; i < len; i++) {
-            sum += items[0].paymentAmount
+            sum += parseFloat(items[i].paymentAmount)
           }
         }
-        this.cardFinanceInfoForm.paymentMethods._final[0].paymentAmount = parseFloat(sum)
-        return parseFloat(sum)
+        this.cardFinanceInfoForm.paymentMethods._final[0].paymentAmount = sum
+        return sum
       },
       enabledFianceBtn:function(){
         let enabled=true
@@ -2506,6 +2522,9 @@
     },
     mounted() {
       const query = this.$route.query
+      if(query.processData){
+        this.procInstId=JSON.parse(query.processData).procInstId
+      }
       if (JSON.stringify(query) !== '{}') {
         if (query.operateType) {
           this.operateType = query.operateType
@@ -2946,7 +2965,8 @@
         if (money) {
           result = parseFloat(money) / totalAmount
         }
-        return result.toFixed(2) * 100 + '%'
+        result=new Number(result)*100
+        return result.toFixed(2)+ '%'
       },
       handleRemoveServiceMatter(index, rows) {
         rows.splice(index, 1)
@@ -3627,7 +3647,7 @@
       },
       handleSeriousPaymentsChange(item, event) {
         item.seriousPayments = event.target.checked
-        if (item.seriousPayments) {
+        if (!item.seriousPayments) {
           item.paymentAmount = 0
           item.paymentTimePeriod = null
           item.remark = null
