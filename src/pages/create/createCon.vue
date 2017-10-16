@@ -100,7 +100,7 @@
       <el-form ref="baseInfoForm" :model="baseInfoForm" label-width="100px" :rules="baseInfoForm.rules">
         <el-row>
           <el-col :span="8">
-            <el-form-item label="经办人" prop="businessOperator">
+            <el-form-item label="经办人" prop="businessOperatorId">
               <el-select
                 class="wp100"
                 :disabled="isEnabled1"
@@ -378,7 +378,7 @@
               <el-col :span="8">
                 <el-form-item label="是否涉及金额">
                   <el-radio-group v-model="cardFinanceInfoForm.moneyInvolved"
-                                  :disabled="operateType==='query'||!enaledMoneyInvolved">
+                                  :disabled="operateType==='query'||!enaledMoneyInvolved||!enabledFianceBtn">
                     <el-radio :label="true">是</el-radio>
                     <el-radio :label="false">否</el-radio>
                   </el-radio-group>
@@ -386,7 +386,7 @@
               </el-col>
               <el-col :span="8" v-if="cardFinanceInfoForm.moneyInvolved===true">
                 <el-form-item label="是否一次性付款">
-                  <el-radio-group v-model="cardFinanceInfoForm.oneOffPay" :disabled="operateType==='query'">
+                  <el-radio-group v-model="cardFinanceInfoForm.oneOffPay" :disabled="operateType==='query'||!enabledFianceBtn">
                     <el-radio :label="true">是</el-radio>
                     <el-radio :label="false">否</el-radio>
                   </el-radio-group>
@@ -395,15 +395,31 @@
             </el-row>
             <el-row>
               <el-col :span="8">
-                <el-form-item label="合同总金额" prop="totalAmount">
-                  <el-input :disabled="!cardFinanceInfoForm.oneOffPay||operateType==='query'"
-                            v-model="cardFinanceInfoForm.totalAmount"
-                            placeholder="根据上表累加(含税价)">{{totalConMoney}}
+                <el-form-item v-if="cardFinanceInfoForm.moneyInvolved&&cardFinanceInfoForm.oneOffPay" label="合同总金额" prop="totalAmount" :rules="[{ required: true, message: '请输入合同总金额', trigger: 'blur' }]">
+                  <el-input  :disabled="!cardFinanceInfoForm.oneOffPay||operateType==='query'"
+                            v-model="cardFinanceInfoForm.totalAmount" placeholder="根据上表累加(含税价)">{{totalConMoney}}
+                  </el-input>
+                </el-form-item>
+                <el-form-item v-else="cardFinanceInfoForm.moneyInvolved&&cardFinanceInfoForm.oneOffPay" label="合同总金额" prop="totalAmount">
+                  <el-input  :disabled="!cardFinanceInfoForm.oneOffPay||operateType==='query'"
+                             v-model="cardFinanceInfoForm.totalAmount" placeholder="根据上表累加(含税价)">{{totalConMoney}}
                   </el-input>
                 </el-form-item>
               </el-col>
               <el-col :span="8">
-                <el-form-item label="开票类型" prop="invoiceType">
+                <el-form-item v-if="cardFinanceInfoForm.moneyInvolved&&cardFinanceInfoForm.oneOffPay" label="开票类型" prop="invoiceType" :rules="[{ required: true, message: '请选择开票类型', trigger: 'blur' }]">
+                  <el-select class="wp100" v-model="cardFinanceInfoForm.invoiceType"
+                             placeholder="请选择开票类型"
+                             :disabled="operateType==='query'">
+                    <el-option
+                      v-for="item in cardFinanceInfoForm.invoiceTypeOptions"
+                      :key="item.value"
+                      :label="item.label"
+                      :value="item.value">
+                    </el-option>
+                  </el-select>
+                </el-form-item>
+                <el-form-item v-else label="开票类型" prop="invoiceType">
                   <el-select class="wp100" v-model="cardFinanceInfoForm.invoiceType"
                              placeholder="请选择开票类型"
                              :disabled="operateType==='query'">
@@ -432,7 +448,23 @@
             </el-row>
             <el-row v-if="cardFinanceInfoForm.oneOffPay">
               <el-col :span="8">
-                <el-form-item label="付款条件">
+                <el-form-item v-if="cardFinanceInfoForm.moneyInvolved&&cardFinanceInfoForm.oneOffPay" label="付款条件" :rules="[{ required: true, message: '请选择付款条件', trigger: 'blur' }]">
+                  <el-select
+                    v-model="cardFinanceInfoForm.paymentTimePeriod"
+                    placeholder="请选择付款条件"
+                    class="wp100"
+                    :disabled="operateType==='query'"
+                  >
+                    <el-option
+                      v-for="item in cardFinanceInfoForm.paymentTimePeriods"
+                      :key="item.id"
+                      :value="item.id"
+                      :label="item.name"
+                    >
+                    </el-option>
+                  </el-select>
+                </el-form-item>
+                <el-form-item v-else label="付款条件">
                   <el-select
                     v-model="cardFinanceInfoForm.paymentTimePeriod"
                     placeholder="请选择付款条件"
@@ -877,7 +909,7 @@
               <el-row>
                 <el-col :span="8">
                   <el-form-item label="是否收取保证金" label-width="120px">
-                    <el-radio-group v-model="cardFinanceInfoForm.depositFlag" :disabled="operateType==='query'">
+                    <el-radio-group v-model="cardFinanceInfoForm.depositFlag" :disabled="operateType==='query'||!enabledFianceBtn">
                       <el-radio :label="true">是</el-radio>
                       <el-radio :label="false">否</el-radio>
                     </el-radio-group>
@@ -1042,11 +1074,11 @@
           <el-form ref="cardContCheckInfoForm" :model="cardContCheckInfoForm" label-width="120px">
             <el-row>
               <el-col :span="8">
-                <el-form-item label="验收责任人" prop="responsibleId">
+                <el-form-item label="验收责任人" prop="responsibleName">
                   <el-select
                     class="wp100"
                     :disabled="operateType==='query'"
-                    v-model="cardContCheckInfoForm.responsibleId"
+                    v-model="cardContCheckInfoForm.responsibleName"
                     filterable
                     remote
                     placeholder="请输入验收责任人"
@@ -1184,7 +1216,7 @@
               icon="plus"
               v-if="enabledInupdated"
               class="mb20">
-              新增其他附件
+              添加
             </el-button>
             <!--<el-button
               type="primary"
@@ -1863,7 +1895,7 @@
           templateId: '', // 当前模版id
           templateOptions: [],
           belongProject: '',
-          prFlag: 1, // 是否有比加单号 1：有 0：无
+          prFlag: 0, // 是否有比加单号 1：有 0：无
           prNo: '', // pr号
           contractNo: '', // 合同编号
           dialogNewSubjectVisible: false,
@@ -2090,6 +2122,7 @@
           rules: {
             deposit: [{required: true, message: '请输入保证金金额', trigger: 'blur'}],
             payTime: [{required: true, message: '请输入付款时间'}]
+
           }
         },
         cardContCheckInfoForm: {
@@ -2268,11 +2301,21 @@
               desc: '5%进税项'
             }
           ],
-          rules: {}
+          rules: {
+            price: [
+              {required: true, message: '请输入物料价格', trigger: 'blur'}
+            ],
+            taxRate: [
+              {required: true, message: '请选择税率', trigger: 'blur'}
+            ]
+          }
         },
         isSubmit: false,
         btnSubmitStatus: true, // 提交按钮状态
-        btnSaveStatus: true// 保存按钮状态
+        btnSaveStatus: true,// 保存按钮状态
+        ruleTotalAmount:{
+
+        },
       }
     },
     created() {
@@ -2302,7 +2345,6 @@
         this.cardFinanceInfoForm.totalAmount = advance + progress + _final
         return advance + progress + _final
       },
-
       showMaterialItems: function () {
         let result = false
         let arrConStandard = this.cardContentInfoForm.conStandard
@@ -2454,6 +2496,13 @@
         this.cardFinanceInfoForm.paymentMethods._final[0].paymentAmount = parseFloat(sum)
         return parseFloat(sum)
       },
+      enabledFianceBtn:function(){
+        let enabled=true
+        if(parseInt(this.baseInfoForm.contractType)===3&&!this.baseInfoForm.prFlag){
+          enabled=false
+        }
+        return enabled
+      }
     },
     mounted() {
       const query = this.$route.query
@@ -3506,7 +3555,7 @@
         this.cardContentInfoForm.dialogAddConStandard = true
       },
       handleAddConStandardItem(formName) {
-        const curFormName = this.$refs[formName]
+        const curForm = this.$refs[formName]
         const conStandards = this.cardContentInfoForm.conStandard
         const key = this.formAddConStandard.search
         let index = _.findIndex(conStandards, function (chr) {
@@ -3516,18 +3565,25 @@
           this.$message.error('这条数据已存在咯！')
           return false
         }
-        const conStandard = this.cardContentInfoForm.conStandard
-        const item = {}
-        item.id = curFormName.model.id
-        item.materialCode = curFormName.model.materialCode
-        item.materialName = curFormName.model.materialName
-        item.total = curFormName.model.total
-        item.price = curFormName.model.price
-        item.taxRate = curFormName.model.taxRate
-        item.operate = 'add'
-        conStandard.push(item)
-        this.cardContentInfoForm.dialogAddConStandard = false
-        this.$refs[formName].resetFields()
+        curForm.validate((valid) => {
+          if (valid) {
+            const conStandard = this.cardContentInfoForm.conStandard
+            const item = {}
+            item.id = curFormName.model.id
+            item.materialCode = curFormName.model.materialCode
+            item.materialName = curFormName.model.materialName
+            item.total = curFormName.model.total
+            item.price = curFormName.model.price
+            item.taxRate = curFormName.model.taxRate
+            item.operate = 'add'
+            conStandard.push(item)
+            this.cardContentInfoForm.dialogAddConStandard = false
+            this.$refs[formName].resetFields()
+          } else {
+            console.log('error submit!!');
+            return false;
+          }
+        });
       },
       handleCancelAddConStandard(formName) {
         this.$refs[formName].resetFields()
