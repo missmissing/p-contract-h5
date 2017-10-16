@@ -80,7 +80,7 @@
           dataType: this.dataType
         }).then((res) => {
           const {procList} = res.data.dataMap
-          console.log(procList)
+          // console.log(procList)
           this.items = procList || []
         })
       },
