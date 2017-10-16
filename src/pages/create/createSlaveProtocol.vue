@@ -769,7 +769,7 @@
           saleTime: 1, // 用章次数
           printTime: '', // 打印份数
           remainTime: '', // 我方留存份数
-          saleInfos: [], // 当前选中的张
+          saleInfos: [], // 当前选中的章
           useSeals: [
             {
               id: 1,

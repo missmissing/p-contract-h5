@@ -1570,7 +1570,7 @@
             </el-table>
           </el-form>
         </el-tab-pane>
-        <el-tab-pane label="其他" name="tabOtherInfo" v-if="operateType==='query'">
+        <!--<el-tab-pane label="其他" name="tabOtherInfo" v-if="operateType==='query'">
           <el-select
             v-model="cardOtherInfo.condition"
             placeholder="请选择"
@@ -1588,7 +1588,7 @@
               <component :is="tabs"></component>
             </transition>
           </keep-alive>
-        </el-tab-pane>
+        </el-tab-pane>-->
       </el-tabs>
     </el-card>
     <el-dialog title="新增合同供应商信息" :visible.sync="cardContentInfoForm.dialogAddContractSupplier" size="small">
@@ -3074,7 +3074,7 @@
               this.$refs.cardContCheckInfoForm.validate((valid) => {
                 if (valid) {
                   const service = this.cardContCheckInfoForm.serviceMatters
-                  if (service.length === 0) {
+                  if (!service.length) {
                     errors.cardContCheckInfoForm.errorCount += 1
                     errors.cardContCheckInfoForm.serviceCheckMsg = '服务验收事项不能为空'
                   }
@@ -3186,7 +3186,7 @@
       handleSubmit() {
         this.btnSubmitStatus = false
         this.isSubmit = true
-        this.comLoading()
+
         this.validateForms().then(() => {
           this.formatTime(this.cardContentInfoForm, this.cardFinanceInfoForm)
           this.cardSealInfoForm.sealAttachments = this.combineSealsInfo()
@@ -3199,6 +3199,7 @@
           paras.cardRemarkInfoForm = this.cardRemarkInfoForm
           paras.cardOtherInfo = this.cardOtherInfo
           if (this.operateType === 'create') {
+            this.comLoading()
             Api.submit(paras).then((data) => {
               if (data.data.dataMap.id) {
                 this.btnSubmitStatus = true
@@ -3210,6 +3211,7 @@
             })
               .catch(() => {
                 this.btnSubmitStatus = true
+                this.comLoading(false)
               })
           } else {
             const updateForm = this.updateForm
@@ -3217,6 +3219,7 @@
             updateParams.alterMode = updateForm.updateMode
             updateParams.alterRemark = updateForm.remark
             updateParams.contractVo = paras
+            this.comLoading()
             Api.updatedSubmit(updateParams).then((data) => {
               if (data.data.dataMap.id) {
                 if (this.operateType === 'update') {
@@ -3228,9 +3231,10 @@
               this.comLoading(false)
             })
           }
-        }).catch(() => {
-          this.comLoading(false)
         })
+          .catch(()=>{
+            this.btnSubmitStatus = true
+          })
       },
 
       handleCurTimeChange(value, row) {
