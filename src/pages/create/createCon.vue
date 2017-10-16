@@ -342,9 +342,9 @@
               <el-row class="mt20" v-if="operateType==='update'">
                 <el-col :span="8">
                   <el-form-item label="是否固定期限">
-                    <el-radio-group v-model="cardContentInfoForm.ifFixedTerm" :disabled="!enabledInupdated">
-                      <el-radio :label="1">是</el-radio>
-                      <el-radio :label="0">否</el-radio>
+                    <el-radio-group v-model="cardContentInfoForm.fixedTermFlag" :disabled="!enabledInupdated">
+                      <el-radio :label="true">是</el-radio>
+                      <el-radio :label="false">否</el-radio>
                     </el-radio-group>
                   </el-form-item>
                 </el-col>
@@ -387,7 +387,7 @@
                   </el-radio-group>
                 </el-form-item>
               </el-col>
-              <el-col :span="8" v-if="cardFinanceInfoForm.moneyInvolved===true">
+              <el-col :span="8" v-if="cardFinanceInfoForm.moneyInvolved">
                 <el-form-item label="是否一次性付款">
                   <el-radio-group v-model="cardFinanceInfoForm.oneOffPay" :disabled="operateType==='query'||!enabledFianceBtn">
                     <el-radio :label="true">是</el-radio>
@@ -396,7 +396,7 @@
                 </el-form-item>
               </el-col>
             </el-row>
-            <el-row>
+            <el-row v-if="cardFinanceInfoForm.moneyInvolved">
               <el-col :span="8">
                 <el-form-item v-if="cardFinanceInfoForm.moneyInvolved&&cardFinanceInfoForm.oneOffPay" label="合同总金额" prop="totalAmount" :rules="[{ required: true, message: '请输入合同总金额', trigger: 'blur' }]">
                   <el-input  :disabled="!cardFinanceInfoForm.oneOffPay||operateType==='query'"
@@ -449,7 +449,7 @@
                 </el-form-item>
               </el-col>
             </el-row>
-            <el-row v-if="cardFinanceInfoForm.oneOffPay">
+            <el-row v-if="cardFinanceInfoForm.oneOffPay&&cardFinanceInfoForm.moneyInvolved">
               <el-col :span="8">
                 <el-form-item v-if="cardFinanceInfoForm.moneyInvolved&&cardFinanceInfoForm.oneOffPay" label="付款条件" :rules="[{ required: true, message: '请选择付款条件', trigger: 'blur' }]">
                   <el-select
@@ -1931,7 +1931,7 @@
           errorCount: 0,
           supplierErrorMsg: '',
           subjectsErrorMsg: '',
-          ifFixedTerm: 1, // 是否固定期限（仅在变更合同时显示）
+          fixedTermFlag: null, // 是否固定期限（仅在变更合同时显示）
           dialogAddContractSupplier: false,
           dialogNewThirdPartyVisible: false,
           dialogAddConStandard: false,
@@ -2283,27 +2283,27 @@
           taxRates: [
             {
               code: 'J0',
-              value: 0,
+              value: '0',
               desc: '0%进税项'
             },
             {
               code: 'J1',
-              value: 3,
+              value: '3',
               desc: '3%进税项'
             },
             {
               code: 'J2',
-              value: 6,
+              value: '6',
               desc: '6%进税项'
             },
             {
               code: 'J3',
-              value: 11,
+              value: '11',
               desc: '11%进税项'
             },
             {
               code: 'J4',
-              value: 17,
+              value: '17',
               desc: '17%进税项'
             },
             {
@@ -2313,7 +2313,7 @@
             },
             {
               code: 'J6',
-              value: 5,
+              value: '5',
               desc: '5%进税项'
             }
           ],
@@ -3577,12 +3577,12 @@
           if (valid) {
             const conStandard = this.cardContentInfoForm.conStandard
             const item = {}
-            item.id = curFormName.model.id
-            item.materialCode = curFormName.model.materialCode
-            item.materialName = curFormName.model.materialName
-            item.total = curFormName.model.total
-            item.price = curFormName.model.price
-            item.taxRate = curFormName.model.taxRate
+            item.id = curForm.model.id
+            item.materialCode = curForm.model.materialCode
+            item.materialName = curForm.model.materialName
+            item.total = curForm.model.total
+            item.price = curForm.model.price
+            item.taxRate = curForm.model.taxRate
             item.operate = 'add'
             conStandard.push(item)
             this.cardContentInfoForm.dialogAddConStandard = false

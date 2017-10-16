@@ -149,7 +149,7 @@
                   <el-row>
                     <el-col :span="6">
                       <el-form-item label="用章次数" prop="saleTime">
-                        <el-input :disabled="!enabledInupdated"
+                        <el-input :disabled="true"
                                   v-model="props.row.saleTime">
                         </el-input>
                       </el-form-item>
@@ -619,27 +619,6 @@
           ],
           isSeal: true,
           remark: ''
-          /* sealTimes: '',
-           printTimes: '',
-           retainFileNumber: '',
-           sealName: '',
-           ifPrint: '',
-           useSeal: ['seal1', 'seal2'],
-           useSeals: [
-           {
-           id: 'seal1',
-           name: '公章'
-           },
-           {
-           id: 'seal2',
-           name: '法人章'
-           },
-           {
-           id: 'seal3',
-           name: '人事章'
-           },
-           ], */
-
         }]
         this.cardSealInfoForm.sealAttachments.push(item)
       },
@@ -787,10 +766,10 @@
           ], // 附件类型集合
           haveSale: true, // 是否用章
           remark: '',
-          saleTime: '', // 用章次数
+          saleTime: 1, // 用章次数
           printTime: '', // 打印份数
           remainTime: '', // 我方留存份数
-          saleInfos: [1, 2], // 当前选中的张
+          saleInfos: [], // 当前选中的张
           useSeals: [
             {
               id: 1,
@@ -799,10 +778,6 @@
             {
               id: 2,
               name: '法人章'
-            },
-            {
-              id: 3,
-              name: '人事章'
             }
           ], // 章列表
           filesSealed: []// 上传的盖章后的文件信息

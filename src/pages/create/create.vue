@@ -377,7 +377,7 @@
           if (valid) {
             if (this.conForm.isPr && !this.curPriceList.length) {
               this.$message({
-                message: '请选择一条比加单信息！',
+                message: '请选择一条比价单信息！',
                 type: 'warning'
               })
               return

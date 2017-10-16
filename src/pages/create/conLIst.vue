@@ -100,7 +100,7 @@
       </el-table-column>
       <el-table-column prop="creator" label="发起人" width="100"></el-table-column>
       <el-table-column prop="businessOperatorName" label="经办人" width="100"></el-table-column>
-      <el-table-column prop="businessDeptName" label="经办人的部门" width="100"></el-table-column>
+      <el-table-column prop="businessDeptName" label="业务部门" width="100"></el-table-column>
       <el-table-column prop="approvalDate" label="创建日期" width="130">
         <template scope="scope">
           {{scope.row.approvalDate | formatDate}}
