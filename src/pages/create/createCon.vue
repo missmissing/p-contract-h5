@@ -1092,7 +1092,7 @@
                 <el-form-item label="验收责任人" prop="responsibleName">
                   <el-select
                     class="wp100"
-                    :disabled="operateType==='query'"
+                    :disabled="true"
                     v-model="cardContCheckInfoForm.responsibleName"
                     filterable
                     remote
