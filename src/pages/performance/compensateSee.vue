@@ -7,6 +7,9 @@
 <template>
   <div class="form-container">
     <div>
+      <div class="mb10 clearfix">
+        <div class="fr">流程编号--{{procInstId}}</div>
+      </div>
       <el-card>
         <div slot="header">
           <span class="common-title">基本信息</span>
@@ -169,6 +172,7 @@
     mixins: [comLoading],
     data() {
       return {
+        procInstId: '',
         signTime: '',
         startTime: '',
         endTime: '',
@@ -228,8 +232,11 @@
       }
     },
     created() {
-      const {id} = this.$route.query
+      const {id, processData} = this.$route.query
       this.getInfo(id)
+      if (processData) {
+        this.procInstId = JSON.parse(processData).procInstId
+      }
     },
     components: {
       Upload,

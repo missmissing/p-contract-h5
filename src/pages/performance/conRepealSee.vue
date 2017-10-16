@@ -6,6 +6,9 @@
 
 <template>
   <div class="pd20">
+    <div class="mb10 clearfix">
+      <div class="fr">流程编号--{{procInstId}}</div>
+    </div>
     <div class="basic-info">
       <el-form :model="form" :rules="rules" ref="form" label-width="120px">
         <el-row>
@@ -88,6 +91,7 @@
     mixins: [comLoading],
     data() {
       return {
+        procInstId: '',
         form: {
           suspendReason: '',
           suspendTime: '',
@@ -119,8 +123,11 @@
       }
     },
     created() {
-      const {id} = this.$route.query
+      const {id, processData} = this.$route.query
       this.getInfo(id)
+      if (processData) {
+        this.procInstId = JSON.parse(processData).procInstId
+      }
     },
     filters: {
       formatDate

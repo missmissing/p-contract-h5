@@ -19,6 +19,15 @@ body {
   float: right;
 }
 
+.clearfix:after {
+  display: table;
+  content: '';
+  clear: both;
+  height:0;
+  overflow:hidden;
+  visibility:hidden;
+}
+
 .mt10 {
   margin-top: 10px;
 }

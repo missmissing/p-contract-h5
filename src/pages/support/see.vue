@@ -4,6 +4,9 @@
 
 <template>
   <div>
+    <div class="mb10 clearfix">
+      <div class="fr">流程编号--{{procInstId}}</div>
+    </div>
     <transition name="component-fade" mode="out-in">
       <div v-show="!showTmpl">
         <el-card class="mb20">
@@ -144,6 +147,7 @@
   import {downloadUrl} from '@/api/consts'
 
   const defaultData = {
+    procInstId: '',
     form: {
       templateCode: '',
       templateName: '',
@@ -221,6 +225,7 @@
       this.getTplData(id)
       if (processData) {
         this.showAbolish = JSON.parse(processData).procCode === tplMap[2]
+        this.procInstId = JSON.parse(processData).procInstId
       }
     },
     filters: {

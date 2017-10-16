@@ -4,6 +4,9 @@
 
 <template>
   <div class="pd20">
+    <div class="clearfix">
+      <div class="fr">流程编号--{{procInstId}}</div>
+    </div>
     <el-tabs>
       <el-tab-pane label="订单信息">
         <div class="order-info">
@@ -195,6 +198,7 @@
     mixins: [comLoading],
     data() {
       return {
+        procInstId: '',
         info: {},
         toDetail: {name: routerNames.con_Check, query: {contractId: ''}},
         orderForm: {},
@@ -251,8 +255,11 @@
       }
     },
     created() {
-      const {id} = this.$route.query
+      const {id, processData} = this.$route.query
       this.getInfo(id)
+      if (processData) {
+        this.procInstId = JSON.parse(processData).procInstId
+      }
     },
     filters: {
       formatDate,
