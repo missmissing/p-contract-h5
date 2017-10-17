@@ -82,10 +82,10 @@
         lists: [],
         btns: [],
         commonBtns: ['加签', '转签'],
+        sign: false,
         actionName: '',
         receiver: '',
-        approveRemark: '',
-        show: false
+        approveRemark: ''
       }
     },
     computed: {
@@ -124,7 +124,10 @@
       }
       processData = JSON.parse(processData)
       console.log(processData)
-      const {procInstId, procCode, actions, dataType} = processData
+      const {procInstId, procCode, actions, sign, dataType} = processData
+      if (sign === 1) {
+        this.commonBtns = []
+      }
       this.btns = actions || []
       this.processData = processData
       this.show = dataType === processListMap[0]

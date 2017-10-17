@@ -283,6 +283,7 @@
       },
       toPdf() {
         document.getElementById('pdf-content').value = document.getElementById('pdf-wrap').innerHTML
+        console.log(document.getElementById('pdf-wrap').innerHTML.toString())
         document.getElementById('pdf-form').submit()
         // ApiContract.toPdf({content: document.getElementById('pdf-wrap').innerHTML})
       }

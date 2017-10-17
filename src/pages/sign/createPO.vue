@@ -67,8 +67,8 @@
                 </template>
               </el-table-column>
               <!--<el-table-column-->
-                <!--prop="processViewUrl"-->
-                <!--label="PR申请链接">-->
+              <!--prop="processViewUrl"-->
+              <!--label="PR申请链接">-->
               <!--</el-table-column>-->
               <el-table-column
                 label="操作"
@@ -140,7 +140,12 @@
                 <el-table-column
                   prop="total"
                   label="数量"
-                  width="80">
+                  width="120">
+                  <template scope="scope">
+                    <el-input
+                      v-model.trim="scope.row.total"
+                      @blur="greaterZero($event,scope.row.availableTotal)"></el-input>
+                  </template>
                 </el-table-column>
                 <el-table-column
                   prop="price"
@@ -489,7 +494,7 @@
   import {formatTime, formatDate} from '@/filters/moment'
   import fillZero from '@/util/fillZero'
   import cutZero from '@/util/cutZero'
-  import {nonNegative} from '@/util/reg'
+  import {nonNegative, greaterZero} from '@/util/reg'
   import comLoading from '@/mixins/comLoading'
 
   export default {
@@ -632,6 +637,8 @@
           this.materialsMatchData = materialsMatchVoList
           this.matchData = this.getSource(materialsMatchVoList)
           this.dialogVisible = true
+        }, () => {
+          this.comLoading(false)
         })
       },
       getSource(data) {
@@ -687,7 +694,7 @@
         const orderData = []
         if (this.radio) {
           this.materialsMatchData.forEach((item) => {
-            const {pr, itemNo, materialName, total, materialCode, contVos, category} = item
+            const {pr, itemNo, materialName, total, availableTotal, materialCode, contVos, category} = item
             if (contVos && contVos.length) {
               contVos.forEach((cont) => {
                 if (cont.id === id) {
@@ -700,6 +707,7 @@
                     materialCode,
                     price: cont.totalAmount,
                     total,
+                    availableTotal,
                     taxRate: cont.taxRate,
                     deliveryTime: ''
                   })
@@ -713,7 +721,7 @@
             const {purOrderMaterialsList} = item
             const {pr, category} = item
             purOrderMaterialsList.forEach((material) => {
-              const {itemNo, materialName, materialCode, total} = material
+              const {itemNo, materialName, materialCode, total, availableTotal} = material
               orderData.push({
                 pr,
                 category,
@@ -722,13 +730,14 @@
                 materialCode,
                 price: '',
                 total,
+                availableTotal,
                 taxRate: '',
                 deliveryTime: ''
               })
             })
           })
         }
-        this.orderData = orderData
+        this.orderData = orderData.filter(item => item.availableTotal !== 0)
       },
       showServiceTab() {
         this.showService = this.prData.length && this.prData[0].category === 2 && this.radio1
@@ -742,11 +751,25 @@
       nonNegative(event) {
         const val = event.target.value
         if (!val) {
-          console.log(1)
           return
         }
         if (!nonNegative(val)) {
           this.$message.warning('请输入数字！')
+          event.target.value = ''
+        }
+      },
+      greaterZero(event, availableTotal) {
+        const val = event.target.value
+        if (!val) {
+          return
+        }
+        if (!greaterZero(val)) {
+          this.$message.warning('数量必须大于0！')
+          event.target.value = ''
+        }
+
+        if (val > availableTotal) {
+          this.$message.warning(`不能大于可用数量:${availableTotal}！`)
           event.target.value = ''
         }
       },
@@ -803,13 +826,13 @@
           return
         }
         if (this.radio) {
-          const exist = purOrderMaterials.some(item => !item.deliveryTime)
+          const exist = purOrderMaterials.some(item => (!item.deliveryTime || !item.total))
           if (exist) {
-            this.$message.warning('请选择订单交货日期！')
+            this.$message.warning('订单信息不完整！')
             return
           }
         } else {
-          const exist = purOrderMaterials.some(item => (!item.price || !item.taxRate || !item.deliveryTime))
+          const exist = purOrderMaterials.some(item => (!item.total || !item.price || !item.taxRate || !item.deliveryTime))
           if (exist) {
             this.$message.warning('订单信息不完整！')
             return
