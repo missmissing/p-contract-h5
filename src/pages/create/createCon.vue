@@ -374,7 +374,9 @@
             </el-card>
           </el-form>
         </el-tab-pane>
-        <el-tab-pane label="合同财务信息" name="tabContFinanceInfo">
+        <el-tab-pane name="tabContFinanceInfo">
+          <span slot="label" class="title">合同财务信息<i v-if="cardFinanceInfoForm.errorCount"
+                                                    class="errorCount">{{cardFinanceInfoForm.errorCount}}</i></span>
           <el-form rel="cardFinanceInfoForm" :model="cardFinanceInfoForm" :rules="cardFinanceInfoForm.rules"
                    label-width="120px">
             <el-row>
@@ -398,14 +400,14 @@
             </el-row>
             <el-row v-if="cardFinanceInfoForm.moneyInvolved">
               <el-col :span="8">
-                <el-form-item v-if="cardFinanceInfoForm.moneyInvolved&&cardFinanceInfoForm.oneOffPay" label="合同总金额" prop="totalAmount" :rules="[{ required: true, message: '请输入合同总金额', trigger: 'blur' }]">
+                <!--<el-form-item v-if="cardFinanceInfoForm.moneyInvolved&&cardFinanceInfoForm.oneOffPay" label="合同总金额" prop="totalAmount" :rules="[{ required: true, message: '请输入合同总金额', trigger: 'blur' }]">
                   <el-input  :disabled="!cardFinanceInfoForm.oneOffPay||operateType==='query'"
                             v-model="cardFinanceInfoForm.totalAmount" placeholder="根据上表累加(含税价)">{{totalConMoney}}
                   </el-input>
-                </el-form-item>
-                <el-form-item v-else="cardFinanceInfoForm.moneyInvolved&&cardFinanceInfoForm.oneOffPay" label="合同总金额" prop="totalAmount">
-                  <el-input  :disabled="!cardFinanceInfoForm.oneOffPay||operateType==='query'"
-                             v-model="cardFinanceInfoForm.totalAmount" placeholder="根据上表累加(含税价)">{{totalConMoney}}
+                </el-form-item>-->
+                <el-form-item label="合同总金额" prop="totalAmount">
+                  <el-input  :disabled="true"
+                             v-model="cardFinanceInfoForm.totalAmount" placeholder="根据上表累加(含税价)">{{totalAmount}}
                   </el-input>
                 </el-form-item>
               </el-col>
@@ -472,7 +474,7 @@
               </el-col>
             </el-row>
             <el-card v-if="cardFinanceInfoForm.moneyInvolved">
-              <header slot="header">付款方式</header>
+              <header slot="header">付款方式<i class="errorMsg">{{cardFinanceInfoForm.paymentErrorMSG}}</i></header>
               <el-table :data="cardFinanceInfoForm.paymentMethods.advance"
                         v-if="!cardFinanceInfoForm.oneOffPay"
                         style="width: 100%"
@@ -1990,6 +1992,8 @@
             phone: '021-22300563',
             email: '134656343@qq.com'
           },
+          paymentErrorMSG:'',
+          errorCount:0,
           paymentMethods: {
             advance: [{
               type: '预付款',
@@ -2344,8 +2348,18 @@
         const advance = parseFloat(paymentMethods.advance[0].paymentAmount ? paymentMethods.advance[0].paymentAmount : 0)
         const progress = parseFloat(paymentMethods.progress[0].paymentAmount ? paymentMethods.progress[0].paymentAmount : 0)
         const _final = parseFloat(paymentMethods._final[0].paymentAmount ? paymentMethods._final[0].paymentAmount : 0)
-        this.cardFinanceInfoForm.totalAmount = advance + progress + _final
         return advance + progress + _final
+      },
+      totalAmount:function(){//合同总金额即物料总价
+        let sum=0
+        const conStandards=this.cardContentInfoForm.conStandard
+        if(conStandards&&conStandards.length){
+          for(let i=0,len=conStandards.length;i<len;i++){
+            sum+=parseFloat(conStandards[i].total)*parseFloat(conStandards[i].price)
+          }
+        }
+        this.cardFinanceInfoForm.totalAmount=sum
+        return sum
       },
       showMaterialItems: function () {
         let result = false
@@ -2358,15 +2372,6 @@
           }
         }
         return result
-      },
-      contentErrorLen: function () { // 合同内容信息错误数量
-        const supplier = this.cardContentInfoForm.tableSupplierInfo
-        if (supplier.length > 0) {
-          console.log('success')
-        } else {
-          this.cardContentInfoForm.errCount = supplier
-        }
-        return 0
       },
       contentVisible: function () {
         let visible = false
@@ -2944,7 +2949,7 @@
       },
       getProportion(money) {
         let result = 0,
-          totalAmount = this.cardFinanceInfoForm.totalAmount ? parseFloat(this.cardFinanceInfoForm.totalAmount) : 0
+          totalAmount = this.totalAmount ? parseFloat(this.totalAmount) : 0
         if (totalAmount === 0) {
           return 0 + '%'
         }
@@ -3018,6 +3023,9 @@
               errorCount: 0,
               serviceCheckMsg: ''
             },
+            cardFinanceInfoForm:{
+              errorCount: 0,
+            },
             baseInfoForm: false
           }
           if (this.operateType === 'update') {
@@ -3055,6 +3063,11 @@
               return false
             }
           })
+          if(this.cardFinanceInfoForm.paymentErrorMSG){
+            errors.cardFinanceInfoForm.errorCount=1
+          }else{
+            errors.cardFinanceInfoForm.errorCount=0
+          }
           if (!this.showMaterialItems) {
             if (this.$refs.cardContCheckInfoForm) {
               this.$refs.cardContCheckInfoForm.validate((valid) => {
@@ -3078,7 +3091,10 @@
           this.cardContentInfoForm.subjectsErrorMsg = errors.cardContentInfoForm.subjectsErrorMsg
           this.cardContCheckInfoForm.errorCount = errors.cardContCheckInfoForm.errorCount
           this.cardContCheckInfoForm.serviceCheckMsg = errors.cardContCheckInfoForm.serviceCheckMsg
-          if (!this.cardContentInfoForm.errorCount && !this.cardContCheckInfoForm.errorCount && errors.baseInfoForm) {
+          this.cardFinanceInfoForm.errorCount = errors.cardFinanceInfoForm.errorCount
+          console.log('errors',errors);
+          if (!this.cardContentInfoForm.errorCount && !this.cardContCheckInfoForm.errorCount && errors.baseInfoForm&&!errors.cardFinanceInfoForm.errorCount) {
+
             if (this.operateType === 'update' && !errors.updateError) {
               reject()
             } else {
@@ -3697,7 +3713,7 @@
         }
       },
       'cardFinanceInfoForm.oneOffPay': function () {
-        this.cardFinanceInfoForm.totalAmount = 0
+        this.cardFinanceInfoForm.totalAmount = this.totalAmount
         const paymentMethods = {
           advance: [{
             type: '预付款',
@@ -3796,6 +3812,17 @@
         }
         this.cardFinanceInfoForm.paymentMethods = paymentMethods
       },
+      'totalConMoney':function(val){
+        let total=0
+        if(val){
+          total=parseFloat(val)
+          if(total>this.totalAmount){
+            this.cardFinanceInfoForm.paymentErrorMSG='您输入的金额超过了合同总金额，请重新输入'
+          }else{
+            this.cardFinanceInfoForm.paymentErrorMSG=''
+          }
+        }
+      }
     }
   }
 </script>
