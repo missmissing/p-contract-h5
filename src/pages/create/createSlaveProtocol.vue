@@ -33,13 +33,13 @@
       <header slot="header">基本信息</header>
       <el-form ref="baseInfoForm" :model="baseInfoForm" label-width="100px"
                :rules="baseInfoForm.rules">
-        <el-row v-if="protocolNo">
-          <el-col :span="8">
+        <el-row>
+          <el-col :span="8" v-if="protocolNo">
             <el-form-item prop="protocolNo" label="从协议编号">
               <el-input v-model="protocolNo" :disabled="true"></el-input>
             </el-form-item>
           </el-col>
-          <el-col :span="8">
+          <el-col :span="8" v-if="code">
             <el-form-item prop="code" label="关联合同编号">
               <el-input v-model="code" :disabled="true"></el-input>
             </el-form-item>
