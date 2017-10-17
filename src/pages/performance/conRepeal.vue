@@ -144,6 +144,8 @@
           this.endTime = endTime
           this.toDetail.query.contractId = id
           this.comLoading(false)
+        }, () => {
+          this.comLoading(false)
         })
       },
       submit() {
