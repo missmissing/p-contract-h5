@@ -66,10 +66,10 @@
                   {{scope.row.createTime | formatDate}}
                 </template>
               </el-table-column>
-              <el-table-column
-                prop="processViewUrl"
-                label="PR申请链接">
-              </el-table-column>
+              <!--<el-table-column-->
+                <!--prop="processViewUrl"-->
+                <!--label="PR申请链接">-->
+              <!--</el-table-column>-->
               <el-table-column
                 label="操作"
                 min-width="80">
@@ -158,12 +158,12 @@
                 <el-table-column
                   prop="taxRate"
                   label="税率"
-                  width="120">
+                  width="130">
                   <template scope="scope">
                     <div v-if="radio">{{scope.row.taxRate ? `${scope.row.taxRate}%` : ''}}</div>
                     <div v-else>
                       <el-select
-                        style="width:50px;"
+                        style="width:90px;"
                         v-model="scope.row.taxRate"
                         @change="selectTaxRate(scope.row)">
                         <el-option
@@ -171,11 +171,10 @@
                           :key="item.value"
                           :label="item.code"
                           :value="item.value">
-                          <span class="fl">{{ item.value}}</span>
+                          <span class="fl mr20">{{ item.value}}</span>
                           <span class="fr">{{ item.desc }}</span>
                         </el-option>
                       </el-select>
-                      %
                     </div>
                   </template>
                 </el-table-column>

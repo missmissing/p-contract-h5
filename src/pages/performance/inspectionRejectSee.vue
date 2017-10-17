@@ -7,8 +7,8 @@
 <template>
   <div class="form-container">
     <div>
-      <div class="mb10 clearfix">
-        <div class="fr">流程编号--{{procInstId}}</div>
+      <div class="mb10 clearfix" v-if="procInstId">
+        <div class="fr mr20">流程编号 {{procInstId}}</div>
       </div>
       <el-card>
         <div slot="header">

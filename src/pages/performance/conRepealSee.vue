@@ -6,8 +6,8 @@
 
 <template>
   <div class="pd20">
-    <div class="mb10 clearfix">
-      <div class="fr">流程编号--{{procInstId}}</div>
+    <div class="mb10 clearfix" v-if="procInstId">
+      <div class="fr mr20">流程编号 {{procInstId}}</div>
     </div>
     <div class="basic-info">
       <el-form :model="form" :rules="rules" ref="form" label-width="120px">
