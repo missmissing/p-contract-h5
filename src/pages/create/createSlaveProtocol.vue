@@ -39,6 +39,11 @@
               <el-input v-model="protocolNo" :disabled="true"></el-input>
             </el-form-item>
           </el-col>
+          <el-col :span="8">
+            <el-form-item prop="code" label="关联合同编号">
+              <el-input v-model="code" :disabled="true"></el-input>
+            </el-form-item>
+          </el-col>
         </el-row>
         <el-card class="mb20">
           <header slot="header">合同供应商信息<i class="errorMsg">{{baseInfoForm.supplierErrorMsg}}</i></header>
@@ -94,7 +99,7 @@
           <el-col :span="16">
             <el-form-item label="盖章次序">
               <el-radio-group v-model="baseInfoForm.radioSealOrder" :disabled="!enabledInupdated">
-                <el-radio :label="1">对方先盖章（默认)</el-radio>
+                <el-radio :label="1">对方先盖章</el-radio>
                 <el-radio :label="0">我方先盖章</el-radio>
               </el-radio-group>
             </el-form-item>
@@ -392,6 +397,7 @@
         downloadUrl: downloadUrl,
         uploadUrl: uploadUrl,
         protocolNo: null, // 从协议编号
+        code:null,//合同编号
         operateType: 'create', // 默认创建状态，query：查看
         activeTabName: 'tabBaseInfo',
         baseInfoForm: {
@@ -400,7 +406,7 @@
           subjectErrorMsg: '',
           attachmentErrorMsg: '',
           conSubjctName: [],
-          radioSealOrder: 0, // 0：我方先盖章 1：对方先盖章
+          radioSealOrder: 1, // 0：我方先盖章 1：对方先盖章
           sealReason: '',
           dialogAddContractSupplier: false,
           dialogNewSubjectVisible: false,

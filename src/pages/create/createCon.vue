@@ -317,7 +317,7 @@
                 <el-table-column type="index" label="序号" width="80"></el-table-column>
                 <el-table-column v-if="baseInfoForm.contractBusinessTypeFirst!==2" prop="materialCode"
                                  label="物料编码"></el-table-column>
-                <el-table-column prop="materialName"
+                <el-table-column prop="materialName" width="300"
                                  :label="baseInfoForm.contractBusinessTypeFirst===2?'服务名称':'物料名称'"></el-table-column>
                 <el-table-column v-if="baseInfoForm.contractType!==3" prop="total" label="数量"></el-table-column>
                 <el-table-column prop="price" label="价格"></el-table-column>
@@ -410,22 +410,8 @@
                 </el-form-item>
               </el-col>
               <el-col :span="8">
-                <el-form-item v-if="cardFinanceInfoForm.moneyInvolved&&cardFinanceInfoForm.oneOffPay" label="开票类型" prop="invoiceType" :rules="[{ required: true, message: '请选择开票类型', trigger: 'blur' }]">
-                  <el-select class="wp100" v-model="cardFinanceInfoForm.invoiceType"
-                             placeholder="请选择开票类型"
-                             :disabled="operateType==='query'">
-                    <el-option
-                      v-for="item in cardFinanceInfoForm.invoiceTypeOptions"
-                      :key="item.value"
-                      :label="item.label"
-                      :value="item.value">
-                    </el-option>
-                  </el-select>
-                </el-form-item>
-                <el-form-item v-else label="开票类型" prop="invoiceType">
-                  <el-select class="wp100" v-model="cardFinanceInfoForm.invoiceType"
-                             placeholder="请选择开票类型"
-                             :disabled="operateType==='query'">
+                <el-form-item label="开票类型" prop="invoiceType">
+                  <el-select class="wp100" v-model="cardFinanceInfoForm.invoiceType" placeholder="请选择开票类型" :disabled="operateType==='query'">
                     <el-option
                       v-for="item in cardFinanceInfoForm.invoiceTypeOptions"
                       :key="item.value"
@@ -2137,8 +2123,8 @@
           ],
           rules: {
             deposit: [{required: true, message: '请输入保证金金额', trigger: 'blur'}],
-            payTime: [{required: true, message: '请输入付款时间'}]
-
+            payTime: [{required: true, message: '请输入付款时间', trigger: 'blur'}],
+            invoiceType: [{required: true, message: '请选择开票类型', trigger: 'blur'}]
           }
         },
         cardContCheckInfoForm: {
