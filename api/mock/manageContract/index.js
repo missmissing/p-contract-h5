@@ -611,4 +611,13 @@ module.exports = function (api) {
       ]
     });
   });
+  api.use('/contract-web/protocol/uploadSealAttachments',function(req,res){
+    res.status(200).json({
+      code: 200,
+      message: 'success',
+      dataMap: {
+        status:'success',
+      }
+    });
+  });
 };

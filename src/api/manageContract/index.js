@@ -100,6 +100,10 @@ export default {
   getAgreenmentDetailByAgreenmentNo(params) {
     return Http.get(`${contract}/contract-web/protocol/detail/protocolNO/${params}`)
   },
+  //审批时上传附件接口
+  uploadSealAttachments(params){
+    return Http.post(`${contract}/contract-web/protocol/uploadSealAttachments`,params)
+  },
   /** ***从协议接口****/
 
   /** ***根据合同编号获取详情接口****/

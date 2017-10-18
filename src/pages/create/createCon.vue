@@ -190,7 +190,7 @@
           </el-col>
           <el-col :span="6">
             <el-button type="primary" @click="handlePreview" style="margin-left:33px"
-                       v-if="operateType==='query'&&baseInfoForm.contractTextType===1">预览
+                       v-if="baseInfoForm.contractTextType===1">预览
             </el-button>
           </el-col>
         </el-row>
@@ -259,7 +259,7 @@
                 <el-table-column prop="name" label="公司名称"></el-table-column>
                 <el-table-column prop="applyAll" label="全公司适用">
                   <template scope="scope">
-                    <el-checkbox :disabled="cardContentInfoForm.conSubjctName[scope.$index]!=='1001'"
+                    <el-checkbox :disabled="!enabledAllApply(cardContentInfoForm.conSubjctName[scope.$index].code)"
                                  v-model="cardContentInfoForm.conSubjctName[scope.$index].applyAll"></el-checkbox>
                   </template>
                 </el-table-column>
@@ -391,7 +391,7 @@
               </el-col>
               <el-col :span="8" v-if="cardFinanceInfoForm.moneyInvolved">
                 <el-form-item label="是否一次性付款">
-                  <el-radio-group v-model="cardFinanceInfoForm.oneOffPay" :disabled="operateType==='query'||!enabledFianceBtn">
+                  <el-radio-group v-model="cardFinanceInfoForm.oneOffPay" :disabled="operateType==='query'||baseInfoForm.contractType===3">
                     <el-radio :label="true">是</el-radio>
                     <el-radio :label="false">否</el-radio>
                   </el-radio-group>
@@ -1304,13 +1304,8 @@
                       <el-col :span="12">
                         <el-form-item prop="saleInfos">
                           <el-checkbox-group v-model="props.row.saleInfos">
-                            <el-checkbox
-                              :disabled="!enabledInupdated"
-                              v-for="item in props.row.useSeals"
-                              :label="item.id"
-                              :key="item.id">
-                              {{item.name}}
-                            </el-checkbox>
+                            <el-checkbox label="1" name="sealInfo" :disabled="!enabledInupdated">公章</el-checkbox>
+                            <el-checkbox label="2" name="sealInfo" :disabled="!enabledInupdated">法人章</el-checkbox>
                           </el-checkbox-group>
                         </el-form-item>
                       </el-col>
@@ -1421,13 +1416,8 @@
                         <el-col :span="12">
                           <el-form-item prop="saleInfos">
                             <el-checkbox-group v-model="props.row.saleInfos">
-                              <el-checkbox
-                                :disabled="!enabledInupdated"
-                                v-for="item in props.row.useSeals"
-                                :label="item.id"
-                                :key="item.id">
-                                {{item.name}}
-                              </el-checkbox>
+                              <el-checkbox label="1" name="sealInfo" :disabled="!enabledInupdated">公章</el-checkbox>
+                              <el-checkbox label="2" name="sealInfo" :disabled="!enabledInupdated">法人章</el-checkbox>
                             </el-checkbox-group>
                           </el-form-item>
                         </el-col>
@@ -1785,17 +1775,17 @@
         <el-button type="primary" @click="handleAddConStandardItem('formAddConStandard')">确定</el-button>
       </footer>
     </el-dialog>
-    <Process></Process>
+    <Process :extraFn="callback"></Process>
     <el-row class="mt20">
-      <el-col :span="4" :offset="4">
+      <!--<el-col :span="4" :offset="4">
         <el-button v-if="operateType!=='query'" :disabled="!btnSaveStatus" type="primary" @click="handleSave('')">保存
         </el-button>
-      </el-col>
-      <el-col :span="6">
+      </el-col>-->
+      <!--<el-col :span="6">
         <el-button type="primary" @click="handlePreview" style="margin-left:33px"
                    v-if="operateType!=='query'&&baseInfoForm.contractTextType===1">预览
         </el-button>
-      </el-col>
+      </el-col>-->
       <el-col :span="4">
         <el-button v-if="operateType!=='query'" :disabled="!btnSubmitStatus" type="primary" @click="handleSubmit">提交
         </el-button>
@@ -2505,7 +2495,7 @@
           enabled=false
         }
         return enabled
-      }
+      },
     },
     mounted() {
       const query = this.$route.query
@@ -2576,13 +2566,13 @@
           if (sealAttachments.length) {
             for (let i = 0, len = sealAttachments.length; i < len; i++) { // 初始化附件类型的数
               const item = sealAttachments[i]
-              if (item[0].attachType === 3) {
+              if (parseInt(item[0].attachType) === 3) {
                 contract = item
               }
-              if (item[0].attachType === 1) {
+              if (parseInt(item[0].attachType) === 1) {
                 others.push(item)
               }
-              if (item[0].attachType === 2) {
+              if (parseInt(item[0].attachType) === 2) {
                 agreenments.push(item[0])
               }
             }
@@ -2987,7 +2977,7 @@
       handleUploadFileAfterSealSuccess(res, file, fileList) {
         const dataMap = res.dataMap
         if (dataMap.fileId) {
-          const type = this.cardSealInfoForm.type
+          const type = parseInt(this.cardSealInfoForm.type)
           const index = this.cardSealInfoForm.current
           let curentFile = this.cardSealInfoForm[this.getAgreenmentFieldName(type)]
           type === 1 ? curentFile = curentFile[index][0] : curentFile = curentFile[index]
@@ -3281,11 +3271,11 @@
           saleInfos: [], // 当前选中的张
           useSeals: [
             {
-              id: 1,
+              id: '1',
               name: '公章'
             },
             {
-              id: 2,
+              id: '2',
               name: '法人章'
             }
           ], // 章列表
@@ -3302,8 +3292,6 @@
             }
           }
         }
-        /* const sealAttachments=this.cardSealInfoForm.sealAttachments
-         sealAttachments.push(file); */
       },
       handleNewOtherSealFile() {
         const file = [{
@@ -3331,11 +3319,11 @@
           saleInfos: [], // 当前选中的张
           useSeals: [
             {
-              id: 1,
+              id: '1',
               name: '公章'
             },
             {
-              id: 2,
+              id: '2',
               name: '法人章'
             }
           ], // 章列表
@@ -3370,11 +3358,11 @@
           saleInfos: [], // 当前选中的张
           useSeals: [
             {
-              id: 1,
+              id: '1',
               name: '公章'
             },
             {
-              id: 2,
+              id: '2',
               name: '法人章'
             }
           ], // 章列表
@@ -3520,7 +3508,9 @@
             if (data.data.dataMap) {
               const item = [data.data.dataMap]
               this.cardSealInfoForm.sealAttachments = [item]
-              this.cardSealInfoForm.contract = item
+              if(this.operateType==='create'){
+                this.cardSealInfoForm.contract = item
+              }
             }
           })
         }
@@ -3659,6 +3649,34 @@
         Api.getRemoteCreatePersonsByKeyWord({keyword}).then((res) => {
           const data = res.data.dataMap
           callback && callback(data)
+        })
+      },
+      enabledAllApply(code){
+        let enabled=false
+        if(code==='1001'&&this.baseInfoForm.contractType>=3){
+          enabled=true
+        }
+        return enabled
+      },
+      callback(params){//isSign:是否是加签人 isAgree:审批操作类型是否是同意
+        return new Promise((resolve,reject)=>{
+          const roleName=users.roleName//当前登陆人的角色
+          const sealAttachments = this.combineSealsInfo()
+          sealAttachments.splice(0,1)
+          const {isSign,isAgree}=params
+          resolve()
+          /*if(!isSign&&isAgree){
+              Api.uploadSealAttachments(sealAttachments)
+                .then((data)=>{
+                const dataMap=data.data.dataMap
+                if(dataMap&&dataMap.status==='200'){
+                  resolve()
+                }
+              })
+                .catch(()=>{
+                  reject()
+                })
+          }*/
         })
       }
     },
@@ -3812,8 +3830,8 @@
         let total=0
         if(val){
           total=parseFloat(val)
-          if(total>this.totalAmount){
-            this.cardFinanceInfoForm.paymentErrorMSG='您输入的金额超过了合同总金额，请重新输入'
+          if(total!==this.totalAmount){
+            this.cardFinanceInfoForm.paymentErrorMSG='您添加的付款金额必须等于合同总金额'
           }else{
             this.cardFinanceInfoForm.paymentErrorMSG=''
           }
