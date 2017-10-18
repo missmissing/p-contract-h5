@@ -74,8 +74,10 @@
   import {formatTime} from '@/filters/moment'
   import SelectPerson from '@/components/selectPerson.vue'
   import {routerNames, processListMap} from '@/core/consts'
+  import comLoading from '@/mixins/comLoading'
 
   export default {
+    mixins: [comLoading],
     props: {
       extraFn: {
         type: Function,
@@ -120,6 +122,7 @@
         this.submit()
       },
       submit() {
+        this.comLoading()
         const {procInstId, procCode, serialNumber} = this.processData
         Api.submitProcess({
           procInstId,
@@ -130,7 +133,11 @@
           approveRemark: this.approveRemark
         }).then((res) => {
           console.log(res)
+          this.comLoading(false)
+          this.$message.success('提交成功！')
           this.$router.push({name: routerNames.con_index})
+        }, () => {
+          this.comLoading(false)
         })
       }
     },
