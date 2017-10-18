@@ -61,7 +61,7 @@
             </el-form-item>
           </el-form>
           <div class="ml10 mb20">
-            <el-button type="primary" @click="submit">提 交</el-button>
+            <el-button type="primary" @click="beforeSubmit">提 交</el-button>
           </div>
         </div>
       </div>
@@ -74,15 +74,22 @@
   import {formatTime} from '@/filters/moment'
   import SelectPerson from '@/components/selectPerson.vue'
   import {routerNames, processListMap} from '@/core/consts'
+  import comLoading from '@/mixins/comLoading'
 
   export default {
+    mixins: [comLoading],
+    props: {
+      extraFn: {
+        type: Function,
+        default: null
+      }
+    },
     data() {
       return {
         processData: null,
         lists: [],
         btns: [],
         commonBtns: ['加签', '转签'],
-        sign: false,
         actionName: '',
         receiver: '',
         approveRemark: ''
@@ -98,11 +105,24 @@
         console.log('person', value)
         this.receiver = value
       },
-      submit() {
+      beforeSubmit() {
         if (!this.actionName) {
           this.$message.warning('请选择审批操作!')
           return
         }
+        if (this.extraFn) {
+          const {sign} = this.processData
+          const isSign = sign === 1
+          const isAgree = this.actionName === '同意'
+          this.extraFn({isSign, isAgree}).then(() => {
+            this.submit()
+          })
+          return
+        }
+        this.submit()
+      },
+      submit() {
+        this.comLoading()
         const {procInstId, procCode, serialNumber} = this.processData
         Api.submitProcess({
           procInstId,
@@ -113,7 +133,11 @@
           approveRemark: this.approveRemark
         }).then((res) => {
           console.log(res)
+          this.comLoading(false)
+          this.$message.success('提交成功！')
           this.$router.push({name: routerNames.con_index})
+        }, () => {
+          this.comLoading(false)
         })
       }
     },

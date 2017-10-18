@@ -63,6 +63,7 @@ export const routerNames = {
   con_check_reject: '合同验收不合格处理',
   con_check_reject_see: '合同验收不合格处理查看',
   con_stop: '合同中止',
+  con_stop_see: '合同中止查看',
 
   con_process: '合同流程',
   con_handing_process: '我待办的流程',
@@ -84,7 +85,9 @@ export const tplTypeMap = {
 
 export const tplMap = ['CRS_Contract_CreateTemplate', 'CRS_Contract_UpdateTemplate', 'CRS_Contract_DeleteTemplate']
 
-export const contractMap = ['CRS_Contract_Create', 'CRS_Contract_Update', 'CRS_Contract_Delete]']
+export const contractMap = ['CRS_Contract_Create', 'CRS_Contract_Update']
+
+export const contractDel = ['CRS_Contract_Delete']
 
 export const prMap = ['CRS_Contract_CreatePO', 'CRS_Contract_UpdatePO', 'CRS_Contract_DeletePO']
 

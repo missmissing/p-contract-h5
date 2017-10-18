@@ -10,12 +10,11 @@
       <div class="fr mr20">流程编号 {{procInstId}}</div>
     </div>
     <div class="basic-info">
-      <el-form :model="form" :rules="rules" ref="form" label-width="120px">
+      <el-form :model="form" ref="form" label-width="120px">
         <el-row>
           <el-col :span="8">
             <el-form-item label="合同编号">
-              <el-input :value="contractCode" disabled>
-              </el-input>
+              {{contractCode}}
             </el-form-item>
           </el-col>
           <el-button type="primary" class="ml20" v-show="toDetail.query.contractId">
@@ -25,22 +24,22 @@
         <el-row>
           <el-col :span="8">
             <el-form-item label="合同签署日期">
-              <el-input :value="signDate | formatDate" disabled></el-input>
+              {{signDate | formatDate}}
             </el-form-item>
           </el-col>
           <el-col :span="8" :offset="1">
             <el-form-item label="合同状态">
-              <el-input :value="contractStatus" disabled></el-input>
+              {{contractStatus}}
             </el-form-item>
           </el-col>
           <el-col :span="8">
             <el-form-item label="合同生效日期">
-              <el-input :value="startTime | formatDate" disabled></el-input>
+              {{startTime | formatDate}}
             </el-form-item>
           </el-col>
           <el-col :span="8" :offset="1">
             <el-form-item label="合同截止日期">
-              <el-input :value="endTime | formatDate" disabled></el-input>
+              {{endTime | formatDate}}
             </el-form-item>
           </el-col>
           <el-col :span="8">
@@ -119,7 +118,19 @@
         })
       },
       setData(data) {
-
+        const {baseInfoForm, cardContentInfoForm} = data
+        const {contractNo, approvalDate, contractStatusName, suspendReason, suspendTime, suspendRemark} = baseInfoForm
+        const {startTime, endTime} = cardContentInfoForm
+        this.contractCode = contractNo
+        this.signDate = approvalDate
+        this.contractStatus = contractStatusName
+        this.startTime = startTime
+        this.endTime = endTime
+        Object.assign(this.form, {
+          suspendReason,
+          suspendTime,
+          suspendRemark
+        })
       }
     },
     created() {

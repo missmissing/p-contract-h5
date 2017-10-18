@@ -169,6 +169,17 @@ const router = new Router({
           }
         },
         {
+          path: '/conperf/conrepeal/see',
+          component: function (resolve) {
+            require(['../pages/performance/conRepealSee.vue'], resolve)
+          },
+          name: routerNames.con_stop_see,
+          meta: {
+            auth: true,
+            hidden: true
+          }
+        },
+        {
           path: '/ConCreate/CreateFrameContract', // 创建框架合同
           meta: {
             auth: true,
