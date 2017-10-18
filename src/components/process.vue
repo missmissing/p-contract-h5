@@ -76,6 +76,12 @@
   import {routerNames, processListMap} from '@/core/consts'
 
   export default {
+    props: {
+      extraFn: {
+        type: Function,
+        default: null
+      }
+    },
     data() {
       return {
         processData: null,
@@ -103,18 +109,22 @@
           this.$message.warning('请选择审批操作!')
           return
         }
-        const {procInstId, procCode, serialNumber} = this.processData
-        Api.submitProcess({
-          procInstId,
-          procCode,
-          serialNumber,
-          actionName: this.actionName,
-          redirectApproverId: this.receiver,
-          approveRemark: this.approveRemark
-        }).then((res) => {
-          console.log(res)
-          this.$router.push({name: routerNames.con_index})
-        })
+        if (this.extraFn) {
+          this.extraFn().then(() => {
+            const {procInstId, procCode, serialNumber} = this.processData
+            Api.submitProcess({
+              procInstId,
+              procCode,
+              serialNumber,
+              actionName: this.actionName,
+              redirectApproverId: this.receiver,
+              approveRemark: this.approveRemark
+            }).then((res) => {
+              console.log(res)
+              this.$router.push({name: routerNames.con_index})
+            })
+          })
+        }
       }
     },
     created() {

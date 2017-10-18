@@ -135,6 +135,7 @@
         Api.getContractDetailByCode({id: this.contractCode}).then((res) => {
           const data = res.data.dataMap
           console.log(data)
+          this.info = data
           const {baseInfoForm, cardContentInfoForm} = data
           const {id, approvalDate, contractStatusName} = baseInfoForm
           const {startTime, endTime} = cardContentInfoForm
@@ -159,9 +160,9 @@
             const {id} = baseInfoForm
             const result = {
               id,
-              suspendTime: formatDate(this.suspendTime),
-              suspendReason: this.suspendReason,
-              suspendRemark: this.suspendRemark
+              suspendTime: formatDate(this.form.suspendTime),
+              suspendReason: this.form.suspendReason,
+              suspendRemark: this.form.suspendRemark
             }
             console.log(result)
             this.comLoading({
@@ -170,6 +171,9 @@
             Api.contractSuspendSubmit(result).then((res) => {
               console.log(res)
               this.comLoading(false)
+              this.$router.push({
+                name: routerNames.con_index
+              })
             })
           } else {
             console.log('error submit!!')

@@ -12,6 +12,7 @@
     tplMap,
     prMap,
     contractMap,
+    contractDel,
     processListMap,
     compensateMap,
     inspectRejectMap,
@@ -83,6 +84,13 @@
             id: purchaseOrderId
           }
           name = routerNames.con_purchase_see
+        } else if (contractDel.indexOf(procCode) > -1) {
+          const {baseInfoForm} = approveInfo
+          const {contractNo} = baseInfoForm
+          param = {
+            id: contractNo
+          }
+          name = routerNames.con_stop_see
         } else if (compensateMap.indexOf(procCode) > -1) {
           param = {
             id: procInstId

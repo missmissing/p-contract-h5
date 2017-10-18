@@ -10,7 +10,7 @@
       <div class="fr mr20">流程编号 {{procInstId}}</div>
     </div>
     <div class="basic-info">
-      <el-form :model="form" :rules="rules" ref="form" label-width="120px">
+      <el-form :model="form" ref="form" label-width="120px">
         <el-row>
           <el-col :span="8">
             <el-form-item label="合同编号">
@@ -119,7 +119,19 @@
         })
       },
       setData(data) {
-
+        const {baseInfoForm, cardContentInfoForm} = data
+        const {contractNo, approvalDate, contractStatusName, suspendReason, suspendTime, suspendRemark} = baseInfoForm
+        const {startTime, endTime} = cardContentInfoForm
+        this.contractCode = contractNo
+        this.signDate = approvalDate
+        this.contractStatus = contractStatusName
+        this.startTime = startTime
+        this.endTime = endTime
+        Object.assign(this.form, {
+          suspendReason,
+          suspendTime,
+          suspendRemark
+        })
       }
     },
     created() {
