@@ -458,7 +458,8 @@
               </el-table-column>
               <el-table-column
                 prop="supplierName"
-                label="供应商名称">
+                label="供应商名称"
+                width="300">
               </el-table-column>
               <el-table-column
                 prop="startTime"
