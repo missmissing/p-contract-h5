@@ -69,7 +69,7 @@
         prop="templateCode"
         width="150"
         label="模板编号">
-        <template scope="scope">
+        <template slot-scope="scope">
           <router-link class="router-link" :to="see(scope.row)">
             {{scope.row.templateCode}}
           </router-link>
@@ -84,7 +84,7 @@
         prop="templateType"
         width="100"
         label="文本类型">
-        <template scope="scope">
+        <template slot-scope="scope">
           {{scope.row.templateType === 'TEXT' ? '合同文本' : '合同模板'}}
         </template>
       </el-table-column>
@@ -103,7 +103,7 @@
         prop="createTime"
         width="120"
         label="创建日期">
-        <template scope="scope">
+        <template slot-scope="scope">
           {{scope.row.createTime | formatDate}}
         </template>
       </el-table-column>
@@ -111,7 +111,7 @@
         prop="startDate"
         width="120"
         label="生效日期">
-        <template scope="scope">
+        <template slot-scope="scope">
           {{scope.row.startDate | formatDate}}
         </template>
       </el-table-column>
@@ -119,7 +119,7 @@
         prop="endDate"
         width="120"
         label="终止日期">
-        <template scope="scope">
+        <template slot-scope="scope">
           {{scope.row.endDate | formatDate}}
         </template>
       </el-table-column>

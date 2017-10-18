@@ -175,7 +175,8 @@ const router = new Router({
           },
           name: routerNames.con_stop_see,
           meta: {
-            auth: true
+            auth: true,
+            hidden: true
           }
         },
         {
