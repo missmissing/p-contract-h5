@@ -12,13 +12,63 @@
 </style>
 <template>
   <div class="createSlaveProtocal">
+    <!--<el-card>
+      <header slot="header">多层table测试</header>
+      <el-form rel="testForm" :model="testForm" :rules="testForm.rules">
+        <template v-for="(item,index) in testForm.tableData">
+          <el-table :data="item">
+            <el-table-column type="expand">
+              <template scope="props">
+                <el-form-item prop="work" :rules="[{ type: 'array', required: true, message: '请选择用章类型', trigger: 'change' }]">
+                  {{props.row.work}}
+                  <el-checkbox-group v-model="props.row.work">
+                    <el-checkbox label="1" name="sealType"></el-checkbox>
+                    <el-checkbox label="2" name="sealType"></el-checkbox>
+                  </el-checkbox-group>
+                </el-form-item>
+              </template>
+            </el-table-column>
+            <el-table-column prop="id" label="id"></el-table-column>
+            <el-table-column prop="name" label="name"></el-table-column>
+          </el-table>
+        </template>
+      </el-form>
+    </el-card>
+    <el-card>
+      <header slot="header">table测试</header>
+      <el-form rel="testForm1" :model="testForm1" :rules="testForm1.rules">
+          <el-table :data="testForm1.tableData">
+            <el-table-column type="expand">
+              <template scope="props">
+                <el-form-item prop="work" :rules="[{ type: 'array', required: true, message: '请选择用章类型', trigger: 'change' }]">
+                  {{props.row.work}}
+                  <el-checkbox-group v-model="props.row.work">
+                    <el-checkbox label="1" name="sealType"></el-checkbox>
+                    <el-checkbox label="2" name="sealType"></el-checkbox>
+                  </el-checkbox-group>
+                </el-form-item>
+              </template>
+            </el-table-column>
+            <el-table-column prop="id" label="id"></el-table-column>
+            <el-table-column prop="name" label="name"></el-table-column>
+            <el-table-column prop="sex" label="sex">
+              <template scope="scope">
+                  <el-checkbox v-model="scope.row.sex"></el-checkbox>
+              </template>
+            </el-table-column>
+          </el-table>
+      </el-form>
+    </el-card>-->
+    <div class="mb10 clearfix" v-if="procInstId">
+      <div class="fr mr20">流程编号 {{procInstId}}</div>
+    </div>
     <el-card v-if="operateType==='create'">
       <header slot="header">合同查询</header>
       <el-form rel="queryContractForm" :model="queryContractForm" label-width="100px" :rules="queryContractForm.rules">
         <el-row>
           <el-col :span="8">
             <el-form-item label="合同编号" prop="code">
-              <el-input :disabled="contentVisible" v-model="queryContractForm.code" placeholder="请输入合同编号"></el-input>
+              <el-input v-model="queryContractForm.code" placeholder="请输入合同编号"></el-input>
             </el-form-item>
           </el-col>
           <el-col :span="4" :offset="1" v-if="operateType==='create'">
@@ -27,6 +77,21 @@
             </el-button>
           </el-col>
         </el-row>
+        <!--<el-row>
+          <el-button @click="handleTest">添加cks</el-button>
+        </el-row>
+        <el-row>
+          <el-col :span="12">
+            <el-form-item label="活动性质" prop="testtype" :rules="[{ type: 'array', required: true, message: '请选择活动性质', trigger: 'change' }]">
+              <el-checkbox-group  v-model="queryContractForm.testtype">
+                <el-checkbox label="美食/餐厅线上活动" name="type"></el-checkbox>
+                <el-checkbox label="地推活动" name="type"></el-checkbox>
+                <el-checkbox label="线下主题活动" name="type"></el-checkbox>
+                <el-checkbox label="单纯品牌曝光" name="type"></el-checkbox>
+              </el-checkbox-group>
+            </el-form-item>
+          </el-col>
+        </el-row>-->
       </el-form>
     </el-card>
     <el-card v-if="contentVisible">
@@ -119,9 +184,7 @@
       <header slot="header">合同附件及盖章信息<i class="errorMsg">{{baseInfoForm.attachmentErrorMsg}}</i></header>
       <el-form rel="cardSealInfoForm" :model="cardSealInfoForm" label-width="100px" :rules="cardSealInfoForm.rules">
         <el-button size="small" type="primary" @click="handleNewOtherSealFile" icon="plus" class="mb20"
-                   v-if="enabledInupdated">
-          新增
-        </el-button>
+                   v-if="enabledInupdated">新增</el-button>
         <template v-if="cardSealInfoForm.sealAttachments.length"
                   v-for="(item,index) in cardSealInfoForm.sealAttachments">
           <el-table :data="item" :show-header="index===0?true:false" style="width:100%">
@@ -198,12 +261,23 @@
                             :disabled="!enabledInupdated"
                             v-for="item in props.row.useSeals"
                             :label="item.id"
+                            name="sealType"
                             :key="item.id">
                             {{item.name}}
                           </el-checkbox>
                         </el-checkbox-group>
                       </el-form-item>
                     </el-col>
+                    <!--<el-col :span="12">
+                      <el-form-item label="活动性质" prop="testtype" :rules="[{ type: 'array', required: true, message: '请选择活动性质', trigger: 'change' }]">
+                        <el-checkbox-group  v-model="props.row.testtype">
+                          <el-checkbox label="美食/餐厅线上活动" name="type"></el-checkbox>
+                          <el-checkbox label="地推活动" name="type"></el-checkbox>
+                          <el-checkbox label="线下主题活动" name="type"></el-checkbox>
+                          <el-checkbox label="单纯品牌曝光" name="type"></el-checkbox>
+                        </el-checkbox-group>
+                      </el-form-item>
+                    </el-col>-->
                   </el-row>
                 </div>
               </template>
@@ -237,9 +311,7 @@
             </el-table-column>
             <el-table-column prop="haveSale" label="是否盖章" width="100px">
               <template scope="scope">
-                <el-checkbox
-                  :disabled="!enabledInupdated"
-                  v-model="item[scope.$index].haveSale"></el-checkbox>
+                  <el-checkbox :disabled="!enabledInupdated" v-model="item[scope.$index].haveSale"></el-checkbox>
               </template>
             </el-table-column>
             <el-table-column prop="remark" :disabled="!enabledInupdated" label="备注" width="200px">
@@ -385,7 +457,48 @@
   export default {
     data: function () {
       return {
+        testForm:{
+          tableData:[
+            [{
+              id:'1',
+              name:'11',
+              work:[],
+              works:[{
+                id:'1',
+                name:'程序员'
+              },
+                {
+                  id:'2',
+                  name:'分析师'
+                }]
+            }]
+          ],
+          rules:{}
+        },
+        testForm1:{
+          tableData:
+            [{
+              id:'1',
+              name:'11',
+              sex:null,
+              work:[],
+              works:[
+                {
+                id:'1',
+                name:'程序员'
+              },
+                {
+                  id:'2',
+                  name:'分析师'
+                }]
+            }],
+          rules:{
+            sex:[{required: true, message: '请选择活动性质', trigger: 'change' }]
+          }
+        },
+        procInstId: '', // 流程编号：
         queryContractForm: {
+          testtype:[],//??delete
           visible: false, // 在创建从协议时控制从协议页面数据的显示与否
           code: '',
           rules: {
@@ -413,9 +526,45 @@
           rules: {}
         },
         cardSealInfoForm: {
-          sealAttachments: [],
+          sealAttachments: [
+           /* [{
+              testtype:['地推活动'],////??delte
+              operate: 'add',
+              id: '',
+              fileName: '',
+              fileUrl: '', // 合同文本类型为非模版合同时，附件类型的合同的文件下载地址
+              attachType: 1, // 附件类型
+              slaveProtocolNo: '0011001', // 从协议编号
+              types: [
+                {
+                  id: 1,
+                  name: '其他'
+                }
+              ], // 附件类型集合
+              haveSale: true, // 是否用章
+              remark: '',
+              saleTime: 1, // 用章次数
+              printTime: '', // 打印份数
+              remainTime: '', // 我方留存份数
+              saleInfos: [1], // 当前选中的章
+              useSeals: [
+                {
+                  id: 1,
+                  name: '公章'
+                },
+                {
+                  id: 2,
+                  name: '法人章'
+                }
+              ], // 章列表
+              filesSealed: []// 上传的盖章后的文件信息
+            }]*/
+          ],
           current: null, // 为上传功能保存当前所在附件列表的索引
-          type: null// 为上传功能保存当前附件类型
+          type: null,// 为上传功能保存当前附件类型
+          rules:{
+            //testtype:[{ type: 'array', required: true, message: '请选择活动性质', trigger: 'change' }]
+          }
         },
         cardRemarkInfoForm: {
           otherInstruction: ''
@@ -489,6 +638,10 @@
       }
     },
     mounted: function () {
+      const query = this.$route.query
+      if(query.processData){
+        this.procInstId=JSON.parse(query.processData).procInstId
+      }
       if (this.$route.path && this.$route.path === '/ConCreate/querySlaveProtocol') {
         this.operateType = 'query'
         this.requestQueryData()
@@ -758,6 +911,7 @@
       },
       handleNewOtherSealFile() {
         const file = [{
+          testtype:[],////??delte
           operate: 'add',
           id: '',
           fileName: '',
@@ -836,6 +990,19 @@
           }
         })
       },
+      handleTest(){
+        let queryContractForm={
+          testtype:[],//??delete
+          visible: false, // 在创建从协议时控制从协议页面数据的显示与否
+            code: '',
+            rules: {
+            code: [{required: true, message: '请输入合同编号', trigger: 'blur'}],
+            //testtype:[{ type: 'array', required: true, message: '请选择活动性质', trigger: 'change' }]
+          }
+        }
+        this.queryContractForm=queryContractForm
+        console.log('this.queryContractForm',this.queryContractForm);
+      }
     },
     watch: {
       '$route'(to, from) {

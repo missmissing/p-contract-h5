@@ -1871,7 +1871,6 @@
         },
         baseInfoForm: {
           id: '', // 在更新合同是把合同id传入
-          procInstId: '', // 流程编号
           guid: '', // 草稿箱编号
           // businessOperator: '',
           businessOperatorId: '', // 业务经办人id
@@ -2319,9 +2318,6 @@
         isSubmit: false,
         btnSubmitStatus: true, // 提交按钮状态
         btnSaveStatus: true,// 保存按钮状态
-        ruleTotalAmount:{
-
-        },
       }
     },
     created() {
