@@ -13,5 +13,5 @@ module.exports = {
     changeOrigin: true,
     target: 'http://localhost:3000',
     secure: false
-  },
+  }
 };

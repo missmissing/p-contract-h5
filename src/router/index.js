@@ -448,22 +448,6 @@ const router = new Router({
 router.beforeEach((to, from, next) => {
   nprogress.start()
   window.document.title = to.name
-  // Auth验证
-  // if (to.meta.auth) {
-  //   if (to.path === '/login') {
-  //     localStorage.removeItem('user');
-  //   }
-  //   let user = JSON.parse(localStorage.getItem('user'));
-  //   if (!user && to.path !== '/login') {
-  //     next({
-  //       path: '/login?fromUrl=' + to.path
-  //     });
-  //   } else {
-  //     next();
-  //   }
-  // } else {
-  //   next();
-  // }
   next()
   store.commit(types.ROUTE, {
     data: {to, from}

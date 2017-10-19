@@ -57,7 +57,7 @@
         prop="pr"
         width="130"
         label="采购订单号">
-        <template scope="scope">
+        <template slot-scope="scope">
           <router-link class="router-link" :to="see(scope.row)">
             {{scope.row.purchaseOrderNo}}
           </router-link>
@@ -78,7 +78,7 @@
         prop="materialCode"
         width="130"
         label="物料编码">
-        <template scope="scope">
+        <template slot-scope="scope">
           {{scope.row.materialCode | cutZero}}
         </template>
       </el-table-column>
@@ -111,7 +111,7 @@
         prop="createTime"
         width="120"
         label="创建日期">
-        <template scope="scope">
+        <template slot-scope="scope">
           {{scope.row.createTime | formatDate}}
         </template>
       </el-table-column>

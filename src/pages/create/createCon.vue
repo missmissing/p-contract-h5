@@ -3675,9 +3675,9 @@
       },
       callback(params){//isSign:是否是加签人 isAgree:审批操作类型是否是同意
         return new Promise((resolve,reject)=>{
-          const roleName=users.roleName//当前登陆人的角色
-          const sealAttachments = this.combineSealsInfo()
-          sealAttachments.splice(0,1)
+          // const roleName=users.roleName//当前登陆人的角色
+          // const sealAttachments = this.combineSealsInfo()
+          // sealAttachments.splice(0,1)
           const {isSign,isAgree}=params
           resolve()
           /*if(!isSign&&isAgree){

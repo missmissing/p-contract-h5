@@ -94,7 +94,7 @@
       </div>
       <div class="userInfo">
         <span class="mr10">{{timeText}}</span>
-        <span class="mr10">{{username}}({{userId}})</span>
+        <span class="mr10">{{user.userName}}({{user.userId}})</span>
         <el-button type="text" @click="logout">注销</el-button>
       </div>
     </div>
@@ -135,17 +135,14 @@
   import Api from '@/api'
   import {formatTimeText} from '@/filters/moment'
 
-  const user = localStore.get('user') || {}
-  const logo = require('../../assets/img/logo.png')
-
   export default {
     data() {
       return {
-        logo,
+        logo: require('../../assets/img/logo.png'),
         timeText: formatTimeText(),
-        username: user.userName,
-        userId: user.userId,
-        isCollapse: false
+        user: localStore.get('user') || {},
+        isCollapse: false,
+        routes: []
       }
     },
     computed: {
@@ -176,7 +173,48 @@
           const currentUrl = encodeURIComponent(`${window.location.origin}/#/con/index`)
           window.location.href = `${dataMap}${currentUrl}`
         })
+      },
+      allRoutesHiddenTrue(items) {
+        items.forEach((item) => {
+          item.meta.hidden = true
+          const {children} = item
+          if (children && children.length) {
+            this.allRoutesHiddenTrue(children)
+          }
+        })
+      },
+      filterRoutes(items) {
+        items.forEach((item) => {
+          const {name, children} = item
+          this.showRoute(name)
+          if (children && children.length) {
+            this.filterRoutes(children)
+          }
+        })
+      },
+      findRoute(routeNmae, items) {
+        items.some((item) => {
+          const {name, children} = item
+          if (name === routeNmae) {
+            item.meta.hidden = false
+            return true
+          }
+          if (children && children.length) {
+            this.findRoute(routeNmae, children)
+          }
+          return false
+        })
+      },
+      showRoute(routeName) {
+        const defaultRoutes = this.$router.options.routes
+        this.findRoute(routeName, defaultRoutes)
       }
+    },
+    created() {
+      const powers = localStore.get('powers') || []
+      const defaultRoutes = this.$router.options.routes
+      this.allRoutesHiddenTrue(defaultRoutes)
+      this.filterRoutes(powers)
     }
   }
 </script>

@@ -122,7 +122,7 @@
               fixed="right"
               label="操作"
               width="100">
-              <template scope="scope">
+              <template slot-scope="scope">
                 <el-button
                   @click.native.prevent="deleteRow(scope.$index, checkItems)"
                   type="danger"

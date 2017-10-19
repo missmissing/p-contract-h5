@@ -62,7 +62,7 @@
                 prop="createTime"
                 label="创建时间"
                 width="150">
-                <template scope="scope">
+                <template slot-scope="scope">
                   {{scope.row.createTime | formatDate}}
                 </template>
               </el-table-column>
@@ -73,7 +73,7 @@
               <el-table-column
                 label="操作"
                 min-width="80">
-                <template scope="scope">
+                <template slot-scope="scope">
                   <el-button
                     @click.native.prevent="deleteRow(scope.$index, prData)"
                     type="danger"
@@ -128,7 +128,7 @@
                   prop="materialCode"
                   label="物料编码"
                   width="130">
-                  <template scope="scope">
+                  <template slot-scope="scope">
                     {{scope.row.materialCode | cutZero}}
                   </template>
                 </el-table-column>
@@ -141,7 +141,7 @@
                   prop="total"
                   label="数量"
                   width="120">
-                  <template scope="scope">
+                  <template slot-scope="scope">
                     <el-input
                       v-model.trim="scope.row.total"
                       @blur="greaterZero($event,scope.row.availableTotal)"></el-input>
@@ -151,7 +151,7 @@
                   prop="price"
                   label="含税价"
                   width="120">
-                  <template scope="scope">
+                  <template slot-scope="scope">
                     <div v-if="radio">{{scope.row.price}}</div>
                     <div v-else>
                       <el-input
@@ -164,7 +164,7 @@
                   prop="taxRate"
                   label="税率"
                   width="130">
-                  <template scope="scope">
+                  <template slot-scope="scope">
                     <div v-if="radio">{{scope.row.taxRate ? `${scope.row.taxRate}%` : ''}}</div>
                     <div v-else>
                       <el-select
@@ -187,7 +187,7 @@
                   prop="deliveryTime"
                   label="交货日期"
                   width="186">
-                  <template scope="scope">
+                  <template slot-scope="scope">
                     <div>
                       <el-date-picker
                         v-model="scope.row.deliveryTime"
@@ -214,7 +214,7 @@
                   label="操作"
                   fixed="right"
                   width="100">
-                  <template scope="scope">
+                  <template slot-scope="scope">
                     <el-button
                       @click.native.prevent="deleteRow(scope.$index, orderData)"
                       type="danger"
@@ -300,7 +300,7 @@
                     fixed="right"
                     label="操作"
                     width="100">
-                    <template scope="scope">
+                    <template slot-scope="scope">
                       <el-button
                         @click.native.prevent="deleteRow(scope.$index, serverData)"
                         type="danger"
@@ -357,13 +357,14 @@
       :visible.sync="dialogVisible">
       <div>
         <el-tabs v-model="activeName">
-          <el-tab-pane label="框架合同" name="1">
+          <el-tab-pane label="框架合同" name="frame">
             <el-table
               :data="matchData"
               border
               max-height="450"
               @row-click="rowClick"
-              class="wp100">
+              class="wp100"
+              style="visibility: visible;">
               <el-table-column
                 prop="pr"
                 label="PR号">
@@ -375,15 +376,17 @@
               </el-table-column>
               <el-table-column
                 prop="materialCode"
-                label="物料编码">
-                <template scope="scope">
+                label="物料编码"
+                width="180">
+                <template slot-scope="scope">
                   {{scope.row.materialCode | cutZero}}
                 </template>
               </el-table-column>
               <el-table-column
                 prop="materialName"
-                label="物料名称">
-                <template scope="scope">
+                label="物料名称"
+                width="200">
+                <template slot-scope="scope">
                   <template v-if="!scope.row.materialName">
                     <el-radio v-model="radio" :label="scope.$index">{{''}}</el-radio>
                   </template>
@@ -403,13 +406,14 @@
               </el-table-column>
               <el-table-column
                 prop="supplierName"
-                label="供应商名称">
+                label="供应商名称"
+                width="200">
               </el-table-column>
               <el-table-column
                 prop="startTime"
                 label="开始时间"
                 width="120">
-                <template scope="scope">
+                <template slot-scope="scope">
                   {{scope.row.startTime | formatDate}}
                 </template>
               </el-table-column>
@@ -417,7 +421,7 @@
                 prop="endTime"
                 label="截止时间"
                 width="120">
-                <template scope="scope">
+                <template slot-scope="scope">
                   {{scope.row.endTime | formatDate}}
                 </template>
               </el-table-column>
@@ -430,21 +434,22 @@
                 prop="taxRate"
                 label="税率"
                 width="80">
-                <template scope="scope">{{scope.row.taxRate ? `${scope.row.taxRate}%` : ''}}</template>
+                <template slot-scope="scope">{{scope.row.taxRate ? `${scope.row.taxRate}%` : ''}}</template>
               </el-table-column>
             </el-table>
           </el-tab-pane>
-          <el-tab-pane label="框架意向合同" name="2">
+          <el-tab-pane label="框架意向合同" name="intention">
             <el-table
               :data="intentionData"
               border
               max-height="450"
               @row-click="rowClick"
-              class="wp100">
+              class="wp100"
+              style="visibility: visible;">
               <el-table-column
                 label=""
                 width="80">
-                <template scope="scope">
+                <template slot-scope="scope">
                   <el-radio v-model="radio1" :label="scope.$index">{{''}}</el-radio>
                 </template>
               </el-table-column>
@@ -459,13 +464,13 @@
               <el-table-column
                 prop="supplierName"
                 label="供应商名称"
-                width="300">
+                width="200">
               </el-table-column>
               <el-table-column
                 prop="startTime"
                 label="开始时间"
                 width="120">
-                <template scope="scope">
+                <template slot-scope="scope">
                   {{scope.row.startTime | formatDate}}
                 </template>
               </el-table-column>
@@ -473,7 +478,7 @@
                 prop="endTime"
                 label="截止时间"
                 width="120">
-                <template scope="scope">
+                <template slot-scope="scope">
                   {{scope.row.endTime | formatDate}}
                 </template>
               </el-table-column>
@@ -490,6 +495,7 @@
 </template>
 
 <script>
+  import _ from 'lodash'
   import signModel from '@/api/sign'
   import {routerNames, prTypeMap, contractPatternMap} from '@/core/consts'
   import {formatTime, formatDate} from '@/filters/moment'
@@ -506,7 +512,7 @@
         contractCode: '',
         prData: [],
         materialsMatchData: [],
-        activeName: '1',
+        activeName: 'frame',
         matchData: [],
         intentionData: [],
         radio: null,
@@ -658,7 +664,7 @@
         return result
       },
       setInfo() {
-        if (!this.radio && !(String(this.radio1))) {
+        if (_.isNull(this.radio) && _.isNull(this.radio1)) {
           this.$message.warning('请选择一项！')
           return
         }
@@ -671,7 +677,7 @@
       },
       setContractData() {
         console.log(this.activeName)
-        if (this.activeName === '1') {
+        if (this.activeName === 'frame') {
           this.contractForm = this.matchData[this.radio]
         } else {
           this.contractForm = this.intentionData[this.radio1]
@@ -787,7 +793,7 @@
       rowClick(row) {
         console.log(row)
         let index = 0
-        if (this.activeName === '1') {
+        if (this.activeName === 'frame') {
           const {pr} = row
           if (pr) {
             return
@@ -880,12 +886,12 @@
     },
     watch: {
       radio() {
-        if (this.activeName === '1') {
+        if (this.activeName === 'frame') {
           this.radio1 = null
         }
       },
       radio1() {
-        if (this.activeName === '2') {
+        if (this.activeName === 'intention') {
           this.radio = null
         }
       }

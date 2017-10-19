@@ -122,7 +122,7 @@
                   <el-table-column
                     prop="fileName"
                     label="文件名">
-                    <template scope="scope">
+                    <template slot-scope="scope">
                       <a class="router-link" :href="`${download}${scope.row.fileId}`">{{scope.row.fileName}}</a>
                     </template>
                   </el-table-column>
@@ -135,7 +135,7 @@
                     prop="createTime"
                     width="150"
                     label="上传时间">
-                    <template scope="scope">
+                    <template slot-scope="scope">
                       {{scope.row.createTime | formatDate}}
                     </template>
                   </el-table-column>

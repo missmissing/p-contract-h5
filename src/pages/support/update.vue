@@ -67,7 +67,6 @@
                       placeholder="选择日期"
                       v-model="form.startDate"
                       style="width:100%;"
-                      :picker-options="pickerOptions"
                       :editable="false">
                     </el-date-picker>
                   </el-form-item>
@@ -186,11 +185,6 @@
     data() {
       return Object.assign({
         endDate: '9999-12-31',
-        pickerOptions: {
-          disabledDate(time) {
-            return time.getTime() < Date.now() - 8.64e7
-          }
-        },
         defaultProps: {
           children: 'children',
           label: 'businessName'
