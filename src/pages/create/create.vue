@@ -1,5 +1,10 @@
+<style scope>
+  .create table {
+    width: 100% !important;
+  }
+</style>
 <template>
-  <div>
+  <div class="create">
     <el-card>
       <el-form ref="conForm" :model="conForm" :rules="conFormRules" label-width="100px">
         <el-form-item label="是否有比价单">
@@ -115,9 +120,6 @@
             </el-form-item>
           </el-col>
         </el-row>
-        <!--<el-form-item label="材料编码">
-          <el-input v-model="prForm.meterialCode" placeholder="请输入材料编码"></el-input>
-        </el-form-item>-->
         <el-row>
           <el-col :span="8" prop="createTime">
             <el-form-item label="创建时间">
@@ -137,7 +139,7 @@
         </el-row>
       </el-form>
       <el-table ref="priceList" :data="priceList" highlight-current-row border @current-change="handleSelectCurrent"
-                max-height="250" @row-click="handleRowClick">
+                max-height="250" @row-click="handleRowClick" width="100%">
         <el-table-column prop="ifSelect" label="选择" width="80">
           <template scope="scope">
             <el-checkbox v-model="scope.row.ifSelect"
@@ -149,19 +151,17 @@
           type="index"
           width="80px">
         </el-table-column>
-        <el-table-column
-          property="folio"
-          label="比价单编码">
+        <el-table-column property="folio" label="比价单编码" width="200">
+          <template scope="scope">
+            <a href="###" @click.stop="handleDetailPR(scope.$index,scope.row)">{{scope.row.folio}}</a>
+          </template>
         </el-table-column>
         <el-table-column
           property="originatorName"
           label="发起人"
           width="80">
         </el-table-column>
-        <el-table-column
-          :show-overflow-tooltip="true"
-          property="originatorDepartmentName"
-          label="发起部门">
+        <el-table-column :show-overflow-tooltip="true" property="originatorDepartmentName" label="发起部门">
         </el-table-column>
         <el-table-column
           property="startTime"
@@ -177,14 +177,6 @@
           width="120">
           <template scope="scope">
             {{transformDataFormat(priceList[scope.$index].finishTime)}}
-          </template>
-        </el-table-column>
-        <el-table-column
-          fixed="right"
-          label="操作"
-          width="80">
-          <template scope="scope">
-            <el-button @click.stop="handleDetailPR(scope.$index,scope.row)" type="text">查看</el-button>
           </template>
         </el-table-column>
       </el-table>

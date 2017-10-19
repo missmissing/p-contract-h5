@@ -174,6 +174,11 @@
               {{conVersion}}
             </el-form-item>
           </el-col>
+          <el-col :span="6">
+            <el-button type="primary" @click="handlePreview" style="margin-left:33px"
+                       v-if="baseInfoForm.contractTextType===1">预览
+            </el-button>
+          </el-col>
         </el-row>
         <el-row>
           <el-col :span="8">
@@ -187,11 +192,6 @@
               <el-input v-model="baseInfoForm.contractNo" placeholder="请输入合同编号"
                         :disabled="true"></el-input>
             </el-form-item>
-          </el-col>
-          <el-col :span="6">
-            <el-button type="primary" @click="handlePreview" style="margin-left:33px"
-                       v-if="baseInfoForm.contractTextType===1">预览
-            </el-button>
           </el-col>
         </el-row>
         <el-row>
@@ -405,7 +405,10 @@
                             v-model="cardFinanceInfoForm.totalAmount" placeholder="根据上表累加(含税价)">{{totalConMoney}}
                   </el-input>
                 </el-form-item>-->
-                <el-form-item label="合同总金额" prop="totalAmount">
+                <el-form-item v-if="baseInfoForm.contractType===3" label="合同总金额" prop="totalAmount">
+                  <el-input :disabled="!enabledContractSum" v-model="cardFinanceInfoForm.totalAmount" placeholder="根据上表累加(含税价)"></el-input>
+                </el-form-item>
+                <el-form-item v-else label="合同总金额" prop="totalAmount">
                   <el-input  :disabled="true"
                              v-model="cardFinanceInfoForm.totalAmount" placeholder="根据上表累加(含税价)">{{totalAmount}}
                   </el-input>
@@ -1105,7 +1108,7 @@
                             placeholder="请输入验收责任人部门"></el-input>
                 </el-form-item>
               </el-col>
-              <el-col :span="8" v-if="!showMaterialItems">
+              <el-col :span="8" v-if="!showMaterialItems&&baseInfoForm.contractBusinessTypeFirst===2">
                 <el-form-item :disabled="operateType==='query'" prop="checkType" label="服务类验收方式">
                   <el-select
                     v-model="cardContCheckInfoForm.checkType"
@@ -1360,11 +1363,7 @@
                         </el-table-column>
                         <el-table-column label="上传人" prop="sealFileCreatorName"></el-table-column>
                         <el-table-column label="上传时间" prop="sealFileCreateTime"></el-table-column>
-                        <el-table-column
-                          fixed="right"
-                          label="操作"
-                          v-if="props.row.filesSealed[0].operate"
-                        >
+                        <el-table-column fixed="right" label="操作" v-if="props.row.filesSealed[0].operate||enabledUpdateInApprove">
                           <template scope="scope">
                             <el-button @click="handleRemoveFilesSealedItem(index, props.row.filesSealed)"
                                        type="danger" size="small">移除
@@ -1382,13 +1381,13 @@
                         </el-col>
                         <el-col :span="6">
                           <el-form-item label="打印份数" prop="printTime">
-                            <el-input :disabled="!enabledInupdated"
+                            <el-input :disabled="!enabledUpdateInApprove"
                                       v-model="props.row.printTime"></el-input>
                           </el-form-item>
                         </el-col>
                         <el-col :span="6">
                           <el-form-item label="我方留存份数" prop="remainTime">
-                            <el-input :disabled="!enabledInupdated"
+                            <el-input :disabled="!enabledUpdateInApprove"
                                       v-model="props.row.remainTime"></el-input>
                           </el-form-item>
                         </el-col>
@@ -1403,7 +1402,7 @@
                               :on-success="handleUploadFileAfterSealSuccess"
                               :on-error="handleUploadFileAfterSealError"
                             >
-                              <el-button :disabled="!enabledInupdated||!getEnabledUploadBtn(props.row.filesSealed)"
+                              <el-button :disabled="!enabledUpdateInApprove||!getEnabledUploadBtn(props.row.filesSealed)"
                                          size="small"
                                          type="primary" @click="handleUpload(item[props.$index].attachType,index)">上传
                               </el-button>
@@ -1786,7 +1785,7 @@
                    v-if="operateType!=='query'&&baseInfoForm.contractTextType===1">预览
         </el-button>
       </el-col>-->
-      <el-col :span="4">
+      <el-col :span="24" style="text-align:center">
         <el-button v-if="operateType!=='query'" :disabled="!btnSubmitStatus" type="primary" @click="handleSubmit">提交
         </el-button>
       </el-col>
@@ -2127,19 +2126,15 @@
           responsibleName: '',
           responsibleDeptId: '',
           responsibleDeptName: '',
-          checkType: '',
+          checkType: null,
           checkServiceMethods: [
             {
               id: '1',
-              name: '验收方式1'
+              name: '收货验收'
             },
             {
               id: '2',
-              name: '验收方式2'
-            },
-            {
-              id: '3',
-              name: '验收方式3'
+              name: '按阶段验收'
             }
           ],
           supervisor: '',
@@ -2496,6 +2491,25 @@
         }
         return enabled
       },
+      ifRole:function(){
+        let ifRole=false,reg=/用章保管人/g
+        //reg.test(user.roleName)?ifRole= true:ifRole=false
+        return true///?????需调整
+      },
+      enabledUpdateInApprove:function(){//在审批阶段修改附件时，控件的状态（仅用章保管人可用）
+        let enabled=true
+        if(this.operateType==='query'){
+          this.ifRole?enabled=true:enabled=false
+        }
+        return enabled
+      },
+      enabledContractSum:function(){
+        let enabled=false
+        if(this.operateType!=='query'){
+          this.baseInfoForm.contractType===3?enabled=true:enabled=false
+        }
+        return enabled
+      }
     },
     mounted() {
       const query = this.$route.query
@@ -3054,6 +3068,7 @@
           }else{
             errors.cardFinanceInfoForm.errorCount=0
           }
+
           if (!this.showMaterialItems) {
             if (this.$refs.cardContCheckInfoForm) {
               this.$refs.cardContCheckInfoForm.validate((valid) => {
@@ -3653,7 +3668,7 @@
       },
       enabledAllApply(code){
         let enabled=false
-        if(code==='1001'&&this.baseInfoForm.contractType>=3){
+        if(code==='1001'&&this.baseInfoForm.contractType>=3&&this.operateType==='create'){
           enabled=true
         }
         return enabled
@@ -3830,11 +3845,14 @@
         let total=0
         if(val){
           total=parseFloat(val)
-          if(total!==this.totalAmount){
-            this.cardFinanceInfoForm.paymentErrorMSG='您添加的付款金额必须等于合同总金额'
-          }else{
-            this.cardFinanceInfoForm.paymentErrorMSG=''
+          if(this.baseInfoForm.contractType!==3&&this.baseInfoForm.contractType!==4){
+            if(total!==this.totalAmount){
+              this.cardFinanceInfoForm.paymentErrorMSG='您添加的付款金额必须等于合同总金额'
+            }else{
+              this.cardFinanceInfoForm.paymentErrorMSG=''
+            }
           }
+
         }
       }
     }
