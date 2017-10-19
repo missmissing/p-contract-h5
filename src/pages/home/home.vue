@@ -211,10 +211,14 @@
       }
     },
     created() {
-      const powers = localStore.get('powers') || []
-      const defaultRoutes = this.$router.options.routes
-      this.allRoutesHiddenTrue(defaultRoutes)
-      this.filterRoutes(powers)
+      const powerSwitch = localStore.get('powerSwitch')
+      if (powerSwitch) {
+        debugger
+        const powers = localStore.get('powers') || []
+        const defaultRoutes = this.$router.options.routes
+        this.allRoutesHiddenTrue(defaultRoutes)
+        this.filterRoutes(powers)
+      }
     }
   }
 </script>

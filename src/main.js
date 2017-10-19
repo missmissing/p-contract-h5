@@ -30,9 +30,10 @@ if (user || !ticket) {
 } else {
   Api.login({ticket}).then((res) => {
     const data = res.data.dataMap
-    const {userInfo, powers} = data
+    const {userInfo, powers, powerSwitch} = data
     LocalStore.set('user', userInfo)
     LocalStore.set('powers', powers)
+    LocalStore.set('powerSwitch', powerSwitch)
     init()
   })
 }
