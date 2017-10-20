@@ -66,7 +66,7 @@
               prop="materialCode"
               label="物料编码"
               width="130">
-              <template slot-scope="scope">
+              <template scope="scope">
                 {{scope.row.materialCode | cutZero}}
               </template>
             </el-table-column>
@@ -89,7 +89,7 @@
               prop="taxRate"
               label="税率"
               width="80">
-              <template slot-scope="scope">
+              <template scope="scope">
                 {{scope.row.taxRate ? `${scope.row.taxRate}%` : ''}}
               </template>
             </el-table-column>

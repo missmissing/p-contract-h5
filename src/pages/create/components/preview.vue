@@ -168,8 +168,8 @@
               <p>E-mail:{{partB.email}}</p>
             </div>
           </div>-->
-          <pre v-html="currentTpl"></pre>
         </div>
+        <div v-html="currentTpl"></div>
         <p></p>
         <table class="default-table">
           <tbody>
