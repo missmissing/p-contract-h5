@@ -62,7 +62,7 @@
                 prop="createTime"
                 label="创建时间"
                 width="150">
-                <template slot-scope="scope">
+                <template scope="scope">
                   {{scope.row.createTime | formatDate}}
                 </template>
               </el-table-column>
@@ -73,7 +73,7 @@
               <el-table-column
                 label="操作"
                 min-width="80">
-                <template slot-scope="scope">
+                <template scope="scope">
                   <el-button
                     @click.native.prevent="deleteRow(scope.$index, prData)"
                     type="danger"
@@ -128,7 +128,7 @@
                   prop="materialCode"
                   label="物料编码"
                   width="130">
-                  <template slot-scope="scope">
+                  <template scope="scope">
                     {{scope.row.materialCode | cutZero}}
                   </template>
                 </el-table-column>
@@ -141,7 +141,7 @@
                   prop="total"
                   label="数量"
                   width="120">
-                  <template slot-scope="scope">
+                  <template scope="scope">
                     <el-input
                       v-model.trim="scope.row.total"
                       @blur="greaterZero($event,scope.row.availableTotal)"></el-input>
@@ -151,7 +151,7 @@
                   prop="price"
                   label="含税价"
                   width="120">
-                  <template slot-scope="scope">
+                  <template scope="scope">
                     <div v-if="radio">{{scope.row.price}}</div>
                     <div v-else>
                       <el-input
@@ -164,7 +164,7 @@
                   prop="taxRate"
                   label="税率"
                   width="130">
-                  <template slot-scope="scope">
+                  <template scope="scope">
                     <div v-if="radio">{{scope.row.taxRate ? `${scope.row.taxRate}%` : ''}}</div>
                     <div v-else>
                       <el-select
@@ -187,7 +187,7 @@
                   prop="deliveryTime"
                   label="交货日期"
                   width="186">
-                  <template slot-scope="scope">
+                  <template scope="scope">
                     <div>
                       <el-date-picker
                         v-model="scope.row.deliveryTime"
@@ -214,7 +214,7 @@
                   label="操作"
                   fixed="right"
                   width="100">
-                  <template slot-scope="scope">
+                  <template scope="scope">
                     <el-button
                       @click.native.prevent="deleteRow(scope.$index, orderData)"
                       type="danger"
@@ -300,7 +300,7 @@
                     fixed="right"
                     label="操作"
                     width="100">
-                    <template slot-scope="scope">
+                    <template scope="scope">
                       <el-button
                         @click.native.prevent="deleteRow(scope.$index, serverData)"
                         type="danger"
@@ -378,7 +378,7 @@
                 prop="materialCode"
                 label="物料编码"
                 width="180">
-                <template slot-scope="scope">
+                <template scope="scope">
                   {{scope.row.materialCode | cutZero}}
                 </template>
               </el-table-column>
@@ -386,7 +386,7 @@
                 prop="materialName"
                 label="物料名称"
                 width="200">
-                <template slot-scope="scope">
+                <template scope="scope">
                   <template v-if="!scope.row.materialName">
                     <el-radio v-model="radio" :label="scope.$index">{{''}}</el-radio>
                   </template>
@@ -413,7 +413,7 @@
                 prop="startTime"
                 label="开始时间"
                 width="120">
-                <template slot-scope="scope">
+                <template scope="scope">
                   {{scope.row.startTime | formatDate}}
                 </template>
               </el-table-column>
@@ -421,7 +421,7 @@
                 prop="endTime"
                 label="截止时间"
                 width="120">
-                <template slot-scope="scope">
+                <template scope="scope">
                   {{scope.row.endTime | formatDate}}
                 </template>
               </el-table-column>
@@ -434,7 +434,7 @@
                 prop="taxRate"
                 label="税率"
                 width="80">
-                <template slot-scope="scope">{{scope.row.taxRate ? `${scope.row.taxRate}%` : ''}}</template>
+                <template scope="scope">{{scope.row.taxRate ? `${scope.row.taxRate}%` : ''}}</template>
               </el-table-column>
             </el-table>
           </el-tab-pane>
@@ -449,7 +449,7 @@
               <el-table-column
                 label=""
                 width="80">
-                <template slot-scope="scope">
+                <template scope="scope">
                   <el-radio v-model="radio1" :label="scope.$index">{{''}}</el-radio>
                 </template>
               </el-table-column>
@@ -470,7 +470,7 @@
                 prop="startTime"
                 label="开始时间"
                 width="120">
-                <template slot-scope="scope">
+                <template scope="scope">
                   {{scope.row.startTime | formatDate}}
                 </template>
               </el-table-column>
@@ -478,7 +478,7 @@
                 prop="endTime"
                 label="截止时间"
                 width="120">
-                <template slot-scope="scope">
+                <template scope="scope">
                   {{scope.row.endTime | formatDate}}
                 </template>
               </el-table-column>
