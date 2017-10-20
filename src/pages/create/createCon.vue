@@ -2720,7 +2720,7 @@
             curForm.resetFields()
             this.cardContCheckInfoForm.dialogAddServiceVisible = false
             if (this.isSubmit) {
-              this.validateForms()
+              this.validateForms().catch(()=>{})
             }
           } else {
             console.log('error submit!!')
@@ -2791,7 +2791,7 @@
             curForm.resetFields()
             this.baseInfoForm.dialogNewSubjectVisible = false
             if (this.isSubmit) {
-              this.validateForms()
+              this.validateForms().catch(()=>{})
             }
           } else {
             console.log('error submit!!')
@@ -2840,7 +2840,7 @@
             curForm.resetFields()
             this.cardContentInfoForm.dialogAddContractSupplier = false
             if (this.isSubmit) {
-              this.validateForms()
+              this.validateForms().catch(()=>{})
             }
           } else {
             console.log('error submit!!')
@@ -3129,7 +3129,7 @@
               resolve()
             }
           } else {
-            reject(errors)
+            reject()
           }
         })
       },
@@ -3725,7 +3725,7 @@
       },
       handleChangeValidateForms(){
         if(this.isSubmit){
-          this.validateForms()
+          this.validateForms().catch(()=>{})
         }
       }
     },
