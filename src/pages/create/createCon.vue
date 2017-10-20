@@ -377,7 +377,7 @@
         <el-tab-pane name="tabContFinanceInfo">
           <span slot="label" class="title">合同财务信息<i v-if="cardFinanceInfoForm.errorCount"
                                                     class="errorCount">{{cardFinanceInfoForm.errorCount}}</i></span>
-          <el-form rel="cardFinanceInfoForm" :model="cardFinanceInfoForm" :rules="cardFinanceInfoForm.rules"
+          <el-form ref="cardFinanceInfoForm" :model="cardFinanceInfoForm" :rules="cardFinanceInfoForm.rules"
                    label-width="120px">
             <el-row>
               <el-col :span="8">
@@ -2115,8 +2115,8 @@
           ],
           rules: {
             deposit: [{required: true, message: '请输入保证金金额', trigger: 'blur'}],
-            payTime: [{required: true, message: '请输入付款时间', trigger: 'blur'}],
-            invoiceType: [{required: true, message: '请选择开票类型', trigger: 'blur'}]
+            payTime: [{required: true, message: '请输入付款时间'}],
+            invoiceType: [{required: true, message: '请选择开票类型'}]
           }
         },
         cardContCheckInfoForm: {
@@ -2493,8 +2493,8 @@
       },
       ifRole:function(){
         let ifRole=false,reg=/用章保管人/g
-        //reg.test(user.roleName)?ifRole= true:ifRole=false
-        return true///?????需调整
+        reg.test(user.roleName)?ifRole= true:ifRole=false
+        return ifRole
       },
       enabledUpdateInApprove:function(){//在审批阶段修改附件时，控件的状态（仅用章保管人可用）
         let enabled=true
@@ -2551,7 +2551,7 @@
       }
     },
     methods: {
-      initData(data, params) {
+      initData(data, params) {console.log('initData');
         Object.assign(this.baseInfoForm, data.baseInfoForm)
         Object.assign(this.cardContentInfoForm, data.cardContentInfoForm)
         Object.assign(this.cardFinanceInfoForm, data.cardFinanceInfoForm)
@@ -3046,29 +3046,52 @@
             }
           })
           this.$refs.cardContentInfoForm.validate((valid) => {
-            if (valid) {
-              const supplier = this.cardContentInfoForm.tableSupplierInfo
-              const subjects = this.cardContentInfoForm.conSubjctName
-              if (supplier.length === 0) {
-                errors.cardContentInfoForm.errorCount += 1
-                errors.cardContentInfoForm.supplierErrorMsg = '合同供应商信息不能为空'
-              }
-              if (subjects.length === 0) {
-                errors.cardContentInfoForm.errorCount += 1
-                errors.cardContentInfoForm.subjectsErrorMsg = '我方主体信息不能为空'
-              }
-            } else {
+            const supplier = this.cardContentInfoForm.tableSupplierInfo
+            const subjects = this.cardContentInfoForm.conSubjctName
+            if (supplier.length === 0) {
+              errors.cardContentInfoForm.errorCount += 1
+              errors.cardContentInfoForm.supplierErrorMsg = '合同供应商信息不能为空'
+            }
+            if (subjects.length === 0) {
+              errors.cardContentInfoForm.errorCount += 1
+              errors.cardContentInfoForm.subjectsErrorMsg = '我方主体信息不能为空'
+            }
+            if (!valid) {
               errors.cardContentInfoForm.errorCount += 2
               this.$message.error('请填写完整合同内容信息再提交！')
               return false
             }
           })
-          if(this.cardFinanceInfoForm.paymentErrorMSG){
-            errors.cardFinanceInfoForm.errorCount=1
-          }else{
-            errors.cardFinanceInfoForm.errorCount=0
-          }
+          this.$refs.cardFinanceInfoForm.validate((valid)=>{
+            console.log('this.cardFinanceInfoForm.invoiceType',this.cardFinanceInfoForm.invoiceType);
+            const cardFinanceInfoForm=this.cardFinanceInfoForm
+            if(cardFinanceInfoForm.paymentErrorMSG){
+              errors.cardFinanceInfoForm.errorCount = 1
+            }
+            if(!valid){
+              if(cardFinanceInfoForm.moneyInvolved){
+                if(cardFinanceInfoForm.depositFlag){
+                  if(!cardFinanceInfoForm.deposit){
+                    errors.cardFinanceInfoForm.errorCount+=1
+                  }
+                  if(!cardFinanceInfoForm.payTime){
+                    errors.cardFinanceInfoForm.errorCount+=1
+                  }
+                }
+                if(cardFinanceInfoForm.oneOffPay){
+                  if(!cardFinanceInfoForm.invoiceType){
+                    errors.cardFinanceInfoForm.errorCount+=1
+                  }
+                  if(!cardFinanceInfoForm.paymentTimePeriod){
+                    errors.cardFinanceInfoForm.errorCount+=1
+                  }
+                }
+              }
 
+              this.$message.error('请填写完整合同财务信息再提交！')
+              return false
+            }
+          })
           if (!this.showMaterialItems) {
             if (this.$refs.cardContCheckInfoForm) {
               this.$refs.cardContCheckInfoForm.validate((valid) => {
@@ -3201,6 +3224,7 @@
           paras.cardSealInfoForm = this.cardSealInfoForm
           paras.cardRemarkInfoForm = this.cardRemarkInfoForm
           paras.cardOtherInfo = this.cardOtherInfo
+
           if (this.operateType === 'create') {
             this.comLoading()
             Api.submit(paras).then((data) => {
@@ -3719,140 +3743,148 @@
         }
       },
       'cardContentInfoForm.conStandard': function (conStandards, oldVal) {
-        const result = []
-        if (conStandards && conStandards.length) {
-          for (let i = 0, len = conStandards.length; i < len; i++) {
-            const item = conStandards[i]
-            if (item.materialCode) {
-              result.push({
-                sampleCode: item.materialCode,
-                sampleDesc: item.materialName
-              })
+        if(this.operateType==='create'){
+          const result = []
+          if (conStandards && conStandards.length) {
+            for (let i = 0, len = conStandards.length; i < len; i++) {
+              const item = conStandards[i]
+              if (item.materialCode) {
+                result.push({
+                  sampleCode: item.materialCode,
+                  sampleDesc: item.materialName
+                })
+              }
             }
           }
+          this.cardContCheckInfoForm.materialMatters = result
         }
-        this.cardContCheckInfoForm.materialMatters = result
       },
       'baseInfoForm.contractType': function (val) {
-        if (val === 2) { // 固定格式合同
-          this.cardFinanceInfoForm.moneyInvolved = true
-        }
-        if (val === 4) {
-          this.cardFinanceInfoForm.moneyInvolved = false
+        if(this.operateType==='create'){
+          if (val === 2) { // 固定格式合同
+            this.cardFinanceInfoForm.moneyInvolved = true
+          }
+          if (val === 4) {
+            this.cardFinanceInfoForm.moneyInvolved = false
+          }
         }
       },
       'cardFinanceInfoForm.oneOffPay': function () {
-        this.cardFinanceInfoForm.totalAmount = this.totalAmount
-        const paymentMethods = {
-          advance: [{
-            type: '预付款',
-            seriousPayments: null, // 是否多次付款
-            paymentAmount: 0, // 付款金额
-            paymentTimePeriod: null, // 付款方式
-            paymentTime: '', // 付款时间
-            times: [
-              {
-                value: 1,
-                label: '合同签约15天'
-              },
-              {
-                value: 2,
-                label: '合同签约30天'
-              },
-              {
-                value: 3,
-                label: '合同签约90天'
-              }
-            ],
-            remark: '',
-            ratio: '',
-            subItem: [
-              {
-                paymentAmount: 0,
-                paymentTimePeriod: null,
-                paymentTime: '',
-                times: [
-                  {
-                    value: 1,
-                    label: '合同签约15天'
-                  },
-                  {
-                    value: 2,
-                    label: '合同签约30天'
-                  },
-                  {
-                    value: 3,
-                    label: '合同签约90天'
-                  }
-                ],
-                remark: '',
-                ratio: ''
-              }
-            ]
-          }],
-          progress: [{
-            type: '进度款',
-            seriousPayments: null,
-            paymentAmount: 0,
-            paymentTimePeriod: null,
-            paymentTime: '',
-            times: [
-              {
-                value: 1,
-                label: '验收后15天'
-              },
-              {
-                value: 2,
-                label: '验收后30天'
-              }
-            ],
-            remark: '',
-            ratio: '',
-            subItem: []
-          }],
-          _final: [{
-            type: '尾款',
-            seriousPayments: null,
-            paymentAmount: 0,
-            paymentTimePeriod: null,
-            paymentTime: '',
-            times: [
-              {
-                value: 1,
-                label: '合同结束后15天'
-              },
-              {
-                value: 2,
-                label: '合同结束后30天'
-              },
-              {
-                value: 3,
-                label: '合同结束后90天'
-              },
-              {
-                value: 4,
-                label: '合同结束后180天'
-              }
-            ],
-            remark: '',
-            ratio: '',
-            subItem: []
-          }]
+        if(this.operateType==='create'){
+          this.cardFinanceInfoForm.totalAmount = this.totalAmount
+          const paymentMethods = {
+            advance: [{
+              type: '预付款',
+              seriousPayments: null, // 是否多次付款
+              paymentAmount: 0, // 付款金额
+              paymentTimePeriod: null, // 付款方式
+              paymentTime: '', // 付款时间
+              times: [
+                {
+                  value: 1,
+                  label: '合同签约15天'
+                },
+                {
+                  value: 2,
+                  label: '合同签约30天'
+                },
+                {
+                  value: 3,
+                  label: '合同签约90天'
+                }
+              ],
+              remark: '',
+              ratio: '',
+              subItem: [
+                {
+                  paymentAmount: 0,
+                  paymentTimePeriod: null,
+                  paymentTime: '',
+                  times: [
+                    {
+                      value: 1,
+                      label: '合同签约15天'
+                    },
+                    {
+                      value: 2,
+                      label: '合同签约30天'
+                    },
+                    {
+                      value: 3,
+                      label: '合同签约90天'
+                    }
+                  ],
+                  remark: '',
+                  ratio: ''
+                }
+              ]
+            }],
+            progress: [{
+              type: '进度款',
+              seriousPayments: null,
+              paymentAmount: 0,
+              paymentTimePeriod: null,
+              paymentTime: '',
+              times: [
+                {
+                  value: 1,
+                  label: '验收后15天'
+                },
+                {
+                  value: 2,
+                  label: '验收后30天'
+                }
+              ],
+              remark: '',
+              ratio: '',
+              subItem: []
+            }],
+            _final: [{
+              type: '尾款',
+              seriousPayments: null,
+              paymentAmount: 0,
+              paymentTimePeriod: null,
+              paymentTime: '',
+              times: [
+                {
+                  value: 1,
+                  label: '合同结束后15天'
+                },
+                {
+                  value: 2,
+                  label: '合同结束后30天'
+                },
+                {
+                  value: 3,
+                  label: '合同结束后90天'
+                },
+                {
+                  value: 4,
+                  label: '合同结束后180天'
+                }
+              ],
+              remark: '',
+              ratio: '',
+              subItem: []
+            }]
+          }
+          this.cardFinanceInfoForm.paymentMethods = paymentMethods
         }
-        this.cardFinanceInfoForm.paymentMethods = paymentMethods
+
       },
       'totalConMoney':function(val){
-        let total=0
-        if(val){
-          total=parseFloat(val)
-          if(this.baseInfoForm.contractType!==3&&this.baseInfoForm.contractType!==4){
-            if(total!==this.totalAmount){
-              this.cardFinanceInfoForm.paymentErrorMSG='您添加的付款金额必须等于合同总金额'
-            }else{
-              this.cardFinanceInfoForm.paymentErrorMSG=''
+        if(this.operateType==='create'){
+          let total=0
+          if(val){
+            total=parseFloat(val)
+            if(this.baseInfoForm.contractType!==3&&this.baseInfoForm.contractType!==4&&this.cardFinanceInfoForm.moneyInvolved){
+              if(total!==this.totalAmount){
+                this.cardFinanceInfoForm.paymentErrorMSG='您添加的付款金额必须等于合同总金额'
+              }else{
+                this.cardFinanceInfoForm.paymentErrorMSG=''
+              }
             }
           }
-
         }
       }
     }

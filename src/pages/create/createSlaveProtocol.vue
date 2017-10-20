@@ -120,7 +120,7 @@
           </el-button>-->
           <el-table :data="baseInfoForm.tableSupplierInfo">
             <el-table-column type="index" label="序号" width="80"></el-table-column>
-            <el-table-column prop="id" label="供应商编号"></el-table-column>
+            <el-table-column prop="code" label="供应商编号"></el-table-column>
             <el-table-column prop="name" label="供应商名称"></el-table-column>
             <!--<el-table-column
               v-if="enabledInupdated"
@@ -143,7 +143,7 @@
                      class="mb20">新增
           </el-button>-->
           <el-table :data="baseInfoForm.conSubjctName">
-            <el-table-column prop="id" label="公司代码"></el-table-column>
+            <el-table-column prop="code" label="公司代码"></el-table-column>
             <el-table-column prop="name" label="公司名称"></el-table-column>
             <!--<el-table-column
               v-if="enabledInupdated"
