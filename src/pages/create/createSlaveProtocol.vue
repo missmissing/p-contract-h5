@@ -201,14 +201,9 @@
                     </el-table-column>
                     <el-table-column label="上传人" prop="sealFileCreatorName"></el-table-column>
                     <el-table-column label="上传时间" prop="sealFileCreateTime"></el-table-column>
-                    <el-table-column
-                      fixed="right"
-                      label="操作"
-                      v-if="enabledInupdated"
-                    >
+                    <el-table-column fixed="right" label="操作" v-if="props.row.filesSealed[0].operate||enabledUpdateInApprove">
                       <template scope="scope">
-                        <el-button v-if="props.row.filesSealed[0].operate"
-                                   @click="handleRemoveItem(index, props.row.filesSealed)"
+                        <el-button @click="handleRemoveItem(index, props.row.filesSealed)"
                                    type="danger" size="small">移除
                         </el-button>
                       </template>
@@ -224,13 +219,13 @@
                     </el-col>
                     <el-col :span="6">
                       <el-form-item label="打印份数" prop="printTime">
-                        <el-input :disabled="!enabledInupdated"
+                        <el-input  :disabled="!enabledUpdateInApprove"
                                   v-model="props.row.printTime"></el-input>
                       </el-form-item>
                     </el-col>
                     <el-col :span="6">
                       <el-form-item label="我方留存份数" prop="remainTime">
-                        <el-input :disabled="!enabledInupdated"
+                        <el-input :disabled="!enabledUpdateInApprove"
                                   v-model="props.row.remainTime"></el-input>
                       </el-form-item>
                     </el-col>
@@ -245,7 +240,7 @@
                           :on-success="handleUploadFileAfterSealSuccess"
                           :on-error="handleUploadFileAfterSealError"
                         >
-                          <el-button :disabled="!getEnabledUploadBtn(props.row.filesSealed)||!enabledInupdated"
+                          <el-button :disabled="!getEnabledUploadBtn(props.row.filesSealed)||!enabledUpdateInApprove"
                                      size="small"
                                      type="primary" @click="handleUpload(index)">上传
                           </el-button>
@@ -268,16 +263,6 @@
                         </el-checkbox-group>
                       </el-form-item>
                     </el-col>
-                    <!--<el-col :span="12">
-                      <el-form-item label="活动性质" prop="testtype" :rules="[{ type: 'array', required: true, message: '请选择活动性质', trigger: 'change' }]">
-                        <el-checkbox-group  v-model="props.row.testtype">
-                          <el-checkbox label="美食/餐厅线上活动" name="type"></el-checkbox>
-                          <el-checkbox label="地推活动" name="type"></el-checkbox>
-                          <el-checkbox label="线下主题活动" name="type"></el-checkbox>
-                          <el-checkbox label="单纯品牌曝光" name="type"></el-checkbox>
-                        </el-checkbox-group>
-                      </el-form-item>
-                    </el-col>-->
                   </el-row>
                 </div>
               </template>
@@ -375,7 +360,7 @@
         </el-table>
       </el-form>
     </el-card>
-    <Process></Process>
+    <Process :extraFn="callback"></Process>
     <el-row v-if="contentVisible">
       <el-col style="text-align: center" class="mt20">
         <el-button v-if="enabledInupdated" type="primary" :disabled="!enabledInupdated||!btnStatus"
@@ -635,7 +620,20 @@
           }
         }
         return show
-      }
+      },
+      ifRole:function(){
+        let ifRole=false,reg=/用章保管人/g
+        reg.test(this.users.roleName)?ifRole= true:ifRole=false
+        return true
+      },
+      enabledUpdateInApprove:function(){//在审批阶段修改附件时，控件的状态（仅用章保管人可用）
+        let enabled=true
+        if(this.operateType==='query'){
+          this.ifRole?enabled=true:enabled=false
+        }
+        console.log('enabled',enabled);
+        return enabled
+      },
     },
     mounted: function () {
       const query = this.$route.query
@@ -1002,7 +1000,27 @@
         }
         this.queryContractForm=queryContractForm
         console.log('this.queryContractForm',this.queryContractForm);
-      }
+      },
+      callback(params){//isSign:是否是加签人 isAgree:审批操作类型是否是同意
+        return new Promise((resolve,reject)=>{
+          // const roleName=users.roleName//当前登陆人的角色
+          // const sealAttachments = this.combineSealsInfo()
+          const {isSign,isAgree}=params
+          resolve()
+          /*if(!isSign&&isAgree){
+           Api.uploadSealAttachments(sealAttachments)
+           .then((data)=>{
+           const dataMap=data.data.dataMap
+           if(dataMap&&dataMap.status==='200'){
+           resolve()
+           }
+           })
+           .catch(()=>{
+           reject()
+           })
+           }*/
+        })
+      },
     },
     watch: {
       '$route'(to, from) {
