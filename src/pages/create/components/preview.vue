@@ -125,7 +125,7 @@
               <tr>
                 <th>类型</th>
                 <th>金额</th>
-                <th>时间</th>
+                <th>付款方式</th>
                 <th>备注</th>
                 <th>占比</th>
               </tr>
@@ -134,7 +134,7 @@
               <tr v-for="item in priceTable">
                 <td>{{item.type}}</td>
                 <td>{{item.paymentAmount}}</td>
-                <td>{{item.paymentTime}}</td>
+                <td>{{item.paymentTimePeriod}}</td>
                 <td>{{item.remark}}</td>
                 <td>{{item.ratio}}</td>
               </tr>
