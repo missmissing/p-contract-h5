@@ -225,6 +225,7 @@
         contractBusinessTypeFirst: null,
         materialTable: [],
         priceTable: [],
+        paymentTimePeriods: [],
         partA: [],
         partAName: [],
         partB: [],
@@ -242,24 +243,46 @@
       }
     },
     methods: {
-      transformData(data) {
+      transformData(data, name) {
         const priceTable = []
         if (data.length) {
           data.forEach((item) => {
             const {seriousPayments} = item
             if (seriousPayments) {
-              priceTable.push(item)
               const {subItem} = item
-              subItem.forEach((item1) => {
-                const {paymentAmount, paymentTime, paymentTimePeriod, remark, ratio} = item1
-                priceTable.push({paymentAmount, paymentTime, paymentTimePeriod, remark, ratio})
+              subItem.forEach((item1, index1) => {
+                const {paymentAmount, paymentTimePeriod, remark, ratio} = item1
+                const type = `${name}${index1 + 1}`
+                priceTable.push({
+                  type,
+                  paymentAmount,
+                  paymentTimePeriod: this.getPaymentTimePeriodName(paymentTimePeriod),
+                  remark,
+                  ratio: `${ratio}%`
+                })
               })
               return
             }
-            priceTable.push(item)
+            priceTable.push({
+              ...item,
+              paymentTimePeriod: this.getPaymentTimePeriodName(item.paymentTimePeriod),
+              ratio: `${item.ratio}%`
+            })
           })
         }
         return priceTable
+      },
+      getPaymentTimePeriodName(id) {
+        const paymentTimePeriods = this.paymentTimePeriods
+        let name = ''
+        paymentTimePeriods.some((item) => {
+          if (item.id === id) {
+            name = item.name
+            return true
+          }
+        })
+
+        return name
       },
       getTplData(templateId) {
         const tplData = this.tplData[templateId]
@@ -295,8 +318,9 @@
           return null
         }
         const {conStandard, cardFinanceInfoForm, endTime, startTime, templateId, contractType, contractBusinessTypeFirst} = this.datas
-        const {jiaBillingInfo, yiBillingInfo, deposit, payTime, moneyInvolved, depositRatio, totalAmount, paymentMethods, oneOffPay} = cardFinanceInfoForm
+        const {jiaBillingInfo, yiBillingInfo, deposit, payTime, moneyInvolved, depositRatio, totalAmount, paymentMethods, oneOffPay, paymentTimePeriods} = cardFinanceInfoForm
         const {advance, progress, _final} = paymentMethods
+        this.paymentTimePeriods = paymentTimePeriods
         this.contractType = contractType
         this.contractBusinessTypeFirst = contractBusinessTypeFirst
         this.materialTable = conStandard
@@ -318,7 +342,7 @@
           if (oneOffPay) {
             this.oneOffPay = true
           } else {
-            this.priceTable = [...this.transformData(advance), ...this.transformData(progress), ...this.transformData(_final)]
+            this.priceTable = [...this.transformData(advance, '预付款'), ...this.transformData(progress, '进度款'), ...this.transformData(_final, '尾款')]
           }
         }
 

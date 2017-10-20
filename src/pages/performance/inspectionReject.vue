@@ -326,9 +326,10 @@
         Api.getUnqualifiedByOrderNo({orderNo: this.basicForm.orderNo}).then((res) => {
           const data = res.data.dataMap
           console.log(data)
-          const {purchaseOrderId} = data
+          const {purchaseOrderId, checkItems} = data
           this.toDetail.query.id = purchaseOrderId
           this.info = data
+          this.checkItems = checkItems
           this.setBasicForm()
           this.comLoading(false)
         }, () => {
