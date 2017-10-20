@@ -355,6 +355,7 @@
                                 prop="startTime">
                     <el-date-picker v-model="cardContentInfoForm.startTime"
                                     format="yyyy-MM-dd"
+                                    @change="validateForms"
                                     :disabled="!enabledInupdated"
                                     placeholder="请输入合同生效期日期"
                                     type="date"></el-date-picker>
@@ -365,6 +366,7 @@
                                 prop="endTime">
                     <el-date-picker v-model="cardContentInfoForm.endTime"
                                     format="yyyy-MM-dd"
+                                    @change="validateForms"
                                     :disabled="!enabledInupdated"
                                     placeholder="请输入合同终止日期"
                                     type="date"></el-date-picker>
@@ -416,7 +418,7 @@
               </el-col>
               <el-col :span="8">
                 <el-form-item label="开票类型" prop="invoiceType">
-                  <el-select class="wp100" v-model="cardFinanceInfoForm.invoiceType" placeholder="请选择开票类型" :disabled="operateType==='query'">
+                  <el-select class="wp100" v-model="cardFinanceInfoForm.invoiceType" placeholder="请选择开票类型" :disabled="operateType==='query'" @change="handleChangeValidateForms">
                     <el-option
                       v-for="item in cardFinanceInfoForm.invoiceTypeOptions"
                       :key="item.value"
@@ -444,6 +446,7 @@
               <el-col :span="8">
                 <el-form-item v-if="cardFinanceInfoForm.moneyInvolved&&cardFinanceInfoForm.oneOffPay" label="付款条件" :rules="[{ required: true, message: '请选择付款条件', trigger: 'blur' }]">
                   <el-select
+                    @change="handleChangeValidateForms"
                     v-model="cardFinanceInfoForm.paymentTimePeriod"
                     placeholder="请选择付款条件"
                     class="wp100"
@@ -926,12 +929,13 @@
                 <el-col :span="8">
                   <el-form-item label="保证金金额" prop="deposit">
                     <el-input v-model="cardFinanceInfoForm.deposit" :disabled="operateType==='query'"
-                              placeholder="请输入保证金金额"></el-input>
+                              placeholder="请输入保证金金额"  @change="handleChangeValidateForms"></el-input>
                   </el-form-item>
                 </el-col>
                 <el-col :span="8">
                   <el-form-item label="付款时间" prop="payTime">
                     <el-date-picker v-model="cardFinanceInfoForm.payTime"
+                                    @change="handleChangeValidateForms"
                                     format="yyyy-MM-dd"
                                     placeholder="请输入付款时间"
                                     :disabled="operateType==='query'"
@@ -2114,7 +2118,7 @@
             }
           ],
           rules: {
-            deposit: [{required: true, message: '请输入保证金金额', trigger: 'blur'}],
+            deposit: [{required: true, message: '请输入保证金金额',trigger:'blur'}],
             payTime: [{required: true, message: '请输入付款时间'}],
             invoiceType: [{required: true, message: '请选择开票类型'}]
           }
@@ -2333,13 +2337,15 @@
       },
       totalAmount:function(){//合同总金额即物料总价
         let sum=0
-        const conStandards=this.cardContentInfoForm.conStandard
-        if(conStandards&&conStandards.length){
-          for(let i=0,len=conStandards.length;i<len;i++){
-            sum+=parseFloat(conStandards[i].total)*parseFloat(conStandards[i].price)
+        if(this.baseInfoForm.contractType!==3&&this.baseInfoForm.contractType!==4){
+          const conStandards=this.cardContentInfoForm.conStandard
+          if(conStandards&&conStandards.length){
+            for(let i=0,len=conStandards.length;i<len;i++){
+              sum+=parseFloat(conStandards[i].total)*parseFloat(conStandards[i].price)
+            }
           }
+          this.cardFinanceInfoForm.totalAmount=sum
         }
-        this.cardFinanceInfoForm.totalAmount=sum
         return sum
       },
       showMaterialItems: function () {
@@ -2631,22 +2637,29 @@
         }
       },
       handlePreview() {
-        this.isSubmit = true
-        this.validateForms().then(() => {
-          this.formatTime(this.cardContentInfoForm, this.cardFinanceInfoForm)
-          const previewData = {}
-          previewData.conStandard = this.cardContentInfoForm.conStandard || []
-          previewData.contractType = this.baseInfoForm.contractType
-          previewData.contractBusinessTypeFirst = this.baseInfoForm.contractBusinessTypeFirst
-          previewData.startTime = this.cardContentInfoForm.startTime
-          previewData.endTime = this.cardContentInfoForm.endTime
-          previewData.cardFinanceInfoForm = this.cardFinanceInfoForm
-          previewData.templateId = this.baseInfoForm.templateId
-          this.previewData = previewData
-          this.visible = true
-        }).catch(() => {
-          this.$message.error('请填写完整信息再预览！')
-        })
+        if(this.operateType==='query'){
+          this.getPreviewData()
+        }else{
+          this.isSubmit = true
+          this.validateForms().then(() => {
+            this.getPreviewData()
+          }).catch(() => {
+            this.$message.error('请填写完合同信息再预览！')
+          })
+        }
+      },
+      getPreviewData(){
+        this.formatTime(this.cardContentInfoForm, this.cardFinanceInfoForm)
+        const previewData = {}
+        previewData.conStandard = this.cardContentInfoForm.conStandard || []
+        previewData.contractType = this.baseInfoForm.contractType
+        previewData.contractBusinessTypeFirst = this.baseInfoForm.contractBusinessTypeFirst
+        previewData.startTime = this.cardContentInfoForm.startTime
+        previewData.endTime = this.cardContentInfoForm.endTime
+        previewData.cardFinanceInfoForm = this.cardFinanceInfoForm
+        previewData.templateId = this.baseInfoForm.templateId
+        this.previewData = previewData
+        this.visible = true
       },
       handleNewSubjectName() {
         this.baseInfoForm.dialogNewSubjectVisible = true
@@ -3040,7 +3053,7 @@
           }
           this.$refs.baseInfoForm.validate((valid) => {
             if (!valid) {
-              this.$message.error('请填写完整合同基本信息再提交！')
+              return false
             } else {
               errors.baseInfoForm = true
             }
@@ -3058,12 +3071,10 @@
             }
             if (!valid) {
               errors.cardContentInfoForm.errorCount += 2
-              this.$message.error('请填写完整合同内容信息再提交！')
               return false
             }
           })
           this.$refs.cardFinanceInfoForm.validate((valid)=>{
-            console.log('this.cardFinanceInfoForm.invoiceType',this.cardFinanceInfoForm.invoiceType);
             const cardFinanceInfoForm=this.cardFinanceInfoForm
             if(cardFinanceInfoForm.paymentErrorMSG){
               errors.cardFinanceInfoForm.errorCount = 1
@@ -3087,8 +3098,6 @@
                   }
                 }
               }
-
-              this.$message.error('请填写完整合同财务信息再提交！')
               return false
             }
           })
@@ -3102,8 +3111,6 @@
                     errors.cardContCheckInfoForm.serviceCheckMsg = '服务验收事项不能为空'
                   }
                 } else {
-                  this.$message.error('请填写完整信息再提交！')
-                  console.log('errors', errors)
                   return false
                 }
               })
@@ -3112,21 +3119,19 @@
 
           this.cardContentInfoForm.errorCount = errors.cardContentInfoForm.errorCount
           this.cardContentInfoForm.supplierErrorMsg = errors.cardContentInfoForm.supplierErrorMsg
-          this.cardContentInfoForm.subjectsErrorMsg = errors.cardContentInfoForm.subjectsErrorMsg
+          this.cardContentInfoForm.subjectsErrorMsg = errors.cardContentInfoForm.subjectsErrorMsghe
           this.cardContCheckInfoForm.errorCount = errors.cardContCheckInfoForm.errorCount
           this.cardContCheckInfoForm.serviceCheckMsg = errors.cardContCheckInfoForm.serviceCheckMsg
           this.cardFinanceInfoForm.errorCount = errors.cardFinanceInfoForm.errorCount
-          console.log('errors',errors);
-          if (!this.cardContentInfoForm.errorCount && !this.cardContCheckInfoForm.errorCount && errors.baseInfoForm&&!errors.cardFinanceInfoForm.errorCount) {
 
+          if (!this.cardContentInfoForm.errorCount && !this.cardContCheckInfoForm.errorCount && errors.baseInfoForm&&!errors.cardFinanceInfoForm.errorCount) {
             if (this.operateType === 'update' && !errors.updateError) {
               reject()
             } else {
               resolve()
             }
           } else {
-            console.log('reject', errors)
-            reject()
+            reject(errors)
           }
         })
       },
@@ -3188,6 +3193,7 @@
           })
         }).catch(() => {
           this.btnSaveStatus = true
+          this.$message.error('请填写完合同信息再保存！')
           this.comLoading(false)
         })
       },
@@ -3260,6 +3266,7 @@
           }
         })
           .catch(()=>{
+            this.$message.error('请填写完合同信息再提交！')
             this.btnSubmitStatus = true
           })
       },
@@ -3717,6 +3724,11 @@
                 })
           }*/
         })
+      },
+      handleChangeValidateForms(){
+        if(this.isSubmit){
+          this.validateForms()
+        }
       }
     },
     components: {
