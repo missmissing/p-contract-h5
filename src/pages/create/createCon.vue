@@ -349,31 +349,29 @@
                   </el-form-item>
                 </el-col>
               </el-row>
-              <el-row class="mt20">
-                <el-col :span="8">
-                  <el-form-item label="合同生效日期"
-                                prop="startTime">
-                    <el-date-picker v-model="cardContentInfoForm.startTime"
-                                    format="yyyy-MM-dd"
-                                    @change="validateForms"
-                                    :disabled="!enabledInupdated"
-                                    placeholder="请输入合同生效期日期"
-                                    type="date"></el-date-picker>
-                  </el-form-item>
-                </el-col>
-                <el-col :span="8">
-                  <el-form-item label="合同终止日期"
-                                prop="endTime">
-                    <el-date-picker v-model="cardContentInfoForm.endTime"
-                                    format="yyyy-MM-dd"
-                                    @change="validateForms"
-                                    :disabled="!enabledInupdated"
-                                    placeholder="请输入合同终止日期"
-                                    type="date"></el-date-picker>
-                  </el-form-item>
-                </el-col>
-              </el-row>
             </el-card>
+            <el-row class="mt20">
+              <el-col :span="8">
+                <el-form-item label="合同生效日期" prop="startTime">
+                  <el-date-picker v-model="cardContentInfoForm.startTime"
+                                  format="yyyy-MM-dd"
+                                  @change="handleChangeValidateForms"
+                                  :disabled="!enabledInupdated"
+                                  placeholder="请输入合同生效期日期"
+                                  type="date"></el-date-picker>
+                </el-form-item>
+              </el-col>
+              <el-col :span="8">
+                <el-form-item label="合同终止日期" prop="endTime">
+                  <el-date-picker v-model="cardContentInfoForm.endTime"
+                                  format="yyyy-MM-dd"
+                                  @change="handleChangeValidateForms"
+                                  :disabled="!enabledInupdated"
+                                  placeholder="请输入合同终止日期"
+                                  type="date"></el-date-picker>
+                </el-form-item>
+              </el-col>
+            </el-row>
           </el-form>
         </el-tab-pane>
         <el-tab-pane name="tabContFinanceInfo">
@@ -3119,7 +3117,7 @@
 
           this.cardContentInfoForm.errorCount = errors.cardContentInfoForm.errorCount
           this.cardContentInfoForm.supplierErrorMsg = errors.cardContentInfoForm.supplierErrorMsg
-          this.cardContentInfoForm.subjectsErrorMsg = errors.cardContentInfoForm.subjectsErrorMsghe
+          this.cardContentInfoForm.subjectsErrorMsg = errors.cardContentInfoForm.subjectsErrorMsg
           this.cardContCheckInfoForm.errorCount = errors.cardContCheckInfoForm.errorCount
           this.cardContCheckInfoForm.serviceCheckMsg = errors.cardContCheckInfoForm.serviceCheckMsg
           this.cardFinanceInfoForm.errorCount = errors.cardFinanceInfoForm.errorCount
