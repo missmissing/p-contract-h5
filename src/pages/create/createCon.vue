@@ -1212,6 +1212,8 @@
           </el-form>
         </el-tab-pane>
         <el-tab-pane label="合同附件及盖章信息" name="tabSealInfo">
+          <span slot="label" class="title"><i v-if="cardSealInfoForm.errorMsg"
+                                              class="errorCount">1</i>合同附件及盖章信息</span>
           <el-form v-if="baseInfoForm.templateId" rel="cardSealInfoForm" :model="cardSealInfoForm" label-width="100px"
                    :rules="cardSealInfoForm.rules">
             <el-button
@@ -1222,7 +1224,7 @@
               v-if="enabledInupdated"
               class="mb20">
               添加
-            </el-button>
+            </el-button> <i class="errorMsg">{{cardSealInfoForm.errorMsg}}</i>
             <!--<el-button
               type="primary"
               @click="handleNewAgreenmentSealFile"
@@ -1271,15 +1273,15 @@
                         </el-form-item>
                       </el-col>
                       <el-col :span="6">
-                        <el-form-item label="打印份数" prop="printTime">
+                        <el-form-item label="打印份数" prop="printTime" class="el-form-item is-required">
                           <el-input :disabled="!enabledUpdateInApprovePrint"
-                                    v-model="props.row.printTime"></el-input>
+                                    v-model="props.row.printTime" @change="handleChangeValidateForms"></el-input>
                         </el-form-item>
                       </el-col>
                       <el-col :span="6">
-                        <el-form-item label="我方留存份数" prop="remainTime">
+                        <el-form-item label="留存份数" prop="remainTime" class="el-form-item is-required">
                           <el-input :disabled="!enabledUpdateInApprovePrint"
-                                    v-model="props.row.remainTime"></el-input>
+                                    v-model="props.row.remainTime" @change="handleChangeValidateForms"></el-input>
                         </el-form-item>
                       </el-col>
                       <el-col :span="6" >
@@ -1304,8 +1306,8 @@
                     </el-row>
                     <el-row>
                       <el-col :span="12">
-                        <el-form-item prop="saleInfos">
-                          <el-checkbox-group v-model="props.row.saleInfos">
+                        <el-form-item label="选择用章" prop="saleInfos" class="is-required" >
+                          <el-checkbox-group v-model="props.row.saleInfos" @change="handleChangeValidateForms">
                             <el-checkbox label="1" name="sealInfo" :disabled="!enabledInupdated">公章</el-checkbox>
                             <el-checkbox label="2" name="sealInfo" :disabled="!enabledInupdated">法人章</el-checkbox>
                           </el-checkbox-group>
@@ -1379,15 +1381,15 @@
                           </el-form-item>
                         </el-col>
                         <el-col :span="6">
-                          <el-form-item label="打印份数" prop="printTime">
+                          <el-form-item label="打印份数" prop="printTime" class="el-form-item is-required">
                             <el-input :disabled="!enabledUpdateInApprovePrint"
-                                      v-model="props.row.printTime"></el-input>
+                                      v-model="props.row.printTime" @change="handleChangeValidateForms"></el-input>
                           </el-form-item>
                         </el-col>
                         <el-col :span="6">
-                          <el-form-item label="我方留存份数" prop="remainTime">
+                          <el-form-item label="留存份数" prop="remainTime" class="el-form-item is-required">
                             <el-input :disabled="!enabledUpdateInApprovePrint"
-                                      v-model="props.row.remainTime"></el-input>
+                                      v-model="props.row.remainTime" @change="handleChangeValidateForms"></el-input>
                           </el-form-item>
                         </el-col>
                         <el-col :span="6">
@@ -1412,8 +1414,8 @@
                       </el-row>
                       <el-row>
                         <el-col :span="12">
-                          <el-form-item prop="saleInfos">
-                            <el-checkbox-group v-model="props.row.saleInfos">
+                          <el-form-item label="选择用章" prop="saleInfos" class="is-required">
+                            <el-checkbox-group v-model="props.row.saleInfos" @change="handleChangeValidateForms">
                               <el-checkbox label="1" name="sealInfo" :disabled="!enabledInupdated">公章</el-checkbox>
                               <el-checkbox label="2" name="sealInfo" :disabled="!enabledInupdated">法人章</el-checkbox>
                             </el-checkbox-group>
@@ -2155,6 +2157,7 @@
           agreenments: [],
           current: null, // 为上传功能保存当前所在附件列表的索引
           type: null, // 为上传功能保存当前附件类型
+          errorMsg:'',
           rules: {
             slaveProtocolNo: [{
               required: true,
@@ -2562,7 +2565,7 @@
       }
     },
     methods: {
-      initData(data, params) {console.log('initData');
+      initData(data, params) {
         Object.assign(this.baseInfoForm, data.baseInfoForm)
         Object.assign(this.cardContentInfoForm, data.cardContentInfoForm)
         Object.assign(this.cardFinanceInfoForm, data.cardFinanceInfoForm)
@@ -3107,6 +3110,22 @@
               return false
             }
           })
+
+          //验证附件的数据是否填写完整
+          const sealAttachments=this.combineSealsInfo1()
+          if (sealAttachments&&sealAttachments.length){
+            for(let i=0,len=sealAttachments.length;i<len;i++){
+              const item=sealAttachments[i]
+              if(item[0].haveSale){
+                if(item[0].printTime&&item[0].remainTime&&item[0].saleInfos.length){
+                  this.cardSealInfoForm.errorMsg=''
+                }else{
+                  this.cardSealInfoForm.errorMsg='请确保所有附件信息填写完整'
+                }
+              }
+            }
+          }
+
           if (!this.showMaterialItems) {
             if (this.$refs.cardContCheckInfoForm) {
               this.$refs.cardContCheckInfoForm.validate((valid) => {
@@ -3130,7 +3149,7 @@
           this.cardContCheckInfoForm.serviceCheckMsg = errors.cardContCheckInfoForm.serviceCheckMsg
           this.cardFinanceInfoForm.errorCount = errors.cardFinanceInfoForm.errorCount
 
-          if (!this.cardContentInfoForm.errorCount && !this.cardContCheckInfoForm.errorCount && errors.baseInfoForm&&!errors.cardFinanceInfoForm.errorCount) {
+          if (!this.cardContentInfoForm.errorCount && !this.cardContCheckInfoForm.errorCount && errors.baseInfoForm&&!errors.cardFinanceInfoForm.errorCount&&!this.cardSealInfoForm.errorMsg) {
             if (this.operateType === 'update' && !errors.updateError) {
               reject()
             } else {
@@ -3141,13 +3160,12 @@
           }
         })
       },
-      combineSealsInfo() {
+      combineSealsInfo() {//剔除空数据项
         if (this.operateType !== 'query') {
           const contract = this.cardSealInfoForm.contract
           const agreenments = this.cardSealInfoForm.agreenments
           const others = this.cardSealInfoForm.others
-          let sealAttachments = this.cardSealInfoForm.sealAttachments
-          sealAttachments = []
+          let sealAttachments = []
 
           const sealOthers = [], sealAgreenments = []
           if (others && others.length) {
@@ -3164,6 +3182,27 @@
               if (item && item.slaveProtocolNo) {
                 sealAgreenments.push([item])
               }
+            }
+          }
+
+          // 判断附件类型，当该附件类型的数据为空是，则该数组为空
+          contract.length ? sealAttachments.push(contract) : null
+          sealOthers.length ? sealAttachments = sealAttachments.concat(sealOthers) : null
+          sealAgreenments.length ? sealAttachments = sealAttachments.concat(sealAgreenments) : null
+          return sealAttachments
+        }
+      },
+      combineSealsInfo1() {//不剔除空数据项
+        if (this.operateType !== 'query') {
+          const contract = this.cardSealInfoForm.contract
+          const agreenments = this.cardSealInfoForm.agreenments
+          const others = this.cardSealInfoForm.others
+          let sealAttachments = []
+
+          const sealOthers = [], sealAgreenments = []
+          if (others && others.length) {
+            for (let i = 0, len = others.length; i < len; i++) {
+                sealOthers.push(others[i])
             }
           }
 
@@ -3224,7 +3263,7 @@
       handleSubmit() {
         this.btnSubmitStatus = false
         this.isSubmit = true
-
+        console.log('submit');
         this.validateForms().then(() => {
           this.formatTime(this.cardContentInfoForm, this.cardFinanceInfoForm)
           this.cardSealInfoForm.sealAttachments = this.combineSealsInfo()
@@ -3272,8 +3311,8 @@
           }
         })
           .catch(()=>{
-            this.$message.error('请填写完合同信息再提交！')
             this.btnSubmitStatus = true
+            this.$message.error('请填写完合同信息再提交！')
           })
       },
 
