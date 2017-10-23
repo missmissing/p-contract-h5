@@ -132,7 +132,7 @@
           return
         }
         this.comLoading()
-        Api.getContractDetailByCode({id: this.contractCode}).then((res) => {
+        Api.getContractDetailByCode({id: this.contractCode, operate: 'SUSPENDED'}).then((res) => {
           const data = res.data.dataMap
           console.log(data)
           this.info = data
