@@ -80,7 +80,11 @@ export default {
   /** ****变更合同接口start******/
   // 根据合同编号获取变更合同的数据
   getUpdateInfo(params) {
-    return Http.get(`${contract}/contract-web/contract/no/${params}`)
+    if(typeof params==='object'){
+      return Http.get(`${contract}/contract-web/contract/no/${params.code}`,params)
+    }else{
+      return Http.get(`${contract}/contract-web/contract/no/${params}`)
+    }
   },
   /** ****变更合同接口end******/
   /** ***从协议接口****/

@@ -82,7 +82,7 @@
               </el-select>
             </el-form-item>
           </el-col>
-          <el-col :span="8" v-if="!updateForm.updateMode">
+          <el-col :span="8" v-if="updateForm.updateMode===2">
             <el-form-item label="新合同编号" prop="newCode">
               <el-input :disabled="true" v-model="updateForm.newCode" placeholder="新合同编号"></el-input>
             </el-form-item>
@@ -187,7 +187,7 @@
                         placeholder="请输入所属项目"></el-input>
             </el-form-item>
           </el-col>
-          <el-col :span="8" v-if="operateType!=='create'&&updateForm.updateMode">
+          <el-col :span="8" v-if="operateType!=='create'&&updateForm.updateMode===1">
             <el-form-item label="合同编号">
               <el-input v-model="baseInfoForm.contractNo" placeholder="请输入合同编号"
                         :disabled="true"></el-input>
@@ -313,7 +313,7 @@
               <el-table :data="cardContentInfoForm.conStandard">
                 <el-table-column type="index" label="序号" width="80"></el-table-column>
                 <el-table-column v-if="baseInfoForm.contractBusinessTypeFirst!==2" prop="materialCode"
-                                 label="物料编码"></el-table-column>
+                                 label="物料编码" width="250"></el-table-column>
                 <el-table-column prop="materialName" width="300"
                                  :label="baseInfoForm.contractBusinessTypeFirst===2?'服务名称':'物料名称'"></el-table-column>
                 <el-table-column v-if="baseInfoForm.contractType!==3" prop="total" label="数量"></el-table-column>
@@ -1455,6 +1455,7 @@
                 <el-table-column prop="haveSale" label="是否盖章" width="70px">
                   <template scope="scope">
                     <el-checkbox
+                      @change="handleChangeValidateForms"
                       :disabled="!enabledInupdated"
                       v-model="item[scope.$index].haveSale"></el-checkbox>
                   </template>
@@ -1848,7 +1849,7 @@
               name: '原合同有效'
             },
             {
-              id: 0,
+              id: 2,
               name: '原合同作废'
             }
           ],
@@ -2371,7 +2372,7 @@
       isEnabled: function () {
         let enabled = false
         if (this.operateType === 'update') {
-          this.updateForm.updateMode ? enabled = true : enabled = false
+          this.updateForm.updateMode===1 ? enabled = true : enabled = false
         }
         if (this.operateType === 'query' || this.operateType === 'create') {
           enabled = true
@@ -2382,7 +2383,7 @@
       isEnabled1: function () {
         let enabled = false
         if (this.operateType === 'update') {
-          this.updateForm.updateMode ? enabled = true : enabled = false
+          this.updateForm.updateMode===1 ? enabled = true : enabled = false
         }
         if (this.operateType === 'query') {
           enabled = true
@@ -2443,7 +2444,7 @@
           result = true
         }
         if (this.operateType === 'update') {
-          this.updateForm.updateMode ? result = false : result = true
+          this.updateForm.updateMode===1 ? result = false : result = true
         }
         return result
       },
@@ -2513,7 +2514,7 @@
           this.ifRole?enabled=true:enabled=false
         }
         if(this.operateType==='update'){
-          this.updateForm.updateMode?enabled=false:enabled=true
+          this.updateForm.updateMode===1?enabled=false:enabled=true
         }
         return enabled
       },
@@ -2970,8 +2971,12 @@
         rows.splice(index, 1)
       },
       getProportion(money) {
-        let result = 0,
+        let result = 0,totalAmount=0
+        if(this.baseInfoForm.contractType===3){
+          totalAmount=this.cardFinanceInfoForm.totalAmount?parseFloat(this.cardFinanceInfoForm.totalAmount):0
+        }else{
           totalAmount = this.totalAmount ? parseFloat(this.totalAmount) : 0
+        }
         if (totalAmount === 0) {
           return 0 + '%'
         }
@@ -3263,7 +3268,6 @@
       handleSubmit() {
         this.btnSubmitStatus = false
         this.isSubmit = true
-        console.log('submit');
         this.validateForms().then(() => {
           this.formatTime(this.cardContentInfoForm, this.cardFinanceInfoForm)
           this.cardSealInfoForm.sealAttachments = this.combineSealsInfo()
@@ -3305,7 +3309,10 @@
                 }
                 this.$message.success('提交成功！')
                 this.operateType = 'query'
+                this.comLoading(false)
               }
+            }).catch(() => {
+              this.btnSubmitStatus = true
               this.comLoading(false)
             })
           }
@@ -3462,8 +3469,11 @@
         this.cardSealInfoForm.agreenments.push(file)
       },*/
       handleQuery(code) {
+        const params={}
+        params.code=code
+        params.operate='ALTER'
         // 根据合同编号获取合同模式设置当前合同模式及合同类型
-        Api.getUpdateInfo(code).then((data) => {
+        Api.getUpdateInfo(params).then((data) => {
           const dataMap = data.data.dataMap
           if (dataMap && dataMap.baseInfoForm.id) {
             this.initData(dataMap)
