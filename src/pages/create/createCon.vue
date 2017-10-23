@@ -221,10 +221,7 @@
                    :rules="cardContentInfoForm.rules">
             <el-card>
               <header slot="header">合同供应商信息<i class="errorMsg">{{cardContentInfoForm.supplierErrorMsg}}</i></header>
-              <el-button v-if="isVisibleNewSupplierBtn"
-                         size="small"
-                         @click="handleAddContractSupplier" icon="plus" class="mb10"
-                         type="primary">新增
+              <el-button v-if="isVisibleNewSupplierBtn" size="small" @click="handleAddContractSupplier" icon="plus" class="mb10" type="primary">新增
               </el-button>
               <el-table :data="cardContentInfoForm.tableSupplierInfo">
                 <el-table-column type="index" label="序号" width="80"></el-table-column>
@@ -1214,7 +1211,7 @@
             </el-card>
           </el-form>
         </el-tab-pane>
-        <el-tab-pane label="合同附件及盖章信息" name="tabSealInfo" v-if="baseInfoForm.contractType!==2">
+        <el-tab-pane label="合同附件及盖章信息" name="tabSealInfo">
           <el-form v-if="baseInfoForm.templateId" rel="cardSealInfoForm" :model="cardSealInfoForm" label-width="100px"
                    :rules="cardSealInfoForm.rules">
             <el-button
@@ -1275,17 +1272,17 @@
                       </el-col>
                       <el-col :span="6">
                         <el-form-item label="打印份数" prop="printTime">
-                          <el-input :disabled="!enabledInupdated"
+                          <el-input :disabled="!enabledUpdateInApprovePrint"
                                     v-model="props.row.printTime"></el-input>
                         </el-form-item>
                       </el-col>
                       <el-col :span="6">
                         <el-form-item label="我方留存份数" prop="remainTime">
-                          <el-input :disabled="!enabledInupdated"
+                          <el-input :disabled="!enabledUpdateInApprovePrint"
                                     v-model="props.row.remainTime"></el-input>
                         </el-form-item>
                       </el-col>
-                      <el-col :span="6">
+                      <el-col :span="6" >
                         <el-form-item label="用印后上传">
                           <el-upload
                             ref="uploadFileAfterSeal"
@@ -1296,7 +1293,7 @@
                             :on-success="handleUploadFileAfterSealSuccess"
                             :on-error="handleUploadFileAfterSealError"
                           >
-                            <el-button :disabled="!enabledInupdated||!getEnabledUploadBtn(props.row.filesSealed)"
+                            <el-button :disabled="!enabledUpdateInApprove||!getEnabledUploadBtn(props.row.filesSealed)"
                                        size="small"
                                        type="primary" @click="handleUpload(cardSealInfoForm.contract[0].attachType)">上传
                             </el-button>
@@ -1383,13 +1380,13 @@
                         </el-col>
                         <el-col :span="6">
                           <el-form-item label="打印份数" prop="printTime">
-                            <el-input :disabled="!enabledUpdateInApprove"
+                            <el-input :disabled="!enabledUpdateInApprovePrint"
                                       v-model="props.row.printTime"></el-input>
                           </el-form-item>
                         </el-col>
                         <el-col :span="6">
                           <el-form-item label="我方留存份数" prop="remainTime">
-                            <el-input :disabled="!enabledUpdateInApprove"
+                            <el-input :disabled="!enabledUpdateInApprovePrint"
                                       v-model="props.row.remainTime"></el-input>
                           </el-form-item>
                         </el-col>
@@ -2500,10 +2497,20 @@
         reg.test(user.roleName)?ifRole= true:ifRole=false
         return ifRole
       },
-      enabledUpdateInApprove:function(){//在审批阶段修改附件时，控件的状态（仅用章保管人可用）
+      enabledUpdateInApprove:function(){//在审批阶段修改附件时，上传盖章合同控件的上传按钮状态（仅用章保管人可用）
+        let enabled=false
+        if(this.operateType==='query'){
+          this.ifRole?enabled=true:enabled=false
+        }
+        return enabled
+      },
+      enabledUpdateInApprovePrint:function(){//创建和变更阶段可用，审批阶段且角色是用章保管人可用
         let enabled=true
         if(this.operateType==='query'){
           this.ifRole?enabled=true:enabled=false
+        }
+        if(this.operateType==='update'){
+          this.updateForm.updateMode?enabled=false:enabled=true
         }
         return enabled
       },
@@ -2656,6 +2663,7 @@
         previewData.endTime = this.cardContentInfoForm.endTime
         previewData.cardFinanceInfoForm = this.cardFinanceInfoForm
         previewData.templateId = this.baseInfoForm.templateId
+        console.log(JSON.stringify(previewData))
         this.previewData = previewData
         this.visible = true
       },
@@ -3494,9 +3502,12 @@
               this.baseInfoForm.businessDeptId = businessOperators[i].deptCode
               this.cardContCheckInfoForm.responsibleId = businessOperators[i].superiorId
               this.cardContCheckInfoForm.responsibleName = businessOperators[i].superiorName
-              this.getPerson(this.cardContCheckInfoForm.responsibleName, (data) => {
-                this.cardContCheckInfoForm.responsibleDeptName = data[0].deptName
-                this.cardContCheckInfoForm.responsibleDeptId = data[0].deptCode
+              this.getPerson(this.cardContCheckInfoForm.responsibleId, (data) => {
+                if(data&&data.length){
+                  this.cardContCheckInfoForm.responsibleDeptName = data[0].deptName
+                  this.cardContCheckInfoForm.responsibleDeptId = data[0].deptCode
+                }
+
               })
             }
           }

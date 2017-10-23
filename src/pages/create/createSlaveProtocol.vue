@@ -219,13 +219,13 @@
                     </el-col>
                     <el-col :span="6">
                       <el-form-item label="打印份数" prop="printTime">
-                        <el-input  :disabled="!enabledUpdateInApprove"
+                        <el-input  :disabled="!enabledUpdateInApprovePrint"
                                   v-model="props.row.printTime"></el-input>
                       </el-form-item>
                     </el-col>
                     <el-col :span="6">
                       <el-form-item label="我方留存份数" prop="remainTime">
-                        <el-input :disabled="!enabledUpdateInApprove"
+                        <el-input :disabled="!enabledUpdateInApprovePrint"
                                   v-model="props.row.remainTime"></el-input>
                       </el-form-item>
                     </el-col>
@@ -624,14 +624,20 @@
       ifRole:function(){
         let ifRole=false,reg=/用章保管人/g
         reg.test(this.users.roleName)?ifRole= true:ifRole=false
-        return true
+        return ifRole
       },
       enabledUpdateInApprove:function(){//在审批阶段修改附件时，控件的状态（仅用章保管人可用）
+        let enabled=false
+        if(this.operateType==='query'){
+          this.ifRole?enabled=true:enabled=false
+        }
+        return enabled
+      },
+      enabledUpdateInApprovePrint:function(){//创建可用，审批阶段且角色是用章保管人可用
         let enabled=true
         if(this.operateType==='query'){
           this.ifRole?enabled=true:enabled=false
         }
-        console.log('enabled',enabled);
         return enabled
       },
     },
