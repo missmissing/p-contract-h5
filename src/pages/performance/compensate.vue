@@ -158,7 +158,7 @@
         compensateType: null,
         compensateMoney: '',
         fileList: [],
-        options: [{label: '供应商向我方赔付', value: 0}, {label: '我方向供应商佩服', value: 1}],
+        options: [{label: '供应商向我方赔付', value: 0}, {label: '我方向供应商赔付', value: 1}],
         info: {},
         toDetail: {name: routerNames.con_Check, query: {contractId: ''}},
         basicForm: {
