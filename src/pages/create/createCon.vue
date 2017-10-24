@@ -3555,6 +3555,9 @@
                 if(data&&data.length){
                   this.cardContCheckInfoForm.responsibleDeptName = data[0].deptName
                   this.cardContCheckInfoForm.responsibleDeptId = data[0].deptCode
+                }else{
+                  this.cardContCheckInfoForm.responsibleDeptName = ''
+                  this.cardContCheckInfoForm.responsibleDeptId = ''
                 }
 
               })
