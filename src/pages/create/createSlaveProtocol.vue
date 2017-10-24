@@ -181,7 +181,7 @@
       </el-form>
     </el-card>
     <el-card v-if="contentVisible&&ifShowNewSeals">
-      <header slot="header">合同附件及盖章信息<i class="errorMsg">{{baseInfoForm.attachmentErrorMsg}}</i></header>
+      <header slot="header">合同附件及盖章信息<i class="errorMsg">{{cardSealInfoForm.attachmentErrorMsg}}</i></header>
       <el-form rel="cardSealInfoForm" :model="cardSealInfoForm" label-width="100px" :rules="cardSealInfoForm.rules">
         <el-button size="small" type="primary" @click="handleNewOtherSealFile" icon="plus" class="mb20"
                    v-if="enabledInupdated">新增</el-button>
@@ -218,15 +218,15 @@
                       </el-form-item>
                     </el-col>
                     <el-col :span="6">
-                      <el-form-item label="打印份数" prop="printTime">
+                      <el-form-item label="打印份数" prop="printTime" class="is-required">
                         <el-input  :disabled="!enabledUpdateInApprovePrint"
-                                  v-model="props.row.printTime"></el-input>
+                                  v-model="props.row.printTime" @change="handleChangeValidateForms"></el-input>
                       </el-form-item>
                     </el-col>
                     <el-col :span="6">
-                      <el-form-item label="我方留存份数" prop="remainTime">
+                      <el-form-item label="留存份数" prop="remainTime" class="is-required">
                         <el-input :disabled="!enabledUpdateInApprovePrint"
-                                  v-model="props.row.remainTime"></el-input>
+                                  v-model="props.row.remainTime" @change="handleChangeValidateForms"></el-input>
                       </el-form-item>
                     </el-col>
                     <el-col :span="6">
@@ -250,8 +250,8 @@
                   </el-row>
                   <el-row>
                     <el-col :span="12">
-                      <el-form-item prop="saleInfos">
-                        <el-checkbox-group v-model="props.row.saleInfos">
+                      <el-form-item label="选择用章" prop="saleInfos" class="is-required">
+                        <el-checkbox-group v-model="props.row.saleInfos" @change="handleChangeValidateForms">
                           <el-checkbox
                             :disabled="!enabledInupdated"
                             v-for="item in props.row.useSeals"
@@ -296,7 +296,7 @@
             </el-table-column>
             <el-table-column prop="haveSale" label="是否盖章" width="100px">
               <template scope="scope">
-                  <el-checkbox :disabled="!enabledInupdated" v-model="item[scope.$index].haveSale"></el-checkbox>
+                  <el-checkbox :disabled="!enabledInupdated" v-model="item[scope.$index].haveSale" @change="handleChangeValidateForms"></el-checkbox>
               </template>
             </el-table-column>
             <el-table-column prop="remark" :disabled="!enabledInupdated" label="备注" width="200px">
@@ -502,7 +502,6 @@
           tableSupplierInfo: [],
           supplierErrorMsg: '',
           subjectErrorMsg: '',
-          attachmentErrorMsg: '',
           conSubjctName: [],
           radioSealOrder: 1, // 0：我方先盖章 1：对方先盖章
           sealReason: '',
@@ -545,6 +544,7 @@
               filesSealed: []// 上传的盖章后的文件信息
             }]*/
           ],
+          attachmentErrorMsg: '',
           current: null, // 为上传功能保存当前所在附件列表的索引
           type: null,// 为上传功能保存当前附件类型
           rules:{
@@ -852,15 +852,27 @@
           } else {
             baseInfoForm.subjectErrorMsg = ''
           }
-          if (!attachments.length) {
-            baseInfoForm.attachmentErrorMsg = '合同附件及盖章信息不能为空'
-            this.$message.error('请填写完合同附件及盖章信息再提交！')
-            return
-          } else {
-            baseInfoForm.attachmentErrorMsg = ''
+          //验证附件的数据是否填写完整
+          if (attachments&&attachments.length){
+            for(let i=0,len=attachments.length;i<len;i++){
+              const item=attachments[i]
+              if(item[0].haveSale){
+                if(item[0].printTime&&item[0].remainTime&&item[0].saleInfos.length){
+                  this.cardSealInfoForm.attachmentErrorMsg=''
+                }else{
+                  this.cardSealInfoForm.attachmentErrorMsg='请确保所有附件信息填写完整'
+                }
+              }else{
+                this.cardSealInfoForm.attachmentErrorMsg=''
+              }
+            }
+          }else{
+            this.cardSealInfoForm.attachmentErrorMsg='合同附件及盖章信息不能为空'
           }
-          if (suppliers.length === 1 && subjects.length >= 1 && attachments.length >= 1) {
+          if (suppliers.length === 1 && subjects.length >= 1 &&!this.cardSealInfoForm.attachmentErrorMsg) {
             resolve()
+          }else{
+            reject()
           }
         })
       },
@@ -889,6 +901,9 @@
             .catch(() => {
               this.btnStatus = true
             })
+        }).catch(()=>{
+          this.btnStatus = true
+          this.$message.error('请填写完从协议信息再提交!')
         })
       },
       combineSealsInfo() {
@@ -915,7 +930,6 @@
       },
       handleNewOtherSealFile() {
         const file = [{
-          testtype:[],////??delte
           operate: 'add',
           id: '',
           fileName: '',
@@ -948,7 +962,7 @@
         }]
         this.cardSealInfoForm.sealAttachments.push(file)
         if (this.isSubmit) {
-          this.validateForms()
+          this.validateForms().catch(()=>{})
         }
       },
       getContractAgreenmentName(id) {
@@ -994,18 +1008,12 @@
           }
         })
       },
-      handleTest(){
-        let queryContractForm={
-          testtype:[],//??delete
-          visible: false, // 在创建从协议时控制从协议页面数据的显示与否
-            code: '',
-            rules: {
-            code: [{required: true, message: '请输入合同编号', trigger: 'blur'}],
-            //testtype:[{ type: 'array', required: true, message: '请选择活动性质', trigger: 'change' }]
-          }
+      handleChangeValidateForms(){
+        if(this.isSubmit){
+          this.validateForms().catch(()=>{
+            console.log('handleChangeValidateForms-fail');
+          })
         }
-        this.queryContractForm=queryContractForm
-        console.log('this.queryContractForm',this.queryContractForm);
       },
       callback(params){//isSign:是否是加签人 isAgree:审批操作类型是否是同意
         return new Promise((resolve,reject)=>{
@@ -1049,7 +1057,6 @@
               tableSupplierInfo: [],
               supplierErrorMsg: '',
               subjectErrorMsg: '',
-              attachmentErrorMsg: '',
               conSubjctName: [],
               radioSealOrder: 0, // 0：我方先盖章 1：对方先盖章
               sealReason: '',
@@ -1058,6 +1065,7 @@
               rules: {}
             },
             cardSealInfoForm: {
+              attachmentErrorMsg: '',
               sealAttachments: [],
               current: null, // 为上传功能保存当前所在附件列表的索引
               type: null// 为上传功能保存当前附件类型
