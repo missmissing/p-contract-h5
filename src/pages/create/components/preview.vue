@@ -39,13 +39,13 @@
           <table class="default-table">
             <tbody>
             <tr>
-              <td width="45" valign="top" class="w45">甲方：</td>
+              <td width="45" valign="top" class="w45 vert">甲方：</td>
               <td>
                 <div v-for="item in partAName" class="mb10">{{item}}</div>
               </td>
             </tr>
             <tr>
-              <td valign="top">乙方：</td>
+              <td width="45" valign="top" class="w45 vert">乙方：</td>
               <td>
                 <div v-for="item in partBName" class="mb10">{{item}}</div>
               </td>
