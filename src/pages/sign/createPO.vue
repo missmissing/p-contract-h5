@@ -723,27 +723,23 @@
             }
           })
         } else {
-          this.prData.forEach((item) => {
-            console.log(item)
-            const {purOrderMaterialsList} = item
-            const {pr, category} = item
-            purOrderMaterialsList.forEach((material) => {
-              const {itemNo, materialName, materialCode, total, availableTotal} = material
-              orderData.push({
-                pr,
-                category,
-                itemNo,
-                materialName,
-                materialCode,
-                price: '',
-                total,
-                availableTotal,
-                taxRate: '',
-                deliveryTime: ''
-              })
+          this.materialsMatchData.forEach((item) => {
+            const {pr, itemNo, materialName, total, availableTotal, materialCode, category} = item
+            orderData.push({
+              pr,
+              category,
+              itemNo,
+              materialName,
+              materialCode,
+              price: '',
+              total,
+              availableTotal,
+              taxRate: '',
+              deliveryTime: ''
             })
           })
         }
+        console.log(orderData)
         this.orderData = orderData.filter(item => item.availableTotal !== 0)
       },
       showServiceTab() {
@@ -774,8 +770,7 @@
           this.$message.warning('数量必须大于0！')
           event.target.value = ''
         }
-
-        if (val > availableTotal) {
+        if (parseInt(val) > parseInt(availableTotal)) {
           this.$message.warning(`不能大于可用数量:${availableTotal}！`)
           event.target.value = ''
         }
