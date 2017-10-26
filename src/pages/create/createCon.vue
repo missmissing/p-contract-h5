@@ -3787,7 +3787,7 @@
                   reject()
                 })
           }else{
-            reject()
+            resolve()
           }
         })
       },
