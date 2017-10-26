@@ -1299,7 +1299,8 @@
                                        size="small"
                                        type="primary" @click="handleUpload(cardSealInfoForm.contract[0].attachType)">上传
                             </el-button>
-                            </el-button>
+                            <!--<el-button size="small" type="primary" @click="handleUpload(cardSealInfoForm.contract[0].attachType)">上传
+                            </el-button>-->
                           </el-upload>
                         </el-form-item>
                       </el-col>
@@ -1406,7 +1407,8 @@
                               <el-button :disabled="!enabledUpdateInApprove||!getEnabledUploadBtn(props.row.filesSealed)"
                                          size="small"
                                          type="primary" @click="handleUpload(item[props.$index].attachType,index)">上传
-                              </el-button>
+                              <!--<el-button size="small" type="primary" @click="handleUpload(item[props.$index].attachType,index)">上传
+                              </el-button>-->
                               </el-button>
                             </el-upload>
                           </el-form-item>
@@ -1792,6 +1794,9 @@
         </el-button>
       </el-col>
     </el-row>
+    <!--<el-row>
+      <el-button type="primary" @click="handleSubmitAftrerFile">提交用印后的附件</el-button>
+    </el-row>-->
     <Preview :visible.sync="visible" :datas="previewData"></Preview>
   </div>
 </template>
@@ -3166,7 +3171,7 @@
         })
       },
       combineSealsInfo() {//剔除空数据项
-        if (this.operateType !== 'query') {
+
           const contract = this.cardSealInfoForm.contract
           const agreenments = this.cardSealInfoForm.agreenments
           const others = this.cardSealInfoForm.others
@@ -3195,7 +3200,7 @@
           sealOthers.length ? sealAttachments = sealAttachments.concat(sealOthers) : null
           sealAgreenments.length ? sealAttachments = sealAttachments.concat(sealAgreenments) : null
           return sealAttachments
-        }
+
       },
       combineSealsInfo1() {//不剔除空数据项
         if (this.operateType !== 'query') {
@@ -3767,24 +3772,38 @@
       },
       callback(params){//isSign:是否是加签人 isAgree:审批操作类型是否是同意
         return new Promise((resolve,reject)=>{
-          // const roleName=users.roleName//当前登陆人的角色
-          // const sealAttachments = this.combineSealsInfo()
-          // sealAttachments.splice(0,1)
           const {isSign,isAgree}=params
-          resolve()
-          /*if(!isSign&&isAgree){
-              Api.uploadSealAttachments(sealAttachments)
-                .then((data)=>{
-                const dataMap=data.data.dataMap
-                if(dataMap&&dataMap.status==='200'){
+          if(!isSign&&isAgree&&this.ifRole){
+            const sealAttachments = this.combineSealsInfo()
+            sealAttachments.splice(0,1)
+            const para={}
+            para.sealAttachments=sealAttachments
+            para.contractId=this.baseInfoForm.id
+            console.log(JSON.stringify(para))
+              Api.uploadSealAttachments(para)
+                .then(()=>{
                   resolve()
-                }
-              })
+                })
                 .catch(()=>{
                   reject()
                 })
-          }*/
+          }
         })
+      },
+      handleSubmitAftrerFile(){//????
+        const sealAttachments = this.combineSealsInfo()
+        sealAttachments.splice(0,1)
+        const para={}
+        para.sealAttachments=sealAttachments
+        para.contractId=this.baseInfoForm.id
+        console.log(JSON.stringify(para))
+        Api.uploadSealAttachments(para)
+          .then(()=>{
+            resolve()
+          })
+          .catch(()=>{
+            reject()
+          })
       },
       handleChangeValidateForms(){
         if(this.isSubmit){
