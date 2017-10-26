@@ -87,7 +87,7 @@
       </el-card>
       <el-card>
         <div slot="header">
-          <span class="common-title">不合格事项</span>
+          <span class="common-title">验收信息</span>
         </div>
         <div class="checkItems-info">
           <div class="mb20">
@@ -181,7 +181,7 @@
     </div>
 
     <el-dialog
-      title="新增不合格事项"
+      title="新增验收事项"
       :visible.sync="addNotQualityDialogVisible">
       <el-form
         ref="addNotQualityDialogForm"

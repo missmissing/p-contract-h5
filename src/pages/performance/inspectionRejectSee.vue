@@ -78,7 +78,7 @@
       </el-card>
       <el-card>
         <div slot="header">
-          <span class="common-title">不合格事项</span>
+          <span class="common-title">验收信息</span>
         </div>
         <div class="checkItems-info">
           <el-table

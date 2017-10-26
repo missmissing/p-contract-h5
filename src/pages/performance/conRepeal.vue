@@ -65,7 +65,8 @@
                 style="width:100%;"
                 v-model="form.suspendTime"
                 type="date"
-                placeholder="选择日期">
+                placeholder="选择日期"
+                :picker-options="pickerOptions">
               </el-date-picker>
             </el-form-item>
           </el-col>
@@ -119,6 +120,11 @@
         contractStatusName: '',
         startTime: '',
         endTime: '',
+        pickerOptions: {
+          disabledDate(time) {
+            return true
+          }
+        },
         options: [{value: 1, label: '合同违约中止'}, {value: 2, label: '合同变更后中止'}, {value: 3, label: '固定期限合同正常履行完成后中止'}],
         info: null,
         toDetail: {name: routerNames.con_Check, query: {contractId: ''}}
@@ -144,6 +150,9 @@
           this.startTime = startTime
           this.endTime = endTime
           this.toDetail.query.contractId = id
+          this.pickerOptions.disabledDate = (time) => {
+            return time.getTime() < this.startTime
+          }
           this.comLoading(false)
         }, () => {
           this.comLoading(false)
