@@ -47,6 +47,9 @@
     padding-top: 20px;
     padding-bottom: 50px;
   }
+  .createCon .el-table__expanded-cell{
+    z-index:1
+  }
 </style>
 <template>
   <div class="createCon">
