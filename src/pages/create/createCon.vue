@@ -997,7 +997,7 @@
                       联系电话:
                     </el-col>
                     <el-col :span="16">
-                      {{jia.contacts}}
+                      {{jia.contactNumber}}
                     </el-col>
                   </el-row>
                   <el-row>
@@ -1979,7 +1979,7 @@
             creditCode: '913100006624816751',
             registerAddress: '上海市浦东新区临御路518号6楼F801室',
             managementAddress: '上海市普陀区怒江北路598号10楼',
-            phone: '021-22300563',
+            contactNumber: '021-22300563',
             bankAccount: '0210 0141 7000 7578',
             openBank: '中国民生银行上海市南支行'
           },
@@ -1989,7 +1989,7 @@
             bankAccount: '0210 0141 7000 7578',
             openBank: '中国民生银行上海市南支行',
             address: '上海市浦东新区临御路518号6楼F801室',
-            phone: '021-22300563',
+            contactNumber: '021-22300563',
             email: '134656343@qq.com'
           },
           paymentErrorMSG:'',
@@ -2126,7 +2126,7 @@
             }
           ],
           rules: {
-            deposit: [{required: true, message: '请输入保证金金额',trigger:'blur'}],
+            deposit: [{required: true, message: '请输入保证金金额'}],
             payTime: [{required: true, message: '请输入付款时间'}],
             invoiceType: [{required: true, message: '请选择开票类型'}]
           }
@@ -3317,8 +3317,9 @@
                 }
                 this.$message.success('提交成功！')
                 this.operateType = 'query'
-                this.comLoading(false)
+                this.$router.push({name: routerNames.con_index})
               }
+              this.comLoading(false)
             }).catch(() => {
               this.btnSubmitStatus = true
               this.comLoading(false)
