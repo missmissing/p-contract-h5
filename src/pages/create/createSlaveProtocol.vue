@@ -494,6 +494,7 @@
         users: user,
         downloadUrl: downloadUrl,
         uploadUrl: uploadUrl,
+        id:'',//从协议id
         protocolNo: null, // 从协议编号
         code:null,//合同编号
         operateType: 'create', // 默认创建状态，query：查看
@@ -907,7 +908,6 @@
         })
       },
       combineSealsInfo() {
-        if (this.operateType !== 'query') {
           let sealAttachments = this.cardSealInfoForm.sealAttachments
           const sealAttachment = []
           if (sealAttachments && sealAttachments.length) {
@@ -920,7 +920,6 @@
             }
           }
           return sealAttachment
-        }
       },
       handleContractDetail(index, row) {
         console.log('详情', index, row)
@@ -1015,24 +1014,27 @@
           })
         }
       },
+
       callback(params){//isSign:是否是加签人 isAgree:审批操作类型是否是同意
         return new Promise((resolve,reject)=>{
-          // const roleName=users.roleName//当前登陆人的角色
-          // const sealAttachments = this.combineSealsInfo()
           const {isSign,isAgree}=params
-          resolve()
-          /*if(!isSign&&isAgree){
-           Api.uploadSealAttachments(sealAttachments)
-           .then((data)=>{
-           const dataMap=data.data.dataMap
-           if(dataMap&&dataMap.status==='200'){
-           resolve()
-           }
-           })
-           .catch(()=>{
-           reject()
-           })
-           }*/
+          if(!isSign&&isAgree&&this.ifRole){
+            const sealAttachments = this.combineSealsInfo()
+            sealAttachments.splice(0,1)
+            const para={}
+            para.sealAttachments=sealAttachments
+            para.id=this.id
+            para.type=2
+            Api.uploadSealAttachments(para)
+              .then(()=>{
+                resolve()
+              })
+              .catch(()=>{
+                reject()
+              })
+          }else{
+            resolve()
+          }
         })
       },
     },

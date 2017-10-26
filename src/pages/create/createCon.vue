@@ -234,7 +234,8 @@
                 <el-table-column
                   fixed="right"
                   label="操作"
-                  width="100">
+                  width="100"
+                  v-if="this.operateType!=='query'">
                   <template scope="scope">
                     <el-button
                       v-if="cardContentInfoForm.tableSupplierInfo[scope.$index].type"
@@ -267,7 +268,8 @@
                 <el-table-column
                   fixed="right"
                   label="操作"
-                  width="100">
+                  width="100"
+                  v-if="this.operateType!=='query'">
                   <template scope="scope">
                     <el-button
                       v-if="cardContentInfoForm.conSubjctName[scope.$index].type"
@@ -293,7 +295,8 @@
                 <el-table-column
                   fixed="right"
                   label="操作"
-                  width="100">
+                  width="100"
+                  v-if="this.operateType!=='query'">
                   <template scope="scope">
                     <el-button
                       v-if="cardContentInfoForm.thirdPartyInfo[scope.$index].type"
@@ -330,7 +333,8 @@
                 <el-table-column
                   fixed="right"
                   label="操作"
-                  width="100">
+                  width="100"
+                  v-if="this.operateType!=='query'">
                   <template scope="scope">
                     <el-button
                       v-if="cardContentInfoForm.conStandard[scope.$index].operate"
@@ -1159,7 +1163,8 @@
               <el-table-column
                 fixed="right"
                 label="操作"
-                width="100">
+                width="100"
+                v-if="this.operateType!=='query'">
                 <template scope="scope">
                   <el-button
                     v-if="cardContCheckInfoForm.unionCheckPersons[scope.$index].operate"
@@ -1202,7 +1207,8 @@
                 <el-table-column
                   fixed="right"
                   label="操作"
-                  width="100">
+                  width="100"
+                  v-if="this.operateType!=='query'">
                   <template scope="scope">
                     <el-button
                       v-if="cardContCheckInfoForm.serviceMatters[scope.$index].type"
@@ -1289,7 +1295,7 @@
                         </el-form-item>
                       </el-col>
                       <el-col :span="6" >
-                        <el-form-item label="用印后上传">
+                        <el-form-item label="用印后上传" v-if="enabledUpdateInApprove">
                           <el-upload
                             ref="uploadFileAfterSeal"
                             :data="{userId:users.userId}"
@@ -1396,7 +1402,7 @@
                           </el-form-item>
                         </el-col>
                         <el-col :span="6">
-                          <el-form-item label="用印后上传">
+                          <el-form-item label="用印后上传" v-if="enabledUpdateInApprove">
                             <el-upload
                               ref="uploadFileAfterSeal"
                               :data="{userId:users.userId}"
@@ -1471,7 +1477,8 @@
                 </el-table-column>
                 <el-table-column
                   fixed="right"
-                  label="操作">
+                  label="操作"
+                  v-if="operateType!=='query'">
                   <template scope="scope">
                     <el-button v-if="item[scope.$index].operate"
                                @click="handleRemoveOthersItem(index, cardSealInfoForm.others)"
@@ -1541,7 +1548,8 @@
               <el-table-column
                 fixed="right"
                 label="操作"
-                width="100">
+                width="100"
+                v-if="this.operateType!=='query'">
                 <template scope="scope">
                   <el-button @click="handleContractDetail(scope.$index, scope.row)" type="text"
                              size="small">详情
@@ -3168,7 +3176,6 @@
         })
       },
       combineSealsInfo() {//剔除空数据项
-
           const contract = this.cardSealInfoForm.contract
           const agreenments = this.cardSealInfoForm.agreenments
           const others = this.cardSealInfoForm.others
@@ -3200,7 +3207,6 @@
 
       },
       combineSealsInfo1() {//不剔除空数据项
-        if (this.operateType !== 'query') {
           const contract = this.cardSealInfoForm.contract
           const agreenments = this.cardSealInfoForm.agreenments
           const others = this.cardSealInfoForm.others
@@ -3218,7 +3224,7 @@
           sealOthers.length ? sealAttachments = sealAttachments.concat(sealOthers) : null
           sealAgreenments.length ? sealAttachments = sealAttachments.concat(sealAgreenments) : null
           return sealAttachments
-        }
+
       },
       handleSave() {
         this.btnSaveStatus = false
