@@ -18,8 +18,6 @@
       text-align: left;
     }
   }
-
-
 </style>
 
 <template>
@@ -38,18 +36,22 @@
       </form>
       <div id="pdf-wrap">
         <div class="mb20">
-          <div class="flex mb20">
-            <div>甲方：</div>
-            <div>
-              <div v-for="item in partAName">{{item}}</div>
-            </div>
-          </div>
-          <div class="flex mb20">
-            <div>乙方：</div>
-            <div>
-              <div v-for="item in partBName">{{item}}</div>
-            </div>
-          </div>
+          <table class="default-table">
+            <tbody>
+            <tr>
+              <td width="45" valign="top" class="w45 vert">甲方：</td>
+              <td>
+                <div v-for="item in partAName" class="mb10">{{item}}</div>
+              </td>
+            </tr>
+            <tr>
+              <td width="45" valign="top" class="w45 vert">乙方：</td>
+              <td>
+                <div v-for="item in partBName" class="mb10">{{item}}</div>
+              </td>
+            </tr>
+            </tbody>
+          </table>
         </div>
         <p>甲乙双方在平等、互利的基础上，遵循自愿、公平和诚信的原则，依照《中华人民共和国合同法》及其他有关法律、行政法规，经友好协商，达成如下协议:</p>
         <p>合作范围及约定</p>
