@@ -120,8 +120,8 @@
   import supportModel from '@/api/support'
   import getBusiType from '@/mixins/getBusiType'
   import comLoading from '@/mixins/comLoading'
+  import createUpdate from '@/mixins/createUpdate'
   import {formatTimeStamp} from '@/filters/moment'
-  import {routerNames} from '@/core/consts'
 
   const defaultData = {
     form: {
@@ -137,7 +137,7 @@
   }
 
   export default {
-    mixins: [getBusiType, comLoading],
+    mixins: [getBusiType, comLoading, createUpdate],
     data() {
       return Object.assign({
         endDate: '9999-12-31',
@@ -186,27 +186,9 @@
         })
         console.log(files)
         Object.assign(result, {
-          files,
-          operatorId: 1,
-          operatorName: 'haha',
-          departmentId: 12,
-          departmentName: 'hehe'
+          files
         })
         return result
-      },
-      check(result) {
-        if (result.templateType === 'TEXT') {
-          if (!result.files.length) {
-            this.$message.warning('请上传附件！')
-            return false
-          }
-        }
-        return true
-      },
-      back() { // 返回列表页
-        this.$router.push({
-          name: routerNames.con_index
-        })
       },
       save(templateStatus) {
         this.$refs['form'].validate((valid) => {

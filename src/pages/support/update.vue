@@ -158,8 +158,9 @@
   import supportModel from '@/api/support'
   import getBusiType from '@/mixins/getBusiType'
   import comLoading from '@/mixins/comLoading'
+  import createUpdate from '@/mixins/createUpdate'
   import {formatTimeStamp, formatToDate} from '@/filters/moment'
-  import {tplTypeMap, routerNames} from '@/core/consts'
+  import {tplTypeMap} from '@/core/consts'
 
   const defaultData = {
     form: {
@@ -181,7 +182,7 @@
   }
 
   export default {
-    mixins: [getBusiType, comLoading],
+    mixins: [getBusiType, comLoading, createUpdate],
     data() {
       return Object.assign({
         endDate: '9999-12-31',
@@ -275,19 +276,10 @@
         })
         console.log(files)
         Object.assign(result, {
-          files,
-          operatorId: 1,
-          operatorName: 'haha',
-          departmentId: 12,
-          departmentName: 'hehe'
+          files
         })
         console.log(result)
         return result
-      },
-      back() { // 返回列表页
-        this.$router.push({
-          name: routerNames.con_index
-        })
       },
       querySearch(queryString, cb) {
         if (!queryString) {
@@ -314,6 +306,9 @@
               text: '正在提交中'
             })
             const result = this.getResult()
+            if (!this.check(result)) {
+              return
+            }
             result.templateStatus = templateStatus
             console.log('click save：', result)
             supportModel.updateTemplate(result).then((res) => {

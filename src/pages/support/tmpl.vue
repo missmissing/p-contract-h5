@@ -1,10 +1,5 @@
 <style type="text/scss" lang="scss" scoped>
   .tmpl-container {
-    .back {
-      float: right;
-      margin-top: -7px;
-    }
-
     .pre-title {
       height: 36px;
       line-height: 36px;
@@ -46,7 +41,6 @@
     <el-card>
       <div slot="header">
         <span class="common-title">模板信息</span>
-        <el-button class="back" type="primary" @click="save">返 回</el-button>
       </div>
       <div>
         <el-row>
@@ -93,6 +87,7 @@
         </el-row>
       </div>
     </el-card>
+    <el-button class="mt20 ml20" type="primary" @click="save">返 回</el-button>
   </div>
 </template>
 
@@ -145,16 +140,6 @@
       },
       save() {
         if (!this.disabled) {
-          if (!_.trim(this.form.content)) {
-            this.$message.error('请输入内容！')
-            return false
-          }
-
-          if (!this.form.contentModule.length) {
-            this.$message.error('请选择模块！')
-            return false
-          }
-
           this[types.SET_INFO]({
             info: this.form
           })
