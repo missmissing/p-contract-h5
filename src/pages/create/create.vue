@@ -102,6 +102,7 @@
             <el-form-item label="创建人" prop="createPerson">
               <el-select
                 style="width:300px"
+                clearable
                 v-model="prForm.createPerson"
                 filterable
                 remote

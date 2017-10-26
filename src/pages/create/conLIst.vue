@@ -36,6 +36,8 @@
             </el-input>
           </el-form-item>
         </el-col>
+        </el-row>
+      <el-row>
         <el-col :span="8">
           <el-form-item label="采购订单">
             <el-input v-model="form.purchaseOrder" placeholder="请输入采购订单号"></el-input>

@@ -105,6 +105,7 @@
           <el-col :span="8">
             <el-form-item label="经办人" prop="businessOperatorId">
               <el-select
+                clearable
                 class="wp100"
                 :disabled="isEnabled1"
                 v-model="baseInfoForm.businessOperatorId"
@@ -3513,6 +3514,8 @@
               this.baseInfoForm.businessOperators = data.data.dataMap
             })
         } else {
+          this.baseInfoForm.businessOperatorId=''
+          this.baseInfoForm.businessOperatorName=''
           this.baseInfoForm.businessOperators = []
         }
       },

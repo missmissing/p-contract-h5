@@ -42,6 +42,7 @@
           <el-form-item label="公司名称/编码" prop="conSubjctName">
             <el-select
               class="wp100"
+              clearable
               v-model="agreementForm.conSubjctName"
               filterable
               remote
@@ -63,6 +64,7 @@
           <el-form-item label="发起人" prop="creatorName">
             <el-select
               class="wp100"
+              clearable
               v-model="agreementForm.creatorName"
               filterable
               remote
@@ -166,11 +168,12 @@
         if (query !== '') {
           this.agreementForm.agreementLoading = true
           Api.getRemoteSubjectsByKeyWord({key: query})
-            .then((data) => {
+            .then((data)=>{
               this.agreementForm.agreementLoading = false
               this.agreementForm.companies = data.data.dataMap || []
             })
         } else {
+          this.agreementForm.conSubjctName=''
           this.agreementForm.companies = []
         }
       },
@@ -194,6 +197,7 @@
               this.agreementForm.creators = data.data.dataMap || []
             })
         } else {
+          this.agreementForm.creatorName=''
           this.agreementForm.creators = []
         }
       },
