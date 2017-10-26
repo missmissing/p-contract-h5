@@ -3779,7 +3779,6 @@
             para.sealAttachments=sealAttachments
             para.id=this.baseInfoForm.id
             para.type=1
-            console.log(JSON.stringify(para))
               Api.uploadSealAttachments(para)
                 .then(()=>{
                   resolve()
@@ -3787,6 +3786,8 @@
                 .catch(()=>{
                   reject()
                 })
+          }else{
+            reject()
           }
         })
       },
