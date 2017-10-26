@@ -1299,8 +1299,6 @@
                                        size="small"
                                        type="primary" @click="handleUpload(cardSealInfoForm.contract[0].attachType)">上传
                             </el-button>
-                            <!--<el-button size="small" type="primary" @click="handleUpload(cardSealInfoForm.contract[0].attachType)">上传
-                            </el-button>-->
                           </el-upload>
                         </el-form-item>
                       </el-col>
@@ -1407,8 +1405,6 @@
                               <el-button :disabled="!enabledUpdateInApprove||!getEnabledUploadBtn(props.row.filesSealed)"
                                          size="small"
                                          type="primary" @click="handleUpload(item[props.$index].attachType,index)">上传
-                              <!--<el-button size="small" type="primary" @click="handleUpload(item[props.$index].attachType,index)">上传
-                              </el-button>-->
                               </el-button>
                             </el-upload>
                           </el-form-item>
@@ -1794,9 +1790,6 @@
         </el-button>
       </el-col>
     </el-row>
-    <!--<el-row>
-      <el-button type="primary" @click="handleSubmitAftrerFile">提交用印后的附件</el-button>
-    </el-row>-->
     <Preview :visible.sync="visible" :datas="previewData"></Preview>
   </div>
 </template>
@@ -3778,7 +3771,8 @@
             sealAttachments.splice(0,1)
             const para={}
             para.sealAttachments=sealAttachments
-            para.contractId=this.baseInfoForm.id
+            para.id=this.baseInfoForm.id
+            para.type=1
             console.log(JSON.stringify(para))
               Api.uploadSealAttachments(para)
                 .then(()=>{
@@ -3789,21 +3783,6 @@
                 })
           }
         })
-      },
-      handleSubmitAftrerFile(){//????
-        const sealAttachments = this.combineSealsInfo()
-        sealAttachments.splice(0,1)
-        const para={}
-        para.sealAttachments=sealAttachments
-        para.contractId=this.baseInfoForm.id
-        console.log(JSON.stringify(para))
-        Api.uploadSealAttachments(para)
-          .then(()=>{
-            resolve()
-          })
-          .catch(()=>{
-            reject()
-          })
       },
       handleChangeValidateForms(){
         if(this.isSubmit){
