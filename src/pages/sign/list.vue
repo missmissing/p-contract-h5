@@ -46,6 +46,25 @@
             </el-date-picker>
           </el-form-item>
         </el-col>
+        <el-col :span="6">
+          <el-form-item label="公司编码">
+            <el-autocomplete
+              class="wp100"
+              :fetch-suggestions="querySearch"
+              v-model="form.companyCode"
+              :props="{value:'value',label:'label'}"
+              :trigger-on-focus="false">
+            </el-autocomplete>
+          </el-form-item>
+        </el-col>
+        <el-col :span="6">
+          <el-form-item label="合同编码">
+            <el-input
+              class="wp100"
+              v-model="form.contractNo">
+            </el-input>
+          </el-form-item>
+        </el-col>
       </el-row>
     </el-form>
     <el-table
@@ -136,6 +155,7 @@
 
 <script>
   import Api from '@/api/sign'
+  import ContractApi from '@/api/manageContract'
   import {routerNames, prTypeMap} from '@/core/consts'
   import comLoading from '@/mixins/comLoading'
   import {formatDate} from '@/filters/moment'
@@ -149,6 +169,8 @@
         form: {
           fuzzySearch: '',
           category: '',
+          companyCode: '',
+          contractNo: '',
           createDateStart: '',
           createDateEnd: '',
           initiator: '',
@@ -220,6 +242,24 @@
       },
       select(row, val) {
         console.log(row, val)
+      },
+      createFilter(result) {
+        return result.map((item) => {
+          return {value: item.companyCode, label: `${item.companyCode} ${item.company}`}
+        })
+      },
+      querySearch(queryString, cb) {
+        if (!queryString) {
+          return cb([])
+        }
+        ContractApi.getRemoteSubjectsByKeyWord({
+          key: queryString
+        }).then((res) => {
+          const result = res.data.dataMap || []
+          cb(this.createFilter(result))
+        }, () => {
+          return cb([])
+        })
       }
     },
     created() {

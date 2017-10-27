@@ -225,6 +225,25 @@
       }, _.cloneDeep(defaultData))
     },
     methods: {
+      createFilter(result) {
+        return result.map((item) => {
+          return {value: item}
+        })
+      },
+      querySearch(queryString, cb) {
+        if (!queryString) {
+          return cb([])
+        }
+        supportModel.selectTemplateCode({
+          templateCode: queryString,
+          type: 2
+        }).then((res) => {
+          const result = res.data.dataMap || []
+          cb(this.createFilter(result))
+        }, () => {
+          cb([])
+        })
+      },
       search() {
         this.comLoading()
         supportModel.getCurrentTemplateByCode({
@@ -273,25 +292,6 @@
       },
       back() { // 返回列表页
         this.$router.push('/contemplate/list')
-      },
-      querySearch(queryString, cb) {
-        if (!queryString) {
-          return cb([])
-        }
-        supportModel.selectTemplateCode({
-          templateCode: queryString,
-          type: 2
-        }).then((res) => {
-          const result = res.data.dataMap || []
-          cb(this.createFilter(result))
-        }, () => {
-          cb([])
-        })
-      },
-      createFilter(result) {
-        return result.map((item) => {
-          return {value: item, label: item}
-        })
       },
       save() {
         this.$refs['form'].validate((valid) => {

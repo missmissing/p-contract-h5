@@ -201,6 +201,25 @@
       }, _.cloneDeep(defaultData))
     },
     methods: {
+      createFilter(result) {
+        return result.map((item) => {
+          return {value: item}
+        })
+      },
+      querySearch(queryString, cb) {
+        if (!queryString) {
+          return cb([])
+        }
+        supportModel.selectTemplateCode({
+          templateCode: queryString,
+          type: 1
+        }).then((res) => {
+          const result = res.data.dataMap || []
+          cb(this.createFilter(result))
+        }, () => {
+          return cb([])
+        })
+      },
       search() {
         this.comLoading()
         supportModel.getCurrentTemplateByCode({
@@ -280,25 +299,6 @@
         })
         console.log(result)
         return result
-      },
-      querySearch(queryString, cb) {
-        if (!queryString) {
-          return cb([])
-        }
-        supportModel.selectTemplateCode({
-          templateCode: queryString,
-          type: 1
-        }).then((res) => {
-          const result = res.data.dataMap || []
-          cb(this.createFilter(result))
-        }, () => {
-          return cb([])
-        })
-      },
-      createFilter(result) {
-        return result.map((item) => {
-          return {value: item, label: item}
-        })
       },
       save(templateStatus) {
         this.$refs['form'].validate((valid) => {
