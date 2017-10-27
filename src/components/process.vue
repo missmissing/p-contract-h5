@@ -168,6 +168,14 @@
     },
     filters: {
       formatTime
+    },
+    watch: {
+      $route() {
+        const {processData} = this.$route.query
+        if (!processData) {
+          this.processData = null
+        }
+      }
     }
   }
 </script>
