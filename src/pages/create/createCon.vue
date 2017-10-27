@@ -53,8 +53,8 @@
 </style>
 <template>
   <div class="createCon">
-    <div class="mb10 clearfix" v-if="procInstId">
-      <div class="fr mr20">流程编号 {{procInstId}}</div>
+    <div class="mb10 clearfix" v-if="procInstCode">
+      <div class="fr mr20">流程编号 {{procInstCode}}</div>
     </div>
     <el-card v-if="operateType==='update'||updated">
       <header slot="header">变更原因</header>
@@ -1841,7 +1841,7 @@
       }
 
       return {
-        procInstId:'',//流程id
+        procInstCode:'',//流程id
         updated: false, // 在变更合同提交后是否显示变更原因
         previewData: {}, // 预览数据
         visible: false, // 预览
@@ -2539,7 +2539,7 @@
     mounted() {
       const query = this.$route.query
       if(query.processData){
-        this.procInstId=JSON.parse(query.processData).procInstId
+        this.procInstCode=JSON.parse(query.processData).procInstCode
       }
       if (JSON.stringify(query) !== '{}') {
         if (query.operateType) {

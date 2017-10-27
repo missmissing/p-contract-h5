@@ -59,8 +59,8 @@
           </el-table>
       </el-form>
     </el-card>-->
-    <div class="mb10 clearfix" v-if="procInstId">
-      <div class="fr mr20">流程编号 {{procInstId}}</div>
+    <div class="mb10 clearfix" v-if="procInstCode">
+      <div class="fr mr20">流程编号 {{procInstCode}}</div>
     </div>
     <el-card v-if="operateType==='create'">
       <header slot="header">合同查询</header>
@@ -481,7 +481,7 @@
             sex:[{required: true, message: '请选择活动性质', trigger: 'change' }]
           }
         },
-        procInstId: '', // 流程编号：
+        procInstCode: '', // 流程编号：
         queryContractForm: {
           testtype:[],//??delete
           visible: false, // 在创建从协议时控制从协议页面数据的显示与否
@@ -645,7 +645,7 @@
     mounted: function () {
       const query = this.$route.query
       if(query.processData){
-        this.procInstId=JSON.parse(query.processData).procInstId
+        this.procInstCode=JSON.parse(query.processData).procInstCode
       }
       if (this.$route.path && this.$route.path === '/ConCreate/querySlaveProtocol') {
         this.operateType = 'query'
