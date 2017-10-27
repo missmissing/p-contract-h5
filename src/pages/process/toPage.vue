@@ -53,8 +53,8 @@
         }
       },
       toPage(row, data) {
-        const {procInstId, serialNumber, procCode, procInstCode} = row
-        const {actions, approveInfo, sign} = data
+        const {procInstId, serialNumber, procCode} = row
+        const {actions, approveInfo, sign, procInstCode} = data
         const processData = JSON.stringify({
           procInstCode,
           procInstId,
