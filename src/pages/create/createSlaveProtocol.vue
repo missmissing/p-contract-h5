@@ -360,7 +360,7 @@
         </el-table>
       </el-form>
     </el-card>
-    <Process :extraFn="callback"></Process>
+    <Process v-if="operateType==='query'" :extraFn="callback"></Process>
     <el-row v-if="contentVisible">
       <el-col style="text-align: center" class="mt20">
         <el-button v-if="enabledInupdated" type="primary" :disabled="!enabledInupdated||!btnStatus"

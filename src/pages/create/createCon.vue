@@ -1786,7 +1786,7 @@
         <el-button type="primary" @click="handleAddConStandardItem('formAddConStandard')">确定</el-button>
       </footer>
     </el-dialog>
-    <Process :extraFn="callback"></Process>
+    <Process v-if="operateType==='query'" :extraFn="callback"></Process>
     <el-row class="mt20">
       <!--<el-col :span="4" :offset="4">
         <el-button v-if="operateType!=='query'" :disabled="!btnSaveStatus" type="primary" @click="handleSave('')">保存
@@ -3823,6 +3823,7 @@
     watch: {
       '$route'(to, from) {
         let path = this.$route.path
+        console.log('$route-change',path);
         if (path && path === '/conperf/conupdate') {
           this.operateType = 'update'
         }
