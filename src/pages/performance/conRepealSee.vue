@@ -6,8 +6,8 @@
 
 <template>
   <div class="pd20">
-    <div class="mb10 clearfix" v-if="procInstId">
-      <div class="fr mr20">流程编号 {{procInstId}}</div>
+    <div class="mb10 clearfix" v-if="procInstCode">
+      <div class="fr mr20">流程编号 {{procInstCode}}</div>
     </div>
     <div class="basic-info">
       <el-form :model="form" ref="form" label-width="120px">
@@ -90,7 +90,7 @@
     mixins: [comLoading],
     data() {
       return {
-        procInstId: '',
+        procInstCode: '',
         form: {
           suspendReason: '',
           suspendTime: '',
@@ -139,7 +139,7 @@
       const {id, processData} = this.$route.query
       this.getInfo(id)
       if (processData) {
-        this.procInstId = JSON.parse(processData).procInstId
+        this.procInstCode = JSON.parse(processData).procInstCode
       }
     },
     filters: {

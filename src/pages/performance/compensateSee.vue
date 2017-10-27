@@ -7,8 +7,8 @@
 <template>
   <div class="form-container">
     <div>
-      <div class="mb10 clearfix" v-if="procInstId">
-        <div class="fr mr20">流程编号 {{procInstId}}</div>
+      <div class="mb10 clearfix" v-if="procInstCode">
+        <div class="fr mr20">流程编号 {{procInstCode}}</div>
       </div>
       <el-card>
         <div slot="header">
@@ -172,7 +172,7 @@
     mixins: [comLoading],
     data() {
       return {
-        procInstId: '',
+        procInstCode: '',
         signTime: '',
         startTime: '',
         endTime: '',
@@ -235,7 +235,7 @@
       const {id, processData} = this.$route.query
       this.getInfo(id)
       if (processData) {
-        this.procInstId = JSON.parse(processData).procInstId
+        this.procInstCode = JSON.parse(processData).procInstCode
       }
     },
     components: {
