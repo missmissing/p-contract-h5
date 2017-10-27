@@ -68,7 +68,7 @@ export default class Http {
   static get(url, params = {}) {
     let urlParams = []
     Object.keys(params).forEach((key) => {
-      urlParams.push(`${key}=${params[key]}`)
+      urlParams.push(`${key}=${encodeURIComponent(params[key])}`)
     })
     if (urlParams.length) {
       urlParams = `${url}?${urlParams.join('&')}`

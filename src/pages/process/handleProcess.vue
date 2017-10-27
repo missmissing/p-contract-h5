@@ -13,7 +13,7 @@
         prop="procName"
         label="流程名称">
         <template scope="scope">
-          <el-button type="text" @click.native.prevent="toPage(scope.row)">{{scope.row.procTitle}}</el-button>
+          <el-button type="text" @click.native.prevent="toPage(scope.row)">{{scope.row.procName}}</el-button>
         </template>
       </el-table-column>
       <el-table-column

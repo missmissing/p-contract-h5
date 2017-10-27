@@ -279,7 +279,8 @@
           return cb([])
         }
         supportModel.selectTemplateCode({
-          templateCode: queryString
+          templateCode: queryString,
+          type: 2
         }).then((res) => {
           const result = res.data.dataMap || []
           cb(this.createFilter(result))
