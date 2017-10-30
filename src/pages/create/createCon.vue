@@ -47,8 +47,9 @@
     padding-top: 20px;
     padding-bottom: 50px;
   }
-  .createCon .el-table__expanded-cell{
-    z-index:1
+
+  .createCon .el-table__expanded-cell {
+    z-index: 1
   }
 </style>
 <template>
@@ -225,7 +226,8 @@
                    :rules="cardContentInfoForm.rules">
             <el-card>
               <header slot="header">合同供应商信息<i class="errorMsg">{{cardContentInfoForm.supplierErrorMsg}}</i></header>
-              <el-button v-if="isVisibleNewSupplierBtn" size="small" @click="handleAddContractSupplier" icon="plus" class="mb10" type="primary">新增
+              <el-button v-if="isVisibleNewSupplierBtn" size="small" @click="handleAddContractSupplier" icon="plus"
+                         class="mb10" type="primary">新增
               </el-button>
               <el-table :data="cardContentInfoForm.tableSupplierInfo">
                 <el-table-column type="index" label="序号" width="80"></el-table-column>
@@ -396,7 +398,8 @@
               </el-col>
               <el-col :span="8" v-if="cardFinanceInfoForm.moneyInvolved">
                 <el-form-item label="是否一次性付款">
-                  <el-radio-group v-model="cardFinanceInfoForm.oneOffPay" :disabled="operateType==='query'||baseInfoForm.contractType===3">
+                  <el-radio-group v-model="cardFinanceInfoForm.oneOffPay"
+                                  :disabled="operateType==='query'||baseInfoForm.contractType===3">
                     <el-radio :label="true">是</el-radio>
                     <el-radio :label="false">否</el-radio>
                   </el-radio-group>
@@ -411,17 +414,19 @@
                   </el-input>
                 </el-form-item>-->
                 <el-form-item v-if="baseInfoForm.contractType===3" label="合同总金额" prop="totalAmount">
-                  <el-input :disabled="!enabledContractSum" v-model="cardFinanceInfoForm.totalAmount" placeholder="根据上表累加(含税价)"></el-input>
+                  <el-input :disabled="!enabledContractSum" v-model="cardFinanceInfoForm.totalAmount"
+                            placeholder="根据上表累加(含税价)"></el-input>
                 </el-form-item>
                 <el-form-item v-else label="合同总金额" prop="totalAmount">
-                  <el-input  :disabled="true"
-                             v-model="cardFinanceInfoForm.totalAmount" placeholder="根据上表累加(含税价)">{{totalAmount}}
+                  <el-input :disabled="true"
+                            v-model="cardFinanceInfoForm.totalAmount" placeholder="根据上表累加(含税价)">{{totalAmount}}
                   </el-input>
                 </el-form-item>
               </el-col>
               <el-col :span="8">
                 <el-form-item label="开票类型" prop="invoiceType">
-                  <el-select class="wp100" v-model="cardFinanceInfoForm.invoiceType" placeholder="请选择开票类型" :disabled="operateType==='query'" @change="handleChangeValidateForms">
+                  <el-select class="wp100" v-model="cardFinanceInfoForm.invoiceType" placeholder="请选择开票类型"
+                             :disabled="operateType==='query'" @change="handleChangeValidateForms">
                     <el-option
                       v-for="item in cardFinanceInfoForm.invoiceTypeOptions"
                       :key="item.value"
@@ -447,7 +452,8 @@
             </el-row>
             <el-row v-if="cardFinanceInfoForm.oneOffPay&&cardFinanceInfoForm.moneyInvolved">
               <el-col :span="8">
-                <el-form-item v-if="cardFinanceInfoForm.moneyInvolved&&cardFinanceInfoForm.oneOffPay" label="付款条件" :rules="[{ required: true, message: '请选择付款条件', trigger: 'blur' }]">
+                <el-form-item v-if="cardFinanceInfoForm.moneyInvolved&&cardFinanceInfoForm.oneOffPay" label="付款条件"
+                              :rules="[{ required: true, message: '请选择付款条件', trigger: 'blur' }]">
                   <el-select
                     @change="handleChangeValidateForms"
                     v-model="cardFinanceInfoForm.paymentTimePeriod"
@@ -623,7 +629,8 @@
                 </el-table-column>
                 <el-table-column prop="ratio" label="占比" width="100px">
                   <template scope="scope">
-                    {{setRatio(cardFinanceInfoForm.paymentMethods.advance[scope.$index], cardFinanceInfoForm.paymentMethods.advance[scope.$index].paymentAmount)}}
+                    {{setRatio(cardFinanceInfoForm.paymentMethods.advance[scope.$index],
+                    cardFinanceInfoForm.paymentMethods.advance[scope.$index].paymentAmount)}}
                   </template>
                 </el-table-column>
               </el-table>
@@ -767,7 +774,8 @@
                 </el-table-column>
                 <el-table-column prop="ratio" label="占比" width="100px">
                   <template scope="scope">
-                    {{setRatio(cardFinanceInfoForm.paymentMethods.progress[scope.$index], cardFinanceInfoForm.paymentMethods.progress[scope.$index].paymentAmount)}}
+                    {{setRatio(cardFinanceInfoForm.paymentMethods.progress[scope.$index],
+                    cardFinanceInfoForm.paymentMethods.progress[scope.$index].paymentAmount)}}
                   </template>
                 </el-table-column>
               </el-table>
@@ -914,14 +922,16 @@
                 </el-table-column>
                 <el-table-column prop="ratio" label="占比" width="100px">
                   <template scope="scope">
-                    {{setRatio(cardFinanceInfoForm.paymentMethods._final[scope.$index], cardFinanceInfoForm.paymentMethods._final[scope.$index].paymentAmount)}}
+                    {{setRatio(cardFinanceInfoForm.paymentMethods._final[scope.$index],
+                    cardFinanceInfoForm.paymentMethods._final[scope.$index].paymentAmount)}}
                   </template>
                 </el-table-column>
               </el-table>
               <el-row>
                 <el-col :span="8">
                   <el-form-item label="是否收取保证金" label-width="120px">
-                    <el-radio-group v-model="cardFinanceInfoForm.depositFlag" :disabled="operateType==='query'||!enabledFianceBtn">
+                    <el-radio-group v-model="cardFinanceInfoForm.depositFlag"
+                                    :disabled="operateType==='query'||!enabledFianceBtn">
                       <el-radio :label="true">是</el-radio>
                       <el-radio :label="false">否</el-radio>
                     </el-radio-group>
@@ -932,7 +942,7 @@
                 <el-col :span="8">
                   <el-form-item label="保证金金额" prop="deposit">
                     <el-input v-model="cardFinanceInfoForm.deposit" :disabled="operateType==='query'"
-                              placeholder="请输入保证金金额"  @change="handleChangeValidateForms"></el-input>
+                              placeholder="请输入保证金金额" @change="handleChangeValidateForms"></el-input>
                   </el-form-item>
                 </el-col>
                 <el-col :span="8">
@@ -1234,7 +1244,8 @@
               v-if="enabledInupdated"
               class="mb20">
               添加
-            </el-button> <i class="errorMsg">{{cardSealInfoForm.errorMsg}}</i>
+            </el-button>
+            <i class="errorMsg">{{cardSealInfoForm.errorMsg}}</i>
             <!--<el-button
               type="primary"
               @click="handleNewAgreenmentSealFile"
@@ -1294,7 +1305,7 @@
                                     v-model="props.row.remainTime" @change="handleChangeValidateForms"></el-input>
                         </el-form-item>
                       </el-col>
-                      <el-col :span="6" >
+                      <el-col :span="6">
                         <el-form-item label="用印后上传" v-if="enabledUpdateInApprove">
                           <el-upload
                             ref="uploadFileAfterSeal"
@@ -1315,7 +1326,7 @@
                     </el-row>
                     <el-row>
                       <el-col :span="12">
-                        <el-form-item label="选择用章" prop="saleInfos" class="is-required" >
+                        <el-form-item label="选择用章" prop="saleInfos" class="is-required">
                           <el-checkbox-group v-model="props.row.saleInfos" @change="handleChangeValidateForms">
                             <el-checkbox label="1" name="sealInfo" :disabled="!enabledInupdated">公章</el-checkbox>
                             <el-checkbox label="2" name="sealInfo" :disabled="!enabledInupdated">法人章</el-checkbox>
@@ -1373,7 +1384,8 @@
                         </el-table-column>
                         <el-table-column label="上传人" prop="sealFileCreatorName"></el-table-column>
                         <el-table-column label="上传时间" prop="sealFileCreateTime"></el-table-column>
-                        <el-table-column fixed="right" label="操作" v-if="props.row.filesSealed[0].operate||enabledUpdateInApprove">
+                        <el-table-column fixed="right" label="操作"
+                                         v-if="props.row.filesSealed[0].operate||enabledUpdateInApprove">
                           <template scope="scope">
                             <el-button @click="handleRemoveFilesSealedItem(index, props.row.filesSealed)"
                                        type="danger" size="small">移除
@@ -1412,9 +1424,10 @@
                               :on-success="handleUploadFileAfterSealSuccess"
                               :on-error="handleUploadFileAfterSealError"
                             >
-                              <el-button :disabled="!enabledUpdateInApprove||!getEnabledUploadBtn(props.row.filesSealed)"
-                                         size="small"
-                                         type="primary" @click="handleUpload(item[props.$index].attachType,index)">上传
+                              <el-button
+                                :disabled="!enabledUpdateInApprove||!getEnabledUploadBtn(props.row.filesSealed)"
+                                size="small"
+                                type="primary" @click="handleUpload(item[props.$index].attachType,index)">上传
                               </el-button>
                             </el-upload>
                           </el-form-item>
@@ -1762,7 +1775,7 @@
           <el-input v-model="formAddConStandard.materialCode" :disabled="formAddConStandard.conStandardType===1"
                     placeholder="请输入物料编码"></el-input>
         </el-form-item>
-        <el-form-item  prop="price" label="价格">
+        <el-form-item prop="price" label="价格">
           <el-input v-model="formAddConStandard.price" placeholder="请输入物料价格"></el-input>
         </el-form-item>
         <el-form-item label="税率" prop="taxRate">
@@ -1840,7 +1853,7 @@
       }
 
       return {
-        procInstCode:'',//流程id
+        procInstCode: '',//流程id
         updated: false, // 在变更合同提交后是否显示变更原因
         previewData: {}, // 预览数据
         visible: false, // 预览
@@ -1991,8 +2004,8 @@
             contactNumber: '021-22300563',
             email: '134656343@qq.com'
           },
-          paymentErrorMSG:'',
-          errorCount:0,
+          paymentErrorMSG: '',
+          errorCount: 0,
           paymentMethods: {
             advance: [{
               type: '预付款',
@@ -2167,7 +2180,7 @@
           agreenments: [],
           current: null, // 为上传功能保存当前所在附件列表的索引
           type: null, // 为上传功能保存当前附件类型
-          errorMsg:'',
+          errorMsg: '',
           rules: {
             slaveProtocolNo: [{
               required: true,
@@ -2203,6 +2216,7 @@
           ]
         },
         paymentMethods: {}, // 支付方式备份
+        oldSealAttachments: '',//在审批阶段保存接口返回的附件信息
         formNewSubject: {
           rules: {
             search: [
@@ -2343,16 +2357,16 @@
         const _final = parseFloat(paymentMethods._final[0].paymentAmount ? paymentMethods._final[0].paymentAmount : 0)
         return advance + progress + _final
       },
-      totalAmount:function(){//合同总金额即物料总价
-        let sum=0
-        if(this.baseInfoForm.contractType!==3&&this.baseInfoForm.contractType!==4){
-          const conStandards=this.cardContentInfoForm.conStandard
-          if(conStandards&&conStandards.length){
-            for(let i=0,len=conStandards.length;i<len;i++){
-              sum+=parseFloat(conStandards[i].total)*parseFloat(conStandards[i].price)
+      totalAmount: function () {//合同总金额即物料总价
+        let sum = 0
+        if (this.baseInfoForm.contractType !== 3 && this.baseInfoForm.contractType !== 4) {
+          const conStandards = this.cardContentInfoForm.conStandard
+          if (conStandards && conStandards.length) {
+            for (let i = 0, len = conStandards.length; i < len; i++) {
+              sum += parseFloat(conStandards[i].total) * parseFloat(conStandards[i].price)
             }
           }
-          this.cardFinanceInfoForm.totalAmount=sum
+          this.cardFinanceInfoForm.totalAmount = sum
         }
         return sum
       },
@@ -2381,7 +2395,7 @@
       isEnabled: function () {
         let enabled = false
         if (this.operateType === 'update') {
-          this.updateForm.updateMode===1 ? enabled = true : enabled = false
+          this.updateForm.updateMode === 1 ? enabled = true : enabled = false
         }
         if (this.operateType === 'query' || this.operateType === 'create') {
           enabled = true
@@ -2392,7 +2406,7 @@
       isEnabled1: function () {
         let enabled = false
         if (this.operateType === 'update') {
-          this.updateForm.updateMode===1 ? enabled = true : enabled = false
+          this.updateForm.updateMode === 1 ? enabled = true : enabled = false
         }
         if (this.operateType === 'query') {
           enabled = true
@@ -2453,7 +2467,7 @@
           result = true
         }
         if (this.operateType === 'update') {
-          this.updateForm.updateMode===1 ? result = false : result = true
+          this.updateForm.updateMode === 1 ? result = false : result = true
         }
         return result
       },
@@ -2498,48 +2512,48 @@
         this.cardFinanceInfoForm.paymentMethods._final[0].paymentAmount = sum
         return sum
       },
-      enabledFianceBtn:function(){
-        let enabled=true
-        if(parseInt(this.baseInfoForm.contractType)===3&&!this.baseInfoForm.prFlag){
-          enabled=false
+      enabledFianceBtn: function () {
+        let enabled = true
+        if (parseInt(this.baseInfoForm.contractType) === 3 && !this.baseInfoForm.prFlag) {
+          enabled = false
         }
         return enabled
       },
-      ifRole:function(){
-        let ifRole=false,reg=/用章保管人/g
-        reg.test(this.users.roleName)?ifRole= true:ifRole=false
+      ifRole: function () {
+        let ifRole = false, reg = /用章保管人/g
+        reg.test(this.users.roleName) ? ifRole = true : ifRole = false
         return ifRole
       },
-      enabledUpdateInApprove:function(){//在审批阶段修改附件时，上传盖章合同控件的上传按钮状态（仅用章保管人可用）
-        let enabled=false
-        if(this.operateType==='query'){
-          this.ifRole?enabled=true:enabled=false
+      enabledUpdateInApprove: function () {//在审批阶段修改附件时，上传盖章合同控件的上传按钮状态（仅用章保管人可用）
+        let enabled = false
+        if (this.operateType === 'query') {
+          this.ifRole ? enabled = true : enabled = false
         }
         return enabled
       },
-      enabledUpdateInApprovePrint:function(){//创建和变更阶段可用，审批阶段且角色是用章保管人可用
-        let enabled=true
-        if(this.operateType==='query'){
-          this.ifRole?enabled=true:enabled=false
+      enabledUpdateInApprovePrint: function () {//创建和变更阶段可用，审批阶段且角色是用章保管人可用
+        let enabled = true
+        if (this.operateType === 'query') {
+          this.ifRole ? enabled = true : enabled = false
         }
-        if(this.operateType==='update'){
-          this.updateForm.updateMode===1?enabled=false:enabled=true
+        if (this.operateType === 'update') {
+          this.updateForm.updateMode === 1 ? enabled = false : enabled = true
         }
         return enabled
       },
-      enabledContractSum:function(){
-        let enabled=false
-        if(this.operateType!=='query'){
-          this.baseInfoForm.contractType===3?enabled=true:enabled=false
+      enabledContractSum: function () {
+        let enabled = false
+        if (this.operateType !== 'query') {
+          this.baseInfoForm.contractType === 3 ? enabled = true : enabled = false
         }
         return enabled
       }
     },
     mounted() {
       const query = this.$route.query
-      if(query.processData){
-        this.procInstCode=JSON.parse(query.processData).procInstCode
-        this.users.roleName=JSON.parse(query.processData).roleName
+      if (query.processData) {
+        this.procInstCode = JSON.parse(query.processData).procInstCode
+        this.users.roleName = JSON.parse(query.processData).roleName
       }
       if (JSON.stringify(query) !== '{}') {
         if (query.operateType) {
@@ -2601,6 +2615,7 @@
         if (this.operateType !== 'create') {
           this.baseInfoForm.contractTypeName = this.getContractModelName(parseInt(data.baseInfoForm.contractType))// 初始化合同模式
           const sealAttachments = this.cardSealInfoForm.sealAttachments
+          this.oldSealAttachments = this.cardSealInfoForm.sealAttachments
           let contract = [], agreenments = [], others = []
           if (sealAttachments.length) {
             for (let i = 0, len = sealAttachments.length; i < len; i++) { // 初始化附件类型的数
@@ -2656,9 +2671,9 @@
         }
       },
       handlePreview() {
-        if(this.operateType==='query'){
+        if (this.operateType === 'query') {
           this.getPreviewData()
-        }else{
+        } else {
           this.isSubmit = true
           this.validateForms().then(() => {
             this.getPreviewData()
@@ -2741,7 +2756,8 @@
             curForm.resetFields()
             this.cardContCheckInfoForm.dialogAddServiceVisible = false
             if (this.isSubmit) {
-              this.validateForms().catch(()=>{})
+              this.validateForms().catch(()=> {
+              })
             }
           } else {
             console.log('error submit!!')
@@ -2812,7 +2828,8 @@
             curForm.resetFields()
             this.baseInfoForm.dialogNewSubjectVisible = false
             if (this.isSubmit) {
-              this.validateForms().catch(()=>{})
+              this.validateForms().catch(()=> {
+              })
             }
           } else {
             console.log('error submit!!')
@@ -2861,7 +2878,8 @@
             curForm.resetFields()
             this.cardContentInfoForm.dialogAddContractSupplier = false
             if (this.isSubmit) {
-              this.validateForms().catch(()=>{})
+              this.validateForms().catch(()=> {
+              })
             }
           } else {
             console.log('error submit!!')
@@ -2980,10 +2998,10 @@
         rows.splice(index, 1)
       },
       getProportion(money) {
-        let result = 0,totalAmount=0
-        if(this.baseInfoForm.contractType===3){
-          totalAmount=this.cardFinanceInfoForm.totalAmount?parseFloat(this.cardFinanceInfoForm.totalAmount):0
-        }else{
+        let result = 0, totalAmount = 0
+        if (this.baseInfoForm.contractType === 3) {
+          totalAmount = this.cardFinanceInfoForm.totalAmount ? parseFloat(this.cardFinanceInfoForm.totalAmount) : 0
+        } else {
           totalAmount = this.totalAmount ? parseFloat(this.totalAmount) : 0
         }
         if (totalAmount === 0) {
@@ -2992,8 +3010,8 @@
         if (money) {
           result = parseFloat(money) / totalAmount
         }
-        result=new Number(result)*100
-        return result.toFixed(2)+ '%'
+        result = new Number(result) * 100
+        return result.toFixed(2) + '%'
       },
       handleRemoveServiceMatter(index, rows) {
         rows.splice(index, 1)
@@ -3059,7 +3077,7 @@
               errorCount: 0,
               serviceCheckMsg: ''
             },
-            cardFinanceInfoForm:{
+            cardFinanceInfoForm: {
               errorCount: 0,
             },
             baseInfoForm: false
@@ -3097,27 +3115,27 @@
               return false
             }
           })
-          this.$refs.cardFinanceInfoForm.validate((valid)=>{
-            const cardFinanceInfoForm=this.cardFinanceInfoForm
-            if(cardFinanceInfoForm.paymentErrorMSG){
+          this.$refs.cardFinanceInfoForm.validate((valid)=> {
+            const cardFinanceInfoForm = this.cardFinanceInfoForm
+            if (cardFinanceInfoForm.paymentErrorMSG) {
               errors.cardFinanceInfoForm.errorCount = 1
             }
-            if(!valid){
-              if(cardFinanceInfoForm.moneyInvolved){
-                if(cardFinanceInfoForm.depositFlag){
-                  if(!cardFinanceInfoForm.deposit){
-                    errors.cardFinanceInfoForm.errorCount+=1
+            if (!valid) {
+              if (cardFinanceInfoForm.moneyInvolved) {
+                if (cardFinanceInfoForm.depositFlag) {
+                  if (!cardFinanceInfoForm.deposit) {
+                    errors.cardFinanceInfoForm.errorCount += 1
                   }
-                  if(!cardFinanceInfoForm.payTime){
-                    errors.cardFinanceInfoForm.errorCount+=1
+                  if (!cardFinanceInfoForm.payTime) {
+                    errors.cardFinanceInfoForm.errorCount += 1
                   }
                 }
-                if(cardFinanceInfoForm.oneOffPay){
-                  if(!cardFinanceInfoForm.invoiceType){
-                    errors.cardFinanceInfoForm.errorCount+=1
+                if (cardFinanceInfoForm.oneOffPay) {
+                  if (!cardFinanceInfoForm.invoiceType) {
+                    errors.cardFinanceInfoForm.errorCount += 1
                   }
-                  if(!cardFinanceInfoForm.paymentTimePeriod){
-                    errors.cardFinanceInfoForm.errorCount+=1
+                  if (!cardFinanceInfoForm.paymentTimePeriod) {
+                    errors.cardFinanceInfoForm.errorCount += 1
                   }
                 }
               }
@@ -3126,15 +3144,15 @@
           })
 
           //验证附件的数据是否填写完整
-          const sealAttachments=this.combineSealsInfo1()
-          if (sealAttachments&&sealAttachments.length){
-            for(let i=0,len=sealAttachments.length;i<len;i++){
-              const item=sealAttachments[i]
-              if(item[0].haveSale){
-                if(item[0].printTime&&item[0].remainTime&&item[0].saleInfos.length){
-                  this.cardSealInfoForm.errorMsg=''
-                }else{
-                  this.cardSealInfoForm.errorMsg='请确保所有附件信息填写完整'
+          const sealAttachments = this.combineSealsInfo1()
+          if (sealAttachments && sealAttachments.length) {
+            for (let i = 0, len = sealAttachments.length; i < len; i++) {
+              const item = sealAttachments[i]
+              if (item[0].haveSale) {
+                if (item[0].printTime && item[0].remainTime && item[0].saleInfos.length) {
+                  this.cardSealInfoForm.errorMsg = ''
+                } else {
+                  this.cardSealInfoForm.errorMsg = '请确保所有附件信息填写完整'
                 }
               }
             }
@@ -3163,7 +3181,7 @@
           this.cardContCheckInfoForm.serviceCheckMsg = errors.cardContCheckInfoForm.serviceCheckMsg
           this.cardFinanceInfoForm.errorCount = errors.cardFinanceInfoForm.errorCount
 
-          if (!this.cardContentInfoForm.errorCount && !this.cardContCheckInfoForm.errorCount && errors.baseInfoForm&&!errors.cardFinanceInfoForm.errorCount&&!this.cardSealInfoForm.errorMsg) {
+          if (!this.cardContentInfoForm.errorCount && !this.cardContCheckInfoForm.errorCount && errors.baseInfoForm && !errors.cardFinanceInfoForm.errorCount && !this.cardSealInfoForm.errorMsg) {
             if (this.operateType === 'update' && !errors.updateError) {
               reject()
             } else {
@@ -3175,54 +3193,54 @@
         })
       },
       combineSealsInfo() {//剔除空数据项
-          const contract = this.cardSealInfoForm.contract
-          const agreenments = this.cardSealInfoForm.agreenments
-          const others = this.cardSealInfoForm.others
-          let sealAttachments = []
+        const contract = this.cardSealInfoForm.contract
+        const agreenments = this.cardSealInfoForm.agreenments
+        const others = this.cardSealInfoForm.others
+        let sealAttachments = []
 
-          const sealOthers = [], sealAgreenments = []
-          if (others && others.length) {
-            for (let i = 0, len = others.length; i < len; i++) {
-              const item = others[i]
-              if (item[0] && item[0].fileName) {
-                sealOthers.push(item)
-              }
+        const sealOthers = [], sealAgreenments = []
+        if (others && others.length) {
+          for (let i = 0, len = others.length; i < len; i++) {
+            const item = others[i]
+            if (item[0] && item[0].fileName) {
+              sealOthers.push(item)
             }
           }
-          if (agreenments && agreenments.length) {
-            for (let i = 0, len = agreenments.length; i < len; i++) {
-              const item = agreenments[i]
-              if (item && item.slaveProtocolNo) {
-                sealAgreenments.push([item])
-              }
+        }
+        if (agreenments && agreenments.length) {
+          for (let i = 0, len = agreenments.length; i < len; i++) {
+            const item = agreenments[i]
+            if (item && item.slaveProtocolNo) {
+              sealAgreenments.push([item])
             }
           }
+        }
 
-          // 判断附件类型，当该附件类型的数据为空是，则该数组为空
-          contract.length ? sealAttachments.push(contract) : null
-          sealOthers.length ? sealAttachments = sealAttachments.concat(sealOthers) : null
-          sealAgreenments.length ? sealAttachments = sealAttachments.concat(sealAgreenments) : null
-          return sealAttachments
+        // 判断附件类型，当该附件类型的数据为空是，则该数组为空
+        contract.length ? sealAttachments.push(contract) : null
+        sealOthers.length ? sealAttachments = sealAttachments.concat(sealOthers) : null
+        sealAgreenments.length ? sealAttachments = sealAttachments.concat(sealAgreenments) : null
+        return sealAttachments
 
       },
       combineSealsInfo1() {//不剔除空数据项
-          const contract = this.cardSealInfoForm.contract
-          const agreenments = this.cardSealInfoForm.agreenments
-          const others = this.cardSealInfoForm.others
-          let sealAttachments = []
+        const contract = this.cardSealInfoForm.contract
+        const agreenments = this.cardSealInfoForm.agreenments
+        const others = this.cardSealInfoForm.others
+        let sealAttachments = []
 
-          const sealOthers = [], sealAgreenments = []
-          if (others && others.length) {
-            for (let i = 0, len = others.length; i < len; i++) {
-                sealOthers.push(others[i])
-            }
+        const sealOthers = [], sealAgreenments = []
+        if (others && others.length) {
+          for (let i = 0, len = others.length; i < len; i++) {
+            sealOthers.push(others[i])
           }
+        }
 
-          // 判断附件类型，当该附件类型的数据为空是，则该数组为空
-          contract.length ? sealAttachments.push(contract) : null
-          sealOthers.length ? sealAttachments = sealAttachments.concat(sealOthers) : null
-          sealAgreenments.length ? sealAttachments = sealAttachments.concat(sealAgreenments) : null
-          return sealAttachments
+        // 判断附件类型，当该附件类型的数据为空是，则该数组为空
+        contract.length ? sealAttachments.push(contract) : null
+        sealOthers.length ? sealAttachments = sealAttachments.concat(sealOthers) : null
+        sealAgreenments.length ? sealAttachments = sealAttachments.concat(sealAgreenments) : null
+        return sealAttachments
 
       },
       handleSave() {
@@ -3325,7 +3343,7 @@
             })
           }
         })
-          .catch(()=>{
+          .catch(()=> {
             this.btnSubmitStatus = true
             this.$message.error('请填写完合同信息再提交！')
           })
@@ -3438,48 +3456,48 @@
         this.cardSealInfoForm.others.push(file)
       },
       /*handleNewAgreenmentSealFile() {
-        const file = {
-          operate: 'add',
-          agreementId: '',
-          id: '',
-          fileName: '',
-          fileUrl: '', // 合同文本类型为非模版合同时，附件类型的合同的文件下载地址
-          attachType: 2, // 附件类型
-          slaveProtocolNo: '', // 从协议编号
-          types: [
-            {
-              id: 1,
-              name: '其他'
-            },
-            {
-              id: 2,
-              name: '从协议'
-            }
-          ], // 附件类型集合
-          haveSale: true, // 是否用章
-          remark: '',
-          saleTime: 1, // 用章次数
-          printTime: '', // 打印份数
-          remainTime: '', // 我方留存份数
-          saleInfos: [], // 当前选中的张
-          useSeals: [
-            {
-              id: '1',
-              name: '公章'
-            },
-            {
-              id: '2',
-              name: '法人章'
-            }
-          ], // 章列表
-          filesSealed: []// 上传的盖章后的文件信息
-        }
-        this.cardSealInfoForm.agreenments.push(file)
-      },*/
+       const file = {
+       operate: 'add',
+       agreementId: '',
+       id: '',
+       fileName: '',
+       fileUrl: '', // 合同文本类型为非模版合同时，附件类型的合同的文件下载地址
+       attachType: 2, // 附件类型
+       slaveProtocolNo: '', // 从协议编号
+       types: [
+       {
+       id: 1,
+       name: '其他'
+       },
+       {
+       id: 2,
+       name: '从协议'
+       }
+       ], // 附件类型集合
+       haveSale: true, // 是否用章
+       remark: '',
+       saleTime: 1, // 用章次数
+       printTime: '', // 打印份数
+       remainTime: '', // 我方留存份数
+       saleInfos: [], // 当前选中的张
+       useSeals: [
+       {
+       id: '1',
+       name: '公章'
+       },
+       {
+       id: '2',
+       name: '法人章'
+       }
+       ], // 章列表
+       filesSealed: []// 上传的盖章后的文件信息
+       }
+       this.cardSealInfoForm.agreenments.push(file)
+       },*/
       handleQuery(code) {
-        const params={}
-        params.code=code
-        params.operate='ALTER'
+        const params = {}
+        params.code = code
+        params.operate = 'ALTER'
         // 根据合同编号获取合同模式设置当前合同模式及合同类型
         Api.getUpdateInfo(params).then((data) => {
           const dataMap = data.data.dataMap
@@ -3523,8 +3541,8 @@
               this.baseInfoForm.businessOperators = data.data.dataMap
             })
         } else {
-          this.baseInfoForm.businessOperatorId=''
-          this.baseInfoForm.businessOperatorName=''
+          this.baseInfoForm.businessOperatorId = ''
+          this.baseInfoForm.businessOperatorName = ''
           this.baseInfoForm.businessOperators = []
         }
       },
@@ -3562,10 +3580,10 @@
               this.cardContCheckInfoForm.responsibleId = businessOperators[i].superiorId
               this.cardContCheckInfoForm.responsibleName = businessOperators[i].superiorName
               this.getPerson(this.cardContCheckInfoForm.responsibleId, (data) => {
-                if(data&&data.length){
+                if (data && data.length) {
                   this.cardContCheckInfoForm.responsibleDeptName = data[0].deptName
                   this.cardContCheckInfoForm.responsibleDeptId = data[0].deptCode
-                }else{
+                } else {
                   this.cardContCheckInfoForm.responsibleDeptName = ''
                   this.cardContCheckInfoForm.responsibleDeptId = ''
                 }
@@ -3625,7 +3643,7 @@
             if (data.data.dataMap) {
               const item = [data.data.dataMap]
               this.cardSealInfoForm.sealAttachments = [item]
-              if(this.operateType==='create'){
+              if (this.operateType === 'create') {
                 this.cardSealInfoForm.contract = item
               }
             }
@@ -3769,40 +3787,43 @@
         })
       },
       enabledAllApply(code){
-        let enabled=false
-        if(code==='1001'&&this.baseInfoForm.contractType>=3&&this.operateType==='create'){
-          enabled=true
+        let enabled = false
+        if (code === '1001' && this.baseInfoForm.contractType >= 3 && this.operateType === 'create') {
+          enabled = true
         }
         return enabled
       },
       callback(params){//isSign:是否是加签人 isAgree:审批操作类型是否是同意
-        return new Promise((resolve,reject)=>{
-          const {isSign,isAgree}=params
-          if(!isSign&&isAgree&&this.ifRole){
-            const sealAttachments = this.combineSealsInfo()
-            sealAttachments.splice(0,1)
-            const para={}
-            para.sealAttachments=sealAttachments
-            para.id=this.baseInfoForm.id
-            para.type=1
+        return new Promise((resolve, reject)=> {
+          const oldSealAttachments = this.oldSealAttachments.splice(0, 1) || []
+          const newSealAttachments = this.combineSealsInfo().splice(0, 1) || []
+          if (JSON.stringify(oldSealAttachments) !== JSON.stringify(newSealAttachments)) {
+            const {isSign, isAgree}=params
+            if (!isSign && isAgree && this.ifRole) {
+              const para = {}
+              para.sealAttachments = newSealAttachments
+              para.id = this.baseInfoForm.id
+              para.type = 1
               Api.uploadSealAttachments(para)
-                .then(()=>{
+                .then(()=> {
                   resolve()
                 })
-                .catch(()=>{
+                .catch(()=> {
                   reject()
                 })
-          }else{
-          console.log('isSign',isSign)
-          console.log('isAgree',isAgree)
-          console.log('this.ifRole',this.ifRole)
-            reject()
+            } else {
+              reject()
+            }
+          } else {
+            resolve()
           }
         })
+
       },
       handleChangeValidateForms(){
-        if(this.isSubmit){
-          this.validateForms().catch(()=>{})
+        if (this.isSubmit) {
+          this.validateForms().catch(()=> {
+          })
         }
       }
     },
@@ -3830,7 +3851,7 @@
         }
       },
       'cardContentInfoForm.conStandard': function (conStandards, oldVal) {
-        if(this.operateType==='create'){
+        if (this.operateType === 'create') {
           const result = []
           if (conStandards && conStandards.length) {
             for (let i = 0, len = conStandards.length; i < len; i++) {
@@ -3847,7 +3868,7 @@
         }
       },
       'baseInfoForm.contractType': function (val) {
-        if(this.operateType==='create'){
+        if (this.operateType === 'create') {
           if (val === 2) { // 固定格式合同
             this.cardFinanceInfoForm.moneyInvolved = true
           }
@@ -3857,7 +3878,7 @@
         }
       },
       'cardFinanceInfoForm.oneOffPay': function () {
-        if(this.operateType==='create'){
+        if (this.operateType === 'create') {
           this.cardFinanceInfoForm.totalAmount = this.totalAmount
           const paymentMethods = {
             advance: [{
@@ -3959,16 +3980,16 @@
         }
 
       },
-      'totalConMoney':function(val){
-        if(this.operateType==='create'){
-          let total=0
-          if(val){
-            total=parseFloat(val)
-            if(this.baseInfoForm.contractType!==3&&this.baseInfoForm.contractType!==4&&this.cardFinanceInfoForm.moneyInvolved){
-              if(total!==this.totalAmount){
-                this.cardFinanceInfoForm.paymentErrorMSG='您添加的付款金额必须等于合同总金额'
-              }else{
-                this.cardFinanceInfoForm.paymentErrorMSG=''
+      'totalConMoney': function (val) {
+        if (this.operateType === 'create') {
+          let total = 0
+          if (val) {
+            total = parseFloat(val)
+            if (this.baseInfoForm.contractType !== 3 && this.baseInfoForm.contractType !== 4 && this.cardFinanceInfoForm.moneyInvolved) {
+              if (total !== this.totalAmount) {
+                this.cardFinanceInfoForm.paymentErrorMSG = '您添加的付款金额必须等于合同总金额'
+              } else {
+                this.cardFinanceInfoForm.paymentErrorMSG = ''
               }
             }
           }
