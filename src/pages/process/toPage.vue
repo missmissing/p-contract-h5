@@ -54,7 +54,7 @@
       },
       toPage(row, data) {
         const {procInstId, serialNumber, procCode} = row
-        const {actions, approveInfo, sign, procInstCode} = data
+        const {actions, approveInfo, sign, procInstCode, actName} = data
         const processData = JSON.stringify({
           procInstCode,
           procInstId,
@@ -62,6 +62,7 @@
           serialNumber,
           procCode,
           sign,
+          roleName: actName,
           dataType: this.dataType
         })
         let param = {}
