@@ -56,6 +56,7 @@
   <div class="createCon">
     <div class="mb10 clearfix" v-if="procInstCode">
       <div class="fr mr20">流程编号 {{procInstCode}}</div>
+      <div class="fl ml20" style="font-weight: bolder">{{procTitle}}</div>
     </div>
     <el-card v-if="operateType==='update'||updated">
       <header slot="header">变更原因</header>
@@ -1295,8 +1296,6 @@
                       </el-col>
                       <el-col :span="6">
                         <el-form-item label="打印份数" prop="printTime" class="el-form-item is-required">
-                          <!--<el-input :disabled="!enabledUpdateInApprovePrint"
-                                    v-model="props.row.printTime" @change="handleChangeValidateForms"></el-input>-->
                           <el-input-number :disabled="!enabledUpdateInApprovePrint" size="small" :max="100"
                                            v-model="props.row.printTime" @change="handleChangeValidateForms"></el-input-number>
                         </el-form-item>
@@ -1855,6 +1854,7 @@
 
       return {
         procInstCode: '',//流程id
+        procTitle: '',//流程名称
         updated: false, // 在变更合同提交后是否显示变更原因
         previewData: {}, // 预览数据
         visible: false, // 预览
@@ -2554,6 +2554,7 @@
       const query = this.$route.query
       if (query.processData) {
         this.procInstCode = JSON.parse(query.processData).procInstCode
+        this.procTitle = JSON.parse(query.processData).procTitle
         this.users.roleName = JSON.parse(query.processData).roleName
       }
       if (JSON.stringify(query) !== '{}') {
