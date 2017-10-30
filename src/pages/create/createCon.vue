@@ -1535,8 +1535,7 @@
             </el-form-item>
           </el-form>
         </el-tab-pane>
-        <el-tab-pane label="相关数据" name="tabRelatedData"
-                     v-if="cardRelatedInfoForm.contractList.length">
+        <el-tab-pane label="相关数据" name="tabRelatedData">
           <el-form rel="cardRelatedInfoForm" :model="cardRelatedInfoForm" label-width="100px">
             <el-table :data="cardRelatedInfoForm.contractList">
               <el-table-column type="index" label="序号" width="80"></el-table-column>
@@ -1559,7 +1558,7 @@
             </el-table>
           </el-form>
         </el-tab-pane>
-        <!--<el-tab-pane label="其他" name="tabOtherInfo" v-if="operateType==='query'">
+        <el-tab-pane label="其他" name="tabOtherInfo" v-if="operateType==='query'">
           <el-select
             v-model="cardOtherInfo.condition"
             placeholder="请选择"
@@ -1577,7 +1576,7 @@
               <component :is="tabs"></component>
             </transition>
           </keep-alive>
-        </el-tab-pane>-->
+        </el-tab-pane>
       </el-tabs>
     </el-card>
     <el-dialog title="新增合同供应商信息" :visible.sync="cardContentInfoForm.dialogAddContractSupplier" size="small">
@@ -2508,7 +2507,7 @@
       },
       ifRole:function(){
         let ifRole=false,reg=/用章保管人/g
-        reg.test(user.roleName)?ifRole= true:ifRole=false
+        reg.test(this.users.roleName)?ifRole= true:ifRole=false
         return ifRole
       },
       enabledUpdateInApprove:function(){//在审批阶段修改附件时，上传盖章合同控件的上传按钮状态（仅用章保管人可用）
@@ -2540,6 +2539,7 @@
       const query = this.$route.query
       if(query.processData){
         this.procInstCode=JSON.parse(query.processData).procInstCode
+        this.users.roleName=JSON.parse(query.processData).roleName
       }
       if (JSON.stringify(query) !== '{}') {
         if (query.operateType) {
@@ -2677,7 +2677,6 @@
         previewData.endTime = this.cardContentInfoForm.endTime
         previewData.cardFinanceInfoForm = this.cardFinanceInfoForm
         previewData.templateId = this.baseInfoForm.templateId
-        console.log(JSON.stringify(previewData))
         this.previewData = previewData
         this.visible = true
       },
@@ -3794,7 +3793,10 @@
                   reject()
                 })
           }else{
-            resolve()
+          console.log('isSign',isSign)
+          console.log('isAgree',isAgree)
+          console.log('this.ifRole',this.ifRole)
+            reject()
           }
         })
       },

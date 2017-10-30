@@ -84,7 +84,7 @@
       }
     },
     created() {
-      this.getData()
+      //this.getData()
     }
   }
 </script>
