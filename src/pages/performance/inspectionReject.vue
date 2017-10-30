@@ -77,6 +77,7 @@
                     v-model="basicForm.contractCheckDate"
                     type="date"
                     :editable="false"
+                    :picker-options="pickerOptions"
                     placeholder="选择日期">
                   </el-date-picker>
                 </el-form-item>
@@ -242,6 +243,11 @@
       return {
         fileList: [],
         checkItems: [],
+        pickerOptions: {
+          disabledDate(time) {
+            return true
+          }
+        },
         addNotQualityDialogForm: {
           serviceName: '',
           serviceRequire: '',
@@ -331,6 +337,9 @@
           this.info = data
           this.checkItems = checkItems
           this.setBasicForm()
+          this.pickerOptions.disabledDate = (time) => {
+            return time.getTime() < this.basicForm.startTime
+          }
           this.comLoading(false)
         }, () => {
           this.comLoading(false)
