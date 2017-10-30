@@ -5,6 +5,7 @@
 <template>
   <div class="pd20">
     <div class="clearfix" v-if="procInstCode">
+      <div class="fl fb">{{procTitle}}</div>
       <div class="fr mr20">流程编号 {{procInstCode}}</div>
     </div>
     <el-tabs>
@@ -198,6 +199,7 @@
     mixins: [comLoading],
     data() {
       return {
+        procTitle: '',
         procInstCode: '',
         info: {},
         toDetail: {name: routerNames.con_Check, query: {contractId: ''}},
@@ -258,7 +260,10 @@
       const {id, processData} = this.$route.query
       this.getInfo(id)
       if (processData) {
-        this.procInstCode = JSON.parse(processData).procInstCode
+        const data = JSON.parse(processData)
+        const {procInstCode, procTitle} = data
+        this.procInstCode = procInstCode
+        this.procTitle = procTitle
       }
     },
     filters: {

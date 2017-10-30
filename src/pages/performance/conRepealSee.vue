@@ -7,6 +7,7 @@
 <template>
   <div class="pd20">
     <div class="mb10 clearfix" v-if="procInstCode">
+      <div class="fl fb">{{procTitle}}</div>
       <div class="fr mr20">流程编号 {{procInstCode}}</div>
     </div>
     <div class="basic-info">
@@ -90,6 +91,7 @@
     mixins: [comLoading],
     data() {
       return {
+        procTitle: '',
         procInstCode: '',
         form: {
           suspendReason: '',
@@ -139,7 +141,10 @@
       const {id, processData} = this.$route.query
       this.getInfo(id)
       if (processData) {
-        this.procInstCode = JSON.parse(processData).procInstCode
+        const data = JSON.parse(processData)
+        const {procTitle, procInstCode} = data
+        this.procInstCode = procInstCode
+        this.procTitle = procTitle
       }
     },
     filters: {

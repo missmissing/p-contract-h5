@@ -23,9 +23,9 @@ body {
   display: table;
   content: '';
   clear: both;
-  height:0;
-  overflow:hidden;
-  visibility:hidden;
+  height: 0;
+  overflow: hidden;
+  visibility: hidden;
 }
 
 .mt10 {
@@ -66,6 +66,10 @@ body {
 
 .pd20 {
   padding: 20px;
+}
+
+.fb {
+  font-weight: bold;
 }
 
 a {

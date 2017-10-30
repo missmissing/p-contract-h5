@@ -16,7 +16,8 @@
     processListMap,
     compensateMap,
     inspectRejectMap,
-    protocolMap
+    protocolMap,
+    procTitles
   } from '@/core/consts'
   import Api from '@/api/process'
 
@@ -30,6 +31,44 @@
         if (routeName === routerNames.con_process_approve) {
           this.dataType = processListMap[0]
         }
+      },
+      getProcTitle(procCode) {
+        let title = ''
+        switch (procCode) {
+          case tplMap[0]:
+            title = procTitles[0]
+            break
+          case tplMap[1]:
+            title = procTitles[1]
+            break
+          case tplMap[2]:
+            title = procTitles[2]
+            break
+          case contractMap[0]:
+            title = procTitles[3]
+            break
+          case contractMap[1]:
+            title = procTitles[4]
+            break
+          case contractDel[0]:
+            title = procTitles[5]
+            break
+          case protocolMap[0]:
+            title = procTitles[6]
+            break
+          case prMap[0]:
+            title = procTitles[7]
+            break
+          case compensateMap[0]:
+            title = procTitles[8]
+            break
+          case inspectRejectMap[0]:
+            title = procTitles[9]
+            break
+          default:
+            break
+        }
+        return title
       },
       see(row) {
         console.log(row)
@@ -55,7 +94,7 @@
       toPage(row, data) {
         const {procInstId, serialNumber, procCode} = row
         const {actions, approveInfo, sign, procInstCode, actName} = data
-        const processData = JSON.stringify({
+        const processData = {
           procInstCode,
           procInstId,
           actions,
@@ -64,7 +103,7 @@
           sign,
           roleName: actName,
           dataType: this.dataType
-        })
+        }
         let param = {}
         let name = null
         if (tplMap.indexOf(procCode) > -1) {
@@ -113,11 +152,14 @@
           console.log('找不到相应类型', procCode)
           return
         }
+
+        processData.procTitle = this.getProcTitle(procCode)
+
         this.$router.push({
           name,
           query: {
             ...param,
-            processData
+            processData: JSON.stringify(processData)
           }
         })
       }

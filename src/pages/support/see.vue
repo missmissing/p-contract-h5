@@ -5,6 +5,7 @@
 <template>
   <div>
     <div class="mb10 clearfix" v-if="procInstCode">
+      <div class="fl fb">{{procTitle}}</div>
       <div class="fr mr20">流程编号 {{procInstCode}}</div>
     </div>
     <transition name="component-fade" mode="out-in">
@@ -147,6 +148,7 @@
   import {downloadUrl} from '@/api/consts'
 
   const defaultData = {
+    procTitle: '',
     procInstCode: '',
     form: {
       templateCode: '',
@@ -225,8 +227,10 @@
       const {id, processData} = this.$route.query
       this.getTplData(id)
       if (processData) {
-        this.showAbolish = JSON.parse(processData).procCode === tplMap[2]
-        this.procInstCode = JSON.parse(processData).procInstCode
+        const {procCode, procInstCode, procTitle} = JSON.parse(processData)
+        this.showAbolish = procCode === tplMap[2]
+        this.procInstCode = procInstCode
+        this.procTitle = procTitle
       }
     },
     filters: {

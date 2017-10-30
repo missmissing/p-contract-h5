@@ -89,7 +89,7 @@ export const contractMap = ['CRS_Contract_Create', 'CRS_Contract_Update']
 
 export const contractDel = ['CRS_Contract_Delete']
 
-export const prMap = ['CRS_Contract_CreatePO', 'CRS_Contract_UpdatePO', 'CRS_Contract_DeletePO']
+export const prMap = ['CRS_Contract_CreatePO']
 
 export const compensateMap = ['CRS_Contract_CompensateManage']
 
@@ -116,3 +116,5 @@ export const contractPatternMap = {
   3: '框架合同',
   4: '意向合同'
 }
+
+export const procTitles = ['采购合同模板创建流程', '采购合同模板变更流程', '采购合同模板废除流程', '采购合同创建流程', '采购合同变更流程', '采购合同中止流程', '采购合同从协议创建流程', '采购订单创建流程', '合同违约处理流程', '合同验收不合格处理流程']
