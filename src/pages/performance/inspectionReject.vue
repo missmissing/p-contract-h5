@@ -335,7 +335,7 @@
           const {purchaseOrderId, checkItems} = data
           this.toDetail.query.id = purchaseOrderId
           this.info = data
-          this.checkItems = checkItems
+          this.checkItems = checkItems || []
           this.setBasicForm()
           this.pickerOptions.disabledDate = (time) => {
             return time.getTime() < this.basicForm.startTime

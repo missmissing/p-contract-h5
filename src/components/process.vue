@@ -50,13 +50,15 @@
             <el-form-item label="收文人" v-if="visible">
               <SelectPerson @change="change"></SelectPerson>
             </el-form-item>
-            <el-form-item label="审批意见">
+            <el-form-item
+              label="审批意见"
+              :required="required">
               <el-input
                 type="textarea"
                 :autosize="{ minRows: 2 }"
                 :maxlength="300"
                 resize="none"
-                v-model="approveRemark">
+                v-model.trim="approveRemark">
               </el-input>
             </el-form-item>
           </el-form>
@@ -98,6 +100,9 @@
     computed: {
       visible() {
         return this.commonBtns.some(btn => btn === this.actionName)
+      },
+      required() {
+        return this.actionName === '拒绝'
       }
     },
     methods: {
@@ -121,17 +126,30 @@
         }
         this.submit()
       },
+      check(data) {
+        if (this.actionName === '拒绝') {
+          if (!this.approveRemark) {
+            this.$message.warning('请输入审批意见！')
+            return false
+          }
+        }
+        return true
+      },
       submit() {
-        this.comLoading()
         const {procInstId, procCode, serialNumber} = this.processData
-        Api.submitProcess({
+        const result = {
           procInstId,
           procCode,
           serialNumber,
           actionName: this.actionName,
           redirectApproverId: this.receiver,
           approveRemark: this.approveRemark
-        }).then((res) => {
+        }
+        if (!this.check(result)) {
+          return
+        }
+        this.comLoading()
+        Api.submitProcess(result).then((res) => {
           console.log(res)
           this.comLoading(false)
           this.$message.success('提交成功！')

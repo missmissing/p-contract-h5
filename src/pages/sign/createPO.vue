@@ -21,7 +21,8 @@
               </el-col>
               <el-button type="primary" class="ml20" @click="add">添 加</el-button>
             </el-row>
-            <el-row>
+
+            <el-row v-show="prData.length">
               <el-col :span="8">
                 <el-form-item label="合同编号">
                   <el-input v-model.trim="contractCode"></el-input>
@@ -30,7 +31,7 @@
               <el-button type="primary" @click="match" class="ml20" :disabled="!prData.length">匹 配</el-button>
             </el-row>
           </el-form>
-          <div v-if="prData.length!==0">
+          <div v-if="prData.length">
             <el-table
               :data="prData"
               border
@@ -839,7 +840,8 @@
             this.$message.warning('订单信息不完整！')
             return
           }
-          if (this.showService && this.serverData.length) {
+          if (this.showService && !this.serverData.length) {
+            debugger
             this.$message.warning('服务验收信息不能为空！')
             return
           }
