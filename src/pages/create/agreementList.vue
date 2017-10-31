@@ -88,7 +88,7 @@
       </el-row>
     </el-form>
     <el-table :data="agreementList" border highlight-current-row style="width:100%">
-      <el-table-column prop="protocolNo" label="从协议编码" width="180">
+      <el-table-column prop="protocolNo" label="从协议编码" width="210">
         <template scope="scope">
           <router-link class="router-link"
                        :to="{path:'/ConCreate/querySlaveProtocol', query:{id:''+agreementList[scope.$index].id}}">
@@ -96,7 +96,7 @@
           </router-link>
         </template>
       </el-table-column>
-      <el-table-column prop="contractNo" label="合同编号"></el-table-column>
+      <el-table-column prop="contractNo" label="合同编号" width="130"></el-table-column>
       <el-table-column prop="supplierId" label="供应商编码" width="125"></el-table-column>
       <el-table-column prop="supplierName" label="供应商名称" width="200"></el-table-column>
       <el-table-column prop="creatorName" label="发起人" width="100"></el-table-column>

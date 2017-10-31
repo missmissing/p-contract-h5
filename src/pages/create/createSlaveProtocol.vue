@@ -12,58 +12,12 @@
 </style>
 <template>
   <div class="createSlaveProtocal">
-    <!--<el-card>
-      <header slot="header">多层table测试</header>
-      <el-form rel="testForm" :model="testForm" :rules="testForm.rules">
-        <template v-for="(item,index) in testForm.tableData">
-          <el-table :data="item">
-            <el-table-column type="expand">
-              <template scope="props">
-                <el-form-item prop="work" :rules="[{ type: 'array', required: true, message: '请选择用章类型', trigger: 'change' }]">
-                  {{props.row.work}}
-                  <el-checkbox-group v-model="props.row.work">
-                    <el-checkbox label="1" name="sealType"></el-checkbox>
-                    <el-checkbox label="2" name="sealType"></el-checkbox>
-                  </el-checkbox-group>
-                </el-form-item>
-              </template>
-            </el-table-column>
-            <el-table-column prop="id" label="id"></el-table-column>
-            <el-table-column prop="name" label="name"></el-table-column>
-          </el-table>
-        </template>
-      </el-form>
-    </el-card>
-    <el-card>
-      <header slot="header">table测试</header>
-      <el-form rel="testForm1" :model="testForm1" :rules="testForm1.rules">
-          <el-table :data="testForm1.tableData">
-            <el-table-column type="expand">
-              <template scope="props">
-                <el-form-item prop="work" :rules="[{ type: 'array', required: true, message: '请选择用章类型', trigger: 'change' }]">
-                  {{props.row.work}}
-                  <el-checkbox-group v-model="props.row.work">
-                    <el-checkbox label="1" name="sealType"></el-checkbox>
-                    <el-checkbox label="2" name="sealType"></el-checkbox>
-                  </el-checkbox-group>
-                </el-form-item>
-              </template>
-            </el-table-column>
-            <el-table-column prop="id" label="id"></el-table-column>
-            <el-table-column prop="name" label="name"></el-table-column>
-            <el-table-column prop="sex" label="sex">
-              <template scope="scope">
-                  <el-checkbox v-model="scope.row.sex"></el-checkbox>
-              </template>
-            </el-table-column>
-          </el-table>
-      </el-form>
-    </el-card>-->
     <div class="mb10 clearfix" v-if="procInstCode">
-      <div class="fr mr20">流程编号 {{procInstCode}}</div>
+      <div class="fr">流程编号 {{procInstCode}}</div>
+      <div class="fl" style="font-weight: bolder">{{procTitle}}</div>
     </div>
     <el-card v-if="operateType==='create'">
-      <header slot="header">合同查询</header>
+      <!--<header slot="header">合同查询</header>-->
       <el-form rel="queryContractForm" :model="queryContractForm" label-width="100px" :rules="queryContractForm.rules">
         <el-row>
           <el-col :span="8">
@@ -442,46 +396,8 @@
   export default {
     data: function () {
       return {
-        testForm:{
-          tableData:[
-            [{
-              id:'1',
-              name:'11',
-              work:[],
-              works:[{
-                id:'1',
-                name:'程序员'
-              },
-                {
-                  id:'2',
-                  name:'分析师'
-                }]
-            }]
-          ],
-          rules:{}
-        },
-        testForm1:{
-          tableData:
-            [{
-              id:'1',
-              name:'11',
-              sex:null,
-              work:[],
-              works:[
-                {
-                id:'1',
-                name:'程序员'
-              },
-                {
-                  id:'2',
-                  name:'分析师'
-                }]
-            }],
-          rules:{
-            sex:[{required: true, message: '请选择活动性质', trigger: 'change' }]
-          }
-        },
         procInstCode: '', // 流程编号：
+        procTitle: '',//流程名称
         queryContractForm: {
           testtype:[],//??delete
           visible: false, // 在创建从协议时控制从协议页面数据的显示与否
@@ -646,6 +562,7 @@
       const query = this.$route.query
       if(query.processData){
         this.procInstCode=JSON.parse(query.processData).procInstCode
+        this.procTitle = JSON.parse(query.processData).procTitle
       }
       if (this.$route.path && this.$route.path === '/ConCreate/querySlaveProtocol') {
         this.operateType = 'query'

@@ -55,11 +55,11 @@
 <template>
   <div class="createCon">
     <div class="mb10 clearfix" v-if="procInstCode">
-      <div class="fr mr20">流程编号 {{procInstCode}}</div>
-      <div class="fl ml20" style="font-weight: bolder">{{procTitle}}</div>
+      <div class="fr">流程编号 {{procInstCode}}</div>
+      <div class="fl" style="font-weight: bolder">{{procTitle}}</div>
     </div>
     <el-card v-if="operateType==='update'||updated">
-      <header slot="header">变更原因</header>
+      <!--<header slot="header">变更原因</header>-->
       <el-form ref="updateForm" :model="updateForm" label-width="100px" :rules="updateForm.rules">
         <el-row>
           <el-col :span="8">
@@ -1851,6 +1851,10 @@
     data() {
       const validateEffectiveDateRules = (rule, value, callback) => {
         let endTime = this.cardContentInfoForm.endTime
+        if(new Date(value)<new Date()){
+          this.cardContentInfoForm.startTime=new Date()
+          callback(new Error('合同生效日期必须大于等于今天'))
+        }
         if (endTime) {
           if (new Date(value) > new Date(endTime)) {
             callback(new Error('合同终止日期必须大于合同生效日期'))
@@ -1860,6 +1864,10 @@
       }
       const validateEndDate = (rule, value, callback) => {
         let startTime = this.cardContentInfoForm.startTime
+        if(new Date(value)<new Date()){
+          this.cardContentInfoForm.endTime=new Date()
+          callback(new Error('合同终止日期必须大于等于今天'))
+        }
         if (startTime) {
           if (new Date(value) < new Date(startTime)) {
             callback(new Error('合同终止日期必须大于合同生效日期'))
