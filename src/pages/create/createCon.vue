@@ -415,12 +415,12 @@
                   </el-input>
                 </el-form-item>-->
                 <el-form-item v-if="baseInfoForm.contractType===3" label="合同总金额" prop="totalAmount">
-                  <el-input :disabled="!enabledContractSum" v-model="cardFinanceInfoForm.totalAmount"
+                  <el-input :disabled="!enabledContractSum" v-model.number="cardFinanceInfoForm.totalAmount"
                             placeholder="根据上表累加(含税价)"></el-input>
                 </el-form-item>
                 <el-form-item v-else label="合同总金额" prop="totalAmount">
                   <el-input :disabled="true"
-                            v-model="cardFinanceInfoForm.totalAmount" placeholder="根据上表累加(含税价)">{{totalAmount}}
+                            v-model.number="cardFinanceInfoForm.totalAmount" placeholder="根据上表累加(含税价)">{{totalAmount}}
                   </el-input>
                 </el-form-item>
               </el-col>
@@ -453,8 +453,8 @@
             </el-row>
             <el-row v-if="cardFinanceInfoForm.oneOffPay&&cardFinanceInfoForm.moneyInvolved">
               <el-col :span="8">
-                <el-form-item v-if="cardFinanceInfoForm.moneyInvolved&&cardFinanceInfoForm.oneOffPay" label="付款条件"
-                              :rules="[{ required: true, message: '请选择付款条件', trigger: 'blur' }]">
+                <el-form-item v-if="cardFinanceInfoForm.moneyInvolved&&cardFinanceInfoForm.oneOffPay" label="付款条件" prop="paymentTimePeriod"
+                              :rules="[{ required: true, message: '请选择付款条件'}]">
                   <el-select
                     @change="handleChangeValidateForms"
                     v-model="cardFinanceInfoForm.paymentTimePeriod"
@@ -471,7 +471,7 @@
                     </el-option>
                   </el-select>
                 </el-form-item>
-                <el-form-item v-else label="付款条件">
+                <el-form-item v-else label="付款条件" prop="paymentTimePeriod">
                   <el-select
                     v-model="cardFinanceInfoForm.paymentTimePeriod"
                     placeholder="请选择付款条件"
@@ -942,7 +942,7 @@
               <el-row v-if="cardFinanceInfoForm.depositFlag">
                 <el-col :span="8">
                   <el-form-item label="保证金金额" prop="deposit">
-                    <el-input v-model="cardFinanceInfoForm.deposit" :disabled="operateType==='query'"
+                    <el-input v-model.number="cardFinanceInfoForm.deposit" :disabled="operateType==='query'"
                               placeholder="请输入保证金金额" @change="handleChangeValidateForms"></el-input>
                   </el-form-item>
                 </el-col>
@@ -2139,7 +2139,8 @@
             }
           ],
           rules: {
-            deposit: [{required: true, message: '请输入保证金金额'}],
+            deposit: [{required: true, message: '请输入保证金金额'},{ type: 'number', message: '保证金必须为数字值'}],
+            totalAmount: [{ type: 'number', message: '合同总金额必须为数字值'}],
             payTime: [{required: true, message: '请输入付款时间'}],
             invoiceType: [{required: true, message: '请选择开票类型'}]
           }
@@ -2553,6 +2554,7 @@
     mounted() {
       const query = this.$route.query
       if (query.processData) {
+        console.log('query.processData',query.processData)
         this.procInstCode = JSON.parse(query.processData).procInstCode
         this.procTitle = JSON.parse(query.processData).procTitle
         this.users.roleName = JSON.parse(query.processData).roleName
