@@ -1548,15 +1548,19 @@
             </el-form-item>
           </el-form>
         </el-tab-pane>
-        <el-tab-pane label="相关数据" name="tabRelatedData">
+        <el-tab-pane label="相关数据" name="tabRelatedData" v-if="procInstCode">
           <el-form rel="cardRelatedInfoForm" :model="cardRelatedInfoForm" label-width="100px">
-            <el-table :data="cardRelatedInfoForm.contractList">
+            <el-table :data="cardRelatedInfoForm.contractList" border>
               <el-table-column type="index" label="序号" width="80"></el-table-column>
-              <el-table-column prop="contractCode" label="合同号"></el-table-column>
-              <el-table-column prop="type" label="类型"></el-table-column>
-              <el-table-column prop="status" label="状态"></el-table-column>
-              <el-table-column prop="company" label="公司"></el-table-column>
-              <el-table-column prop="startTime" label="开始时间"></el-table-column>
+              <el-table-column prop="contractNo" label="合同号"></el-table-column>
+              <el-table-column prop="contractType" label="类型">
+                <template scope="scope">
+                  {{getContractModel(cardRelatedInfoForm.contractList[scope.$index].contractType)}}
+                </template>
+              </el-table-column>
+              <el-table-column prop="contractStatusName" label="状态"></el-table-column>
+              <el-table-column prop="startTime" label="开始时间" :formatter="formatDate"></el-table-column>
+              <el-table-column prop="endTime" label="终止时间" :formatter="formatDate"></el-table-column>
               <el-table-column
                 fixed="right"
                 label="操作"
@@ -1570,6 +1574,18 @@
               </el-table-column>
             </el-table>
           </el-form>
+          <div class="mt20">
+            <el-pagination
+              class="fr"
+              @size-change="handleRelatedInfoSizeChange"
+              @current-change="handleRelatedInfoCurrentChange"
+              :current-page="cardRelatedInfoForm.pageNo"
+              :page-size="cardRelatedInfoForm.pageSize"
+              :page-sizes="[10, 20, 30, 50]"
+              layout="total, sizes, prev, pager, next, jumper"
+              :total="cardRelatedInfoForm.total">
+            </el-pagination>
+          </div>
         </el-tab-pane>
         <el-tab-pane label="其他" name="tabOtherInfo" v-if="operateType==='query'">
           <el-select
@@ -1586,7 +1602,7 @@
           </el-select>
           <keep-alive>
             <transition name="component-fade" mode="out-in">
-              <component :is="tabs"></component>
+              <component :contractInfo="contractInfo" :prNo="baseInfoForm.prNo" :contractNo="baseInfoForm.contractNo" :is="tabs"></component>
             </transition>
           </keep-alive>
         </el-tab-pane>
@@ -1883,6 +1899,7 @@
             remark: [{required: true, message: '请输入合同编号', trigger: 'blur'}]
           }
         },
+        contractInfo:[],//合同信息
         baseInfoForm: {
           id: '', // 在更新合同是把合同id传入
           guid: '', // 草稿箱编号
@@ -2194,15 +2211,18 @@
           otherInstruction: ''
         },
         cardRelatedInfoForm: {
-          contractList: []
+          contractList: [],
+          pageNo: 1,
+          pageSize: 10,
+          total:0
         },
         cardOtherInfo: {
-          condition: 1,
+          condition: 3,
           conditionOptions: [
-            {
+            /*{
               value: 1,
               label: '采购申请'
-            },
+            },*/
             {
               value: 2,
               label: '比价单信息'
@@ -2554,7 +2574,6 @@
     mounted() {
       const query = this.$route.query
       if (query.processData) {
-        console.log('query.processData',query.processData)
         this.procInstCode = JSON.parse(query.processData).procInstCode
         this.procTitle = JSON.parse(query.processData).procTitle
         this.users.roleName = JSON.parse(query.processData).roleName
@@ -2617,6 +2636,7 @@
         paymentMethods._final[0].type = '尾款'
 
         if (this.operateType !== 'create') {
+          this.contractInfo=[this.baseInfoForm]
           this.baseInfoForm.contractTypeName = this.getContractModelName(parseInt(data.baseInfoForm.contractType))// 初始化合同模式
           const sealAttachments = this.cardSealInfoForm.sealAttachments
           this.oldSealAttachments = this.cardSealInfoForm.sealAttachments
@@ -2638,6 +2658,9 @@
             this.cardSealInfoForm.agreenments = agreenments
             this.cardSealInfoForm.others = others
           }
+          //初始化相关数据信息
+          this.initRelatedInfo()
+
         } else {
           this.baseInfoForm.contractTypeName = this.getContractModelName(parseInt(params.contractType))// 初始化合同模式
           if (this.baseInfoForm.contractBusinessTypeFirst !== 2) { // 初始化当前可添加的合同标的的类型
@@ -3829,7 +3852,45 @@
           this.validateForms().catch(()=> {
           })
         }
-      }
+      },
+      initRelatedInfo(){
+        this.comLoading()
+        Api.getConList(this.cardRelatedInfoForm).then((data) => {
+          const dataMap = data.data.dataMap
+          if (dataMap) {
+            this.cardRelatedInfoForm.contractList = dataMap.data
+            this.cardRelatedInfoForm.total = dataMap.total
+          }
+          this.comLoading(false)
+        }).catch(()=>{
+          this.comLoading(false)
+        })
+      },
+      handleRelatedInfoSizeChange(val){
+        this.cardRelatedInfoForm.pageSize = val
+        this.initRelatedInfo()
+      },
+      handleRelatedInfoCurrentChange(page){
+        this.cardRelatedInfoForm.pageNo = page
+        this.initRelatedInfo()
+      },
+      formatDate(value) {
+        return formatDate(value)
+      },
+      getContractModel(id) {
+        if (id) {
+          switch (id) {
+            case 1:
+              return '单一合同'
+            case 2:
+              return '简易合同'
+            case 3:
+              return '框架合同'
+            case 4:
+              return '框架意向合同'
+          }
+        }
+      },
     },
     components: {
       Preview,

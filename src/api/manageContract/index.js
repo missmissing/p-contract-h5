@@ -63,18 +63,9 @@ export default {
   getContractDetailByContractId(contractId) {
     return Http.get(`${contract}/contract-web/contract/id/${contractId}`)
   },
-  /** ***标签页****/
-  getPrTableData(params) {
-    return Http.get(`/api/createContract/getPrTableData`, params)
-  },
-  getPriceTableData(params) {
-    return Http.get(`/api/createContract/getPriceTableData`, params)
-  },
-  getContractTableData(params) {
-    return Http.get(`/api/createContract/getContractTableData`, params)
-  },
+  /** ***相关数据-订单页****/
   getOrderTableData(params) {
-    return Http.get(`/api/createContract/getOrderTableData`, params)
+    return Http.post(`${contract}/contract-web/purchaseOrder/getInitiatePo`, params)
   },
   /** ***标签页****/
   /** ****变更合同接口start******/

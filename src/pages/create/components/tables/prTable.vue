@@ -52,6 +52,7 @@
 
   export default {
     mixins: [comLoading],
+
     data() {
       return {
         currentPage: 1,

@@ -5,19 +5,19 @@
       border
       class="wp100">
       <el-table-column
-        prop="contractCode"
+        prop="contractNo"
         label="合同号">
       </el-table-column>
       <el-table-column
-        prop="prOrder"
+        prop="purchaseOrderNo"
         label="采购订单">
       </el-table-column>
       <el-table-column
-        prop="totalWithTax"
+        prop="taxIncludedAmount"
         label="含税总金额">
       </el-table-column>
       <el-table-column
-        prop="createTime"
+        prop="initiateTime"
         :formatter="formatDate"
         label="发起时间"
         width="120">
@@ -33,7 +33,7 @@
       class="mt20 mb20 fr"
       @size-change="handleSizeChange"
       @current-change="handleCurrentChange"
-      :current-page="currentPage"
+      :current-page="pageNo"
       :page-sizes="[10, 20, 50, 100]"
       :page-size="pageSize"
       layout="total, sizes, prev, pager, next, jumper"
@@ -48,10 +48,11 @@
   import comLoading from '@/mixins/comLoading'
 
   export default {
+    props:['contractNo'],
     mixins: [comLoading],
     data() {
       return {
-        currentPage: 1,
+        pageNo: 1,
         pageSize: 10,
         total: 0,
         tableData: []
@@ -60,11 +61,14 @@
     methods: {
       getData() {
         this.comLoading()
-        Api.getOrderTableData({}).then((res) => {
-          const {list, total, pageSize} = res.data.dataMap
-          this.tableData = list
-          this.total = total
-          this.pageSize = pageSize
+        console.log()
+        Api.getOrderTableData({'contractNo':this.contractNo,'pageNo':this.pageNo,'pageSize':this.pageSize})
+          .then((data) => {
+            console.log('data',data)
+          if(data.data.dataMap){
+            this.tableData = data.data.dataMap.data
+            this.total = data.data.dataMap.total
+          }
           this.comLoading(false)
         }, () => {
           this.comLoading(false)
@@ -75,15 +79,15 @@
       },
       handleSizeChange(val) {
         this.pageSize = val
-        console.log(`每页 ${val} 条`)
+        this.getData()
       },
       handleCurrentChange(val) {
-        this.currentPage = val
-        console.log(`当前页: ${val}`)
+        this.pageNo = val
+        this.getData()
       }
     },
     created() {
-      //this.getData()
+      this.getData()
     }
   }
 </script>

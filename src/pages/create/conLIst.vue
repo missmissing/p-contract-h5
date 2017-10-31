@@ -204,6 +204,8 @@
             this.totalPage = dataMap.total
           }
           this.loading = false
+        }).catch(()=>{
+          this.loading = false
         })
       },
       handleConTypeName() {
