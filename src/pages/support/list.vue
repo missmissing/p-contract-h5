@@ -128,6 +128,14 @@
         width="100"
         label="使用次数">
       </el-table-column>
+      <el-table-column
+        prop="templateStatus"
+        width="130"
+        label="状态">
+        <template scope="scope">
+          {{scope.row.templateStatus | tplStatus}}
+        </template>
+      </el-table-column>
     </el-table>
     <div class="mt20">
       <el-pagination
@@ -149,6 +157,7 @@
   import supportModel from '@/api/support'
   import comLoading from '@/mixins/comLoading'
   import {formatTime, formatDate, formatTimeStamp} from '@/filters/moment'
+  import tplStatus from '@/filters/tplStatus'
 
   export default {
     mixins: [comLoading],
@@ -219,7 +228,8 @@
     },
     filters: {
       formatDate,
-      formatTime
+      formatTime,
+      tplStatus
     },
     created() {
       this.getList()

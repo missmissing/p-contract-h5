@@ -7,79 +7,81 @@
 <template>
   <div class="pd20">
     <div class="basic-info">
-      <el-form :model="form" :rules="rules" ref="form" label-width="120px">
-        <el-row>
-          <el-col :span="8">
-            <el-form-item label="合同编号">
-              <el-input
-                v-model="contractCode"
-                icon="search"
-                :on-icon-click="search"
-                @keyup.enter.native="search">
-              </el-input>
-            </el-form-item>
-          </el-col>
-          <el-button type="primary" class="ml20" v-show="toDetail.query.contractId">
-            <router-link class="router-link-default" :to="toDetail" target="_blank">详 情</router-link>
-          </el-button>
-        </el-row>
-        <el-row>
-          <el-col :span="8">
-            <el-form-item label="合同签署日期">
-              <el-input :value="approvalDate | formatDate" disabled></el-input>
-            </el-form-item>
-          </el-col>
-          <el-col :span="8" :offset="1">
-            <el-form-item label="合同状态">
-              <el-input :value="contractStatusName" disabled></el-input>
-            </el-form-item>
-          </el-col>
-          <el-col :span="8">
-            <el-form-item label="合同生效日期">
-              <el-input :value="startTime | formatDate" disabled></el-input>
-            </el-form-item>
-          </el-col>
-          <el-col :span="8" :offset="1">
-            <el-form-item label="合同截止日期">
-              <el-input :value="endTime | formatDate" disabled></el-input>
-            </el-form-item>
-          </el-col>
-          <el-col :span="8">
-            <el-form-item label="合同中止原因" prop="suspendReason">
-              <el-select
-                class="wp100"
-                v-model="form.suspendReason"
-                placeholder="请选择">
-                <el-option
-                  v-for="item in options"
-                  :key="item.value"
-                  :label="item.label"
-                  :value="item.value">
-                </el-option>
-              </el-select>
-            </el-form-item>
-          </el-col>
-          <el-col :span="8" :offset="1">
-            <el-form-item label="实际中止日期" prop="suspendTime">
-              <el-date-picker
-                style="width:100%;"
-                v-model="form.suspendTime"
-                type="date"
-                placeholder="选择日期"
-                :picker-options="pickerOptions">
-              </el-date-picker>
-            </el-form-item>
-          </el-col>
-        </el-row>
-        <el-form-item label="原因说明" prop="suspendRemark">
-          <el-input
-            type="textarea"
-            :autosize="{ minRows: 2 }"
-            resize="none"
-            v-model.trim="form.suspendRemark">
-          </el-input>
-        </el-form-item>
-      </el-form>
+      <el-card>
+        <el-form :model="form" :rules="rules" ref="form" label-width="120px">
+          <el-row>
+            <el-col :span="8">
+              <el-form-item label="合同编号">
+                <el-input
+                  v-model="contractCode"
+                  icon="search"
+                  :on-icon-click="search"
+                  @keyup.enter.native="search">
+                </el-input>
+              </el-form-item>
+            </el-col>
+            <el-button type="primary" class="ml20" v-show="toDetail.query.contractId">
+              <router-link class="router-link-default" :to="toDetail" target="_blank">详 情</router-link>
+            </el-button>
+          </el-row>
+          <el-row>
+            <el-col :span="8">
+              <el-form-item label="合同签署日期">
+                <el-input :value="approvalDate | formatDate" disabled></el-input>
+              </el-form-item>
+            </el-col>
+            <el-col :span="8" :offset="1">
+              <el-form-item label="合同状态">
+                <el-input :value="contractStatusName" disabled></el-input>
+              </el-form-item>
+            </el-col>
+            <el-col :span="8">
+              <el-form-item label="合同生效日期">
+                <el-input :value="startTime | formatDate" disabled></el-input>
+              </el-form-item>
+            </el-col>
+            <el-col :span="8" :offset="1">
+              <el-form-item label="合同截止日期">
+                <el-input :value="endTime | formatDate" disabled></el-input>
+              </el-form-item>
+            </el-col>
+            <el-col :span="8">
+              <el-form-item label="合同中止原因" prop="suspendReason">
+                <el-select
+                  class="wp100"
+                  v-model="form.suspendReason"
+                  placeholder="请选择">
+                  <el-option
+                    v-for="item in options"
+                    :key="item.value"
+                    :label="item.label"
+                    :value="item.value">
+                  </el-option>
+                </el-select>
+              </el-form-item>
+            </el-col>
+            <el-col :span="8" :offset="1">
+              <el-form-item label="实际中止日期" prop="suspendTime">
+                <el-date-picker
+                  style="width:100%;"
+                  v-model="form.suspendTime"
+                  type="date"
+                  placeholder="选择日期"
+                  :picker-options="pickerOptions">
+                </el-date-picker>
+              </el-form-item>
+            </el-col>
+          </el-row>
+          <el-form-item label="原因说明" prop="suspendRemark">
+            <el-input
+              type="textarea"
+              :autosize="{ minRows: 2 }"
+              resize="none"
+              v-model.trim="form.suspendRemark">
+            </el-input>
+          </el-form-item>
+        </el-form>
+      </el-card>
     </div>
     <div class="mt20 mb20 ml20">
       <!--<el-button>保 存</el-button>-->

@@ -42,6 +42,11 @@
                   {{form.busiTypeText}}
                 </el-form-item>
               </el-col>
+              <el-col :span="8" v-if="!$route.query.processData">
+                <el-form-item label="状态">
+                  {{form.templateStatus | tplStatus}}
+                </el-form-item>
+              </el-col>
             </el-row>
             <el-row>
               <el-col :span="8">
@@ -144,6 +149,7 @@
   import supportModel from '@/api/support'
   import comLoading from '@/mixins/comLoading'
   import {formatDate} from '@/filters/moment'
+  import tplStatus from '@/filters/tplStatus'
   import {tplMap} from '@/core/consts'
   import {downloadUrl} from '@/api/consts'
 
@@ -154,6 +160,7 @@
       templateCode: '',
       templateName: '',
       templateType: 'TEMPLATE',
+      templateStatus: '',
       startDate: '',
       endDate: '',
       description: '',
@@ -181,11 +188,12 @@
     },
     methods: {
       setData(tplInfo) {
-        const {templateCode, templateName, templateType, bizTypes, startDate, endDate, updateTime, abolishReason, version, operatorName, creatorName, description, files} = tplInfo
+        const {templateCode, templateName, templateType, templateStatus, bizTypes, startDate, endDate, updateTime, abolishReason, version, operatorName, creatorName, description, files} = tplInfo
         this.tplInfo = tplInfo
         this.form['templateCode'] = templateCode
         this.form['templateName'] = templateName
         this.form['templateType'] = templateType
+        this.form['templateStatus'] = templateStatus
         this.form['busiTypeText'] = bizTypes.map(item => item.businessName).join(',')
         this.form['startDate'] = formatDate(startDate)
         this.form['endDate'] = formatDate(endDate)
@@ -234,7 +242,8 @@
       }
     },
     filters: {
-      formatDate
+      formatDate,
+      tplStatus
     },
     computed: {
       tplTypeShow() {

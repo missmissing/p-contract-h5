@@ -74,7 +74,7 @@
             <el-table-column
               prop="materialName"
               label="物料名称"
-              width="300">
+              min-width="300">
             </el-table-column>
             <el-table-column
               prop="total"

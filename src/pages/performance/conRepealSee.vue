@@ -121,9 +121,8 @@
       },
       setData(data) {
         const {baseInfoForm, cardContentInfoForm, contSuspend} = data
-        debugger
         const {contractNo, approvalDate, contractStatusName} = baseInfoForm
-        const {suspendReason, suspendTime, suspendRemark} = contSuspend
+        const {suspendReason, suspendTime, suspendRemark} = contSuspend || {}
         const {startTime, endTime} = cardContentInfoForm
         this.contractCode = contractNo
         this.signDate = approvalDate
