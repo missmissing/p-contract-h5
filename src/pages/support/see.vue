@@ -31,7 +31,7 @@
                 </el-form-item>
               </el-col>
               <el-col :span="8">
-                <el-form-item label="文本类型">
+                <el-form-item label="类型">
                   {{form.templateType === 'TEMPLATE' ? '合同模板' : '合同文本'}}
                 </el-form-item>
               </el-col>
@@ -88,7 +88,7 @@
                 </el-form-item>
               </el-col>
             </el-row>
-            <el-form-item label="使用说明">
+            <el-form-item label="申请原因">
               {{form.description}}
             </el-form-item>
             <el-form-item label="文本上传" v-show="tplTypeShow">

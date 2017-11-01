@@ -36,7 +36,7 @@
                   </el-form-item>
                 </el-col>
                 <el-col :span="8">
-                  <el-form-item label="文本类型">
+                  <el-form-item label="类型">
                     <el-input
                       :value="form.templateType"
                       disabled>
@@ -103,7 +103,7 @@
                   </el-form-item>
                 </el-col>
               </el-row>
-              <el-form-item label="使用说明">
+              <el-form-item label="申请原因">
                 <el-input
                   disabled
                   type="textarea"
@@ -113,7 +113,7 @@
                   v-model="form.description">
                 </el-input>
               </el-form-item>
-              <el-form-item label="文本上传" v-show="showUpload">
+              <el-form-item label="附件上传" v-if="fileList.length">
                 <el-table
                   :data="fileList"
                   border
@@ -323,9 +323,6 @@
       Upload
     },
     computed: {
-      showUpload() {
-        return this.tplInfo.templateType === 'TEXT'
-      },
       showTpl() {
         return this.tplInfo.templateType === 'TEMPLATE'
       }

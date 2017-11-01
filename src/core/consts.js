@@ -36,7 +36,7 @@ export const routerNames = {
 
   con_support: '合同模板管理',
   con_tpl_see: '合同模板查看',
-  con_tpl_create: '合同模板创建',
+  con_tpl_create: '合同模板/文本创建',
   con_tpl_update: '合同模板变更',
   con_tpl_abolish: '合同模板废除',
 

@@ -22,7 +22,7 @@
                   </el-form-item>
                 </el-col>
                 <el-col :span="8">
-                  <el-form-item label="文本类型" prop="templateType">
+                  <el-form-item label="类型" prop="templateType">
                     <el-select
                       v-model="form.templateType"
                       placeholder="请选择"
@@ -69,7 +69,7 @@
                   </el-form-item>
                 </el-col>
               </el-row>
-              <el-form-item label="使用说明" prop="description">
+              <el-form-item label="申请原因" prop="description">
                 <el-input
                   type="textarea"
                   :autosize="{ minRows: 2 }"
@@ -77,7 +77,7 @@
                   v-model="form.description">
                 </el-input>
               </el-form-item>
-              <el-form-item label="文本上传" v-show="showUpload">
+              <el-form-item label="附件上传">
                 <Upload
                   :fileList.sync="fileList"
                   multiple>
@@ -148,7 +148,7 @@
         visible: false,
         showTmpl: false,
         rules: {
-          templateName: [{required: true, message: '请输入模板名称'}],
+          templateName: [{required: true, message: '请输入模板/文本名称'}],
           templateType: [{required: true, message: '请选择文本类型'}],
           busiTypeText: [{required: true, message: '请选择业务类型', trigger: 'change'}],
           startDate: [{type: 'date', required: true, message: '请选择生效时间', trigger: 'change'}],
@@ -228,9 +228,6 @@
       Upload
     },
     computed: {
-      showUpload() {
-        return this.form.templateType === 'TEXT'
-      },
       showTpl() {
         return this.form.templateType === 'TEMPLATE'
       }
