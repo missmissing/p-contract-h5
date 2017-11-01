@@ -19,5 +19,12 @@ export default {
   detailByPoId(params) {
     const {id} = params
     return Http.get(`${contract}/contract-web/purchaseOrder/detailByPoId/${id}`)
+  },
+  getLogs(params) {
+    return Http.post(`${contract}/contract-web/purchaseOrder/log/query`, params)
+  },
+  sendOrder(params) {
+    const {id} = params
+    return Http.get(`${contract}/contract-web/purchaseOrder/log/repair/${id}`, params)
   }
 }

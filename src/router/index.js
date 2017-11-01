@@ -261,6 +261,16 @@ const router = new Router({
           require(['../pages/sign/see.vue'], resolve)
         },
         name: routerNames.con_purchase_see
+      }, {
+        path: '/consign/log',
+        meta: {
+          auth: true,
+          hidden: true
+        },
+        component: function (resolve) {
+          require(['../pages/sign/sendLog.vue'], resolve)
+        },
+        name: routerNames.con_order_log_list
       }],
       meta: {
         iconCls: 'stats-bars'

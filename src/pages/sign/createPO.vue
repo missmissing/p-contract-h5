@@ -865,7 +865,9 @@
         if (!this.check(result)) {
           return
         }
-        this.comLoading()
+        this.comLoading({
+          text: '正在提交中'
+        })
         signModel.submit(result).then((res) => {
           this.comLoading(false)
           this.$router.push({

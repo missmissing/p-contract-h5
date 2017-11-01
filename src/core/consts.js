@@ -75,7 +75,8 @@ export const routerNames = {
   con_search: '报表查询',
   con_list: '合同查询',
   con_tpl_list: '合同模板查询',
-  con_order_list: '采购订单查询'
+  con_order_list: '采购订单查询',
+  con_order_log_list: '采购订单日志'
 }
 
 export const tplTypeMap = {

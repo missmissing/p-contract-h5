@@ -148,7 +148,9 @@
         if (!this.check(result)) {
           return
         }
-        this.comLoading()
+        this.comLoading({
+          text: '正在提交中'
+        })
         Api.submitProcess(result).then((res) => {
           console.log(res)
           this.comLoading(false)
