@@ -135,7 +135,7 @@
                 </el-table-column>
                 <el-table-column
                   prop="materialName"
-                  width="300"
+                  min-width="300"
                   label="物料名称">
                 </el-table-column>
                 <el-table-column

@@ -118,3 +118,16 @@ export const contractPatternMap = {
 }
 
 export const procTitles = ['采购合同模板创建流程', '采购合同模板变更流程', '采购合同模板废除流程', '采购合同创建流程', '采购合同变更流程', '采购合同中止流程', '采购合同从协议创建流程', '采购订单创建流程', '合同违约处理流程', '合同验收不合格处理流程']
+
+export const templateStatus = {
+  DRAFT: '草稿',
+  AUDITING: '审核中',
+  PASS: '审核通过',
+  REJECT: '审核不通过',
+  ABOLISHING: '作废审核中',
+  ABOLISH: '作废',
+  UNAVAILABLE: '不可用',
+  WAIT_ABOLISH: '废除审核通过',
+  ABNORMAL: '异常',
+  ALTER_AUDIT: '变更审核通过'
+}
