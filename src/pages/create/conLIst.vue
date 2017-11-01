@@ -118,6 +118,7 @@
           {{scope.row.endTime | formatDate}}
         </template>
       </el-table-column>
+      <el-table-column prop="totalAmount" label="合同总金额" width="150"></el-table-column>
       <el-table-column prop="contractStatusName" label="合同状态" width="120"></el-table-column>
       <el-table-column prop="haveProtocol" label="从协议" width="80">
         <template scope="scope">

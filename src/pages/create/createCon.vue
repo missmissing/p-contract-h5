@@ -1501,29 +1501,29 @@
                 </el-table-column>
               </el-table>
             </template>
-            <!--<el-table v-if="cardSealInfoForm.agreenments.length" :data="cardSealInfoForm.agreenments" class="mt20">
+            <el-table v-if="cardSealInfoForm.agreenments.length" :data="cardSealInfoForm.agreenments" class="mt20">
               <el-table-column prop="attachType" label="附件类型" width="150px">
                 <template scope="scope">
                   {{getContractAgreenmentName(cardSealInfoForm.agreenments[scope.$index].attachType)}}
                 </template>
               </el-table-column>
-              <el-table-column prop="slaveProtocolNo" label="从协议编号" width="150px">
+              <el-table-column prop="fileName" label="从协议编号" width="150px">
                 <template scope="scope">
-                  <router-link v-if="cardSealInfoForm.agreenments[scope.$index].id"
-                               :to="{path:'/ConCreate/querySlaveProtocol', query:{id:''+cardSealInfoForm.agreenments[scope.$index].id}}">
-                    {{cardSealInfoForm.agreenments[scope.$index].slaveProtocolNo}}
+                  <router-link v-if="cardSealInfoForm.agreenments[scope.$index].fileId"
+                               :to="{path:'/ConCreate/querySlaveProtocol', query:{id:''+cardSealInfoForm.agreenments[scope.$index].fileId}}">
+                    {{cardSealInfoForm.agreenments[scope.$index].fileName}}
                   </router-link>
-                  <el-form-item v-else style="margin-left: -100px;margin-bottom:0" prop="slaveProtocolNo">
+                  <!--<el-form-item v-else style="margin-left: -100px;margin-bottom:0" prop="slaveProtocolNo">
                     <el-input
                       :disabled="!enabledInupdated"
                       icon="search"
                       @keyup.enter.native="handleCodeBlur(cardSealInfoForm.agreenments[scope.$index],cardSealInfoForm.agreenments[scope.$index].slaveProtocolNo)"
                       v-model="cardSealInfoForm.agreenments[scope.$index].slaveProtocolNo"
                     ></el-input>
-                  </el-form-item>
+                  </el-form-item>-->
                 </template>
               </el-table-column>
-              <el-table-column
+             <!-- <el-table-column
                 fixed="right"
                 width="80"
                 label="操作">
@@ -1534,8 +1534,8 @@
                     type="danger" size="small">移除
                   </el-button>
                 </template>
-              </el-table-column>
-            </el-table>-->
+              </el-table-column>-->
+            </el-table>
           </el-form>
           <h4 v-else>请选择合同基本信息的模版名称！</h4>
         </el-tab-pane>
@@ -2642,7 +2642,6 @@
         paymentMethods.advance[0].type = '预付款'
         paymentMethods.progress[0].type = '进度款'
         paymentMethods._final[0].type = '尾款'
-
         if (this.operateType !== 'create') {
           this.contractInfo=[this.baseInfoForm]
           this.baseInfoForm.contractTypeName = this.getContractModelName(parseInt(data.baseInfoForm.contractType))// 初始化合同模式
@@ -3256,7 +3255,6 @@
         sealOthers.length ? sealAttachments = sealAttachments.concat(sealOthers) : null
         sealAgreenments.length ? sealAttachments = sealAttachments.concat(sealAgreenments) : null
         return sealAttachments
-
       },
       combineSealsInfo1() {//不剔除空数据项
         const contract = this.cardSealInfoForm.contract
@@ -3276,7 +3274,24 @@
         sealOthers.length ? sealAttachments = sealAttachments.concat(sealOthers) : null
         sealAgreenments.length ? sealAttachments = sealAttachments.concat(sealAgreenments) : null
         return sealAttachments
+      },
+      combineSealsInfoWithoudAgreenments() {//剔除空数据项
+        const others = this.cardSealInfoForm.others
+        let sealAttachments = []
 
+        const sealOthers = [], sealAgreenments = []
+        if (others && others.length) {
+          for (let i = 0, len = others.length; i < len; i++) {
+            const item = others[i]
+            if (item[0] && item[0].fileName) {
+              sealOthers.push(item)
+            }
+          }
+        }
+
+        // 判断附件类型，当该附件类型的数据为空是，则该数组为空
+        sealOthers.length ? sealAttachments = sealAttachments.concat(sealOthers) : null
+        return sealAttachments
       },
       handleSave() {
         this.btnSaveStatus = false
@@ -3832,11 +3847,13 @@
         return new Promise((resolve, reject)=> {
           const oldSealAttachments = this.oldSealAttachments.splice(0, 1) || []
           const newSealAttachments = this.combineSealsInfo().splice(0, 1) || []
+          console.log('oldSealAttachments',oldSealAttachments);
+          console.log('newSealAttachments',newSealAttachments);
           if (JSON.stringify(oldSealAttachments) !== JSON.stringify(newSealAttachments)) {
             const {isSign, isAgree}=params
             if (!isSign && isAgree && this.ifRole) {
               const para = {}
-              para.sealAttachments = newSealAttachments
+              para.sealAttachments = this.combineSealsInfoWithoudAgreenments()
               para.id = this.baseInfoForm.id
               para.type = 1
               Api.uploadSealAttachments(para)
