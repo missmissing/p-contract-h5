@@ -1874,13 +1874,12 @@
       const validateEffectiveDateRules = (rule, value, callback) => {
         let endTime = this.cardContentInfoForm.endTime
         if(this.operateType==='create'||(this.operateType==='update'&&this.updateForm.updateMode===2)){
-          if(new Date(value)<new Date()){
-            this.cardContentInfoForm.startTime=new Date()
+          if(formatDate(new Date(value))<formatDate(new Date())){
             callback(new Error('合同生效日期必须大于等于今天'))
           }
         }
         if (endTime) {
-          if (new Date(value) > new Date(endTime)) {
+          if (formatDate(new Date(value)) > formatDate(new Date(endTime))) {
             callback(new Error('合同终止日期必须大于合同生效日期'))
           }
         }
@@ -1889,13 +1888,12 @@
       const validateEndDate = (rule, value, callback) => {
         let startTime = this.cardContentInfoForm.startTime
         if(this.operateType==='create'||(this.operateType==='update'&&this.updateForm.updateMode===2)){
-          if(new Date(value)<new Date()){
-            this.cardContentInfoForm.endTime=new Date()
+          if(formatDate(new Date(value))<formatDate(new Date())){
             callback(new Error('合同终止日期必须大于等于今天'))
           }
         }
         if (startTime) {
-          if (new Date(value) < new Date(startTime)) {
+          if (formatDate(new Date(value)) < formatDate(new Date(startTime))) {
             callback(new Error('合同终止日期必须大于合同生效日期'))
           }
         }
@@ -2210,11 +2208,11 @@
           checkType: null,
           checkServiceMethods: [
             {
-              id: '1',
+              id: 1,
               name: '收货验收'
             },
             {
-              id: '2',
+              id: 2,
               name: '按阶段验收'
             }
           ],
