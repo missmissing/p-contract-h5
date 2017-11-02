@@ -359,6 +359,15 @@
               </el-row>
             </el-card>
             <el-row class="mt20">
+              <el-form-item label="生效条件" prop="effectiveCondition">
+                <el-radio-group v-model="cardContentInfoForm.effectiveCondition" :disabled="operateType==='query'" @change="handleChangeValidateForms">
+                  <el-radio :label="1">附条件生效</el-radio>
+                  <el-radio :label="2">附期限生效</el-radio>
+                  <el-radio :label="3">签订生效</el-radio>
+                </el-radio-group>
+              </el-form-item>
+            </el-row>
+            <el-row class="mt20" v-if="cardContentInfoForm.effectiveCondition===1">
               <el-col :span="8">
                 <el-form-item label="合同生效日期" prop="startTime">
                   <el-date-picker v-model="cardContentInfoForm.startTime"
@@ -379,6 +388,11 @@
                                   type="date"></el-date-picker>
                 </el-form-item>
               </el-col>
+            </el-row>
+            <el-row class="mt20" v-if="cardContentInfoForm.effectiveCondition===2">
+              <el-form-item prop="conditionDesc"  class="mr20" label="备注">
+                <el-input @change="handleChangeValidateForms" :disabled="operateType==='query'" v-model="cardContentInfoForm.conditionDesc" type="textarea" :rows="4"></el-input>
+              </el-form-item>
             </el-row>
           </el-form>
         </el-tab-pane>
@@ -1948,8 +1962,10 @@
         },
         activeTabName: 'tabContInfo',
         cardContentInfoForm: {
+          effectiveCondition:1,//生效条件
           startTime: '',
           endTime: '',
+          conditionDesc:'',//期限生效
           tableSupplierInfo: [],
           conSubjctName: [],
           thirdPartyInfo: [],
@@ -1975,7 +1991,9 @@
             }, {
               required: true,
               message: '请输入合同截止日期'
-            }]
+            }],
+            effectiveCondition:[{required: true, message: '请选择生效条件'}],
+            conditionDesc:[{required: true, message: '请输入附期限生效信息'}]
           }
         },
         cardFinanceInfoForm: {
@@ -3145,7 +3163,15 @@
               errors.cardContentInfoForm.subjectsErrorMsg = '我方主体信息不能为空'
             }
             if (!valid) {
-              errors.cardContentInfoForm.errorCount += 2
+              /*effectiveCondition:1,//生效条件
+               startTime: '',
+               endTime: '',
+               conditionDesc:'',//期限生效*/
+              if(this.cardContentInfoForm.effectiveCondition===1){
+                errors.cardContentInfoForm.errorCount += 2
+              }else if(this.cardContentInfoForm.effectiveCondition===2){
+                errors.cardContentInfoForm.errorCount += 1
+              }
               return false
             }
           })
