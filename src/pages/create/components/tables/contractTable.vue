@@ -21,14 +21,18 @@
       <el-table-column
         prop="submitTime"
         label="发起时间"
-        width="120"
-      :formatter="formatDate">
+        width="120">
+        <template scope="scope">
+          {{scope.row.submitTime | formatDate}}
+        </template>
       </el-table-column>
       <el-table-column
         prop="sealTime"
-        :formatter="formatDate"
         label="盖章时间"
         width="120">
+        <template scope="scope">
+          {{scope.row.sealTime | formatDate}}
+        </template>
       </el-table-column>
     </el-table>
   </div>
@@ -50,10 +54,8 @@
         tableData: []
       }
     },
-    methods: {
-      formatDate(row, column, cellValue) {
-        return formatDate(cellValue)
-      }
+    filters:{
+      formatDate
     }
   }
 </script>

@@ -1573,8 +1573,16 @@
                 </template>
               </el-table-column>
               <el-table-column prop="contractStatusName" label="状态"></el-table-column>
-              <el-table-column prop="startTime" label="开始时间" :formatter="formatDateForTable"></el-table-column>
-              <el-table-column prop="endTime" label="终止时间" :formatter="formatDateForTable"></el-table-column>
+              <el-table-column prop="startTime" label="开始时间">
+                <template scope="scope">
+                  {{cardRelatedInfoForm.contractList[scope.$index].startTime|formatDate}}
+                </template>
+              </el-table-column>
+              <el-table-column prop="endTime" label="终止时间">
+                <template scope="scope">
+                  {{cardRelatedInfoForm.contractList[scope.$index].endTime|formatDate}}
+                </template>
+              </el-table-column>
               <el-table-column
                 fixed="right"
                 label="操作"
@@ -2600,6 +2608,9 @@
         }
         return enabled
       }
+    },
+    filters:{
+      formatDate
     },
     mounted() {
       const query = this.$route.query
@@ -3944,12 +3955,6 @@
       handleRelatedInfoCurrentChange(page){
         this.cardRelatedInfoForm.pageNo = page
         this.initRelatedInfo()
-      },
-      formatDate(value) {
-        return formatDate(value)
-      },
-      formatDateForTable(row, column, cellValue) {
-        return formatDate(cellValue)
       },
       getContractModel(id) {
         if (id) {

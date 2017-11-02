@@ -18,15 +18,19 @@
       </el-table-column>
       <el-table-column
         prop="initiateTime"
-        :formatter="formatDate"
         label="发起时间"
         width="120">
+        <template scope="scope">
+          {{scope.row.initiateTime|formatDate}}
+        </template>
       </el-table-column>
       <el-table-column
         prop="orderTime"
         label="下单时间"
-        :formatter="formatDate"
         width="150">
+        <template scope="scope">
+          {{scope.row.orderTime|formatDate}}
+        </template>
       </el-table-column>
     </el-table>
     <el-pagination
@@ -58,22 +62,23 @@
         tableData: []
       }
     },
+    filters:{
+      formatDate
+    },
     methods: {
       getData() {
         this.comLoading()
         Api.getOrderTableData({'contractNo':this.contractNo,'pageNo':this.pageNo,'pageSize':this.pageSize})
-          .then((data) => {
+          .then((data)=>{
           if(data.data.dataMap){
             this.tableData = data.data.dataMap.data
             this.total = data.data.dataMap.total
           }
           this.comLoading(false)
-        }, () => {
+        })
+        .catch(()=>{
           this.comLoading(false)
         })
-      },
-      formatDate(row, column, cellValue) {
-        return formatDate(cellValue)
       },
       handleSizeChange(val) {
         this.pageSize = val

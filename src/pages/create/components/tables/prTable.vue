@@ -27,9 +27,11 @@
       </el-table-column>
       <el-table-column
         prop="createTime"
-        :formatter="formatDate"
         label="发起时间"
         width="120">
+        <template scope="scope">
+          {{scope.row.createTime|formatDate}}
+        </template>
       </el-table-column>
     </el-table>
     <el-pagination
@@ -52,7 +54,6 @@
 
   export default {
     mixins: [comLoading],
-
     data() {
       return {
         currentPage: 1,
@@ -60,6 +61,9 @@
         total: 0,
         tableData: []
       }
+    },
+    filters:{
+      formatDate
     },
     methods: {
       getData() {
@@ -74,20 +78,12 @@
           this.comLoading(false)
         })
       },
-      formatDate(row, column, cellValue) {
-        return formatDate(cellValue)
-      },
       handleSizeChange(val) {
         this.pageSize = val
-        console.log(`每页 ${val} 条`)
       },
       handleCurrentChange(val) {
         this.currentPage = val
-        console.log(`当前页: ${val}`)
       }
-    },
-    created() {
-      //this.getData()
     }
   }
 </script>

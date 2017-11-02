@@ -19,15 +19,19 @@
       </el-table-column>
       <el-table-column
         prop="startTime"
-        :formatter="formatDate"
         label="发起时间"
         width="120">
+        <template scope="scope">
+          {{scope.row.startTime|formatDate}}
+        </template>
       </el-table-column>
       <el-table-column
         prop="finishTime"
-        :formatter="formatDate"
         label="结束时间"
         width="120">
+        <template scope="scope">
+          {{scope.row.finishTime|formatDate}}
+        </template>
       </el-table-column>
     </el-table>
   </div>
@@ -48,6 +52,9 @@
         tableData: []
       }
     },
+    filters:{
+      formatDate
+    },
     methods: {
       getData() {
         this.comLoading()
@@ -59,9 +66,6 @@
         }, () => {
           this.comLoading(false)
         })
-      },
-      formatDate(row, column, cellValue) {
-        return formatDate(cellValue)
       }
     },
     created() {
