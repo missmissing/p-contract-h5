@@ -91,7 +91,7 @@
             <el-form-item label="申请原因">
               {{form.description}}
             </el-form-item>
-            <el-form-item label="文本上传" v-show="tplTypeShow">
+            <el-form-item label="文本上传" v-if="fileList.length>0">
               <el-table
                 :data="fileList"
                 border
@@ -203,7 +203,7 @@
         this.form['operatorName'] = operatorName
         this.form['creatorName'] = creatorName
         this.form['description'] = description
-        this.fileList = files
+        this.fileList = files || []
       },
       getTplData(id) {
         this.comLoading()
