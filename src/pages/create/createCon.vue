@@ -146,9 +146,9 @@
             </el-form-item>
           </el-col>
           <el-col :span="8">
-            <el-form-item label="合同类型">
+            <el-form-item label="业务类型">
               <el-input :disabled="isEnabled" v-model="baseInfoForm.contractBusinessTypeName"
-                        placeholder="请输入合同类型"></el-input>
+                        placeholder="请输入业务类型"></el-input>
             </el-form-item>
           </el-col>
         </el-row>
@@ -3548,7 +3548,7 @@
         const params = {}
         params.code = code
         params.operate = 'ALTER'
-        // 根据合同编号获取合同模式设置当前合同模式及合同类型
+        // 根据合同编号获取合同模式设置当前合同模式及业务类型
         Api.getUpdateInfo(params).then((data) => {
           const dataMap = data.data.dataMap
           if (dataMap && dataMap.baseInfoForm.id) {

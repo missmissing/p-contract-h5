@@ -45,8 +45,8 @@
             </el-form-item>
           </el-col>
           <el-col :span="8">
-            <el-form-item label="合同类型" prop="conTypeName">
-              <el-input readonly placeholder="请选择合同类型" @focus="visible=true" v-model="conForm.conTypeName"></el-input>
+            <el-form-item label="业务类型" prop="conTypeName">
+              <el-input readonly placeholder="请选择业务类型" @focus="visible=true" v-model="conForm.conTypeName"></el-input>
             </el-form-item>
           </el-col>
         </el-row>
@@ -238,7 +238,7 @@
             {required: true, message: '请选择合同模式', trigger: 'change'}
           ],
           conTypeName: [
-            {required: true, message: '请选择合同类型', trigger: 'change'}
+            {required: true, message: '请选择业务类型', trigger: 'change'}
           ]
         },
         arrPr: [], // 比价单列表
