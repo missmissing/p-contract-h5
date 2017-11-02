@@ -122,8 +122,15 @@
             <el-table-column
               fixed="right"
               label="操作"
-              width="100">
+              width="130">
               <template scope="scope">
+                <el-button
+                  v-if="scope.row.edit"
+                  @click.native.prevent="editRow(scope.row)"
+                  type="primary"
+                  size="small">
+                  编辑
+                </el-button>
                 <el-button
                   @click.native.prevent="deleteRow(scope.$index, checkItems)"
                   type="danger"
@@ -335,7 +342,14 @@
           const {purchaseOrderId, checkItems} = data
           this.toDetail.query.id = purchaseOrderId
           this.info = data
-          this.checkItems = checkItems || []
+          if (checkItems && checkItems.length) {
+            this.checkItems = checkItems.map((item) => {
+              item.edit = true
+              delete item.checkResult
+              delete item.remark
+              return item
+            })
+          }
           this.setBasicForm()
           this.pickerOptions.disabledDate = (time) => {
             return time.getTime() < this.basicForm.startTime
@@ -360,13 +374,11 @@
         })
       },
       addNotQualityDialogOk() {
-        this.$refs['addNotQualityDialogForm'].validate((valid) => {
+        const form = this.$refs['addNotQualityDialogForm']
+        form.validate((valid) => {
           if (valid) {
-            const form = this.addNotQualityDialogForm
-            this.checkItems.push({...form})
-            Object.keys(form).forEach((key) => {
-              form[key] = ''
-            })
+            this.checkItems.push({...this.addNotQualityDialogForm})
+            form.resetFields()
             this.addNotQualityDialogVisible = false
           } else {
             console.log('error submit!!')
@@ -376,6 +388,10 @@
       },
       addItem() {
         this.addNotQualityDialogVisible = true
+      },
+      editRow(row) {
+        this.addItem()
+        Object.assign(this.addNotQualityDialogForm, row)
       },
       deleteRow(index, rows) {
         rows.splice(index, 1)
@@ -400,7 +416,16 @@
           if (valid) {
             this.$refs['handleForm'].validate((valid) => {
               if (valid) {
-                flag = true
+                if (this.checkItems.length) {
+                  const exist = this.checkItems.some((item) => {
+                    return !item.checkResult
+                  })
+                  if (exist) {
+                    this.$message.warning('请填写验收信息检查结果！')
+                  } else {
+                    flag = true
+                  }
+                }
               }
             })
           }
