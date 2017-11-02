@@ -2248,11 +2248,11 @@
             /*{
               value: 1,
               label: '采购申请'
-            },*/
+            },
             {
               value: 2,
               label: '比价单信息'
-            },
+            },*/
             {
               value: 3,
               label: '合同信息'
@@ -2685,6 +2685,22 @@
           }
           //初始化相关数据信息
           this.initRelatedInfo()
+          //初始化其他数据
+          if(this.baseInfoForm.prNo){
+            this.cardOtherInfo.conditionOptions=[
+              {
+              value: 2,
+              label: '比价单信息'
+            },
+              {
+                value: 3,
+                label: '合同信息'
+              },
+              {
+                value: 4,
+                label: '订单信息'
+              }]
+          }
 
         } else {
           this.baseInfoForm.contractTypeName = this.getContractModelName(parseInt(params.contractType))// 初始化合同模式
