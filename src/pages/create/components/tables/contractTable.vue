@@ -5,6 +5,7 @@
       border
       class="wp100">
       <el-table-column
+        width="200"
         prop="contractNo"
         label="合同号">
       </el-table-column>
@@ -13,15 +14,15 @@
         label="发起人"
         width="150">
       </el-table-column>
-      <el-table-column
+      <el-table-column v-if="contractInfo[0].creatorDept"
         prop="creatorDept"
         label="发起部门">
       </el-table-column>
       <el-table-column
         prop="submitTime"
-        :formatter="formatDate"
         label="发起时间"
-        width="120">
+        width="120"
+      :formatter="formatDate">
       </el-table-column>
       <el-table-column
         prop="sealTime"
@@ -37,6 +38,7 @@
   import Api from '@/api/manageContract'
   import {formatDate} from '@/filters/moment'
   import comLoading from '@/mixins/comLoading'
+  import moment from 'moment'
 
   export default {
     mixins: [comLoading],
@@ -49,8 +51,8 @@
       }
     },
     methods: {
-      formatDate(value) {
-        return formatDate(value)
+      formatDate(row, column, cellValue) {
+        return formatDate(cellValue)
       }
     }
   }

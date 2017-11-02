@@ -360,7 +360,7 @@
             </el-card>
             <el-row class="mt20">
               <el-form-item label="生效条件" prop="effectiveCondition">
-                <el-radio-group v-model="cardContentInfoForm.effectiveCondition" :disabled="operateType==='query'" @change="handleChangeValidateForms">
+                <el-radio-group v-model="cardContentInfoForm.effectiveCondition" :disabled="!enabledInupdated" @change="handleChangeValidateForms">
                   <el-radio :label="1">附条件生效</el-radio>
                   <el-radio :label="2">附期限生效</el-radio>
                   <el-radio :label="3">签订生效</el-radio>
@@ -391,7 +391,7 @@
             </el-row>
             <el-row class="mt20" v-if="cardContentInfoForm.effectiveCondition===2">
               <el-form-item prop="conditionDesc"  class="mr20" label="备注">
-                <el-input @change="handleChangeValidateForms" :disabled="operateType==='query'" v-model="cardContentInfoForm.conditionDesc" type="textarea" :rows="4"></el-input>
+                <el-input @change="handleChangeValidateForms" :disabled="!enabledInupdated" v-model="cardContentInfoForm.conditionDesc" type="textarea" :rows="4"></el-input>
               </el-form-item>
             </el-row>
           </el-form>
@@ -1573,8 +1573,8 @@
                 </template>
               </el-table-column>
               <el-table-column prop="contractStatusName" label="状态"></el-table-column>
-              <el-table-column prop="startTime" label="开始时间" :formatter="formatDate"></el-table-column>
-              <el-table-column prop="endTime" label="终止时间" :formatter="formatDate"></el-table-column>
+              <el-table-column prop="startTime" label="开始时间" :formatter="formatDateForTable"></el-table-column>
+              <el-table-column prop="endTime" label="终止时间" :formatter="formatDateForTable"></el-table-column>
               <el-table-column
                 fixed="right"
                 label="操作"
@@ -1601,7 +1601,7 @@
             </el-pagination>
           </div>
         </el-tab-pane>
-        <el-tab-pane label="其他" name="tabOtherInfo" v-if="operateType==='query'">
+        <el-tab-pane label="其他" name="tabOtherInfo" v-if="operateType!=='create'">
           <el-select
             v-model="cardOtherInfo.condition"
             placeholder="请选择"
@@ -1865,9 +1865,11 @@
     data() {
       const validateEffectiveDateRules = (rule, value, callback) => {
         let endTime = this.cardContentInfoForm.endTime
-        if(new Date(value)<new Date()){
-          this.cardContentInfoForm.startTime=new Date()
-          callback(new Error('合同生效日期必须大于等于今天'))
+        if(this.operateType==='create'||(this.operateType==='update'&&this.updateForm.updateMode===2)){
+          if(new Date(value)<new Date()){
+            this.cardContentInfoForm.startTime=new Date()
+            callback(new Error('合同生效日期必须大于等于今天'))
+          }
         }
         if (endTime) {
           if (new Date(value) > new Date(endTime)) {
@@ -1878,9 +1880,11 @@
       }
       const validateEndDate = (rule, value, callback) => {
         let startTime = this.cardContentInfoForm.startTime
-        if(new Date(value)<new Date()){
-          this.cardContentInfoForm.endTime=new Date()
-          callback(new Error('合同终止日期必须大于等于今天'))
+        if(this.operateType==='create'||(this.operateType==='update'&&this.updateForm.updateMode===2)){
+          if(new Date(value)<new Date()){
+            this.cardContentInfoForm.endTime=new Date()
+            callback(new Error('合同终止日期必须大于等于今天'))
+          }
         }
         if (startTime) {
           if (new Date(value) < new Date(startTime)) {
@@ -3943,6 +3947,9 @@
       },
       formatDate(value) {
         return formatDate(value)
+      },
+      formatDateForTable(row, column, cellValue) {
+        return formatDate(cellValue)
       },
       getContractModel(id) {
         if (id) {

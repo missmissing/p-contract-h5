@@ -74,8 +74,8 @@
           this.comLoading(false)
         })
       },
-      formatDate(value) {
-        return formatDate(value)
+      formatDate(row, column, cellValue) {
+        return formatDate(cellValue)
       },
       handleSizeChange(val) {
         this.pageSize = val

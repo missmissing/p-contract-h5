@@ -61,10 +61,8 @@
     methods: {
       getData() {
         this.comLoading()
-        console.log()
         Api.getOrderTableData({'contractNo':this.contractNo,'pageNo':this.pageNo,'pageSize':this.pageSize})
           .then((data) => {
-            console.log('data',data)
           if(data.data.dataMap){
             this.tableData = data.data.dataMap.data
             this.total = data.data.dataMap.total
@@ -74,8 +72,8 @@
           this.comLoading(false)
         })
       },
-      formatDate(value) {
-        return formatDate(value)
+      formatDate(row, column, cellValue) {
+        return formatDate(cellValue)
       },
       handleSizeChange(val) {
         this.pageSize = val
