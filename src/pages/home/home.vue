@@ -176,10 +176,12 @@
       },
       allRoutesHiddenTrue(items) {
         items.forEach((item) => {
-          item.meta.hidden = true
-          const {children} = item
-          if (children && children.length) {
-            this.allRoutesHiddenTrue(children)
+          if (!item.meta.public) {
+            item.meta.hidden = true
+            const {children} = item
+            if (children && children.length) {
+              this.allRoutesHiddenTrue(children)
+            }
           }
         })
       },
@@ -213,7 +215,6 @@
     created() {
       const powerSwitch = localStore.get('powerSwitch')
       if (powerSwitch) {
-        debugger
         const powers = localStore.get('powers') || []
         const defaultRoutes = this.$router.options.routes
         this.allRoutesHiddenTrue(defaultRoutes)

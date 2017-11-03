@@ -73,7 +73,7 @@
               <!--</el-table-column>-->
               <el-table-column
                 label="操作"
-                min-width="80">
+                width="80">
                 <template scope="scope">
                   <el-button
                     @click.native.prevent="deleteRow(scope.$index, prData)"
@@ -155,9 +155,7 @@
                   <template scope="scope">
                     <div v-if="radio">{{scope.row.price}}</div>
                     <div v-else>
-                      <el-input
-                        v-model.trim="scope.row.price"
-                        @blur="nonNegative"></el-input>
+                      {{scope.row.price = 1}}
                     </div>
                   </template>
                 </el-table-column>
@@ -214,7 +212,7 @@
                 <el-table-column
                   label="操作"
                   fixed="right"
-                  width="100">
+                  width="80">
                   <template scope="scope">
                     <el-button
                       @click.native.prevent="deleteRow(scope.$index, orderData)"
@@ -287,11 +285,11 @@
                   </el-table-column>
                   <el-table-column
                     prop="serviceName"
-                    label="服务名称">
+                    label="验收要素">
                   </el-table-column>
                   <el-table-column
                     prop="serviceRequire"
-                    label="验收要求">
+                    label="参考标准">
                   </el-table-column>
                   <el-table-column
                     prop="remark"
@@ -300,7 +298,7 @@
                   <el-table-column
                     fixed="right"
                     label="操作"
-                    width="100">
+                    width="80">
                     <template scope="scope">
                       <el-button
                         @click.native.prevent="deleteRow(scope.$index, serverData)"
@@ -456,16 +454,17 @@
               </el-table-column>
               <el-table-column
                 prop="contractNo"
+                width="150"
                 label="合同号">
               </el-table-column>
               <el-table-column
                 prop="supplierCode"
+                width="150"
                 label="供应商">
               </el-table-column>
               <el-table-column
                 prop="supplierName"
-                label="供应商名称"
-                width="200">
+                label="供应商名称">
               </el-table-column>
               <el-table-column
                 prop="startTime"
@@ -502,7 +501,7 @@
   import {formatTime, formatDate} from '@/filters/moment'
   import fillZero from '@/util/fillZero'
   import cutZero from '@/util/cutZero'
-  import {nonNegative, greaterZero} from '@/util/reg'
+  import {greaterZero} from '@/util/reg'
   import comLoading from '@/mixins/comLoading'
 
   export default {
@@ -550,27 +549,27 @@
         taxRates: [
           {
             code: 'J0',
-            value: 0,
+            value: '0',
             desc: '0%进税项'
           },
           {
             code: 'J1',
-            value: 3,
+            value: '3',
             desc: '3%进税项'
           },
           {
             code: 'J2',
-            value: 6,
+            value: '6',
             desc: '6%进税项'
           },
           {
             code: 'J3',
-            value: 11,
+            value: '11',
             desc: '11%进税项'
           },
           {
             code: 'J4',
-            value: 17,
+            value: '17',
             desc: '17%进税项'
           },
           {
@@ -580,7 +579,7 @@
           },
           {
             code: 'J6',
-            value: 5,
+            value: '5',
             desc: '5%进税项'
           }
         ],
@@ -744,23 +743,13 @@
         this.orderData = orderData.filter(item => item.availableTotal !== 0)
       },
       showServiceTab() {
-        this.showService = this.prData.length && this.prData[0].category === 2 && this.radio1
+        this.showService = this.prData.length && this.prData[0].category === 2 && !_.isNull(this.radio1)
       },
       formatType(row, column, cellValue) {
         return prTypeMap[cellValue]
       },
       formatDate(row, value) {
         row.deliveryTime = formatDate(value)
-      },
-      nonNegative(event) {
-        const val = event.target.value
-        if (!val) {
-          return
-        }
-        if (!nonNegative(val)) {
-          this.$message.warning('请输入数字！')
-          event.target.value = ''
-        }
       },
       greaterZero(event, availableTotal) {
         const val = event.target.value
@@ -835,13 +824,12 @@
             return
           }
         } else {
-          const exist = purOrderMaterials.some(item => (!item.total || !item.price || !item.taxRate || !item.deliveryTime))
+          const exist = purOrderMaterials.some(item => (!item.total || !item.taxRate || !item.deliveryTime))
           if (exist) {
             this.$message.warning('订单信息不完整！')
             return
           }
           if (this.showService && !this.serverData.length) {
-            debugger
             this.$message.warning('服务验收信息不能为空！')
             return
           }

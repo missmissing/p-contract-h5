@@ -185,6 +185,8 @@
               this.$router.push({
                 name: routerNames.con_index
               })
+            }, () => {
+              this.comLoading()
             })
           } else {
             console.log('error submit!!')

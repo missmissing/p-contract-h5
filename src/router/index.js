@@ -78,7 +78,8 @@ const router = new Router({
             require(['../pages/support/create.vue'], resolve)
           },
           meta: {
-            auth: true
+            auth: true,
+            public: true
           },
           name: routerNames.con_tpl_create
         },
@@ -88,7 +89,8 @@ const router = new Router({
             require(['../pages/support/update.vue'], resolve)
           },
           meta: {
-            auth: true
+            auth: true,
+            public: true
           },
           name: routerNames.con_tpl_update
         },
