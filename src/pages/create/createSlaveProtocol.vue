@@ -542,7 +542,7 @@
         return show
       },
       ifRole:function(){
-        let ifRole=false,reg=/用章保管人/g
+        let ifRole=false,reg=/印章保管人/g
         reg.test(this.users.roleName)?ifRole= true:ifRole=false
         return ifRole
       },
@@ -566,6 +566,7 @@
       if(query.processData){
         this.procInstCode=JSON.parse(query.processData).procInstCode
         this.procTitle = JSON.parse(query.processData).procTitle
+        this.users.roleName = JSON.parse(query.processData).roleName
       }
       if (this.$route.path && this.$route.path === '/ConCreate/querySlaveProtocol') {
         this.operateType = 'query'
@@ -617,8 +618,6 @@
                 }
               }
             }
-
-            console.log('this.baseInfoForm.tableSupplierInfo', this.baseInfoForm.tableSupplierInfo)
             curForm.resetFields()
             this.baseInfoForm.dialogAddContractSupplier = false
             if (this.isSubmit) {
@@ -833,7 +832,6 @@
           if (sealAttachments && sealAttachments.length) {
             for (let i = 0, len = sealAttachments.length; i < len; i++) {
               const item = sealAttachments[i]
-
               if (item[0] && item[0].fileName) {
                 sealAttachment.push(item)
               }
@@ -934,13 +932,11 @@
           })
         }
       },
-
       callback(params){//isSign:是否是加签人 isAgree:审批操作类型是否是同意
         return new Promise((resolve,reject)=>{
           const {isSign,isAgree}=params
           if(!isSign&&isAgree&&this.ifRole){
             const sealAttachments = this.combineSealsInfo()
-            sealAttachments.splice(0,1)
             const para={}
             para.sealAttachments=sealAttachments
             para.id=this.id
@@ -956,7 +952,7 @@
             resolve()
           }
         })
-      },
+      }
     },
     watch: {
       '$route'(to, from) {

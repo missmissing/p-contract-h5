@@ -3902,9 +3902,6 @@
       },
       callback(params){//isSign:是否是加签人 isAgree:审批操作类型是否是同意
         return new Promise((resolve, reject)=> {
-          const oldSealAttachments = JSON.parse(this.oldSealAttachments).splice(0, 1) || []
-          const newSealAttachments = this.combineSealsInfo().splice(0, 1) || []
-          if (JSON.stringify(oldSealAttachments) !== JSON.stringify(newSealAttachments)) {
             const {isSign, isAgree}=params
             if (!isSign && isAgree && this.ifRole) {
               const para = {}
@@ -3918,14 +3915,10 @@
                 .catch(()=> {
                   reject()
                 })
-            } else {
-              reject()
+            }else{
+              resolve()
             }
-          } else {
-            resolve()
-          }
         })
-
       },
       handleChangeValidateForms(){
         if (this.isSubmit) {
