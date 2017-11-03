@@ -549,27 +549,27 @@
         taxRates: [
           {
             code: 'J0',
-            value: 0,
+            value: '0',
             desc: '0%进税项'
           },
           {
             code: 'J1',
-            value: 3,
+            value: '3',
             desc: '3%进税项'
           },
           {
             code: 'J2',
-            value: 6,
+            value: '6',
             desc: '6%进税项'
           },
           {
             code: 'J3',
-            value: 11,
+            value: '11',
             desc: '11%进税项'
           },
           {
             code: 'J4',
-            value: 17,
+            value: '17',
             desc: '17%进税项'
           },
           {
@@ -579,7 +579,7 @@
           },
           {
             code: 'J6',
-            value: 5,
+            value: '5',
             desc: '5%进税项'
           }
         ],
