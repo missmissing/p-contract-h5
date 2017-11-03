@@ -14,7 +14,7 @@
         label="发起人"
         width="150">
       </el-table-column>
-      <el-table-column v-if="contractInfo[0].creatorDept"
+      <el-table-column v-if="contractInfo&&contractInfo[0]&&contractInfo[0].creatorDept"
         prop="creatorDept"
         label="发起部门">
       </el-table-column>

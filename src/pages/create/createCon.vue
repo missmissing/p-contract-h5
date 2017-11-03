@@ -3920,7 +3920,6 @@
               reject()
             }
           } else {
-            console.log('sealAttachments-update-false');
             resolve()
           }
         })
