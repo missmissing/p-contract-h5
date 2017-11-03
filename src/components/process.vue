@@ -133,6 +133,12 @@
             return false
           }
         }
+        if (this.visible) {
+          if (!this.receiver) {
+            this.$message.warning('请选择收文人！')
+            return false
+          }
+        }
         return true
       },
       submit() {

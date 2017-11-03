@@ -790,9 +790,6 @@
           this.radio1 = index
         }
       },
-      handleServiceItem(index, row) {
-        console.log(row)
-      },
       deleteRow(index, rows) {
         rows.splice(index, 1)
       },

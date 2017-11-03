@@ -11,20 +11,29 @@
       class="wp100">
       <el-table-column
         prop="id"
+        width="300"
         label="ID">
       </el-table-column>
       <el-table-column
         prop="operatorName"
+        width="100"
         label="操作人">
       </el-table-column>
       <el-table-column
         prop="createTime"
+        width="200"
         label="时间">
         <template scope="scope">
           {{ scope.row.createTime | formatTime}}
         </template>
       </el-table-column>
       <el-table-column
+        prop="responseData"
+        show-overflow-tooltip
+        label="结果">
+      </el-table-column>
+      <el-table-column
+        width="100"
         label="操作">
         <template scope="scope">
           <el-button size="small" type="primary" @click="send(scope.row.id)">推 送</el-button>

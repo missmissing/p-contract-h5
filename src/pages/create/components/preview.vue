@@ -209,7 +209,6 @@
 
 <script>
   import Api from '@/api/support'
-  import ApiContract from '@/api/manageContract'
   import numToChinese from '@/util/numToChinese'
 
   export default {
