@@ -2677,7 +2677,7 @@
           this.contractInfo=[this.baseInfoForm]
           this.baseInfoForm.contractTypeName = this.getContractModelName(parseInt(data.baseInfoForm.contractType))// 初始化合同模式
           const sealAttachments = this.cardSealInfoForm.sealAttachments
-          this.oldSealAttachments = this.cardSealInfoForm.sealAttachments
+          this.oldSealAttachments = JSON.stringify(this.cardSealInfoForm.sealAttachments)
           let contract = [], agreenments = [], others = []
           if (sealAttachments.length) {
             for (let i = 0, len = sealAttachments.length; i < len; i++) { // 初始化附件类型的数
@@ -3900,10 +3900,8 @@
       },
       callback(params){//isSign:是否是加签人 isAgree:审批操作类型是否是同意
         return new Promise((resolve, reject)=> {
-          const oldSealAttachments = this.oldSealAttachments.splice(0, 1) || []
+          const oldSealAttachments = JSON.parse(this.oldSealAttachments).splice(0, 1) || []
           const newSealAttachments = this.combineSealsInfo().splice(0, 1) || []
-          console.log('oldSealAttachments',oldSealAttachments);
-          console.log('newSealAttachments',newSealAttachments);
           if (JSON.stringify(oldSealAttachments) !== JSON.stringify(newSealAttachments)) {
             const {isSign, isAgree}=params
             if (!isSign && isAgree && this.ifRole) {
@@ -3922,6 +3920,7 @@
               reject()
             }
           } else {
+            console.log('sealAttachments-update-false');
             resolve()
           }
         })
