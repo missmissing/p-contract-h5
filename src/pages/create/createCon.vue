@@ -2578,7 +2578,7 @@
         return enabled
       },
       ifRole: function () {
-        let ifRole = false, reg = /用章保管人/g
+        let ifRole = false, reg = /印章保管人/g
         reg.test(this.users.roleName) ? ifRole = true : ifRole = false
         return ifRole
       },
@@ -3331,6 +3331,7 @@
         return sealAttachments
       },
       combineSealsInfoWithoudAgreenments() {//剔除空数据项
+        const contract = this.cardSealInfoForm.contract
         const others = this.cardSealInfoForm.others
         let sealAttachments = []
 
@@ -3345,6 +3346,7 @@
         }
 
         // 判断附件类型，当该附件类型的数据为空是，则该数组为空
+        contract.length ? sealAttachments.push(contract) : null
         sealOthers.length ? sealAttachments = sealAttachments.concat(sealOthers) : null
         return sealAttachments
       },

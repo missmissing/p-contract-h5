@@ -97,7 +97,7 @@ export default {
   },
   // 审批时上传附件接口
   uploadSealAttachments(params) {
-    return Http.post(`${contract}/contract/seal/attach`, params)
+    return Http.post(`${contract}/contract-web/contract/seal/attach`, params)
   },
   /** ***从协议接口****/
 
