@@ -122,7 +122,7 @@
             <el-table-column
               fixed="right"
               label="操作"
-              width="130">
+              width="160">
               <template scope="scope">
                 <el-button
                   v-if="scope.row.edit"
