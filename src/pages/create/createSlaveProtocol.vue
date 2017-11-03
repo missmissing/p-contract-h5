@@ -9,6 +9,9 @@
   .createSlaveProtocal table {
     width: 100% !important;
   }
+  .createSlaveProtocal .el-table__expanded-cell {
+    z-index: 1
+  }
 </style>
 <template>
   <div class="createSlaveProtocal">
@@ -173,14 +176,14 @@
                     </el-col>
                     <el-col :span="6">
                       <el-form-item label="打印份数" prop="printTime" class="is-required">
-                        <el-input  :disabled="!enabledUpdateInApprovePrint"
-                                  v-model="props.row.printTime" @change="handleChangeValidateForms"></el-input>
+                        <el-input-number  :disabled="!enabledUpdateInApprovePrint" size="small" :max="100"
+                                  v-model="props.row.printTime" @change="handleChangeValidateForms"></el-input-number>
                       </el-form-item>
                     </el-col>
                     <el-col :span="6">
                       <el-form-item label="留存份数" prop="remainTime" class="is-required">
-                        <el-input :disabled="!enabledUpdateInApprovePrint"
-                                  v-model="props.row.remainTime" @change="handleChangeValidateForms"></el-input>
+                        <el-input-number :disabled="!enabledUpdateInApprovePrint" size="small" :max="100"
+                                  v-model="props.row.remainTime" @change="handleChangeValidateForms"></el-input-number>
                       </el-form-item>
                     </el-col>
                     <el-col :span="6">
