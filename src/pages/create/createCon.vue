@@ -3752,10 +3752,22 @@
           const params = {templateId: val, templateName: templateName, contractTextType: contractTextType}
           Api.getSealAttachments(params).then((data) => {
             if (data.data.dataMap) {
-              const item = [data.data.dataMap]
-              this.cardSealInfoForm.sealAttachments = [item]
+              const dataMap = data.data.dataMap
               if (this.operateType === 'create') {
-                this.cardSealInfoForm.contract = item
+                let contract = [], agreenments = [], others = []
+                if (dataMap&&dataMap.length) {
+                  for (let i = 0, len = dataMap.length; i < len; i++) { // 初始化附件类型
+                    const item = dataMap[i]
+                    if (parseInt(item.attachType) === 3) {
+                      contract.push(item)
+                    }
+                    if (parseInt(item.attachType) === 1) {
+                      others.push([item])
+                    }
+                  }
+                  this.cardSealInfoForm.contract = contract
+                  this.cardSealInfoForm.others = others
+                }
               }
             }
           })
