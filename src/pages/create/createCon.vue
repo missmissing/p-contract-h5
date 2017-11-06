@@ -1155,7 +1155,7 @@
                 </el-form-item>
               </el-col>
             </el-row>
-            <el-row>
+            <!--<el-row>
               <el-col :span="8">
                 <el-form-item prop="supervisor" label="验收监督人">
                   <el-input :disabled="isEnabled" v-model="cardContCheckInfoForm.supervisor"
@@ -1168,7 +1168,7 @@
                             placeholder="请输入验收监督人部门"></el-input>
                 </el-form-item>
               </el-col>
-            </el-row>
+            </el-row>-->
             <el-button
               v-if="operateType!=='query'"
               @click="handleAddUnionCheck"
