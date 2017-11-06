@@ -3096,6 +3096,9 @@
           result = parseFloat(money) / totalAmount
         }
         result = new Number(result) * 100
+        if(result>=100){
+          result=100
+        }
         return result.toFixed(2) + '%'
       },
       handleRemoveServiceMatter(index, rows) {
