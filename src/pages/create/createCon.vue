@@ -361,8 +361,8 @@
             <el-row class="mt20">
               <el-form-item label="生效条件" prop="effectiveCondition">
                 <el-radio-group v-model="cardContentInfoForm.effectiveCondition" :disabled="!enabledInupdated" @change="handleChangeValidateForms">
-                  <el-radio :label="1">附条件生效</el-radio>
-                  <el-radio :label="2">附期限生效</el-radio>
+                  <el-radio :label="1">附期限生效</el-radio>
+                  <el-radio :label="2">附条件生效</el-radio>
                   <el-radio :label="3">签订生效</el-radio>
                 </el-radio-group>
               </el-form-item>
@@ -2018,6 +2018,10 @@
             {
               value: 2,
               label: 'USD 美元'
+            },
+            {
+              value: 3,
+              label: 'HKD 港币'
             }
           ],
           invoiceType: null, // 开票类型
