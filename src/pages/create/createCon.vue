@@ -77,7 +77,7 @@
           <el-col :span="8">
             <el-form-item label="变更方式" prop="updateMode">
               <el-select class="wp100" :disabled="operateType==='query'" v-model="updateForm.updateMode"
-                         placeholder="请选择变更方式">
+                         placeholder="请选择变更方式" @change="handleChangeUpdateMode">
                 <el-option
                   v-for="item in updateForm.updateModes"
                   :key="item.id"
@@ -108,7 +108,7 @@
       <el-form ref="baseInfoForm" :model="baseInfoForm" label-width="100px" :rules="baseInfoForm.rules">
         <el-row>
           <el-col :span="8">
-            <el-form-item label="经办人" prop="businessOperatorId">
+            <el-form-item v-if="ifRequest" label="经办人" prop="businessOperatorId">
               <el-select
                 clearable
                 class="wp100"
@@ -129,6 +129,9 @@
                   <span style="float: right; color: #8492a6; font-size: 13px">{{ item.deptName }}</span>
                 </el-option>
               </el-select>
+            </el-form-item>
+            <el-form-item v-else label="经办人" prop="businessOperatorId">
+              <el-input :disabled="isEnabled1" v-model="baseInfoForm.businessOperatorName"  class="wp100" placeholder="请输入经办人"></el-input>
             </el-form-item>
           </el-col>
           <el-col :span="8">
@@ -168,7 +171,7 @@
           </el-col>
           <el-col :span="8">
             <el-form-item label="模板名称" prop="templateId">
-              <el-select class="wp100" :disabled="isEnabled1" v-model="baseInfoForm.templateId" placeholder="请选择合同模版"
+              <el-select v-if="ifRequest" class="wp100" :disabled="isEnabled1" v-model="baseInfoForm.templateId" placeholder="请选择合同模版"
                          @change="handleTemplateChange">
                 <el-option
                   v-for="item in baseInfoForm.templateOptions"
@@ -177,6 +180,7 @@
                   :value="item.templateId">
                 </el-option>
               </el-select>
+              <el-input v-else :disabled="isEnabled1" v-model="baseInfoForm.templateName" placeholder="请选择合同模版"></el-input>
               {{conVersion}}
             </el-form-item>
           </el-col>
@@ -1133,10 +1137,11 @@
             <el-row>
               <el-col :span="8">
                 <el-form-item label="验收责任人" prop="responsibleName">
-                  <el-select
+                  <el-input class="wp100" :disabled="true" v-model="cardContCheckInfoForm.responsibleName" placeholder="请输入验收责任人"></el-input>
+                  <!--<el-select
                     class="wp100"
                     :disabled="true"
-                    v-model="cardContCheckInfoForm.responsibleName"
+                    v-model="cardContCheckInfoForm.responsibleId"
                     filterable
                     remote
                     placeholder="请输入验收责任人"
@@ -1151,7 +1156,7 @@
                       <span style="float: left">{{ item.userName }}</span>
                       <span style="float: right; color: #8492a6; font-size: 13px">{{ item.deptName }}</span>
                     </el-option>
-                  </el-select>
+                  </el-select>-->
                 </el-form-item>
               </el-col>
               <el-col :span="8">
@@ -2425,6 +2430,13 @@
     created() {
     },
     computed: {
+      ifRequest:function(){//在创建合同或变更合同的变更方式为原合同作废时，不请求除初始化以外的接口
+        let request=false
+        if(this.operateType==='create'||this.updateForm.updateMode===2){
+          request=true
+        }
+        return request
+      },
       conVersion: function () {
         let id = this.baseInfoForm.templateId
         let templateOptions = this.baseInfoForm.templateOptions
@@ -2698,9 +2710,6 @@
         const param = {}
         param.bizTypeId = this.baseInfoForm.contractBusinessTypeThird// 业务类型
         param.templateType = (this.baseInfoForm.contractTextType === 1 ? 'TEMPLATE' : 'TEXT')
-        Api.getTemplateByBizTypeId(param).then((result) => {
-          this.baseInfoForm.templateOptions = result.data.dataMap || []
-        })
 
         const paymentMethods = this.cardFinanceInfoForm.paymentMethods
         paymentMethods.advance[0].type = '预付款'
@@ -3676,13 +3685,14 @@
         rows.splice(index, 1)
       },
       getRemotebusinessOperatorsByKeyWord(query) {
-        if (query !== '') {
+        if (this.ifRequest&&query) {
           this.baseInfoForm.loading = true
-          Api.getRemoteCreatePersonsByKeyWord({keyword: query})
-            .then((data) => {
-              this.baseInfoForm.loading = false
-              this.baseInfoForm.businessOperators = data.data.dataMap
-            })
+          console.log('getRemotebusinessOperatorsByKeyWord',query);
+            Api.getRemoteCreatePersonsByKeyWord({keyword: query})
+              .then((data) => {
+                this.baseInfoForm.loading = false
+                this.baseInfoForm.businessOperators = data.data.dataMap
+              })
         } else {
           this.baseInfoForm.businessOperatorId = ''
           this.baseInfoForm.businessOperatorName = ''
@@ -3690,16 +3700,16 @@
         }
       },
       getRemoteResponsiblesByKeyWord(query) {
-        if (query !== '') {
-          this.cardContCheckInfoForm.loading = true
-          Api.getRemoteCreatePersonsByKeyWord({keyword: query})
-            .then((data) => {
-              this.cardContCheckInfoForm.loading = false
-              this.cardContCheckInfoForm.responsibles = data.data.dataMap
-            })
-        } else {
-          this.cardContCheckInfoForm.responsibles = []
-        }
+          if (this.ifRequest&&query) {
+            this.cardContCheckInfoForm.loading = true
+            Api.getRemoteCreatePersonsByKeyWord({keyword: query})
+              .then((data) => {
+                this.cardContCheckInfoForm.loading = false
+                this.cardContCheckInfoForm.responsibles = data.data.dataMap
+              })
+          } else {
+            this.cardContCheckInfoForm.responsibles = []
+          }
       },
       handleContractTextTypeChange(val) {
         const params = {}
@@ -3708,13 +3718,16 @@
         if (this.operateType === 'create') {
           this.baseInfoForm.templateId = ''
         }
-        Api.getTemplateByBizTypeId(params).then((data) => {
-          this.baseInfoForm.templateOptions = data.data.dataMap || []
-        })
+
+        if(this.ifRequest){
+          Api.getTemplateByBizTypeId(params).then((data) => {
+            this.baseInfoForm.templateOptions = data.data.dataMap || []
+          })
+        }
       },
       handleBusinessOperatorChange(val) {
         const businessOperators = this.baseInfoForm.businessOperators
-        if (businessOperators.length) {
+        if (this.ifRequest&&businessOperators.length) {
           for (let i = 0, len = businessOperators.length; i < len; i++) {
             if (val === businessOperators[i].userId) {
               this.baseInfoForm.businessOperatorName = businessOperators[i].userName
@@ -3748,7 +3761,7 @@
         }
       },
       getRemoteCheckPersonsByKeyWord(query) {
-        if (query !== '') {
+        if (this.ifRequest&&query !== '') {
           this.formAddUnionCheck.loading = true
           Api.getRemoteCreatePersonsByKeyWord({keyword: query})
             .then((data) => {
@@ -3772,7 +3785,7 @@
         }
       },
       handleTemplateChange(val) {
-        if (val) {
+        if (this.ifRequest&&val) {
           const contractTextType = this.baseInfoForm.contractTextType
           const templateOptions = this.baseInfoForm.templateOptions
           let templateName = ''
@@ -4009,6 +4022,11 @@
           }
         }
       },
+      handleChangeUpdateMode(val){
+        if(val===2){
+          this.handleContractTextTypeChange(this.baseInfoForm.contractTextType)
+        }
+      }
     },
     components: {
       Preview,
