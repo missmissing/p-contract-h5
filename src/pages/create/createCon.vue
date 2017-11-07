@@ -3150,8 +3150,8 @@
             sealFileId: dataMap.fileId,
             sealFileName: dataMap.fileName,
             sealFileUrl: downloadUrl + dataMap.fileId,
-            sealFileCreatorName: dataMap.username,
-            sealFileCreateTime: dataMap.uploadTime,
+            sealFileCreatorName: dataMap.userName,
+            sealFileCreateTime: formatDate(dataMap.createTime),
             operate: 'add'
           }]
           this.$message.success('文件上传成功')
