@@ -347,6 +347,16 @@
                   </template>
                 </el-table-column>
               </el-table>
+              <el-row class="mt20" v-if="cardContentInfoForm.conStandard.length">
+                <el-form-item label="备注" prop="corporeRemark" label-width="60px">
+                  <el-input
+                    :disabled="!enabledInupdated"
+                    v-model="cardContentInfoForm.corporeRemark"
+                    placeholder="请输入备注"
+                    type="textarea"
+                    :rows="4"></el-input>
+                </el-form-item>
+              </el-row>
               <el-row class="mt20" v-if="operateType==='update'">
                 <el-col :span="8">
                   <el-form-item label="是否固定期限">
@@ -557,7 +567,7 @@
                         </el-table-column>
                         <el-table-column
                           prop="remark"
-                          label="备注"
+                          label="付款节点说明"
                           width="200px">
                           <template scope="scope">
                             <el-input
@@ -632,7 +642,7 @@
                 </el-table-column>
                 <el-table-column
                   prop="remark"
-                  label="备注"
+                  label="付款节点说明"
                   width="250px">
                   <template scope="scope">
                     <el-input
@@ -699,7 +709,7 @@
                         </el-table-column>
                         <el-table-column
                           prop="remark"
-                          label="备注"
+                          label="付款节点说明"
                           width="200px">
                           <template scope="scope">
                             <el-input
@@ -777,7 +787,7 @@
                 </el-table-column>
                 <el-table-column
                   prop="remark"
-                  label="备注"
+                  label="付款节点说明"
                   width="250px">
                   <template scope="scope">
                     <el-input
@@ -844,7 +854,7 @@
                         </el-table-column>
                         <el-table-column
                           prop="remark"
-                          label="备注"
+                          label="付款节点说明"
                           width="200px">
                           <template scope="scope">
                             <el-input
@@ -925,7 +935,7 @@
                 </el-table-column>
                 <el-table-column
                   prop="remark"
-                  label="备注"
+                  label="付款节点说明"
                   width="250px">
                   <template scope="scope">
                     <el-input
@@ -942,6 +952,16 @@
                   </template>
                 </el-table-column>
               </el-table>
+              <el-row class="mt20">
+                <el-form-item label="备注" prop="paymentRemark" label-width="60px">
+                  <el-input
+                    :disabled="!enabledInupdated"
+                    v-model="cardFinanceInfoForm.paymentRemark"
+                    placeholder="请输入备注"
+                    type="textarea"
+                    :rows="4"></el-input>
+                </el-form-item>
+              </el-row>
               <el-row>
                 <el-col :span="8">
                   <el-form-item label="是否收取保证金" label-width="120px">

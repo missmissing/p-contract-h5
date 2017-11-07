@@ -45,7 +45,7 @@
                 <el-input :value="endTime | formatDate" disabled></el-input>
               </el-form-item>
             </el-col>
-            <el-col :span="8">
+            <!--<el-col :span="8">
               <el-form-item label="合同中止原因" prop="suspendReason">
                 <el-select
                   class="wp100"
@@ -59,8 +59,8 @@
                   </el-option>
                 </el-select>
               </el-form-item>
-            </el-col>
-            <el-col :span="8" :offset="1">
+            </el-col>-->
+            <el-col :span="8">
               <el-form-item label="实际中止日期" prop="suspendTime">
                 <el-date-picker
                   style="width:100%;"
@@ -101,14 +101,14 @@
     data() {
       return {
         form: {
-          suspendReason: '',
+          /*suspendReason: '',*/
           suspendTime: '',
           suspendRemark: ''
         },
         rules: {
-          suspendReason: [
+          /*suspendReason: [
             {required: true, message: '请选择中止原因'}
-          ],
+          ],*/
           suspendTime: [
             {type: 'date', required: true, message: '请选择中止时间', trigger: 'change'}
           ],
@@ -172,7 +172,7 @@
             const result = {
               id,
               suspendTime: formatDate(this.form.suspendTime),
-              suspendReason: this.form.suspendReason,
+              /*suspendReason: this.form.suspendReason,*/
               suspendRemark: this.form.suspendRemark
             }
             console.log(result)
