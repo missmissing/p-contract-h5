@@ -1287,7 +1287,11 @@
                         </template>
                       </el-table-column>
                       <el-table-column label="上传人" prop="sealFileCreatorName"></el-table-column>
-                      <el-table-column label="上传时间" prop="sealFileCreateTime"></el-table-column>
+                      <el-table-column label="上传时间" prop="sealFileCreateTime">
+                        <template scope="scope">
+                          {{props.row.filesSealed[scope.$index].sealFileCreateTime|formatDate}}
+                        </template>
+                      </el-table-column>
                       <el-table-column
                         fixed="right"
                         label="操作"
@@ -1398,7 +1402,11 @@
                           </template>
                         </el-table-column>
                         <el-table-column label="上传人" prop="sealFileCreatorName"></el-table-column>
-                        <el-table-column label="上传时间" prop="sealFileCreateTime"></el-table-column>
+                        <el-table-column label="上传时间" prop="sealFileCreateTime">
+                          <template scope="scope">
+                            {{props.row.filesSealed[scope.$index].sealFileCreateTime|formatDate}}
+                          </template>
+                        </el-table-column>
                         <el-table-column fixed="right" label="操作"
                                          v-if="props.row.filesSealed[0].operate||enabledUpdateInApprove">
                           <template scope="scope">

@@ -11,6 +11,11 @@
       <el-table-column
         prop="purchaseOrderNo"
         label="采购订单">
+        <template scope="scope">
+          <router-link class="router-link" :to="see(scope.row)">
+            {{scope.row.purchaseOrderNo}}
+          </router-link>
+        </template>
       </el-table-column>
       <el-table-column
         prop="taxIncludedAmount"
@@ -50,6 +55,7 @@
   import Api from '@/api/manageContract'
   import {formatDate} from '@/filters/moment'
   import comLoading from '@/mixins/comLoading'
+  import {routerNames} from '@/core/consts'
 
   export default {
     props:['contractNo'],
@@ -87,6 +93,13 @@
       handleCurrentChange(val) {
         this.pageNo = val
         this.getData()
+      },
+      see(row) {
+        const id = row.purchaseOrderId
+        return {
+          name: routerNames.con_purchase_see,
+          query: {id}
+        }
       }
     },
     created() {
