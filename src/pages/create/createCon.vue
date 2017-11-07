@@ -1141,8 +1141,9 @@
                 </el-form-item>
               </el-col>
               <el-col :span="8" v-if="!showMaterialItems&&baseInfoForm.contractBusinessTypeFirst===2">
-                <el-form-item :disabled="operateType==='query'" prop="checkType" label="服务类验收方式">
+                <el-form-item  prop="checkType" label="服务类验收方式">
                   <el-select
+                    :disabled="operateType==='query'"
                     v-model="cardContCheckInfoForm.checkType"
                     placeholder="请选择服务类验收方式">
                     <el-option
