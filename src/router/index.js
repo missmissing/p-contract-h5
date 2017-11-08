@@ -423,7 +423,7 @@ const router = new Router({
           component: function (resolve) {
             require(['../pages/create/conLIst.vue'], resolve)
           },
-          name: routerNames.con_list,
+          name: routerNames.con_query,
           meta: {
             auth: true
           }
