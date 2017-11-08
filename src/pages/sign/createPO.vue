@@ -139,6 +139,11 @@
                   label="物料名称">
                 </el-table-column>
                 <el-table-column
+                  prop="availableTotal"
+                  label="可下单数量"
+                  width="120">
+                </el-table-column>
+                <el-table-column
                   prop="total"
                   label="数量"
                   width="120">
