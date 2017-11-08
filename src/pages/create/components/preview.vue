@@ -34,6 +34,9 @@
     <div>
       <form action="/api-contract/contract-web/contract/download/pdf" method="post" id="pdf-form">
         <input type="hidden" name="content" value="" id="pdf-content"/>
+        <input type="hidden"  name="supplierName" :value="supplierName"/>
+        <input type="hidden" v-if="title" name="title" :value="title"/>
+        <input type="hidden" name="contractNo" :value="contractNo"/>
         <el-row class="previewTitle">
           <el-button style="float:right" native-type="submit" @click.prevent="toPdf" type="primary"
                      size="small">导出pdf
@@ -41,17 +44,15 @@
         </el-row>
         <el-row class="preViewTitle mb20 mt20" style="border-bottom: 1px solid #000;padding-bottom: 10px">
           <el-col :span="8">
-            <input v-if="supplierName"  name="supplierName" :value="supplierName"/>
+            <span v-if="supplierName">{{supplierName}}</span>
           </el-col>
           <el-col :span="8" style="text-align: center">
-            <input type="hidden" v-if="title" name="title" :value="title"/>
-            <span class="common-title">{{title}}合同</span>
+            <span v-if="title" class="common-title">{{title}}合同</span>
           </el-col>
           <el-col :span="8" style="text-align: right">
-            <input v-if="contractNo" name="contractNo" :value="contractNo"/>
+            <span v-if="contractNo">{{contractNo}}</span>
           </el-col>
         </el-row>
-
       </form>
       <div id="pdf-wrap">
         <div class="mb20">
@@ -142,11 +143,9 @@
         </div>
         <el-row class="mt20">
           生效条件:
-            <el-radio-group v-model="effectiveCondition" :disabled="true">
-              <el-radio :label="1">附期限生效</el-radio>
-              <el-radio :label="2">附条件生效</el-radio>
-              <el-radio :label="3">签订生效</el-radio>
-            </el-radio-group>
+          <span v-if="effectiveCondition===1">附期限生效</span>
+          <span v-if="effectiveCondition===2">附条件生效</span>
+          <span v-if="effectiveCondition===3">签订生效</span>
         </el-row>
         <el-row class="mt20" v-if="effectiveCondition===1">
           <el-col :span="5">合同生效日期：{{startTime}}</el-col>
