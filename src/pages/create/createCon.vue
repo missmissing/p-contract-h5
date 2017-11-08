@@ -331,7 +331,7 @@
                 <el-table-column prop="materialName" width="300"
                                  :label="baseInfoForm.contractBusinessTypeFirst===2?'服务名称':'物料名称'"></el-table-column>
                 <el-table-column v-if="baseInfoForm.contractType!==3" prop="total" label="数量"></el-table-column>
-                <el-table-column prop="amount" label="价格"></el-table-column>
+                <el-table-column prop="price" label="价格"></el-table-column>
                 <el-table-column prop="taxRate" label="税率">
                   <template scope="scope">
                     {{cardContentInfoForm.conStandard[scope.$index].taxRate}}%
@@ -2812,10 +2812,16 @@
         previewData.conStandard = this.cardContentInfoForm.conStandard || []
         previewData.contractType = this.baseInfoForm.contractType
         previewData.contractBusinessTypeFirst = this.baseInfoForm.contractBusinessTypeFirst
+        previewData.contractBusinessTypeThirdName = this.baseInfoForm.contractBusinessTypeThirdName
+        previewData.contractNo = this.baseInfoForm.contractNo
+        previewData.effectiveCondition = this.cardContentInfoForm.effectiveCondition
         previewData.startTime = this.cardContentInfoForm.startTime
         previewData.endTime = this.cardContentInfoForm.endTime
+        previewData.conditionDesc = this.cardContentInfoForm.conditionDesc
         previewData.cardFinanceInfoForm = this.cardFinanceInfoForm
         previewData.templateId = this.baseInfoForm.templateId
+        previewData.corporeRemark = this.cardContentInfoForm.corporeRemark
+        previewData.paymentRemark = this.cardFinanceInfoForm.paymentRemark
         this.previewData = previewData
         this.visible = true
       },

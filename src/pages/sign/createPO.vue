@@ -432,7 +432,7 @@
                 </template>
               </el-table-column>
               <el-table-column
-                prop="totalAmount"
+                prop="price"
                 label="价格"
                 width="80">
               </el-table-column>

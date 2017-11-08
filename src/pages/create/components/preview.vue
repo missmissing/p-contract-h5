@@ -18,6 +18,10 @@
       text-align: left;
     }
   }
+
+  .preViewTitle input{
+      border:0
+  }
 </style>
 
 <template>
@@ -30,12 +34,24 @@
     <div>
       <form action="/api-contract/contract-web/contract/download/pdf" method="post" id="pdf-form">
         <input type="hidden" name="content" value="" id="pdf-content"/>
-        <input type="hidden" name="contractNo" :value="contractNo"/>
-        <input type="hidden" name="supplierName" :value="supplierName"/>
-        <input type="hidden" name="title" :value="title"/>
-        <el-button native-type="submit" @click.prevent="toPdf" type="primary" class="fr" style="margin:-54px 50px 0 0"
-                   size="small">导出pdf
-        </el-button>
+        <el-row class="previewTitle">
+          <el-button style="float:right" native-type="submit" @click.prevent="toPdf" type="primary"
+                     size="small">导出pdf
+          </el-button>
+        </el-row>
+        <el-row class="preViewTitle mb20 mt20" style="border-bottom: 1px solid #000;padding-bottom: 10px">
+          <el-col :span="8">
+            <input v-if="supplierName"  name="supplierName" :value="supplierName"/>
+          </el-col>
+          <el-col :span="8" style="text-align: center">
+            <input type="hidden" v-if="title" name="title" :value="title"/>
+            <span class="common-title">{{title}}合同</span>
+          </el-col>
+          <el-col :span="8" style="text-align: right">
+            <input v-if="contractNo" name="contractNo" :value="contractNo"/>
+          </el-col>
+        </el-row>
+
       </form>
       <div id="pdf-wrap">
         <div class="mb20">
@@ -58,7 +74,7 @@
         </div>
         <p>甲乙双方在平等、互利的基础上，遵循自愿、公平和诚信的原则，依照《中华人民共和国合同法》及其他有关法律、行政法规，经友好协商，达成如下协议:</p>
         <p>合作范围及约定</p>
-        <div v-if="materialTable.length>0">
+        <div v-if="materialTable.length">
           <template v-if="[1,2,3].indexOf(contractType)>-1&&contractBusinessTypeFirst===2">
             <table>
               <thead>
@@ -119,8 +135,27 @@
               </tbody>
             </table>
           </template>
+          <el-row class="mt20" v-if="corporeRemark">
+            <el-col :span="3">合同标的备注：</el-col>
+            <el-col :span="21">{{corporeRemark}}</el-col>
+          </el-row>
         </div>
-        <p>合同生效期间：{{startTime}}至{{endTime}}</p>
+        <el-row class="mt20">
+          生效条件:
+            <el-radio-group v-model="effectiveCondition" :disabled="true">
+              <el-radio :label="1">附期限生效</el-radio>
+              <el-radio :label="2">附条件生效</el-radio>
+              <el-radio :label="3">签订生效</el-radio>
+            </el-radio-group>
+        </el-row>
+        <el-row class="mt20" v-if="effectiveCondition===1">
+          <el-col :span="5">合同生效日期：{{startTime}}</el-col>
+          <el-col :span="5">合同终止日期：{{endTime}}</el-col>
+        </el-row>
+        <el-row class="mt20" v-if="effectiveCondition===2">
+          <el-col :span="3">附条件生效备注：</el-col>
+          <el-col :span="21">{{conditionDesc}}</el-col>
+        </el-row>
         <p v-if="materialTable.length>0">备注：合同总价款已包括但不限于增值税、安装费、运输费、送货上门费、人工费、定制费等与家具定制、购买、运输、安装有关的一切费用。</p>
         <div v-if="moneyInvolved">
           <div v-if="!oneOffPay">
@@ -146,6 +181,10 @@
               </tbody>
             </table>
           </div>
+          <el-row class="mt20" v-if="paymentRemark">
+            <el-col :span="3">付款方式备注：</el-col>
+            <el-col :span="21">{{paymentRemark}}</el-col>
+          </el-row>
           <p>合同含税总金额为{{totalAmount}} （CNY {{totalAmount}}元）</p>
           <p>保证金{{deposit | numToChinese}}（CNY {{deposit}}元），占比{{depositRatio}}%。保证金支付时间为{{payTime}}.</p>
           <!--<div class="mt20 mb20">
@@ -237,6 +276,8 @@
         partAName: [],
         partB: [],
         partBName: [],
+        effectiveCondition:null,
+        conditionDesc:'',
         startTime: '',
         endTime: '',
         totalAmount: '',
@@ -246,7 +287,9 @@
         moneyInvolved: false,
         oneOffPay: false,
         tplData: {},
-        currentTpl: null
+        currentTpl: null,
+        corporeRemark:'',
+        paymentRemark:''
       }
     },
     methods: {
@@ -313,18 +356,16 @@
       },
       toPdf() {
         document.getElementById('pdf-content').value = document.getElementById('pdf-wrap').innerHTML
-        console.log(document.getElementById('pdf-wrap').innerHTML.toString())
         document.getElementById('pdf-form').submit()
         // ApiContract.toPdf({content: document.getElementById('pdf-wrap').innerHTML})
       }
     },
     watch: {
       datas() {
-        console.log(this.datas)
         if (!Object.keys(this.datas).length) {
           return null
         }
-        const {contractNo, title, conStandard, cardFinanceInfoForm, endTime, startTime, templateId, contractType, contractBusinessTypeFirst} = this.datas
+        const {contractNo, contractBusinessTypeThirdName, conStandard, cardFinanceInfoForm, endTime, startTime,conditionDesc,effectiveCondition,templateId, contractType, contractBusinessTypeFirst,corporeRemark,paymentRemark} = this.datas
         const {jiaBillingInfo, yiBillingInfo, deposit, payTime, moneyInvolved, depositRatio, totalAmount, paymentMethods, oneOffPay, paymentTimePeriods} = cardFinanceInfoForm
         const {advance, progress, _final} = paymentMethods
         this.paymentTimePeriods = paymentTimePeriods
@@ -333,8 +374,12 @@
         this.materialTable = conStandard
         this.startTime = startTime
         this.endTime = endTime
+        this.conditionDesc = conditionDesc
+        this.effectiveCondition = effectiveCondition
         this.contractNo = contractNo
-        this.title = title
+        this.corporeRemark = corporeRemark
+        this.paymentRemark = paymentRemark
+        this.title = contractBusinessTypeThirdName
         if (moneyInvolved) {
           this.moneyInvolved = moneyInvolved
           this.totalAmount = totalAmount
