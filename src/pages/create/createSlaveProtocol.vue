@@ -15,8 +15,8 @@
 </style>
 <template>
   <div class="createSlaveProtocal">
-    <div class="mb10 clearfix" v-if="procInstCode">
-      <div class="fr">流程编号 {{procInstCode}}</div>
+    <div class="mb10 clearfix" v-if="procInstId">
+      <div class="fr">流程编号 {{procInstId}}</div>
       <div class="fl" style="font-weight: bolder">{{procTitle}}</div>
     </div>
     <el-card v-if="operateType==='create'">
@@ -399,7 +399,7 @@
   export default {
     data: function () {
       return {
-        procInstCode: '', // 流程编号：
+        procInstId: '', // 流程编号：
         procTitle: '',//流程名称
         queryContractForm: {
           testtype:[],//??delete
@@ -564,7 +564,7 @@
     mounted: function () {
       const query = this.$route.query
       if(query.processData){
-        this.procInstCode=JSON.parse(query.processData).procInstCode
+        this.procInstId=JSON.parse(query.processData).procInstId
         this.procTitle = JSON.parse(query.processData).procTitle
         this.users.roleName = JSON.parse(query.processData).roleName
       }

@@ -54,8 +54,8 @@
 </style>
 <template>
   <div class="createCon">
-    <div class="mb10 clearfix" v-if="procInstCode">
-      <div class="fr">流程编号 {{procInstCode}}</div>
+    <div class="mb10 clearfix" v-if="procInstId">
+      <div class="fr">流程编号 {{procInstId}}</div>
       <div class="fl" style="font-weight: bolder">{{procTitle}}</div>
     </div>
     <el-card v-if="operateType==='update'||updated">
@@ -1596,7 +1596,7 @@
             </el-form-item>
           </el-form>
         </el-tab-pane>
-        <el-tab-pane label="相关数据" name="tabRelatedData" v-if="procInstCode">
+        <el-tab-pane label="相关数据" name="tabRelatedData" v-if="procInstId">
           <el-form rel="cardRelatedInfoForm" :model="cardRelatedInfoForm" label-width="100px">
             <el-table :data="cardRelatedInfoForm.contractList" border>
               <el-table-column type="index" label="序号" width="80"></el-table-column>
@@ -1935,7 +1935,7 @@
       }
 
       return {
-        procInstCode: '',//流程id
+        procInstId: '',//流程id
         procTitle: '',//流程名称
         updated: false, // 在变更合同提交后是否显示变更原因
         previewData: {}, // 预览数据
@@ -2658,7 +2658,7 @@
     mounted() {
       const query = this.$route.query
       if (query.processData) {
-        this.procInstCode = JSON.parse(query.processData).procInstCode
+        this.procInstId = JSON.parse(query.processData).procInstId
         this.procTitle = JSON.parse(query.processData).procTitle
         this.users.roleName = JSON.parse(query.processData).roleName
       }
