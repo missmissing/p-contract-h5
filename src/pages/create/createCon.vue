@@ -1850,15 +1850,15 @@
         <el-form-item prop="price" label="价格">
           <el-input v-model="formAddConStandard.price" placeholder="请输入物料价格"></el-input>
         </el-form-item>
-        <el-form-item label="税率" prop="taxRate">
+        <el-form-item label="税率" prop="taxCode">
           <el-select
             class="wp100"
-            v-model="formAddConStandard.taxRate">
+            v-model="formAddConStandard.taxCode">
             <el-option
               v-for="item in formAddConStandard.taxRates"
-              :key="item.value"
-              :label="item.code"
-              :value="item.value">
+              :key="item.code"
+              :label="item.value"
+              :value="item.code">
               <span style="float: left">{{ item.value}}</span>
               <span style="float: right; color: #8492a6; font-size: 13px">{{ item.desc }}</span>
             </el-option>
@@ -2376,6 +2376,7 @@
           code: '',
           price: null,
           taxRate: null,
+          taxCode: null,
           taxRates: [
             {
               code: 'J0',
@@ -2417,7 +2418,7 @@
             price: [
               {required: true, message: '请输入物料价格', trigger: 'blur'}
             ],
-            taxRate: [
+            taxCode: [
               {required: true, message: '请选择税率', trigger: 'blur'}
             ]
           }
@@ -3877,7 +3878,9 @@
             item.materialName = curForm.model.materialName
             item.total = curForm.model.total
             item.price = curForm.model.price
-            item.taxRate = curForm.model.taxRate
+            item.amount = curForm.model.price
+            item.taxCode = curForm.model.taxCode
+            item.taxRate = curForm.model.taxRates.find((item)=>item.code===curForm.model.taxCode).value
             item.operate = 'add'
             conStandard.push(item)
             this.cardContentInfoForm.dialogAddConStandard = false
