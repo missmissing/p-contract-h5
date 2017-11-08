@@ -316,13 +316,11 @@
     },
     methods: {
       handleSwitch(newStatus) {
-        if (!newStatus) {
           this.arrPr = []
           this.conForm.strPC = ''
           this.conForm.curConModelId = ''
           this.conForm.conTypeName = ''
           this.conForm.conType = ''
-        }
       },
       handleQuery() {
         this.comLoading()
