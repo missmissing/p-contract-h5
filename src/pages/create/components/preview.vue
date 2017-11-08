@@ -29,7 +29,10 @@
     @close="ok">
     <div>
       <form action="/api-contract/contract-web/contract/download/pdf" method="post" id="pdf-form">
-        <input type="hidden" name="content" value="" id="pdf-content">
+        <input type="hidden" name="content" value="" id="pdf-content"/>
+        <input type="hidden" name="contractNo" :value="contractNo"/>
+        <input type="hidden" name="supplierName" :value="supplierName"/>
+        <input type="hidden" name="title" :value="title"/>
         <el-button native-type="submit" @click.prevent="toPdf" type="primary" class="fr" style="margin:-54px 50px 0 0"
                    size="small">导出pdf
         </el-button>
@@ -222,6 +225,9 @@
     },
     data() {
       return {
+        contractNo: '',
+        supplierName: '',
+        title: '',
         contractType: null,
         contractBusinessTypeFirst: null,
         materialTable: [],
@@ -318,7 +324,7 @@
         if (!Object.keys(this.datas).length) {
           return null
         }
-        const {conStandard, cardFinanceInfoForm, endTime, startTime, templateId, contractType, contractBusinessTypeFirst} = this.datas
+        const {contractNo, title, conStandard, cardFinanceInfoForm, endTime, startTime, templateId, contractType, contractBusinessTypeFirst} = this.datas
         const {jiaBillingInfo, yiBillingInfo, deposit, payTime, moneyInvolved, depositRatio, totalAmount, paymentMethods, oneOffPay, paymentTimePeriods} = cardFinanceInfoForm
         const {advance, progress, _final} = paymentMethods
         this.paymentTimePeriods = paymentTimePeriods
@@ -327,6 +333,8 @@
         this.materialTable = conStandard
         this.startTime = startTime
         this.endTime = endTime
+        this.contractNo = contractNo
+        this.title = title
         if (moneyInvolved) {
           this.moneyInvolved = moneyInvolved
           this.totalAmount = totalAmount
@@ -339,6 +347,7 @@
             return item.company
           })
           this.partBName = yiBillingInfo.length > 0 ? [yiBillingInfo[0].company] : []
+          this.supplierName = yiBillingInfo.length > 0 ? yiBillingInfo[0].company : ''
 
           if (oneOffPay) {
             this.oneOffPay = true
