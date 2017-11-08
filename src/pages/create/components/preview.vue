@@ -58,12 +58,13 @@
         <div class="mb20">
           <table class="default-table">
             <tbody>
-            <tr>
-              <td width="45" valign="top" class="w45 vert">甲方：</td>
+            <tr style="margin-bottom: 10px">
+              <td width="45" valign="top" class="w45">甲方：</td>
               <td>
                 <div v-for="item in partAName" class="mb10">{{item}}</div>
               </td>
             </tr>
+            <tr class="trH"></tr>
             <tr>
               <td width="45" valign="top" class="w45 vert">乙方：</td>
               <td>
