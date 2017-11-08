@@ -72,6 +72,7 @@ export const routerNames = {
   con_process_see: '查看流程',
   con_process_approve: '审批流程',
 
+  con_query:'合同查询',
   con_search: '报表查询',
   con_list: '合同模板/文本查询',
   con_tpl_list: '合同模板查询',
