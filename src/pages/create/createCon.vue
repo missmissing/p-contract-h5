@@ -331,7 +331,7 @@
                 <el-table-column prop="materialName" width="300"
                                  :label="baseInfoForm.contractBusinessTypeFirst===2?'服务名称':'物料名称'"></el-table-column>
                 <el-table-column v-if="baseInfoForm.contractType!==3" prop="total" label="数量"></el-table-column>
-                <el-table-column prop="price" label="价格"></el-table-column>
+                <el-table-column prop="amount" label="价格"></el-table-column>
                 <el-table-column prop="taxRate" label="税率">
                   <template scope="scope">
                     {{cardContentInfoForm.conStandard[scope.$index].taxRate}}%
