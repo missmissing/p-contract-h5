@@ -4,9 +4,9 @@
 
 <template>
   <div>
-    <div class="mb10 clearfix" v-if="procInstCode">
+    <div class="mb10 clearfix" v-if="procInstId">
       <div class="fl fb">{{procTitle}}</div>
-      <div class="fr mr20">流程编号 {{procInstCode}}</div>
+      <div class="fr mr20">流程编号 {{procInstId}}</div>
     </div>
     <transition name="component-fade" mode="out-in">
       <div v-show="!showTmpl">
@@ -155,7 +155,7 @@
 
   const defaultData = {
     procTitle: '',
-    procInstCode: '',
+    procInstId: '',
     form: {
       templateCode: '',
       templateName: '',
@@ -235,9 +235,9 @@
       const {id, processData} = this.$route.query
       this.getTplData(id)
       if (processData) {
-        const {procCode, procInstCode, procTitle} = JSON.parse(processData)
+        const {procCode, procInstId, procTitle} = JSON.parse(processData)
         this.showAbolish = procCode === tplMap[2]
-        this.procInstCode = procInstCode
+        this.procInstId = procInstId
         this.procTitle = procTitle
       }
     },

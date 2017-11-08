@@ -366,7 +366,8 @@
               style="visibility: visible;">
               <el-table-column
                 prop="pr"
-                label="PR号">
+                label="PR号"
+                width="130">
               </el-table-column>
               <el-table-column
                 prop="itemNo"
@@ -384,7 +385,7 @@
               <el-table-column
                 prop="materialName"
                 label="物料名称"
-                width="200">
+                min-width="200">
                 <template scope="scope">
                   <template v-if="!scope.row.materialName">
                     <el-radio v-model="radio" :label="scope.$index">{{''}}</el-radio>
@@ -396,6 +397,7 @@
               </el-table-column>
               <el-table-column
                 prop="contractNo"
+                width="120"
                 label="合同号">
               </el-table-column>
               <el-table-column
@@ -406,7 +408,7 @@
               <el-table-column
                 prop="supplierName"
                 label="供应商名称"
-                width="200">
+                min-width="230">
               </el-table-column>
               <el-table-column
                 prop="startTime"

@@ -51,19 +51,17 @@ export const routerNames = {
   con_createSingleContract: '单一合同创建',
   con_createSimpleContract: '固定格式合同创建',
   con_Check: '查看合同',
+  con_stop: '合同中止',
+  con_stop_see: '合同中止查看',
 
-  con_sign: '合同订单管理',
+  con_sign: '合同履约管理',
   con_purchase_order: '采购订单创建',
   con_purchase_see: '采购订单查看',
-
-  con_performance: '合同异常处理',
   con_performanceIndex: '履约合同',
   con_compensate: '违约/赔付处理',
   con_compensate_see: '违约/赔付处理查看',
   con_check_reject: '合同验收不合格处理',
   con_check_reject_see: '合同验收不合格处理查看',
-  con_stop: '合同中止',
-  con_stop_see: '合同中止查看',
 
   con_process: '合同流程',
   con_handing_process: '我待办的流程',
@@ -73,7 +71,7 @@ export const routerNames = {
   con_process_approve: '审批流程',
 
   con_search: '报表查询',
-  con_list: '合同查询',
+  con_list: '合同模板/文本查询',
   con_tpl_list: '合同模板查询',
   con_order_list: '采购订单查询',
   con_order_log_list: '采购订单日志'

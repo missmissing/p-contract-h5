@@ -6,9 +6,9 @@
 
 <template>
   <div class="pd20">
-    <div class="mb10 clearfix" v-if="procInstCode">
+    <div class="mb10 clearfix" v-if="procInstId">
       <div class="fl fb">{{procTitle}}</div>
-      <div class="fr mr20">流程编号 {{procInstCode}}</div>
+      <div class="fr mr20">流程编号 {{procInstId}}</div>
     </div>
     <div class="basic-info">
       <el-form :model="form" ref="form" label-width="120px">
@@ -92,7 +92,7 @@
     data() {
       return {
         procTitle: '',
-        procInstCode: '',
+        procInstId: '',
         form: {
           suspendReason: '',
           suspendTime: '',
@@ -141,8 +141,8 @@
       this.getInfo(id)
       if (processData) {
         const data = JSON.parse(processData)
-        const {procTitle, procInstCode} = data
-        this.procInstCode = procInstCode
+        const {procTitle, procInstId} = data
+        this.procInstId = procInstId
         this.procTitle = procTitle
       }
     },

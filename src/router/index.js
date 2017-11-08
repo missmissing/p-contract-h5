@@ -273,64 +273,48 @@ const router = new Router({
           require(['../pages/sign/sendLog.vue'], resolve)
         },
         name: routerNames.con_order_log_list
+      }, {
+        path: '/conperf/inspectionreject',
+        component: function (resolve) {
+          require(['../pages/performance/inspectionReject.vue'], resolve)
+        },
+        name: routerNames.con_check_reject,
+        meta: {
+          auth: true
+        }
+      }, {
+        path: '/conperf/inspectionreject/see',
+        component: function (resolve) {
+          require(['../pages/performance/inspectionRejectSee.vue'], resolve)
+        },
+        name: routerNames.con_check_reject_see,
+        meta: {
+          auth: true,
+          hidden: true
+        }
+      }, {
+        path: '/conperf/compensate',
+        component: function (resolve) {
+          require(['../pages/performance/compensate.vue'], resolve)
+        },
+        name: routerNames.con_compensate,
+        meta: {
+          auth: true
+        }
+      }, {
+        path: '/conperf/compensate/see',
+        component: function (resolve) {
+          require(['../pages/performance/compensateSee.vue'], resolve)
+        },
+        name: routerNames.con_compensate_see,
+        meta: {
+          auth: true,
+          hidden: true
+        }
       }],
       meta: {
         iconCls: 'stats-bars'
       }
-    },
-    {
-      path: '/',
-      component: function (resolve) {
-        require(['../pages/home/home.vue'], resolve)
-      },
-      name: routerNames.con_performance,
-      meta: {
-        iconCls: 'stats-bars'
-      },
-      children: [
-        {
-          path: '/conperf/inspectionreject',
-          component: function (resolve) {
-            require(['../pages/performance/inspectionReject.vue'], resolve)
-          },
-          name: routerNames.con_check_reject,
-          meta: {
-            auth: true
-          }
-        },
-        {
-          path: '/conperf/inspectionreject/see',
-          component: function (resolve) {
-            require(['../pages/performance/inspectionRejectSee.vue'], resolve)
-          },
-          name: routerNames.con_check_reject_see,
-          meta: {
-            auth: true,
-            hidden: true
-          }
-        },
-        {
-          path: '/conperf/compensate',
-          component: function (resolve) {
-            require(['../pages/performance/compensate.vue'], resolve)
-          },
-          name: routerNames.con_compensate,
-          meta: {
-            auth: true
-          }
-        },
-        {
-          path: '/conperf/compensate/see',
-          component: function (resolve) {
-            require(['../pages/performance/compensateSee.vue'], resolve)
-          },
-          name: routerNames.con_compensate_see,
-          meta: {
-            auth: true,
-            hidden: true
-          }
-        }
-      ]
     },
     {
       path: '/',

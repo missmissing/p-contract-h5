@@ -4,9 +4,9 @@
 
 <template>
   <div class="pd20">
-    <div class="clearfix" v-if="procInstCode">
+    <div class="clearfix" v-if="procInstId">
       <div class="fl fb">{{procTitle}}</div>
-      <div class="fr mr20">流程编号 {{procInstCode}}</div>
+      <div class="fr mr20">流程编号 {{procInstId}}</div>
     </div>
     <el-tabs>
       <el-tab-pane label="订单信息">
@@ -200,7 +200,7 @@
     data() {
       return {
         procTitle: '',
-        procInstCode: '',
+        procInstId: '',
         info: {},
         toDetail: {name: routerNames.con_Check, query: {contractId: ''}},
         orderForm: {},
@@ -261,8 +261,8 @@
       this.getInfo(id)
       if (processData) {
         const data = JSON.parse(processData)
-        const {procInstCode, procTitle} = data
-        this.procInstCode = procInstCode
+        const {procInstId, procTitle} = data
+        this.procInstId = procInstId
         this.procTitle = procTitle
       }
     },

@@ -93,9 +93,8 @@
       },
       toPage(row, data) {
         const {procInstId, serialNumber, procCode} = row
-        const {actions, approveInfo, sign, procInstCode, actName} = data
+        const {actions, approveInfo, sign, actName} = data
         const processData = {
-          procInstCode,
           procInstId,
           actions,
           serialNumber,
