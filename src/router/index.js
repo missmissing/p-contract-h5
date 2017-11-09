@@ -321,8 +321,7 @@ const router = new Router({
           require(['../pages/performance/goodsReceipt'],resolve)
         },
         beforeEnter:(to,from,next)=>{
-          next()
-          let reg=/prd/gi,url=window.location.origin
+          let reg=/mmall/gi,url=window.location.origin
           const target={
             dev:'http://192.168.122.218:1001/purchase/receivepo.html',
             prd:'http://fp.oa.chinaredstar.com/purchase/receivepo.html'
@@ -339,8 +338,7 @@ const router = new Router({
           require(['../pages/performance/servicesReceipt'],resolve)
         },
         beforeEnter:(to,from,next)=>{
-          next()
-          let reg=/prd/gi,url=window.location.origin
+          let reg=/mmall/gi,url=window.location.origin
           const target={
             prd:'http://172.16.9.151:8081/Purchase/FWLCGSHQR/Start.aspx',
             dev:'http://192.168.122.214:8081/Purchase/FWLCGSHQR/Start.aspx'
