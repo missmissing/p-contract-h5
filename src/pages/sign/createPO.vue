@@ -611,7 +611,6 @@
         }).then((res) => {
           this.comLoading(false)
           const data = res.data.dataMap
-          console.log(data)
           if (this.prData.length) {
             if (this.prData[0].companyCode !== data.companyCode) {
               this.$message.warning('采购申请号所属公司编码不同!')
@@ -644,7 +643,6 @@
           contractNo: this.contractCode
         }).then((res) => {
           this.comLoading(false)
-          console.log(res)
           const data = res.data.dataMap
           const {intentionContVos, materialsMatchVoList} = data
           this.intentionData = intentionContVos
@@ -667,7 +665,6 @@
             })
           }
         })
-        console.log(result)
         return result
       },
       setInfo() {
@@ -683,7 +680,6 @@
         this.showServiceTab()
       },
       setContractData() {
-        console.log(this.activeName)
         if (this.activeName === 'frame') {
           this.contractForm = this.matchData[this.radio]
         } else {
@@ -691,7 +687,6 @@
         }
         this.contractForm.contractType = contractPatternMap[this.contractForm.contractType]
         this.toDetail.query.contractId = this.contractForm.id
-        console.log('合同信息', this.contractForm)
       },
       setOrderForm() {
         const {companyCode} = this.prData[0]
@@ -712,14 +707,13 @@
             if (contVos && contVos.length) {
               contVos.forEach((cont) => {
                 if (cont.id === id) {
-                  console.log(cont)
                   orderData.push({
                     pr,
                     category,
                     itemNo,
                     materialName,
                     materialCode,
-                    price: cont.totalAmount,
+                    price: cont.price,
                     total,
                     availableTotal,
                     taxRate: cont.taxRate,
@@ -746,7 +740,6 @@
             })
           })
         }
-        console.log(orderData)
         this.orderData = orderData.filter(item => item.availableTotal !== 0)
       },
       showServiceTab() {
@@ -783,7 +776,6 @@
         })
       },
       rowClick(row) {
-        console.log(row)
         let index = 0
         if (this.activeName === 'frame') {
           const {pr} = row
@@ -853,7 +845,6 @@
       },
       submit() {
         const result = this.getResult()
-        console.log(result)
         if (!this.check(result)) {
           return
         }
