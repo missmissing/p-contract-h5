@@ -186,7 +186,7 @@
                 name: routerNames.con_index
               })
             }, () => {
-              this.comLoading()
+              this.comLoading(false)
             })
           } else {
             console.log('error submit!!')
