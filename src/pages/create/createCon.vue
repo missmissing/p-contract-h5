@@ -3190,6 +3190,7 @@
             sealFileCreateTime: formatDate(dataMap.createTime),
             operate: 'add'
           }]
+          console.log('this.cardSealInfoForm',this.cardSealInfoForm);
           this.$message.success('文件上传成功')
         }
       },
@@ -3339,14 +3340,29 @@
         const others = this.cardSealInfoForm.others
         let sealAttachments = []
 
-        const sealOthers = [], sealAgreenments = []
-        if (others && others.length) {
-          for (let i = 0, len = others.length; i < len; i++) {
-            const item = others[i]
-            if (item[0] && item[0].fileName) {
-              sealOthers.push(item)
+        contract.map((item)=>{
+          const {filesSealed}=item
+          if(filesSealed){
+            const {sealFileCreateTime}=filesSealed[0]
+            if(sealFileCreateTime){
+              filesSealed[0].sealFileCreateTime=formatDate(sealFileCreateTime)
             }
           }
+        })
+
+        const sealOthers = [], sealAgreenments = [],sealContract=[]
+        if (others && others.length) {
+          others.map((item)=>{
+            /*if(item[0]){
+              let  inItem=item[0]
+              let {filesSealed}=inItem
+              if(filesSealed&&filesSealed[0]&&filesSealed[0].length){
+                const {sealFileCreateTime}=filesSealed[0]
+                filesSealed[0].sealFileCreateTime=formatDate(sealFileCreateTime)
+              }
+            }*/
+            sealOthers.push(item)
+          })
         }
         if (agreenments && agreenments.length) {
           for (let i = 0, len = agreenments.length; i < len; i++) {
@@ -3387,11 +3403,24 @@
         const others = this.cardSealInfoForm.others
         let sealAttachments = []
 
+        contract.map((item)=>{
+          const {filesSealed}=item
+          if(filesSealed){
+            const {sealFileCreateTime}=filesSealed[0]
+            filesSealed[0].sealFileCreateTime=formatDate(sealFileCreateTime)
+          }
+        })
+
         const sealOthers = [], sealAgreenments = []
         if (others && others.length) {
           for (let i = 0, len = others.length; i < len; i++) {
             const item = others[i]
             if (item[0] && item[0].fileName) {
+              const {filesSealed}=item[0]
+              if(filesSealed&&filesSealed[0]){
+                const {sealFileCreateTime}=filesSealed[0]
+                filesSealed[0].sealFileCreateTime=formatDate(sealFileCreateTime)
+              }
               sealOthers.push(item)
             }
           }
