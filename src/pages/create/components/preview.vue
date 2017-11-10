@@ -56,7 +56,7 @@
       </form>
       <div id="pdf-wrap">
         <div>
-          <div style="text-align: center;font-size:18px;font-weight:bold;" class="mb20">{{title}}合同</div>
+          <div style="text-align: center;font-size:18px;font-weight:bold;" class="mb20 f18 fb">{{title}}合同</div>
           <div class="mb20">
             <table class="default-table">
               <tbody>
