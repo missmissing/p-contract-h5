@@ -56,7 +56,7 @@
       </form>
       <div id="pdf-wrap">
         <div>
-          <div style="text-align: center;font-size:18px;font-weight:bold;" class="mb20 f18 fb">{{title}}合同</div>
+          <div style="text-align: center;font-size:18px;font-weight:bold;padding-bottom: 10px;" class="mb20 f18 fb">{{title}}合同</div>
           <div class="mb20">
             <table class="default-table">
               <tbody>
@@ -222,7 +222,7 @@
               <td valign="top">
                 <div v-for="item in partAName">{{item}}</div>
               </td>
-              <td width="100" valign="top">乙方：</td>
+              <td width="100" valign="top" class="w100">乙方：</td>
               <td valign="top">
                 <div v-for="item in partBName">{{item}}</div>
               </td>
