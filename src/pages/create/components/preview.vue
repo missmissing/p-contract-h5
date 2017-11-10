@@ -74,8 +74,8 @@
             </tbody>
           </table>
         </div>
-        <p>甲乙双方在平等、互利的基础上，遵循自愿、公平和诚信的原则，依照《中华人民共和国合同法》及其他有关法律、行政法规，经友好协商，达成如下协议:</p>
-        <p>合作范围及约定</p>
+        <div class="mb20" v-html="currentTpl"></div>
+        <p>合同标的：</p>
         <div v-if="materialTable.length">
           <template v-if="[1,2,3].indexOf(contractType)>-1&&contractBusinessTypeFirst===2">
             <table>
@@ -156,10 +156,9 @@
           <el-col :span="3">附条件生效备注：</el-col>
           <el-col :span="21">{{conditionDesc}}</el-col>
         </el-row>
-        <p v-if="materialTable.length>0">备注：合同总价款已包括但不限于增值税、安装费、运输费、送货上门费、人工费、定制费等与家具定制、购买、运输、安装有关的一切费用。</p>
         <div v-if="moneyInvolved">
           <div v-if="!oneOffPay">
-            付款方式
+            付款方式：
             <table>
               <thead>
               <tr>
@@ -213,7 +212,6 @@
             </div>
           </div>-->
         </div>
-        <div v-html="currentTpl"></div>
         <p></p>
         <table class="default-table">
           <tbody>
