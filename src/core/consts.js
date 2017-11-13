@@ -51,8 +51,8 @@ export const routerNames = {
   con_createSingleContract: '单一合同创建',
   con_createSimpleContract: '固定格式合同创建',
   con_Check: '查看合同',
-  con_stop: '合同中止',
-  con_stop_see: '合同中止查看',
+  con_stop: '合同终止',
+  con_stop_see: '合同终止查看',
 
   con_sign: '合同履约管理',
   con_purchase_order: '采购订单创建',
@@ -119,7 +119,7 @@ export const contractPatternMap = {
   4: '意向合同'
 }
 
-export const procTitles = ['采购合同模板创建流程', '采购合同模板变更流程', '采购合同模板废除流程', '采购合同创建流程', '采购合同变更流程', '采购合同中止流程', '采购合同从协议创建流程', '采购订单创建流程', '合同违约处理流程', '合同验收不合格处理流程']
+export const procTitles = ['采购合同模板创建流程', '采购合同模板变更流程', '采购合同模板废除流程', '采购合同创建流程', '采购合同变更流程', '采购合同终止流程', '采购合同从协议创建流程', '采购订单创建流程', '合同违约处理流程', '合同验收不合格处理流程']
 
 export const templateStatus = {
   DRAFT: '草稿',

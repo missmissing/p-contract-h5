@@ -73,7 +73,7 @@
             </el-button>
           </el-col>
         </el-row>
-        <el-row>
+        <!--<el-row>
           <el-col :span="8">
             <el-form-item label="变更方式" prop="updateMode">
               <el-select class="wp100" :disabled="operateType==='query'" v-model="updateForm.updateMode"
@@ -92,7 +92,7 @@
               <el-input :disabled="true" v-model="updateForm.newCode" placeholder="新合同编号"></el-input>
             </el-form-item>
           </el-col>
-        </el-row>
+        </el-row>-->
         <el-form-item label="备注" prop="remark">
           <el-input
             :disabled="operateType==='query'"
@@ -1282,7 +1282,7 @@
               @click="handleNewOtherSealFile"
               size="small"
               icon="plus"
-              v-if="enabledInupdated"
+              v-if="enabledInupdated1"
               class="mb20">
               添加
             </el-button>
@@ -1451,13 +1451,13 @@
                         </el-col>
                         <el-col :span="6">
                           <el-form-item label="打印份数" prop="printTime" class="el-form-item is-required">
-                            <el-input-number :disabled="!enabledUpdateInApprovePrint" size="small" :max="10"
+                            <el-input-number :disabled="!enabledUpdateInApprovePrint1" size="small" :max="10"
                                       v-model="props.row.printTime" @change="handleChangeValidateForms"></el-input-number>
                           </el-form-item>
                         </el-col>
                         <el-col :span="6">
                           <el-form-item label="留存份数" prop="remainTime" class="el-form-item is-required">
-                            <el-input-number :disabled="!enabledUpdateInApprovePrint" size="small" :max="10"
+                            <el-input-number :disabled="!enabledUpdateInApprovePrint1" size="small" :max="10"
                                       v-model="props.row.remainTime" @change="handleChangeValidateForms"></el-input-number>
                           </el-form-item>
                         </el-col>
@@ -1485,8 +1485,8 @@
                         <el-col :span="12">
                           <el-form-item label="选择用章" prop="saleInfos" class="is-required">
                             <el-checkbox-group v-model="props.row.saleInfos" @change="handleChangeValidateForms">
-                              <el-checkbox label="1" name="sealInfo" :disabled="!enabledInupdated">公章</el-checkbox>
-                              <el-checkbox label="2" name="sealInfo" :disabled="!enabledInupdated">法人章</el-checkbox>
+                              <el-checkbox label="1" name="sealInfo" :disabled="!enabledInupdated1">公章</el-checkbox>
+                              <el-checkbox label="2" name="sealInfo" :disabled="!enabledInupdated1">法人章</el-checkbox>
                             </el-checkbox-group>
                           </el-form-item>
                         </el-col>
@@ -1515,7 +1515,7 @@
                       :on-success="handleUploadSealFileSuccess"
                       :on-error="handleUploadSealFileError"
                     >
-                      <el-button :disabled="!enabledInupdated||!getEnabledUploadBtnOuter(item[scope.$index].fileName)"
+                      <el-button :disabled="!enabledInupdated1||!getEnabledUploadBtnOuter(item[scope.$index].fileName)"
                                  size="small" type="primary" @click="handleUploadOuter(index)">上传
                       </el-button>
                     </el-upload>
@@ -1525,11 +1525,11 @@
                   <template scope="scope">
                     <el-checkbox
                       @change="handleChangeValidateForms"
-                      :disabled="!enabledInupdated"
+                      :disabled="!enabledInupdated1"
                       v-model="item[scope.$index].haveSale"></el-checkbox>
                   </template>
                 </el-table-column>
-                <el-table-column prop="remark" :disabled="!enabledInupdated" label="备注" width="200px">
+                <el-table-column prop="remark" :disabled="!enabledInupdated1" label="备注" width="200px">
                   <template scope="scope">
                     <el-input
                       :disabled="operateType==='query'"
@@ -1952,11 +1952,11 @@
             {
               id: 1,
               name: '原合同有效'
-            },
+            }/*,
             {
               id: 2,
               name: '原合同作废'
-            }
+            }*/
           ],
           newCode: '',
           remark: '',
@@ -2575,6 +2575,19 @@
         }
         return result
       },
+      enabledInupdated1: function () { // 在各种操作类型下，控制元素的是否可见和是否可用
+        let result = false
+        if (this.operateType === 'query') {
+          result = false
+        }
+        if (this.operateType === 'create') {
+          result = true
+        }
+        if (this.operateType === 'update') {
+          this.updateForm.updateMode === 1 ? result = true : result = true
+        }
+        return result
+      },
       enaledMoneyInvolved: function () {
         let enabled = true
         const contractType = this.baseInfoForm.contractType
@@ -2642,6 +2655,16 @@
         }
         if (this.operateType === 'update') {
           this.updateForm.updateMode === 1 ? enabled = false : enabled = true
+        }
+        return enabled
+      },
+      enabledUpdateInApprovePrint1: function () {//创建和变更阶段可用，审批阶段且角色是用章保管人可用
+        let enabled = true
+        if (this.operateType === 'query') {
+          this.ifRole ? enabled = true : enabled = false
+        }
+        if (this.operateType === 'update') {
+          this.updateForm.updateMode === 1 ? enabled = true : enabled = true
         }
         return enabled
       },

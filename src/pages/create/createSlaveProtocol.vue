@@ -157,7 +157,11 @@
                       </template>
                     </el-table-column>
                     <el-table-column label="上传人" prop="sealFileCreatorName"></el-table-column>
-                    <el-table-column label="上传时间" prop="sealFileCreateTime"></el-table-column>
+                    <el-table-column label="上传时间" prop="sealFileCreateTime">
+                      <template scope="scope">
+                        {{props.row.filesSealed[scope.$index].sealFileCreateTime|formatDate}}
+                      </template>
+                    </el-table-column>
                     <el-table-column fixed="right" label="操作" v-if="props.row.filesSealed[0].operate||enabledUpdateInApprove">
                       <template scope="scope">
                         <el-button @click="handleRemoveItem(index, props.row.filesSealed)"
@@ -186,7 +190,7 @@
                                   v-model="props.row.remainTime" @change="handleChangeValidateForms"></el-input-number>
                       </el-form-item>
                     </el-col>
-                    <el-col :span="6">
+                    <el-col :span="6" v-if="enabledUpdateInApprove">
                       <el-form-item label="用印后上传">
                         <el-upload
                           ref="uploadFileAfterSeal"
@@ -389,6 +393,7 @@
 <script>
   import Api from '../../api/manageContract'
   import store from 'store'
+  import {formatDate} from '@/filters/moment'
   import {downloadUrl, uploadUrl} from '@/api/consts'
   import _ from 'lodash'
   import Process from '@/components/process.vue'
@@ -707,7 +712,6 @@
       },
       handleUploadFileAfterSealSuccess(res, file, fileList) {
         const dataMap = res.dataMap
-
         if (dataMap.fileId) {
           const index = this.cardSealInfoForm.current
           const curentFile = this.cardSealInfoForm.sealAttachments[index]
@@ -715,8 +719,8 @@
             sealFileId: dataMap.fileId,
             sealFileName: dataMap.fileName,
             sealFileUrl: downloadUrl + dataMap.fileId,
-            sealFileCreatorName: dataMap.username,
-            sealFileCreateTime: dataMap.uploadTime,
+            sealFileCreatorName: dataMap.userName,
+            sealFileCreateTime: formatDate(dataMap.createTime),
             operate: 'add'
           }]
           this.$message.success('文件上传成功')
@@ -953,6 +957,9 @@
           }
         })
       }
+    },
+    filters:{
+      formatDate
     },
     watch: {
       '$route'(to, from) {
