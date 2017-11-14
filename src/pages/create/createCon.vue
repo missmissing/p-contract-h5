@@ -482,7 +482,7 @@
             <el-row v-if="cardFinanceInfoForm.oneOffPay&&cardFinanceInfoForm.moneyInvolved">
               <el-col :span="8">
                 <el-form-item v-if="cardFinanceInfoForm.moneyInvolved&&cardFinanceInfoForm.oneOffPay" label="付款条件" prop="paymentTimePeriod"
-                              :rules="[{ required: true, message: '请选择付款条件'}]">
+                              :rules="[{ required: true, message: '请选择付款条件', trigger: 'blur'}]">
                   <el-select
                     @change="handleChangeValidateForms"
                     v-model="cardFinanceInfoForm.paymentTimePeriod"
@@ -2197,40 +2197,40 @@
           paymentTimePeriod: '',
           paymentTimePeriods: [
             {
-              id: 1,
+              id: 'Z015',
               name: '到票日后15天付款'
             },
             {
-              id: 2,
-              name: '到票日后16天付款'
-            },
-            {
-              id: 3,
-              name: '到票日后17天付款'
-            },
-            {
-              id: 4,
-              name: '到票日后18天付款'
-            },
-            {
-              id: 5,
-              name: '到票日后19天付款'
-            },
-            {
-              id: 6,
+              id: 'Z020',
               name: '到票日后20天付款'
             },
             {
-              id: 7,
-              name: '到票日后21天付款'
+              id: 'Z025',
+              name: '到票日后25天付款'
             },
             {
-              id: 8,
-              name: '到票日后22天付款'
+              id: 'Z030',
+              name: '到票日后30天付款'
+            },
+            {
+              id: 'Z035',
+              name: '到票日后35天付款'
+            },
+            {
+              id: 'Z040',
+              name: '到票日后40天付款'
+            },
+            {
+              id: 'Z045',
+              name: '到票日后45天付款'
+            },
+            {
+              id: 'Z000',
+              name: '立即付款'
             }
           ],
           rules: {
-            deposit: [{required: true, message: '请输入保证金金额'},{ type: 'number', message: '保证金必须为数字值'}],
+            deposit: [{required: true, message: '请输入保证金金额', trigger: 'blur'},{ type: 'number', message: '保证金必须为数字值', trigger: 'blur'}],
             totalAmount: [{ type: 'number', message: '合同总金额必须为数字值'}],
             payTime: [{required: true, message: '请输入付款时间'}],
             invoiceType: [{required: true, message: '请选择开票类型'}]
