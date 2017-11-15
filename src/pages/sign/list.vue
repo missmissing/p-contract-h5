@@ -214,6 +214,8 @@
           const {total, data} = res.data.dataMap
           this.tableData = data
           this.totalPage = total
+        }).catch(()=>{
+          this.comLoading(false)
         })
       },
       see(row) {
