@@ -1975,6 +1975,7 @@
         contractInfo:[],//合同信息
         baseInfoForm: {
           id: '', // 在更新合同是把合同id传入
+          contractName:'',//合同名称
           guid: '', // 草稿箱编号
           // businessOperator: '',
           businessOperatorId: '', // 业务申请人id
