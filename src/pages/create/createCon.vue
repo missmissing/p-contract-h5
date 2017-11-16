@@ -109,7 +109,7 @@
         <el-row>
           <el-col :span="8">
             <el-form-item label="合同名称" prop="contractName">
-              <el-input v-model="baseInfoForm.contractName" placeholder="请输入合同名称" maxlength="30"></el-input>
+              <el-input :disabled="isEnabled1" v-model="baseInfoForm.contractName" placeholder="请输入合同名称" maxlength="30"></el-input>
             </el-form-item>
           </el-col>
         </el-row>
