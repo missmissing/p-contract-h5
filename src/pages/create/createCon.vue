@@ -108,7 +108,14 @@
       <el-form ref="baseInfoForm" :model="baseInfoForm" label-width="100px" :rules="baseInfoForm.rules">
         <el-row>
           <el-col :span="8">
-            <el-form-item v-if="ifRequest" label="经办人" prop="businessOperatorId">
+            <el-form-item label="合同名称" prop="contractName">
+              <el-input v-model="baseInfoForm.contractName" placeholder="请输入合同名称" maxlength="30"></el-input>
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row>
+          <el-col :span="8">
+            <el-form-item v-if="ifRequest" label="业务申请人" prop="businessOperatorId">
               <el-select
                 clearable
                 class="wp100"
@@ -116,7 +123,7 @@
                 v-model="baseInfoForm.businessOperatorId"
                 filterable
                 remote
-                placeholder="请输入经办人"
+                placeholder="请输入业务申请人"
                 :remote-method="getRemotebusinessOperatorsByKeyWord"
                 :loading="baseInfoForm.loading"
                 @change="handleBusinessOperatorChange">
@@ -130,8 +137,8 @@
                 </el-option>
               </el-select>
             </el-form-item>
-            <el-form-item v-else label="经办人" prop="businessOperatorId">
-              <el-input :disabled="isEnabled1" v-model="baseInfoForm.businessOperatorName"  class="wp100" placeholder="请输入经办人"></el-input>
+            <el-form-item v-else label="业务申请人" prop="businessOperatorId">
+              <el-input :disabled="isEnabled1" v-model="baseInfoForm.businessOperatorName"  class="wp100" placeholder="请输入业务申请人"></el-input>
             </el-form-item>
           </el-col>
           <el-col :span="8">
@@ -603,7 +610,7 @@
                   </template>
                 </el-table-column>
                 <el-table-column prop="type" label="类型" width="100px"></el-table-column>
-                <el-table-column width="90px" prop="seriousPayments" label="是否多次付款">
+                <el-table-column width="90px" prop="seriousPayments" label="多次付款">
                   <template scope="scope">
                     <el-checkbox
                       :disabled="operateType==='query'"
@@ -745,7 +752,7 @@
                   </template>
                 </el-table-column>
                 <el-table-column prop="type" label="类型" width="100px"></el-table-column>
-                <el-table-column width="90px" prop="seriousPayments" label="是否多次付款">
+                <el-table-column width="90px" prop="seriousPayments" label="多次付款">
                   <template scope="scope">
                     <el-checkbox
                       :disabled="operateType==='query'"
@@ -893,7 +900,7 @@
                 <el-table-column
                   width="90px"
                   prop="seriousPayments"
-                  label="是否多次付款">
+                  label="多次付款">
                   <template scope="scope">
                     <el-checkbox
                       :disabled="operateType==='query'"
@@ -1970,8 +1977,8 @@
           id: '', // 在更新合同是把合同id传入
           guid: '', // 草稿箱编号
           // businessOperator: '',
-          businessOperatorId: '', // 业务经办人id
-          businessOperatorName: '', //业务经办人
+          businessOperatorId: '', // 业务申请人id
+          businessOperatorName: '', //业务申请人
           businessDeptId: '',
           businessDeptName: '',
           contractType: '', // 合同模式id
@@ -2000,7 +2007,7 @@
           contractNo: '', // 合同编号
           dialogNewSubjectVisible: false,
           rules: {
-            businessOperatorId: [{required: true, message: '请输入业务经办人', trigger: 'blur'}],
+            businessOperatorId: [{required: true, message: '请输入业务业务申请人', trigger: 'blur'}],
             templateId: [{required: true, message: '请选择模版名称'}]
           }
         },
@@ -2067,10 +2074,6 @@
             {
               value: 2,
               label: '增值税普通发票'
-            },
-            {
-              value: 3,
-              label: '普通发票'
             }
           ],
           totalAmount: 0,
