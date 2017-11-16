@@ -322,7 +322,7 @@ const router = new Router({
         },
         beforeEnter:(to,from,next)=>{
           nprogress.done()
-          let reg=/mmall/gi,url=window.location.origin
+          let reg=/contract/gi,url=window.location.origin
           const target={
             dev:'http://192.168.122.218:1001/purchase/receivepo.html',
             prd:'http://fp.oa.chinaredstar.com/purchase/receivepo.html'
@@ -340,7 +340,7 @@ const router = new Router({
         },
         beforeEnter:(to,from,next)=>{
           nprogress.done()
-          let reg=/mmall/gi,url=window.location.origin
+          let reg=/contract/gi,url=window.location.origin
           const target={
             prd:'http://172.16.9.151:8081/Purchase/FWLCGSHQR/Start.aspx',
             dev:'http://192.168.122.214:8081/Purchase/FWLCGSHQR/Start.aspx'
