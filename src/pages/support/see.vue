@@ -214,12 +214,16 @@
           const tplInfo = res.data.dataMap
           this.setData(tplInfo)
           this.comLoading(false)
+        }).catch(()=>{
+          this.comLoading(false)
         })
       },
       getAllVersions() {
         const {templateCode} = this.form
         supportModel.getAllTemplateByCode({templateCode}).then((res) => {
           this.versions = res.data.dataMap
+        }).catch(()=>{
+          this.comLoading(false)
         })
       },
       changeVersion(val) {
