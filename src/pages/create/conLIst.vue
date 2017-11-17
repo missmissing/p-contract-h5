@@ -76,6 +76,30 @@
           </el-form-item>
         </el-col>
       </el-row>
+      <el-row>
+        <el-col :span="8">
+          <el-form-item label="供应商名称/编码" prop="supplierCode" label-width="150px">
+            <el-select
+              style="width:250px"
+              size="small"
+              v-model="form.supplierCode"
+              filterable
+              remote
+              placeholder="请输入关键词搜索"
+              :remote-method="getRemoteSuppliersByKeyWord"
+              :loading="form.loading">
+              <el-option
+                v-for="item in form.suppliers"
+                :key="item.companyCode"
+                :label="item.company"
+                :value="item.companyCode">
+                <span style="float: right">{{ item.company }}</span>
+                <span style="float: left; color: #8492a6; font-size: 13px">{{ item.companyCode }}</span>
+              </el-option>
+            </el-select>
+          </el-form-item>
+        </el-col>
+      </el-row>
     </el-form>
     <el-table
       :data="tableData"
@@ -176,6 +200,9 @@
           createStart: '',
           createEnd: '',
           effective1: true,
+          suppliers:[],
+          loading:false,
+          supplierCode:'',
           pageNo: 1,
           pageSize: 10
         },
@@ -190,7 +217,6 @@
         tableData: [],
         creators: [],
         loading: false,
-
         totalPage: 0
       }
     },
@@ -267,6 +293,18 @@
       },
       closeTree() {
         this.visible = false
+      },
+      getRemoteSuppliersByKeyWord(query) {
+        if (query !== '') {
+          this.form.loading = true
+          Api.getRemoteSuppliersByKeyWord({key: query})
+            .then((data) => {
+              this.form.loading = false
+              this.form.suppliers = data.data.dataMap
+            })
+        } else {
+          this.form.suppliers = []
+        }
       }
     },
     components: {

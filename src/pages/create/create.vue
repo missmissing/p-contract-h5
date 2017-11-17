@@ -226,7 +226,7 @@
           curConModelId: null,
           conModel: [
             {id: '1', name: '单一合同'},
-            {id: '2', name: '固定格式合同'},
+            /*{id: '2', name: '固定格式合同'},*/
             {id: '3', name: '框架合同'},
             {id: '4', name: '框架意向合同'}
           ],
@@ -297,7 +297,8 @@
       conModels: function () {///??????
         const conForm = this.conForm
         //return conForm.isPr ? [conForm.conModel[0], conForm.conModel[1], conForm.conModel[2]] : [conForm.conModel[2], conForm.conModel[3]]
-        return conForm.isPr ? [conForm.conModel[0], conForm.conModel[1], conForm.conModel[2]] : [conForm.conModel[3]]
+        //return conForm.isPr ? [conForm.conModel[0], conForm.conModel[1], conForm.conModel[2]] : [conForm.conModel[3]]
+        return conForm.isPr ? [conForm.conModel[0], conForm.conModel[1]] : [conForm.conModel[2]]
       }
     },
     watch: {
