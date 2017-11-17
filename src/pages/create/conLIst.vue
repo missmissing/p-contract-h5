@@ -80,6 +80,7 @@
         <el-col :span="8">
           <el-form-item label="供应商名称/编码" prop="supplierCode" label-width="150px">
             <el-select
+              clearable
               style="width:250px"
               size="small"
               v-model="form.supplierCode"

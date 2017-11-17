@@ -18,6 +18,7 @@
         <el-col :span="8">
           <el-form-item label="供应商名称/编码" prop="search">
             <el-select
+              clearable
               class="wp100"
               v-model="agreementForm.supplierName"
               filterable
