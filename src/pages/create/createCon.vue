@@ -3380,14 +3380,14 @@
         const sealOthers = [], sealAgreenments = [],sealContract=[]
         if (others && others.length) {
           others.map((item)=>{
-            /*if(item[0]){
+            if(item[0]){
               let  inItem=item[0]
               let {filesSealed}=inItem
-              if(filesSealed&&filesSealed[0]&&filesSealed[0].length){
+              if(filesSealed&&filesSealed[0]){
                 const {sealFileCreateTime}=filesSealed[0]
                 filesSealed[0].sealFileCreateTime=formatDate(sealFileCreateTime)
               }
-            }*/
+            }
             sealOthers.push(item)
           })
         }
