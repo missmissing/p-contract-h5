@@ -2830,7 +2830,8 @@
         if(query.processData){
           queryParams.operate='PROCESS'
         }
-        Api.getContractDetailByContractId(queryParams).then((data) => {
+        console.log('queryParams',queryParams)
+        Api.getContractDetailByContractId(queryParams).then((data)=>{
           const dataMap = data.data.dataMap
           if (dataMap) {
             this.initData(dataMap)
