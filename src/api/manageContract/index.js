@@ -63,7 +63,7 @@ export default {
   getContractDetailByContractId(params) {
     const {contractId,operate}=params
     if(operate){
-      return Http.get(`${contract}/contract-web/contract/no/${contractId}`,params)
+      return Http.get(`${contract}/contract-web/contract/id/${contractId}`,params)
     }
     return Http.get(`${contract}/contract-web/contract/id/${contractId}`)
   },
