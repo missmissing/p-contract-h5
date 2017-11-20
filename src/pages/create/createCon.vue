@@ -2830,7 +2830,6 @@
         if(query.processData){
           queryParams.operate='PROCESS'
         }
-        console.log('queryParams',queryParams)
         Api.getContractDetailByContractId(queryParams).then((data)=>{
           const dataMap = data.data.dataMap
           if (dataMap) {

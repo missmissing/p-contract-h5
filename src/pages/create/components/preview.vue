@@ -173,7 +173,6 @@
               <div>{{paymentRemark}}</div>
             </div>
             <p>合同含税总金额为{{totalAmount | numToChinese}} （CNY {{totalAmount}}元）</p>
-            <p>保证金{{deposit | numToChinese}}（CNY {{deposit}}元），占比{{depositRatio}}%。保证金支付时间为{{payTime}}.</p>
             <!--<div class="mt20 mb20">
               <div class="mb20">
                 <div v-show="partA.length===1">
@@ -282,8 +281,6 @@
         startTime: '',
         endTime: '',
         totalAmount: '',
-        deposit: '',
-        payTime: '',
         depositRatio: '',
         moneyInvolved: false,
         oneOffPay: false,
@@ -367,8 +364,8 @@
           return null
         }
         const {contractNo, contractBusinessTypeThirdName, conStandard, cardFinanceInfoForm, endTime, startTime, conditionDesc, effectiveCondition, templateId, contractType, contractBusinessTypeFirst, corporeRemark, paymentRemark} = this.datas
-        const {jiaBillingInfo, yiBillingInfo, deposit, payTime, moneyInvolved, depositRatio, totalAmount, paymentMethods, oneOffPay, paymentTimePeriods} = cardFinanceInfoForm
-        const {advance, progress, _final} = paymentMethods
+        const {jiaBillingInfo, yiBillingInfo, moneyInvolved, totalAmount, paymentMethods, oneOffPay, paymentTimePeriods} = cardFinanceInfoForm
+        const {earnest,advance, progress, _final,deposit} = paymentMethods
         this.paymentTimePeriods = paymentTimePeriods
         this.contractType = contractType
         this.contractBusinessTypeFirst = contractBusinessTypeFirst
@@ -384,9 +381,6 @@
         if (moneyInvolved) {
           this.moneyInvolved = moneyInvolved
           this.totalAmount = totalAmount
-          this.deposit = deposit
-          this.depositRatio = depositRatio
-          this.payTime = payTime
           this.partA = jiaBillingInfo
           this.partB = yiBillingInfo[0] || {}
           this.partAName = jiaBillingInfo.map((item) => {
@@ -398,7 +392,7 @@
           if (oneOffPay) {
             this.oneOffPay = true
           } else {
-            this.priceTable = [...this.transformData(advance, '预付款'), ...this.transformData(progress, '进度款'), ...this.transformData(_final, '尾款')]
+            this.priceTable = [...this.transformData(earnest, '定金'),...this.transformData(advance, '预付款'), ...this.transformData(progress, '进度款'), ...this.transformData(_final, '尾款'), ...this.transformData(deposit, '保证金')]
           }
         }
 
