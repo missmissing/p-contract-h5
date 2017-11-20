@@ -526,7 +526,68 @@
             </el-row>
             <el-card v-if="cardFinanceInfoForm.moneyInvolved">
               <header slot="header">付款方式<i class="errorMsg">{{cardFinanceInfoForm.paymentErrorMSG}}</i></header>
-              <el-table :data="cardFinanceInfoForm.paymentMethods.advance"
+              <el-table :data="cardFinanceInfoForm.paymentMethods.earnest"
+                        v-if="!cardFinanceInfoForm.oneOffPay"
+                        style="width: 100%"
+              >
+                <el-table-column prop="type" label="类型" width="100px"></el-table-column>
+                <el-table-column width="90px" prop="seriousPayments" label="多次付款">
+                  <template scope="scope">
+                    <el-checkbox :disabled="true"></el-checkbox>
+                  </template>
+                </el-table-column>
+                <el-table-column prop="paymentAmount" label="付款金额" width="150px">
+                  <template scope="scope">
+                    <el-input
+                      v-if="cardFinanceInfoForm.paymentMethods.earnest[scope.$index].seriousPayments"
+                      :disabled="operateType==='query'||cardFinanceInfoForm.paymentMethods.earnest[scope.$index].seriousPayments"
+                      v-model="earnestPaymentAmount"></el-input>
+                    <el-input
+                      v-else
+                      :disabled="operateType==='query'||cardFinanceInfoForm.paymentMethods.earnest[scope.$index].seriousPayments"
+                      v-model="cardFinanceInfoForm.paymentMethods.earnest[scope.$index].paymentAmount"></el-input>
+                  </template>
+                </el-table-column>
+                <el-table-column
+                  prop="paymentTimePeriod"
+                  label="付款条件"
+                  width="200px">
+                  <template scope="scope">
+                    <el-select
+                      v-model="cardFinanceInfoForm.paymentMethods.earnest[scope.$index].paymentTimePeriod"
+                      placeholder="请选择付款条件"
+                      :disabled="operateType==='query'||cardFinanceInfoForm.paymentMethods.earnest[scope.$index].seriousPayments"
+                    >
+                      <el-option
+                        v-for="item in cardFinanceInfoForm.paymentTimePeriods"
+                        :key="item.id"
+                        :value="item.id"
+                        :label="item.name"
+                      >
+                      </el-option>
+                    </el-select>
+                  </template>
+                </el-table-column>
+                <el-table-column
+                  prop="remark"
+                  label="付款节点说明"
+                  width="250px">
+                  <template scope="scope">
+                    <el-input
+                      type="textarea"
+                      :rows="2"
+                      :disabled="operateType==='query'||cardFinanceInfoForm.paymentMethods.earnest[scope.$index].seriousPayments"
+                      v-model="cardFinanceInfoForm.paymentMethods.earnest[scope.$index].remark"></el-input>
+                  </template>
+                </el-table-column>
+                <el-table-column prop="ratio" label="占比" width="100px">
+                  <template scope="scope">
+                    {{setRatio(cardFinanceInfoForm.paymentMethods.earnest[scope.$index],
+                    cardFinanceInfoForm.paymentMethods.earnest[scope.$index].paymentAmount)}}
+                  </template>
+                </el-table-column>
+              </el-table>
+              <el-table :show-header="false" :data="cardFinanceInfoForm.paymentMethods.advance"
                         v-if="!cardFinanceInfoForm.oneOffPay"
                         style="width: 100%"
               >
@@ -963,6 +1024,67 @@
                   </template>
                 </el-table-column>
               </el-table>
+              <el-table :show-header="false" :data="cardFinanceInfoForm.paymentMethods.deposit"
+                        v-if="!cardFinanceInfoForm.oneOffPay"
+                        style="width: 100%"
+              >
+                <el-table-column prop="type" label="类型" width="100px"></el-table-column>
+                <el-table-column width="90px" prop="seriousPayments" label="多次付款">
+                  <template scope="scope">
+                    <el-checkbox :disabled="true"></el-checkbox>
+                  </template>
+                </el-table-column>
+                <el-table-column prop="paymentAmount" label="付款金额" width="150px">
+                  <template scope="scope">
+                    <el-input
+                      v-if="cardFinanceInfoForm.paymentMethods.deposit[scope.$index].seriousPayments"
+                      :disabled="operateType==='query'||cardFinanceInfoForm.paymentMethods.deposit[scope.$index].seriousPayments"
+                      v-model="depositPaymentAmount"></el-input>
+                    <el-input
+                      v-else
+                      :disabled="operateType==='query'||cardFinanceInfoForm.paymentMethods.deposit[scope.$index].seriousPayments"
+                      v-model="cardFinanceInfoForm.paymentMethods.deposit[scope.$index].paymentAmount"></el-input>
+                  </template>
+                </el-table-column>
+                <el-table-column
+                  prop="paymentTimePeriod"
+                  label="付款条件"
+                  width="200px">
+                  <template scope="scope">
+                    <el-select
+                      v-model="cardFinanceInfoForm.paymentMethods.deposit[scope.$index].paymentTimePeriod"
+                      placeholder="请选择付款条件"
+                      :disabled="operateType==='query'||cardFinanceInfoForm.paymentMethods.deposit[scope.$index].seriousPayments"
+                    >
+                      <el-option
+                        v-for="item in cardFinanceInfoForm.paymentTimePeriods"
+                        :key="item.id"
+                        :value="item.id"
+                        :label="item.name"
+                      >
+                      </el-option>
+                    </el-select>
+                  </template>
+                </el-table-column>
+                <el-table-column
+                  prop="remark"
+                  label="付款节点说明"
+                  width="250px">
+                  <template scope="scope">
+                    <el-input
+                      type="textarea"
+                      :rows="2"
+                      :disabled="operateType==='query'||cardFinanceInfoForm.paymentMethods.deposit[scope.$index].seriousPayments"
+                      v-model="cardFinanceInfoForm.paymentMethods.deposit[scope.$index].remark"></el-input>
+                  </template>
+                </el-table-column>
+                <el-table-column prop="ratio" label="占比" width="100px">
+                  <template scope="scope">
+                    {{setRatio(cardFinanceInfoForm.paymentMethods.deposit[scope.$index],
+                    cardFinanceInfoForm.paymentMethods.deposit[scope.$index].paymentAmount)}}
+                  </template>
+                </el-table-column>
+              </el-table>
               <el-row class="mt20">
                 <el-form-item label="备注" prop="paymentRemark" label-width="60px">
                   <el-input
@@ -972,40 +1094,6 @@
                     type="textarea"
                     :rows="4"></el-input>
                 </el-form-item>
-              </el-row>
-              <el-row>
-                <el-col :span="8">
-                  <el-form-item label="是否收取保证金" label-width="120px">
-                    <el-radio-group v-model="cardFinanceInfoForm.depositFlag"
-                                    :disabled="operateType==='query'||!enabledFianceBtn">
-                      <el-radio :label="true">是</el-radio>
-                      <el-radio :label="false">否</el-radio>
-                    </el-radio-group>
-                  </el-form-item>
-                </el-col>
-              </el-row>
-              <el-row v-if="cardFinanceInfoForm.depositFlag">
-                <el-col :span="8">
-                  <el-form-item label="保证金金额" prop="deposit">
-                    <el-input v-model.number="cardFinanceInfoForm.deposit" :disabled="operateType==='query'"
-                              placeholder="请输入保证金金额" @change="handleChangeValidateForms"></el-input>
-                  </el-form-item>
-                </el-col>
-                <el-col :span="8">
-                  <el-form-item label="付款时间" prop="payTime">
-                    <el-date-picker v-model="cardFinanceInfoForm.payTime"
-                                    @change="handleChangeValidateForms"
-                                    format="yyyy-MM-dd"
-                                    placeholder="请输入付款时间"
-                                    :disabled="operateType==='query'"
-                                    type="date"></el-date-picker>
-                  </el-form-item>
-                </el-col>
-                <el-col :span="8">
-                  <el-form-item label="保证金占比" prop="depositRatio">
-                    {{depositRatio}}
-                  </el-form-item>
-                </el-col>
               </el-row>
             </el-card>
             <el-card class="mt20" >
@@ -2460,10 +2548,12 @@
           return this.cardFinanceInfoForm.totalAmount
         }
         const paymentMethods = this.cardFinanceInfoForm.paymentMethods
+        const earnest = parseFloat(paymentMethods.earnest[0].paymentAmount ? paymentMethods.earnest[0].paymentAmount : 0)
         const advance = parseFloat(paymentMethods.advance[0].paymentAmount ? paymentMethods.advance[0].paymentAmount : 0)
         const progress = parseFloat(paymentMethods.progress[0].paymentAmount ? paymentMethods.progress[0].paymentAmount : 0)
         const _final = parseFloat(paymentMethods._final[0].paymentAmount ? paymentMethods._final[0].paymentAmount : 0)
-        return advance + progress + _final
+        const deposit = parseFloat(paymentMethods.deposit[0].paymentAmount ? paymentMethods.deposit[0].paymentAmount : 0)
+        return earnest+advance + progress + _final+deposit
       },
       totalAmount: function () {//合同总金额即物料总价
         let sum = 0
@@ -2600,6 +2690,17 @@
         }
         return enabled
       },
+      earnestPaymentAmount:function () {
+        const items = this.cardFinanceInfoForm.paymentMethods.earnest[0].subItem
+        let sum = 0
+        if (items && items.length) {
+          for (let i = 0, len = items.length; i < len; i++) {
+            sum += parseFloat(items[i].paymentAmount)
+          }
+        }
+        this.cardFinanceInfoForm.paymentMethods.earnest[0].paymentAmount = sum
+        return sum
+      },
       advancePaymentAmount: function () {
         const items = this.cardFinanceInfoForm.paymentMethods.advance[0].subItem
         let sum = 0
@@ -2631,6 +2732,17 @@
           }
         }
         this.cardFinanceInfoForm.paymentMethods._final[0].paymentAmount = sum
+        return sum
+      },
+      depositPaymentAmount: function () {
+        const items = this.cardFinanceInfoForm.paymentMethods.deposit[0].subItem
+        let sum = 0
+        if (items && items.length) {
+          for (let i = 0, len = items.length; i < len; i++) {
+            sum += parseFloat(items[i].paymentAmount)
+          }
+        }
+        this.cardFinanceInfoForm.paymentMethods.deposit[0].paymentAmount = sum
         return sum
       },
       enabledFianceBtn: function () {
@@ -2713,7 +2825,12 @@
       if (this.$route.path && this.$route.path === '/ConCreate/conCheck') {
         this.operateType = 'query'
         let query = this.$route.query
-        Api.getContractDetailByContractId(query.contractId).then((data) => {
+        const queryParams={}
+        queryParams.contractId=query.contractId
+        if(query.processData){
+          queryParams.operate='PROCESS'
+        }
+        Api.getContractDetailByContractId(queryParams).then((data) => {
           const dataMap = data.data.dataMap
           if (dataMap) {
             this.initData(dataMap)
@@ -2740,9 +2857,11 @@
         param.templateType = (this.baseInfoForm.contractTextType === 1 ? 'TEMPLATE' : 'TEXT')
 
         const paymentMethods = this.cardFinanceInfoForm.paymentMethods
+        paymentMethods.earnest[0].type = '定金'
         paymentMethods.advance[0].type = '预付款'
         paymentMethods.progress[0].type = '进度款'
         paymentMethods._final[0].type = '尾款'
+        paymentMethods.deposit[0].type = '保证金'
         if (this.operateType !== 'create') {
           this.contractInfo=[this.baseInfoForm]
           this.baseInfoForm.contractTypeName = this.getContractModelName(parseInt(data.baseInfoForm.contractType))// 初始化合同模式
@@ -4147,6 +4266,52 @@
         if (this.operateType === 'create') {
           this.cardFinanceInfoForm.totalAmount = this.totalAmount
           const paymentMethods = {
+            earnest: [{
+              type: '定金',
+              seriousPayments: null, // 是否多次付款
+              paymentAmount: 0, // 付款金额
+              paymentTimePeriod: null, // 付款方式
+              paymentTime: '', // 付款时间
+              times: [
+                {
+                  value: 1,
+                  label: '合同签约15天'
+                },
+                {
+                  value: 2,
+                  label: '合同签约30天'
+                },
+                {
+                  value: 3,
+                  label: '合同签约90天'
+                }
+              ],
+              remark: '',
+              ratio: '',
+              subItem: [
+                {
+                  paymentAmount: 0,
+                  paymentTimePeriod: null,
+                  paymentTime: '',
+                  times: [
+                    {
+                      value: 1,
+                      label: '合同签约15天'
+                    },
+                    {
+                      value: 2,
+                      label: '合同签约30天'
+                    },
+                    {
+                      value: 3,
+                      label: '合同签约90天'
+                    }
+                  ],
+                  remark: '',
+                  ratio: ''
+                }
+              ]
+            }],
             advance: [{
               type: '预付款',
               seriousPayments: null, // 是否多次付款
@@ -4240,7 +4405,53 @@
               remark: '',
               ratio: '',
               subItem: []
-            }]
+            }],
+            deposit: [{
+              type: '保证金',
+              seriousPayments: null, // 是否多次付款
+              paymentAmount: 0, // 付款金额
+              paymentTimePeriod: null, // 付款方式
+              paymentTime: '', // 付款时间
+              times: [
+                {
+                  value: 1,
+                  label: '合同签约15天'
+                },
+                {
+                  value: 2,
+                  label: '合同签约30天'
+                },
+                {
+                  value: 3,
+                  label: '合同签约90天'
+                }
+              ],
+              remark: '',
+              ratio: '',
+              subItem: [
+                {
+                  paymentAmount: 0,
+                  paymentTimePeriod: null,
+                  paymentTime: '',
+                  times: [
+                    {
+                      value: 1,
+                      label: '合同签约15天'
+                    },
+                    {
+                      value: 2,
+                      label: '合同签约30天'
+                    },
+                    {
+                      value: 3,
+                      label: '合同签约90天'
+                    }
+                  ],
+                  remark: '',
+                  ratio: ''
+                }
+              ]
+            }],
           }
           this.cardFinanceInfoForm.paymentMethods = paymentMethods
         }

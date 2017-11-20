@@ -333,7 +333,7 @@
             this.curPriceList = [data.data.dataMap]
 
             const {createFixedFormatContractFlag, purchaseType} = this.currentPr
-            this.conModels[1] = {...this.conModels[1], disabled: !createFixedFormatContractFlag}
+            //this.conModels[1] = {...this.conModels[1], disabled: !createFixedFormatContractFlag}
             this.conForm.curConModelId = createFixedFormatContractFlag ? this.conForm.curConModelId : null
             if (!this.regionSource) {
               this.regionSource = this.regions

@@ -60,7 +60,11 @@ export default {
     return Http.get(`${contract}/contract-web/contract/no/${contractNo}`)
   },
   // 根据合同id查询合同详情
-  getContractDetailByContractId(contractId) {
+  getContractDetailByContractId(params) {
+    const {contractId,operate}=params
+    if(operate){
+      return Http.get(`${contract}/contract-web/contract/no/${contractId}`,params)
+    }
     return Http.get(`${contract}/contract-web/contract/id/${contractId}`)
   },
   /** ***相关数据-订单页****/
