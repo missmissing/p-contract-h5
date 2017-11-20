@@ -62,8 +62,8 @@ export const routerNames = {
   con_compensate_see: '违约/赔付处理查看',
   con_check_reject: '合同验收不合格处理',
   con_check_reject_see: '合同验收不合格处理查看',
-  con_goods_receipt:'物资类收货',
-  con_services_receipt:'服务类收货',
+  con_goods_receipt:'物资类验收',
+  con_services_receipt:'服务类验收',
 
   con_process: '合同流程',
   con_handing_process: '我待办的流程',

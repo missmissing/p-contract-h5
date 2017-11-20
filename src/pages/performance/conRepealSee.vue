@@ -74,9 +74,124 @@
             v-model.trim="form.suspendRemark">
           </el-input>
         </el-form-item>
+        <i class="errorMsg">{{form.errorMsg}}</i>
+        <template v-if="form.sealAttachments.length" v-for="(item,index) in form.sealAttachments">
+          <el-table :data="item" :show-header="index===0?true:false">
+            <el-table-column type="expand" v-if="item[0].haveSale">
+              <template scope="props" v-if="item[0].haveSale">
+                <div v-if="item[0].haveSale" v-bind:class="{tdPd:item[0].haveSale}">
+                  <el-table :data="props.row.filesSealed" class="mb20"
+                            v-if="props.row.filesSealed&&props.row.filesSealed.length">
+                    <el-table-column label="文件名" prop="sealFileName">
+                      <template scope="scope">
+                        <a
+                          :href="props.row.filesSealed[scope.$index].sealFileUrl">{{props.row.filesSealed[scope.$index].sealFileName}}</a>
+                      </template>
+                    </el-table-column>
+                    <el-table-column label="上传人" prop="sealFileCreatorName"></el-table-column>
+                    <el-table-column label="上传时间" prop="sealFileCreateTime">
+                      <template scope="scope">
+                        {{props.row.filesSealed[scope.$index].sealFileCreateTime|formatDate}}
+                      </template>
+                    </el-table-column>
+                    <el-table-column fixed="right" label="操作"
+                                     v-if="props.row.filesSealed[0].operate||enabledUpdateInApprove">
+                      <template scope="scope">
+                        <el-button @click="handleRemoveFilesSealedItem(index, props.row.filesSealed)"
+                                   type="danger" size="small">移除
+                        </el-button>
+                      </template>
+                    </el-table-column>
+                  </el-table>
+                  <el-row>
+                    <el-col :span="6">
+                      <el-form-item label="用章次数" prop="saleTime">
+                        <el-input-number size="small" :disabled="true" v-model="props.row.saleTime">
+                        </el-input-number>
+                      </el-form-item>
+                    </el-col>
+                    <el-col :span="6">
+                      <el-form-item label="打印份数" prop="printTime" class="el-form-item is-required">
+                        <el-input-number :disabled="!enabledUpdateInApprove" size="small" :max="10"
+                                         v-model="props.row.printTime" @change="handleChangeValidateForms"></el-input-number>
+                      </el-form-item>
+                    </el-col>
+                    <el-col :span="6">
+                      <el-form-item label="留存份数" prop="remainTime" class="el-form-item is-required">
+                        <el-input-number :disabled="!enabledUpdateInApprove" size="small" :max="10"
+                                         v-model="props.row.remainTime" @change="handleChangeValidateForms"></el-input-number>
+                      </el-form-item>
+                    </el-col>
+                    <el-col :span="6">
+                      <el-form-item label="用印后上传" v-if="enabledUpdateInApprove">
+                        <el-upload
+                          ref="uploadFileAfterSeal"
+                          :data="{userId:users.userId}"
+                          :show-file-list="false"
+                          :action="uploadUrl"
+                          :with-credentials="true"
+                          :on-success="handleUploadFileAfterSealSuccess"
+                          :on-error="handleUploadFileAfterSealError"
+                        >
+                          <el-button
+                            :disabled="!enabledUpdateInApprove||!getEnabledUploadBtn(props.row.filesSealed)"
+                            size="small"
+                            type="primary" @click="form.current = index">上传
+                          </el-button>
+                        </el-upload>
+                      </el-form-item>
+                    </el-col>
+                  </el-row>
+                  <el-row>
+                    <el-col :span="12">
+                      <el-form-item label="选择用章" prop="saleInfos" class="is-required">
+                        <el-checkbox-group v-model="props.row.saleInfos" @change="handleChangeValidateForms">
+                          <el-checkbox label="1" name="sealInfo" :disabled="true">公章</el-checkbox>
+                          <el-checkbox label="2" name="sealInfo" :disabled="true">法人章</el-checkbox>
+                        </el-checkbox-group>
+                      </el-form-item>
+                    </el-col>
+                  </el-row>
+                </div>
+              </template>
+            </el-table-column>
+            <el-table-column prop="attachType" label="附件类型" width="150px">
+              <template scope="scope">
+                其他
+              </template>
+            </el-table-column>
+            <el-table-column prop="fileName" label="文件名称">
+              <template scope="scope">
+                <a :href="item[scope.$index].fileUrl">{{item[scope.$index].fileName}}</a>
+              </template>
+            </el-table-column>
+            <el-table-column prop="upload" label="上传" width="100px">
+              <template scope="scope">
+                  <el-button :disabled="true"
+                             size="small" type="primary" @click="handleUploadOuter(index)">上传
+                  </el-button>
+              </template>
+            </el-table-column>
+            <el-table-column prop="haveSale" label="是否盖章" width="70px">
+              <template scope="scope">
+                <el-checkbox
+                  @change="handleChangeValidateForms"
+                  :disabled="true"
+                  v-model="item[scope.$index].haveSale"></el-checkbox>
+              </template>
+            </el-table-column>
+            <el-table-column prop="remark" :disabled="true" label="备注">
+              <template scope="scope">
+                <el-input
+                  :disabled="true"
+                  v-model="item[scope.$index].remark"></el-input>
+              </template>
+            </el-table-column>
+          </el-table>
+        </template>
       </el-form>
     </div>
-    <Process></Process>
+    <Process :extraFn="callback"></Process>
   </div>
 </template>
 
@@ -86,18 +201,28 @@
   import comLoading from '@/mixins/comLoading'
   import {routerNames} from '@/core/consts'
   import Process from '@/components/process.vue'
+  import {downloadUrl, uploadUrl} from '@/api/consts'
 
   export default {
     mixins: [comLoading],
     data() {
       return {
-        procTitle: '',
-        procInstId: '',
+        procInstId: '',//流程id
+        procTitle: '',//流程名称
+        users:{},
+        downloadUrl: downloadUrl,
+        uploadUrl: uploadUrl,
+        isSubmit:false,
+
         form: {
+          errorMsg:'',
+          sealAttachments:[],
           suspendReason: '',
           suspendTime: '',
-          suspendRemark: ''
+          suspendRemark: '',
+          current: null, // 为上传功能保存当前所在附件列表的索引
         },
+        id:'',
         contractCode: '',
         signDate: '',
         contractStatus: '',
@@ -108,10 +233,23 @@
         toDetail: {name: routerNames.con_Check, query: {contractId: ''}}
       }
     },
+    computed:{
+      ifRole: function () {
+        let ifRole = false, reg = /印章保管人/g
+        reg.test(this.users.roleName) ? ifRole = true : ifRole = false
+        return ifRole
+      },
+      enabledUpdateInApprove: function () {//在审批阶段修改附件时，上传盖章合同控件的上传按钮状态（仅用章保管人可用）
+        let enabled = false
+        this.ifRole ? enabled = true : enabled = false
+        return enabled
+      }
+    },
     methods: {
       getInfo(id) {
         this.comLoading()
-        Api.getContractDetailByCode({id}).then((res) => {
+        const paras={id, operate:'PROCESS'}
+        Api.getContractDetailByCode(paras).then((res) => {
           this.comLoading(false)
           const data = res.data.dataMap
           this.setData(data)
@@ -119,31 +257,161 @@
           this.comLoading(false)
         })
       },
+      getAttachmentsInProcess(data){
+        const arr=[]
+        if(data&&data.length){
+          data.map((item)=>{
+            if(item[0].attachStatus===2){//流程中
+              arr.push(item)
+            }
+          })
+        }
+        return arr
+      },
       setData(data) {
-        const {baseInfoForm, cardContentInfoForm, contSuspend} = data
-        const {contractNo, approvalDate, contractStatusName} = baseInfoForm
+        const {baseInfoForm, cardContentInfoForm, contSuspend,cardSealInfoForm} = data
+        const {contractNo, approvalDate, contractStatusName,id} = baseInfoForm
         const {suspendReason, suspendTime, suspendRemark} = contSuspend || {}
         const {startTime, endTime} = cardContentInfoForm
+        const {sealAttachments}=cardSealInfoForm
         this.contractCode = contractNo
         this.signDate = approvalDate
         this.contractStatus = contractStatusName
         this.startTime = startTime
         this.endTime = endTime
+        this.id=id
+
         Object.assign(this.form, {
           suspendReason,
           suspendTime,
-          suspendRemark
+          suspendRemark,
+          sealAttachments:this.getAttachmentsInProcess(sealAttachments)
         })
-      }
+      },
+      handleChangeValidateForms(){
+        if (this.isSubmit) {
+          this.validateForms().catch(()=> {
+            console.log('validate failed')
+          })
+        }
+      },
+      validateForms() {
+        return new Promise((resolve,reject)=>{
+            //验证附件的数据是否填写完整
+            const sealAttachments = this.form.sealAttachments
+            if (sealAttachments && sealAttachments.length) {
+              sealAttachments.map((item)=>{
+                if (item[0].haveSale) {
+                  if (item[0].printTime && item[0].remainTime && item[0].saleInfos.length) {
+                    this.form.errorMsg = ''
+                  } else {
+                    this.form.errorMsg = '请确保所有附件信息填写完整'
+                  }
+                }
+              })
+            }
+            if(!this.form.errorMsg){
+              resolve()
+            }else{
+              reject()
+            }
+        })
+      },
+      combineAttachments(files){//上传附件剔除空附件
+        const newFiles=[]
+        if(files&&files.length){
+          files.map((item)=>{
+            if(item[0]&&item[0].fileName){
+              let  inItem=item[0]
+              let {filesSealed}=inItem
+              if(filesSealed&&filesSealed[0]){
+                const {sealFileCreateTime}=filesSealed[0]
+                filesSealed[0].sealFileCreateTime=formatDate(sealFileCreateTime)
+              }
+              newFiles.push(item)
+            }
+          })
+        }
+        return newFiles
+      },
+      combineAttachments(files){//上传附件剔除空附件
+        const newFiles=[]
+        if(files&&files.length){
+          files.map((item)=>{
+            if(item[0]&&item[0].fileName){
+              let  inItem=item[0]
+              let {filesSealed}=inItem
+              if(filesSealed&&filesSealed[0]){
+                const {sealFileCreateTime}=filesSealed[0]
+                filesSealed[0].sealFileCreateTime=formatDate(sealFileCreateTime)
+              }
+              newFiles.push(item)
+            }
+          })
+        }
+        return newFiles
+      },
+      callback(params){//isSign:是否是加签人 isAgree:审批操作类型是否是同意
+        return new Promise((resolve, reject)=> {
+          const {isSign, isAgree}=params
+          if (!isSign && isAgree && this.ifRole) {
+            const para = {}
+            para.sealAttachments = this.combineAttachments(this.form.sealAttachments)
+            para.id = this.id
+            para.type = 1
+            Api.uploadSealAttachments(para)
+              .then(()=> {
+                resolve()
+              })
+              .catch(()=> {
+                reject()
+              })
+          }else{
+            resolve()
+          }
+        })
+      },
+      handleUploadFileAfterSealSuccess(res, file, fileList) {
+        const dataMap = res.dataMap
+        if (dataMap.fileId) {
+          const index = this.form.current
+          let curentFile = this.form.sealAttachments[index]
+          curentFile[0].filesSealed = [{
+            sealFileId: dataMap.fileId,
+            sealFileName: dataMap.fileName,
+            sealFileUrl: downloadUrl + dataMap.fileId,
+            sealFileCreatorName: dataMap.userName,
+            sealFileCreateTime: formatDate(dataMap.createTime),
+            operate: 'add'
+          }]
+          console.log('this.cardSealInfoForm',this.form.sealAttachments);
+          this.$message.success('文件上传成功')
+        }
+      },
+      handleUploadFileAfterSealError(err, file, fileList) {
+        console.log('error', err)
+        console.log('file', file)
+        console.log('fileList', fileList)
+      },
+      getEnabledUploadBtn(items) {
+        let enabled = true
+        items && items.length >= 1 ? enabled = false : enabled = true
+        return enabled
+      },
+      handleUpload(type, index) {
+        this.form.current = index || 0
+      },
     },
     created() {
       const {id, processData} = this.$route.query
       this.getInfo(id)
       if (processData) {
         const data = JSON.parse(processData)
-        const {procTitle, procInstId} = data
+        const {procTitle, procInstId,roleName} = data
         this.procInstId = procInstId
         this.procTitle = procTitle
+        this.users.roleName = roleName
+        console.log('users',this.users)
       }
     },
     filters: {

@@ -107,7 +107,6 @@
     },
     methods: {
       change(value) {
-        console.log('person', value)
         this.receiver = value
       },
       beforeSubmit() {
@@ -158,7 +157,6 @@
           text: '正在提交中'
         })
         Api.submitProcess(result).then((res) => {
-          console.log(res)
           this.comLoading(false)
           this.$message.success('提交成功！')
           this.$router.push({name: routerNames.con_index})
@@ -173,7 +171,6 @@
         return
       }
       processData = JSON.parse(processData)
-      console.log(processData)
       const {procInstId, procCode, actions, sign, dataType} = processData
       if (sign === 1) {
         this.commonBtns = []
