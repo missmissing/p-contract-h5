@@ -185,28 +185,30 @@
           }
         })
       },
-      'form.contentModule'() {
-        const value = this.form.contentModule
-        const modulesData = this.modulesData
-        if (!value.length || !modulesData.length) {
-          return []
-        }
+      'form'() {
+        if(this.form&&this.form.contentModule){
+          const value = this.form.contentModule
+          const modulesData = this.modulesData
+          if (!value.length || !modulesData.length) {
+            return []
+          }
 
-        const header = []
-        const footer = []
-        value.forEach((key) => {
-          const module = _.find(modulesData, (o) => {
-            return o.id === key
-          })
-          const content = module.moduleContent
+          const header = []
+          const footer = []
+          value.forEach((key) => {
+            const module = _.find(modulesData, (o) => {
+                return o.id === key
+              })
+          const content = module.contentModule
           if (module.moduleType === 1) {
             header.push(content)
           } else if (module.moduleType === 2) {
             footer.push(content)
           }
         })
-        this.header = header.join('')
-        this.footer = footer.join('')
+          this.header = header.join('')
+          this.footer = footer.join('')
+        }
       }
     },
     computed: {

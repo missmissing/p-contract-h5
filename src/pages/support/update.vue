@@ -225,7 +225,6 @@
         supportModel.getCurrentTemplateByCode({
           templateCode: this.form.templateCode
         }).then((res) => {
-          console.log(res)
           this.comLoading(false)
           this.resetForm()
           const tplInfo = res.data.dataMap
@@ -247,7 +246,7 @@
         this.visible = false
       },
       setData(tplInfo) {
-        const {templateName, templateType, bizTypes, startDate, version, operatorName, creatorName, description, files} = tplInfo
+        const {templateName, templateType, bizTypes, startDate, version, operatorName, creatorName, description, files,contentModule} = tplInfo
         this.tplInfo = tplInfo
         this.form['templateName'] = templateName
         this.form['templateType'] = tplTypeMap[templateType]
@@ -263,7 +262,8 @@
             this.fileList.push({
               name: item.fileName,
               url: `${this.download}${item.fileId}`,
-              status: 'success'
+              status: 'success',
+              fileId:item.fileId
             })
           })
         }
@@ -293,27 +293,25 @@
             return file.fileId
           }
         })
-        console.log(files)
         Object.assign(result, {
           files
         })
-        console.log(result)
         return result
       },
       save(templateStatus) {
         this.$refs['form'].validate((valid) => {
           if (valid) {
-            this.comLoading({
-              text: '正在提交中'
-            })
             const result = this.getResult()
+
             if (!this.check(result)) {
               return
             }
+            this.comLoading({
+              text: '正在提交中'
+            })
             result.templateStatus = templateStatus
-            console.log('click save：', result)
+
             supportModel.updateTemplate(result).then((res) => {
-              console.log(res)
               this.comLoading(false)
               this.$message({
                 message: '提交成功',
