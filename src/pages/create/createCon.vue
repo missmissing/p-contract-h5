@@ -489,7 +489,7 @@
             <el-row v-if="cardFinanceInfoForm.oneOffPay&&cardFinanceInfoForm.moneyInvolved">
               <el-col :span="8">
                 <el-form-item v-if="cardFinanceInfoForm.moneyInvolved&&cardFinanceInfoForm.oneOffPay" label="付款条件" prop="paymentTimePeriod"
-                              :rules="[{ required: true, message: '请选择付款条件', trigger: 'blur'}]">
+                              :rules="{required: true, message: '请输入付款条件'}">
                   <el-select
                     @change="handleChangeValidateForms"
                     v-model="cardFinanceInfoForm.paymentTimePeriod"
@@ -2286,7 +2286,7 @@
               subItem: []
             }]
           },
-          paymentTimePeriod: '',
+          paymentTimePeriod: null,
           paymentTimePeriods: [
             {
               id: 1,
@@ -2857,11 +2857,11 @@
         param.templateType = (this.baseInfoForm.contractTextType === 1 ? 'TEMPLATE' : 'TEXT')
 
         const paymentMethods = this.cardFinanceInfoForm.paymentMethods
-        paymentMethods.earnest[0].type = '定金'
-        paymentMethods.advance[0].type = '预付款'
-        paymentMethods.progress[0].type = '进度款'
-        paymentMethods._final[0].type = '尾款'
-        paymentMethods.deposit[0].type = '保证金'
+        paymentMethods.earnest.length?paymentMethods.earnest[0].type = '定金':null
+        paymentMethods.advance.length?paymentMethods.advance[0].type = '预付款':null
+        paymentMethods.progress.length?paymentMethods.progress[0].type = '进度款':null
+        paymentMethods._final.length?paymentMethods._final[0].type = '尾款':null
+        paymentMethods.deposit.length?paymentMethods.deposit[0].type = '保证金':null
         if (this.operateType !== 'create') {
           this.contractInfo=[this.baseInfoForm]
           this.baseInfoForm.contractTypeName = this.getContractModelName(parseInt(data.baseInfoForm.contractType))// 初始化合同模式
