@@ -2167,9 +2167,6 @@
           ],
           totalAmount: 0,
           depositFlag: true, // 是否收取保证金
-          deposit: 0,
-          depositRatio: '',
-          payTime: '',
           jiaBillingInfo: {
             companyName: '红星美凯龙家居集团股份有限公司',
             creditCode: '913100006624816751',
@@ -3410,14 +3407,6 @@
             }
             if (!valid) {
               if (cardFinanceInfoForm.moneyInvolved) {
-                if (cardFinanceInfoForm.depositFlag) {
-                  if (!cardFinanceInfoForm.deposit) {
-                    errors.cardFinanceInfoForm.errorCount += 1
-                  }
-                  if (!cardFinanceInfoForm.payTime) {
-                    errors.cardFinanceInfoForm.errorCount += 1
-                  }
-                }
                 if (cardFinanceInfoForm.oneOffPay) {
                   if (!cardFinanceInfoForm.invoiceType) {
                     errors.cardFinanceInfoForm.errorCount += 1
@@ -3427,6 +3416,7 @@
                   }
                 }
               }
+              console.log('errors.cardFinanceInfoForm.errorCount',errors.cardFinanceInfoForm.errorCount)
               return false
             }
           })
