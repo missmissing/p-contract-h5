@@ -78,6 +78,11 @@
       </el-row>
       <el-row>
         <el-col :span="8">
+          <el-form-item label="合同名称">
+            <el-input v-model="form.contractName" placeholder="请输入合同名称"></el-input>
+          </el-form-item>
+        </el-col>
+        <el-col :span="8">
           <el-form-item label="供应商名称/编码" prop="supplierCode" label-width="150px">
             <el-select
               clearable
@@ -191,6 +196,7 @@
           label: 'businessName'
         },
         form: {
+          contractName:'',
           contractNo: '',
           businessType: [], // 业务类型id
           contractType: '', // 合同模式
