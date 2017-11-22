@@ -1,3 +1,8 @@
+<style scope>
+  .supplierInput input{
+    height:35px!important;
+  }
+</style>
 <template>
   <div class="pd20" v-loading="loading" element-loading-text="拼命加载中">
     <el-form class="mb20" ref="form" :model="form" label-width="100px">
@@ -85,6 +90,7 @@
         <el-col :span="8">
           <el-form-item label="供应商名称/编码" prop="supplierCode" label-width="150px">
             <el-select
+              class="supplierInput"
               clearable
               style="width:250px"
               size="small"
