@@ -54,8 +54,8 @@
           </el-form-item>
         </el-col>
         <el-col :span="8">
-          <el-form-item label="经办人" prop="businessOperatorName">
-            <el-input v-model="form.businessOperatorName" placeholder="请输入经办人"></el-input>
+          <el-form-item label="业务申请人" prop="businessOperatorName">
+            <el-input v-model="form.businessOperatorName" placeholder="请输入业务申请人"></el-input>
           </el-form-item>
         </el-col>
         <el-col :span="8">
