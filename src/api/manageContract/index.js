@@ -109,7 +109,7 @@ export default {
   getContractDetailByCode(params) {
     const {id} = params
     delete params.id
-    return Http.get(`${contract}/contract-web/contract/no/${id}`, params)
+    return Http.get(`${contract}/contract-web/contract/id/${id}`, params)
   },
   /** ***根据合同编号获取详情接口****/
 

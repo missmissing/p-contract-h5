@@ -126,9 +126,9 @@
           name = routerNames.con_purchase_see
         } else if (contractDel.indexOf(procCode) > -1) {
           const {baseInfoForm} = approveInfo
-          const {contractNo} = baseInfoForm
+          const {id} = baseInfoForm
           param = {
-            id: contractNo
+            id
           }
           name = routerNames.con_stop_see
         } else if (compensateMap.indexOf(procCode) > -1) {
