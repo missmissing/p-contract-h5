@@ -25,9 +25,13 @@ function checkStatus(response) {
   throw error
 }
 
+function cancelRequest(cancel){
+  emitter.emit(Consts.EVENT_KEY.NET_REQUEST_TIMEOUT)
+}
+
 export default class Http {
   static send(config) {
-    const configs = Object.assign({}, config)
+    const configs = Object.assign({}, config,{timeout: 15000})
     return axios(configs).then(checkStatus).catch((error) => {
       const {response} = error
       if (response) {
@@ -46,7 +50,8 @@ export default class Http {
           emitter.emit(Consts.EVENT_KEY.NET_COMMUNICATION.NORMAL_ERROR.ERROR_500)
         }
       } else if (error.request) {
-        console.log(error.request)
+        console.log('error.request',error.request)
+        error.request.ontimeout=cancelRequest()
       } else {
         console.log('Error', error.message)
       }

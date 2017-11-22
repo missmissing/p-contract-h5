@@ -20,7 +20,8 @@ export default {
       NORMAL_ERROR: {
         ERROR_500: 'NET_COMMUNICATION_NORMAL_ERROR_ERROR_500'
       }
-    }
+    },
+    NET_REQUEST_TIMEOUT:'NET_REQUEST_TIMEOUT'
   }
 }
 
