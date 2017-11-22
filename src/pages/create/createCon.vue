@@ -2517,8 +2517,6 @@
         btnSaveStatus: true,// 保存按钮状态
       }
     },
-    created() {
-    },
     computed: {
       ifRequest:function(){//在创建合同或变更合同的变更方式为原合同作废时，不请求除初始化以外的接口
         let request=false
@@ -2823,16 +2821,23 @@
         this.operateType = 'query'
         let query = this.$route.query
         const queryParams={}
-        queryParams.contractId=query.contractId
-        if(query.processData){
+        if(query.processData){//流程进去使用id查询
+          queryParams.contractId=query.contractId
           queryParams.operate='PROCESS'
+          Api.getContractDetailByContractId(queryParams).then((data)=>{
+            const dataMap = data.data.dataMap
+            if (dataMap) {
+              this.initData(dataMap)
+            }
+          })
+        }else{//使用No查询
+          Api.getUpdateInfo(query.contractNo).then((data)=>{
+            const dataMap = data.data.dataMap
+            if (dataMap) {
+              this.initData(dataMap)
+            }
+          })
         }
-        Api.getContractDetailByContractId(queryParams).then((data)=>{
-          const dataMap = data.data.dataMap
-          if (dataMap) {
-            this.initData(dataMap)
-          }
-        })
       }
       if (this.$route.path && this.$route.path === '/conperf/conupdate') {
         this.operateType = 'update'
