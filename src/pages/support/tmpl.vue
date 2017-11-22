@@ -185,32 +185,29 @@
           }
         })
       },
-      'form'() {
-        if(this.form&&this.form.contentModule){
-          const value = this.form.contentModule
-          const modulesData = this.modulesData
-          if (!value.length || !modulesData.length) {
-            return []
-          }
-
-          const header = []
-          const footer = []
-          value.forEach((key) => {
-            const module = _.find(modulesData, (o) => {
-                return o.id === key
-              })
-          const content = module.contentModule
+      'form.contentModule'() {
+        const value = this.form.contentModule
+        const modulesData = this.modulesData
+        if (!value.length || !modulesData.length) {
+          return []
+        }
+        const header = []
+        const footer = []
+        value.forEach((key) => {
+          const module = _.find(modulesData, (o) => {
+            return o.id === key
+          })
+          const content = module.moduleContent
           if (module.moduleType === 1) {
             header.push(content)
           } else if (module.moduleType === 2) {
             footer.push(content)
           }
         })
-          this.header = header.join('')
-          this.footer = footer.join('')
-        }
+        this.header = header.join('')
+        this.footer = footer.join('')
       }
-    },
+      },
     computed: {
       disabled() {
         return [routerNames.con_tpl_see, routerNames.con_tpl_abolish].indexOf(this.$route.name) > -1
