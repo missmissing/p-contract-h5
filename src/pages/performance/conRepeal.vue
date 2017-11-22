@@ -93,7 +93,7 @@
               v-model.trim="form.suspendRemark">
             </el-input>
           </el-form-item>
-          <el-button type="primary" @click="handleNewSealFile" size="small" icon="plus" v-if="enabledInupdated1" class="mb20">
+          <el-button type="primary" @click="handleNewSealFile" size="small" icon="plus" class="mb20">
             添加附件
           </el-button>
           <i class="errorMsg">{{form.errorMsg}}</i>
@@ -102,29 +102,6 @@
               <el-table-column type="expand" v-if="item[0].haveSale">
                 <template scope="props" v-if="item[0].haveSale">
                   <div v-if="item[0].haveSale" v-bind:class="{tdPd:item[0].haveSale}">
-                    <el-table :data="props.row.filesSealed" class="mb20"
-                              v-if="props.row.filesSealed&&props.row.filesSealed.length">
-                      <el-table-column label="文件名" prop="sealFileName">
-                        <template scope="scope">
-                          <a
-                            :href="props.row.filesSealed[scope.$index].sealFileUrl">{{props.row.filesSealed[scope.$index].sealFileName}}</a>
-                        </template>
-                      </el-table-column>
-                      <el-table-column label="上传人" prop="sealFileCreatorName"></el-table-column>
-                      <el-table-column label="上传时间" prop="sealFileCreateTime">
-                        <template scope="scope">
-                          {{props.row.filesSealed[scope.$index].sealFileCreateTime|formatDate}}
-                        </template>
-                      </el-table-column>
-                      <el-table-column fixed="right" label="操作"
-                                       v-if="props.row.filesSealed[0].operate||enabledUpdateInApprove">
-                        <template scope="scope">
-                          <el-button @click="handleRemoveFilesSealedItem(index, props.row.filesSealed)"
-                                     type="danger" size="small">移除
-                          </el-button>
-                        </template>
-                      </el-table-column>
-                    </el-table>
                     <el-row>
                       <el-col :span="6">
                         <el-form-item label="用章次数" prop="saleTime">
@@ -134,33 +111,14 @@
                       </el-col>
                       <el-col :span="6">
                         <el-form-item label="打印份数" prop="printTime" class="el-form-item is-required">
-                          <el-input-number :disabled="!enabledUpdateInApprovePrint1" size="small" :max="10"
+                          <el-input-number  size="small" :max="10"
                                            v-model="props.row.printTime" @change="handleChangeValidateForms"></el-input-number>
                         </el-form-item>
                       </el-col>
                       <el-col :span="6">
                         <el-form-item label="留存份数" prop="remainTime" class="el-form-item is-required">
-                          <el-input-number :disabled="!enabledUpdateInApprovePrint1" size="small" :max="10"
+                          <el-input-number  size="small" :max="10"
                                            v-model="props.row.remainTime" @change="handleChangeValidateForms"></el-input-number>
-                        </el-form-item>
-                      </el-col>
-                      <el-col :span="6">
-                        <el-form-item label="用印后上传" v-if="enabledUpdateInApprove">
-                          <el-upload
-                            ref="uploadFileAfterSeal"
-                            :data="{userId:users.userId}"
-                            :show-file-list="false"
-                            :action="uploadUrl"
-                            :with-credentials="true"
-                            :on-success="handleUploadFileAfterSealSuccess"
-                            :on-error="handleUploadFileAfterSealError"
-                          >
-                            <el-button
-                              :disabled="!enabledUpdateInApprove||!getEnabledUploadBtn(props.row.filesSealed)"
-                              size="small"
-                              type="primary" @click="handleUpload(item[props.$index].attachType,index)">上传
-                            </el-button>
-                          </el-upload>
                         </el-form-item>
                       </el-col>
                     </el-row>
@@ -168,8 +126,8 @@
                       <el-col :span="12">
                         <el-form-item label="选择用章" prop="saleInfos" class="is-required">
                           <el-checkbox-group v-model="props.row.saleInfos" @change="handleChangeValidateForms">
-                            <el-checkbox label="1" name="sealInfo" :disabled="!enabledInupdated1">公章</el-checkbox>
-                            <el-checkbox label="2" name="sealInfo" :disabled="!enabledInupdated1">法人章</el-checkbox>
+                            <el-checkbox label="1" name="sealInfo" >公章</el-checkbox>
+                            <el-checkbox label="2" name="sealInfo" >法人章</el-checkbox>
                           </el-checkbox-group>
                         </el-form-item>
                       </el-col>
@@ -198,7 +156,7 @@
                     :on-success="handleUploadSealFileSuccess"
                     :on-error="handleUploadSealFileError"
                   >
-                    <el-button :disabled="!enabledInupdated1||!getEnabledUploadBtnOuter(item[scope.$index].fileName)"
+                    <el-button :disabled="!getEnabledUploadBtnOuter(item[scope.$index].fileName)"
                                size="small" type="primary" @click="handleUploadOuter(index)">上传
                     </el-button>
                   </el-upload>
@@ -208,21 +166,18 @@
                 <template scope="scope">
                   <el-checkbox
                     @change="handleChangeValidateForms"
-                    :disabled="!enabledInupdated1"
                     v-model="item[scope.$index].haveSale"></el-checkbox>
                 </template>
               </el-table-column>
-              <el-table-column prop="remark" :disabled="!enabledInupdated1" label="备注" width="200px">
+              <el-table-column prop="remark" label="备注" width="200px">
                 <template scope="scope">
                   <el-input
-                    :disabled="operateType==='query'"
                     v-model="item[scope.$index].remark"></el-input>
                 </template>
               </el-table-column>
               <el-table-column
                 fixed="right"
-                label="操作"
-                v-if="operateType!=='query'">
+                label="操作">
                 <template scope="scope">
                   <el-button v-if="item[scope.$index].operate"
                              @click="handleRemoveAttachmentsItem(index, form.sealAttachments)"
@@ -267,7 +222,6 @@
           sealAttachments:[],
           current: null, // 为上传功能保存当前所在附件列表的索引
         },
-        operateType: 'create', // create:创建,query:查询（审批流程角色为印章保管人时课 ,否则)
         rules: {
           /*suspendReason: [
             {required: true, message: '请选择中止原因'}
@@ -295,60 +249,15 @@
         toDetail: {name: routerNames.con_Check, query: {contractId: ''}}
       }
     },
-    computed:{
-      ifRole: function () {
-        let ifRole = false, reg = /印章保管人/g
-        reg.test(this.users.roleName) ? ifRole = true : ifRole = false
-        return ifRole
-      },
-      enabledInupdated1: function () { // 在各种操作类型下，控制元素的是否可见和是否可用
-        let result = false
-        if (this.operateType === 'query') {
-          result = false
-        }
-        if (this.operateType === 'create') {
-          result = true
-        }
-        return result
-      },
-      enabledUpdateInApprove: function () {//在审批阶段修改附件时，上传盖章合同控件的上传按钮状态（仅用章保管人可用）
-        let enabled = false
-        if (this.operateType === 'query') {
-          this.ifRole ? enabled = true : enabled = false
-        }
-        return enabled
-      },
-      enabledUpdateInApprovePrint1: function () {//创建和变更阶段可用，审批阶段且角色是用章保管人可用
-        let enabled = true
-        if (this.operateType === 'query') {
-          this.ifRole ? enabled = true : enabled = false
-        }
-        if (this.operateType === 'create') {
-          enabled = true
-        }
-        return enabled
-      },
-    },
-    mounted:function(){
-      const query = this.$route.query
-      if (query.processData) {
-        this.procInstId = JSON.parse(query.processData).procInstId
-        this.procTitle = JSON.parse(query.processData).procTitle
-        this.users.roleName = JSON.parse(query.processData).roleName
-        this.operateType='query'
-      }
-    },
     methods: {
       search() {
-        console.log(this.contractCode)
         if (!this.contractCode) {
           this.$message.warning('请输入合同编号！')
           return
         }
         this.comLoading()
-        Api.getContractDetailByCode({id: this.contractCode, operate: 'SUSPENDED'}).then((res) => {
+        Api.getContractDetail(this.contractCode).then((res) => {
           const data = res.data.dataMap
-          console.log(data)
           this.info = data
           const {baseInfoForm, cardContentInfoForm} = data
           const {id, approvalDate, contractStatusName} = baseInfoForm
