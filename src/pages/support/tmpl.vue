@@ -1,4 +1,4 @@
-<style type="text/scss" lang="scss" scoped>
+<style type="text/scss" lang="scss" scope>
   .tmpl-container {
     .pre-title {
       height: 36px;
@@ -28,6 +28,16 @@
       }
       .content {
         white-space: pre-wrap;
+        .ql-align-right{
+          text-align:right;
+        }
+        .ql-align-justify{
+          text-align:justify;
+          text-align-last: justify;
+        }
+        .ql-align-center{
+          text-align: center;
+        }
       }
       .footer {
         margin-top: 20px;
