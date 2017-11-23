@@ -203,7 +203,6 @@
         }
       },
       handleSizeChange(val) {
-        console.log(`每页 ${val} 条`)
         this.agreementForm.pageSize = val
         this.handleQuery()
       },

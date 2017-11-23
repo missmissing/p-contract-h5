@@ -1712,17 +1712,16 @@
                   {{cardRelatedInfoForm.contractList[scope.$index].endTime|formatDate}}
                 </template>
               </el-table-column>
-              <el-table-column
+              <!--<el-table-column
                 fixed="right"
                 label="操作"
-                width="100"
-                v-if="this.operateType!=='query'">
+                width="100">
                 <template scope="scope">
                   <el-button @click="handleContractDetail(scope.$index, scope.row)" type="text"
                              size="small">详情
                   </el-button>
                 </template>
-              </el-table-column>
+              </el-table-column>-->
             </el-table>
           </el-form>
           <div class="mt20">
@@ -3048,7 +3047,6 @@
         this.cardContCheckInfoForm.dialogAddServiceVisible = false
       },
       handlebeforeFileUpload(file) {
-        console.log('upload-file', file)
         return file
       },
       handleFileUploadSuccess(res, file, fileList) {
@@ -3074,9 +3072,8 @@
         console.log('fileList', fileList)
       },
       handleContractDetail(index, row) {
-        console.log('详情', index, row)
+        this.$router.push({name: routerNames.con_Check,query:{contractNo:row.contractNo}})
       },
-
       handleAddNewSubject(formName) {
         let curForm = this.$refs[formName]
         curForm.validate((valid) => {

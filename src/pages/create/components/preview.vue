@@ -359,7 +359,6 @@
     },
     watch: {
       datas() {
-        console.log(this.datas)
         if (!Object.keys(this.datas).length) {
           return null
         }

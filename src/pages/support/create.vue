@@ -184,7 +184,6 @@
             return file.fileId
           }
         })
-        console.log(files)
         Object.assign(result, {
           files
         })
@@ -198,12 +197,10 @@
               return
             }
             result.templateStatus = templateStatus
-            console.log('click save：', result)
             this.comLoading({
               text: '正在提交中'
             })
             supportModel.addTpl(result).then((res) => {
-              console.log(res)
               this.comLoading(false)
               this.$message({
                 message: '提交成功',
