@@ -294,7 +294,7 @@
       this.getRemoteCreatePersonsByKeyWord(user.userId)
     },
     computed: {
-      conModels: function () {///??????
+      conModels: function () { ///??????
         const conForm = this.conForm
         //return conForm.isPr ? [conForm.conModel[0], conForm.conModel[1], conForm.conModel[2]] : [conForm.conModel[2], conForm.conModel[3]]
         //return conForm.isPr ? [conForm.conModel[0], conForm.conModel[1], conForm.conModel[2]] : [conForm.conModel[3]]
@@ -312,16 +312,16 @@
     components: {
       TreeModal
     },
-    filters:{
+    filters: {
       formatDate
     },
     methods: {
       handleSwitch(newStatus) {
-          this.arrPr = []
-          this.conForm.strPC = ''
-          this.conForm.curConModelId = ''
-          this.conForm.conTypeName = ''
-          this.conForm.conType = ''
+        this.arrPr = []
+        this.conForm.strPC = ''
+        this.conForm.curConModelId = ''
+        this.conForm.conTypeName = ''
+        this.conForm.conType = ''
       },
       handleQuery() {
         this.comLoading()

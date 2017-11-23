@@ -6,4 +6,3 @@ const env = {
 }
 
 const url = window.location.href
-

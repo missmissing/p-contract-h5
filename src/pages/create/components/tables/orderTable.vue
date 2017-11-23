@@ -58,7 +58,7 @@
   import {routerNames} from '@/core/consts'
 
   export default {
-    props:['contractNo'],
+    props: ['contractNo'],
     mixins: [comLoading],
     data() {
       return {
@@ -68,23 +68,23 @@
         tableData: []
       }
     },
-    filters:{
+    filters: {
       formatDate
     },
     methods: {
       getData() {
         this.comLoading()
-        Api.getOrderTableData({'contractNo':this.contractNo,'pageNo':this.pageNo,'pageSize':this.pageSize})
-          .then((data)=>{
-          if(data.data.dataMap){
-            this.tableData = data.data.dataMap.data
-            this.total = data.data.dataMap.total
-          }
-          this.comLoading(false)
-        })
-        .catch(()=>{
-          this.comLoading(false)
-        })
+        Api.getOrderTableData({'contractNo': this.contractNo, 'pageNo': this.pageNo, 'pageSize': this.pageSize})
+          .then((data) => {
+            if (data.data.dataMap) {
+              this.tableData = data.data.dataMap.data
+              this.total = data.data.dataMap.total
+            }
+            this.comLoading(false)
+          })
+          .catch(() => {
+            this.comLoading(false)
+          })
       },
       handleSizeChange(val) {
         this.pageSize = val

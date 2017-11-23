@@ -246,7 +246,7 @@
         this.visible = false
       },
       setData(tplInfo) {
-        const {templateName, templateType, bizTypes, startDate, version, operatorName, creatorName, description, files,contentModule} = tplInfo
+        const {templateName, templateType, bizTypes, startDate, version, operatorName, creatorName, description, files, contentModule} = tplInfo
         this.tplInfo = tplInfo
         this.form['templateName'] = templateName
         this.form['templateType'] = tplTypeMap[templateType]
@@ -263,7 +263,7 @@
               name: item.fileName,
               url: `${this.download}${item.fileId}`,
               status: 'success',
-              fileId:item.fileId
+              fileId: item.fileId
             })
           })
         }

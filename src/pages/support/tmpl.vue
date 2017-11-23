@@ -28,14 +28,14 @@
       }
       .content {
         white-space: pre-wrap;
-        .ql-align-right{
-          text-align:right;
+        .ql-align-right {
+          text-align: right;
         }
-        .ql-align-justify{
-          text-align:justify;
+        .ql-align-justify {
+          text-align: justify;
           text-align-last: justify;
         }
-        .ql-align-center{
+        .ql-align-center {
           text-align: center;
         }
       }
@@ -128,7 +128,7 @@
             toolbar: [
               [
                 {'header': [1, 2, 3, 4, 5, 6, false]},
-                {'align': []}
+                {'align': ['right', 'center']}
               ]
             ]
           }
@@ -217,7 +217,7 @@
         this.header = header.join('')
         this.footer = footer.join('')
       }
-      },
+    },
     computed: {
       disabled() {
         return [routerNames.con_tpl_see, routerNames.con_tpl_abolish].indexOf(this.$route.name) > -1

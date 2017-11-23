@@ -214,7 +214,7 @@
           const tplInfo = res.data.dataMap
           this.setData(tplInfo)
           this.comLoading(false)
-        }).catch(()=>{
+        }).catch(() => {
           this.comLoading(false)
         })
       },
@@ -222,7 +222,7 @@
         const {templateCode} = this.form
         supportModel.getAllTemplateByCode({templateCode}).then((res) => {
           this.versions = res.data.dataMap
-        }).catch(()=>{
+        }).catch(() => {
           this.comLoading(false)
         })
       },

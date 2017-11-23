@@ -214,7 +214,7 @@
           const {total, data} = res.data.dataMap
           this.tableData = data
           this.totalPage = total
-        }).catch(()=>{
+        }).catch(() => {
           this.comLoading(false)
         })
       },

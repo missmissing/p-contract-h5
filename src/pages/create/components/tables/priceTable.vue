@@ -44,22 +44,22 @@
 
   export default {
     mixins: [comLoading],
-    props:{
-      prNo:String
+    props: {
+      prNo: String
     },
     data() {
       return {
         tableData: []
       }
     },
-    filters:{
+    filters: {
       formatDate
     },
     methods: {
       getData() {
         this.comLoading()
         Api.getQrDetail({folio: this.prNo}).then((data) => {
-          if(data.data.dataMap){
+          if (data.data.dataMap) {
             this.tableData = [data.data.dataMap]
           }
           this.comLoading(false)

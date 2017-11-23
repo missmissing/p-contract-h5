@@ -21,7 +21,7 @@ class Base {
     }
   }
 
-  static errorRequestTimeout(){
+  static errorRequestTimeout() {
     Message.warning('请求超时!')
   }
 

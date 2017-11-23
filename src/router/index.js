@@ -317,17 +317,17 @@ const router = new Router({
         meta: {
           auth: true
         },
-        component:function(resolve){
-          require(['../pages/performance/goodsReceipt'],resolve)
+        component: function(resolve) {
+          require(['../pages/performance/goodsReceipt'], resolve)
         },
-        beforeEnter:(to,from,next)=>{
+        beforeEnter: (to, from, next) => {
           nprogress.done()
-          let reg=/contract/gi,url=window.location.origin
-          const target={
-            dev:'http://192.168.122.218:1001/purchase/receivepo.html',
-            prd:'http://fp.oa.chinaredstar.com/purchase/receivepo.html'
+          let reg = /contract/gi, url = window.location.origin
+          const target = {
+            dev: 'http://192.168.122.218:1001/purchase/receivepo.html',
+            prd: 'http://fp.oa.chinaredstar.com/purchase/receivepo.html'
           }
-          reg.test(url)?window.open(target.prd):window.open(target.dev)
+          reg.test(url) ? window.open(target.prd) : window.open(target.dev)
         }
       }, {
         path: '/conperf/services/receipt',
@@ -335,17 +335,17 @@ const router = new Router({
         meta: {
           auth: true
         },
-        component:function(resolve){
-          require(['../pages/performance/servicesReceipt'],resolve)
+        component: function(resolve) {
+          require(['../pages/performance/servicesReceipt'], resolve)
         },
-        beforeEnter:(to,from,next)=>{
+        beforeEnter: (to, from, next) => {
           nprogress.done()
-          let reg=/contract/gi,url=window.location.origin
-          const target={
-            prd:'http://172.16.9.151:8081/Purchase/FWLCGSHQR/Start.aspx',
-            dev:'http://192.168.122.214:8081/Purchase/FWLCGSHQR/Start.aspx'
+          let reg = /contract/gi, url = window.location.origin
+          const target = {
+            prd: 'http://172.16.9.151:8081/Purchase/FWLCGSHQR/Start.aspx',
+            dev: 'http://192.168.122.214:8081/Purchase/FWLCGSHQR/Start.aspx'
           }
-          reg.test(url)?window.open(target.prd):window.open(target.dev)
+          reg.test(url) ? window.open(target.prd) : window.open(target.dev)
         }
       }],
       meta: {

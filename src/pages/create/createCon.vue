@@ -109,7 +109,7 @@
         <el-row>
           <el-col :span="8">
             <el-form-item label="合同名称" prop="contractName">
-              <el-input :disabled="isEnabled1" v-model="baseInfoForm.contractName" placeholder="请输入合同名称" maxlength="30"></el-input>
+              <el-input :disabled="isEnabled1" v-model="baseInfoForm.contractName" placeholder="请输入合同名称" :maxlength="30"></el-input>
             </el-form-item>
           </el-col>
         </el-row>
@@ -2001,8 +2001,8 @@
     data() {
       const validateEffectiveDateRules = (rule, value, callback) => {
         let endTime = this.cardContentInfoForm.endTime
-        if(this.operateType==='create'||(this.operateType==='update'&&this.updateForm.updateMode===2)){
-          if(formatDate(new Date(value))<formatDate(new Date())){
+        if (this.operateType === 'create' || (this.operateType === 'update' && this.updateForm.updateMode === 2)) {
+          if (formatDate(new Date(value)) < formatDate(new Date())) {
             callback(new Error('合同生效日期必须大于等于今天'))
           }
         }
@@ -2015,8 +2015,8 @@
       }
       const validateEndDate = (rule, value, callback) => {
         let startTime = this.cardContentInfoForm.startTime
-        if(this.operateType==='create'||(this.operateType==='update'&&this.updateForm.updateMode===2)){
-          if(formatDate(new Date(value))<formatDate(new Date())){
+        if (this.operateType === 'create' || (this.operateType === 'update' && this.updateForm.updateMode === 2)) {
+          if (formatDate(new Date(value)) < formatDate(new Date())) {
             callback(new Error('合同终止日期必须大于等于今天'))
           }
         }
@@ -2029,8 +2029,8 @@
       }
 
       return {
-        procInstId: '',//流程id
-        procTitle: '',//流程名称
+        procInstId: '', //流程id
+        procTitle: '', //流程名称
         updated: false, // 在变更合同提交后是否显示变更原因
         previewData: {}, // 预览数据
         visible: false, // 预览
@@ -2059,10 +2059,10 @@
             remark: [{required: true, message: '请输入合同编号', trigger: 'blur'}]
           }
         },
-        contractInfo:[],//合同信息
+        contractInfo: [], //合同信息
         baseInfoForm: {
           id: '', // 在更新合同是把合同id传入
-          contractName:'',//合同名称
+          contractName: '', //合同名称
           guid: '', // 草稿箱编号
           // businessOperator: '',
           businessOperatorId: '', // 业务申请人id
@@ -2101,10 +2101,10 @@
         },
         activeTabName: 'tabContInfo',
         cardContentInfoForm: {
-          effectiveCondition:1,//生效条件
+          effectiveCondition: 1, //生效条件
           startTime: '',
           endTime: '',
-          conditionDesc:'',//期限生效
+          conditionDesc: '', //期限生效
           tableSupplierInfo: [],
           conSubjctName: [],
           thirdPartyInfo: [],
@@ -2131,8 +2131,8 @@
               required: true,
               message: '请输入合同截止日期'
             }],
-            effectiveCondition:[{required: true, message: '请选择生效条件'}],
-            conditionDesc:[{required: true, message: '请输入附期限生效信息'}]
+            effectiveCondition: [{required: true, message: '请选择生效条件'}],
+            conditionDesc: [{required: true, message: '请输入附期限生效信息'}]
           }
         },
         cardFinanceInfoForm: {
@@ -2318,7 +2318,7 @@
             }
           ],
           rules: {
-            deposit: [{required: true, message: '请输入保证金金额', trigger: 'blur'},{ type: 'number', message: '保证金必须为数字值', trigger: 'blur'}],
+            deposit: [{required: true, message: '请输入保证金金额', trigger: 'blur'}, { type: 'number', message: '保证金必须为数字值', trigger: 'blur'}],
             totalAmount: [{ type: 'number', message: '合同总金额必须为数字值'}],
             payTime: [{required: true, message: '请输入付款时间'}],
             invoiceType: [{required: true, message: '请选择开票类型'}]
@@ -2376,7 +2376,7 @@
           contractList: [],
           pageNo: 1,
           pageSize: 10,
-          total:0
+          total: 0
         },
         cardOtherInfo: {
           condition: 3,
@@ -2400,7 +2400,7 @@
           ]
         },
         paymentMethods: {}, // 支付方式备份
-        oldSealAttachments: '',//在审批阶段保存接口返回的附件信息
+        oldSealAttachments: '', //在审批阶段保存接口返回的附件信息
         formNewSubject: {
           rules: {
             search: [
@@ -2513,14 +2513,14 @@
         },
         isSubmit: false,
         btnSubmitStatus: true, // 提交按钮状态
-        btnSaveStatus: true,// 保存按钮状态
+        btnSaveStatus: true// 保存按钮状态
       }
     },
     computed: {
-      ifRequest:function(){//在创建合同或变更合同的变更方式为原合同作废时，不请求除初始化以外的接口
-        let request=false
-        if(this.operateType==='create'||this.updateForm.updateMode===2){
-          request=true
+      ifRequest: function() { //在创建合同或变更合同的变更方式为原合同作废时，不请求除初始化以外的接口
+        let request = false
+        if (this.operateType === 'create' || this.updateForm.updateMode === 2) {
+          request = true
         }
         return request
       },
@@ -2547,9 +2547,9 @@
         const progress = parseFloat(paymentMethods.progress[0].paymentAmount ? paymentMethods.progress[0].paymentAmount : 0)
         const _final = parseFloat(paymentMethods._final[0].paymentAmount ? paymentMethods._final[0].paymentAmount : 0)
         const deposit = parseFloat(paymentMethods.deposit[0].paymentAmount ? paymentMethods.deposit[0].paymentAmount : 0)
-        return earnest+advance + progress + _final+deposit
+        return earnest + advance + progress + _final + deposit
       },
-      totalAmount: function () {//合同总金额即物料总价
+      totalAmount: function () { //合同总金额即物料总价
         let sum = 0
         if (this.baseInfoForm.contractType !== 3 && this.baseInfoForm.contractType !== 4) {
           const conStandards = this.cardContentInfoForm.conStandard
@@ -2684,7 +2684,7 @@
         }
         return enabled
       },
-      earnestPaymentAmount:function () {
+      earnestPaymentAmount: function () {
         const items = this.cardFinanceInfoForm.paymentMethods.earnest[0].subItem
         let sum = 0
         if (items && items.length) {
@@ -2751,14 +2751,14 @@
         reg.test(this.users.roleName) ? ifRole = true : ifRole = false
         return ifRole
       },
-      enabledUpdateInApprove: function () {//在审批阶段修改附件时，上传盖章合同控件的上传按钮状态（仅用章保管人可用）
+      enabledUpdateInApprove: function () { //在审批阶段修改附件时，上传盖章合同控件的上传按钮状态（仅用章保管人可用）
         let enabled = false
         if (this.operateType === 'query') {
           this.ifRole ? enabled = true : enabled = false
         }
         return enabled
       },
-      enabledUpdateInApprovePrint: function () {//创建和变更阶段可用，审批阶段且角色是用章保管人可用
+      enabledUpdateInApprovePrint: function () { //创建和变更阶段可用，审批阶段且角色是用章保管人可用
         let enabled = true
         if (this.operateType === 'query') {
           this.ifRole ? enabled = true : enabled = false
@@ -2768,7 +2768,7 @@
         }
         return enabled
       },
-      enabledUpdateInApprovePrint1: function () {//创建和变更阶段可用，审批阶段且角色是用章保管人可用
+      enabledUpdateInApprovePrint1: function () { //创建和变更阶段可用，审批阶段且角色是用章保管人可用
         let enabled = true
         if (this.operateType === 'query') {
           this.ifRole ? enabled = true : enabled = false
@@ -2786,7 +2786,7 @@
         return enabled
       }
     },
-    filters:{
+    filters: {
       formatDate
     },
     mounted() {
@@ -2819,18 +2819,18 @@
       if (this.$route.path && this.$route.path === '/ConCreate/conCheck') {
         this.operateType = 'query'
         let query = this.$route.query
-        const queryParams={}
-        if(query.processData){//流程进去使用id查询
-          queryParams.contractId=query.contractId
-          queryParams.operate='PROCESS'
-          Api.getContractDetailByContractId(queryParams).then((data)=>{
+        const queryParams = {}
+        if (query.processData) { //流程进去使用id查询
+          queryParams.contractId = query.contractId
+          queryParams.operate = 'PROCESS'
+          Api.getContractDetailByContractId(queryParams).then((data) => {
             const dataMap = data.data.dataMap
             if (dataMap) {
               this.initData(dataMap)
             }
           })
-        }else{//使用No查询
-          Api.getUpdateInfo(query.contractNo).then((data)=>{
+        } else { //使用No查询
+          Api.getUpdateInfo(query.contractNo).then((data) => {
             const dataMap = data.data.dataMap
             if (dataMap) {
               this.initData(dataMap)
@@ -2858,13 +2858,13 @@
         param.templateType = (this.baseInfoForm.contractTextType === 1 ? 'TEMPLATE' : 'TEXT')
 
         const paymentMethods = this.cardFinanceInfoForm.paymentMethods
-        paymentMethods.earnest.length?paymentMethods.earnest[0].type = '定金':null
-        paymentMethods.advance.length?paymentMethods.advance[0].type = '预付款':null
-        paymentMethods.progress.length?paymentMethods.progress[0].type = '进度款':null
-        paymentMethods._final.length?paymentMethods._final[0].type = '尾款':null
-        paymentMethods.deposit.length?paymentMethods.deposit[0].type = '保证金':null
+        paymentMethods.earnest.length ? paymentMethods.earnest[0].type = '定金' : null
+        paymentMethods.advance.length ? paymentMethods.advance[0].type = '预付款' : null
+        paymentMethods.progress.length ? paymentMethods.progress[0].type = '进度款' : null
+        paymentMethods._final.length ? paymentMethods._final[0].type = '尾款' : null
+        paymentMethods.deposit.length ? paymentMethods.deposit[0].type = '保证金' : null
         if (this.operateType !== 'create') {
-          this.contractInfo=[this.baseInfoForm]
+          this.contractInfo = [this.baseInfoForm]
           this.baseInfoForm.contractTypeName = this.getContractModelName(parseInt(data.baseInfoForm.contractType))// 初始化合同模式
           const sealAttachments = this.cardSealInfoForm.sealAttachments
           this.oldSealAttachments = JSON.stringify(this.cardSealInfoForm.sealAttachments)
@@ -2889,12 +2889,12 @@
           //初始化相关数据信息
           this.initRelatedInfo()
           //初始化其他数据
-          if(this.baseInfoForm.prNo){
-            this.cardOtherInfo.conditionOptions=[
+          if (this.baseInfoForm.prNo) {
+            this.cardOtherInfo.conditionOptions = [
               {
-              value: 2,
-              label: '比价单信息'
-            },
+                value: 2,
+                label: '比价单信息'
+              },
               {
                 value: 3,
                 label: '合同信息'
@@ -2904,7 +2904,6 @@
                 label: '订单信息'
               }]
           }
-
         } else {
           this.baseInfoForm.contractTypeName = this.getContractModelName(parseInt(params.contractType))// 初始化合同模式
           if (this.baseInfoForm.contractBusinessTypeFirst !== 2) { // 初始化当前可添加的合同标的的类型
@@ -2953,7 +2952,7 @@
           })
         }
       },
-      getPreviewData(){
+      getPreviewData() {
         this.formatTime(this.cardContentInfoForm, this.cardFinanceInfoForm)
         const previewData = {}
         previewData.conStandard = this.cardContentInfoForm.conStandard || []
@@ -3033,7 +3032,7 @@
             curForm.resetFields()
             this.cardContCheckInfoForm.dialogAddServiceVisible = false
             if (this.isSubmit) {
-              this.validateForms().catch(()=> {
+              this.validateForms().catch(() => {
               })
             }
           } else {
@@ -3072,7 +3071,7 @@
         console.log('fileList', fileList)
       },
       handleContractDetail(index, row) {
-        this.$router.push({name: routerNames.con_Check,query:{contractNo:row.contractNo}})
+        this.$router.push({name: routerNames.con_Check, query: {contractNo: row.contractNo}})
       },
       handleAddNewSubject(formName) {
         let curForm = this.$refs[formName]
@@ -3090,7 +3089,7 @@
             if (subjects.length) {
               for (let i = 0, len = subjects.length; i < len; i++) {
                 if (key === subjects[i].companyCode) {
-                  this.cardFinanceInfoForm.jiaBillingInfo.push(subjects[i]);
+                  this.cardFinanceInfoForm.jiaBillingInfo.push(subjects[i])
                   this.cardContentInfoForm.conSubjctName.push({
                     code: subjects[i].companyCode,
                     name: subjects[i].company,
@@ -3103,7 +3102,7 @@
             curForm.resetFields()
             this.baseInfoForm.dialogNewSubjectVisible = false
             if (this.isSubmit) {
-              this.validateForms().catch(()=> {
+              this.validateForms().catch(() => {
               })
             }
           } else {
@@ -3140,7 +3139,7 @@
             if (suppliers.length) {
               for (let i = 0, len = suppliers.length; i < len; i++) {
                 if (key === suppliers[i].companyCode) {
-                  this.cardFinanceInfoForm.yiBillingInfo = [suppliers[i]];
+                  this.cardFinanceInfoForm.yiBillingInfo = [suppliers[i]]
                   this.cardContentInfoForm.tableSupplierInfo = [{
                     code: suppliers[i].companyCode,
                     name: suppliers[i].company,
@@ -3153,7 +3152,7 @@
             curForm.resetFields()
             this.cardContentInfoForm.dialogAddContractSupplier = false
             if (this.isSubmit) {
-              this.validateForms().catch(()=> {
+              this.validateForms().catch(() => {
               })
             }
           } else {
@@ -3286,8 +3285,8 @@
           result = parseFloat(money) / totalAmount
         }
         result = new Number(result) * 100
-        if(result>=100){
-          result=100
+        if (result >= 100) {
+          result = 100
         }
         return result.toFixed(2) + '%'
       },
@@ -3335,7 +3334,7 @@
             sealFileCreateTime: formatDate(dataMap.createTime),
             operate: 'add'
           }]
-          console.log('this.cardSealInfoForm',this.cardSealInfoForm);
+          console.log('this.cardSealInfoForm', this.cardSealInfoForm)
           this.$message.success('文件上传成功')
         }
       },
@@ -3357,7 +3356,7 @@
               serviceCheckMsg: ''
             },
             cardFinanceInfoForm: {
-              errorCount: 0,
+              errorCount: 0
             },
             baseInfoForm: false
           }
@@ -3394,15 +3393,15 @@
                startTime: '',
                endTime: '',
                conditionDesc:'',//期限生效*/
-              if(this.cardContentInfoForm.effectiveCondition===1){
+              if (this.cardContentInfoForm.effectiveCondition === 1) {
                 errors.cardContentInfoForm.errorCount += 2
-              }else if(this.cardContentInfoForm.effectiveCondition===2){
+              } else if (this.cardContentInfoForm.effectiveCondition === 2) {
                 errors.cardContentInfoForm.errorCount += 1
               }
               return false
             }
           })
-          this.$refs.cardFinanceInfoForm.validate((valid)=> {
+          this.$refs.cardFinanceInfoForm.validate((valid) => {
             const cardFinanceInfoForm = this.cardFinanceInfoForm
             if (cardFinanceInfoForm.paymentErrorMSG) {
               errors.cardFinanceInfoForm.errorCount = 1
@@ -3418,7 +3417,7 @@
                   }
                 }
               }
-              console.log('errors.cardFinanceInfoForm.errorCount',errors.cardFinanceInfoForm.errorCount)
+              console.log('errors.cardFinanceInfoForm.errorCount', errors.cardFinanceInfoForm.errorCount)
               return false
             }
           })
@@ -3472,31 +3471,31 @@
           }
         })
       },
-      combineSealsInfo() {//剔除空数据项
+      combineSealsInfo() { //剔除空数据项
         const contract = this.cardSealInfoForm.contract
         const agreenments = this.cardSealInfoForm.agreenments
         const others = this.cardSealInfoForm.others
         let sealAttachments = []
 
-        contract.map((item)=>{
-          const {filesSealed}=item
-          if(filesSealed){
-            const {sealFileCreateTime}=filesSealed[0]
-            if(sealFileCreateTime){
-              filesSealed[0].sealFileCreateTime=formatDate(sealFileCreateTime)
+        contract.map((item) => {
+          const {filesSealed} = item
+          if (filesSealed) {
+            const {sealFileCreateTime} = filesSealed[0]
+            if (sealFileCreateTime) {
+              filesSealed[0].sealFileCreateTime = formatDate(sealFileCreateTime)
             }
           }
         })
 
-        const sealOthers = [], sealAgreenments = [],sealContract=[]
+        const sealOthers = [], sealAgreenments = [], sealContract = []
         if (others && others.length) {
-          others.map((item)=>{
-            if(item[0]){
-              let  inItem=item[0]
-              let {filesSealed}=inItem
-              if(filesSealed&&filesSealed[0]){
-                const {sealFileCreateTime}=filesSealed[0]
-                filesSealed[0].sealFileCreateTime=formatDate(sealFileCreateTime)
+          others.map((item) => {
+            if (item[0]) {
+              let inItem = item[0]
+              let {filesSealed} = inItem
+              if (filesSealed && filesSealed[0]) {
+                const {sealFileCreateTime} = filesSealed[0]
+                filesSealed[0].sealFileCreateTime = formatDate(sealFileCreateTime)
               }
             }
             sealOthers.push(item)
@@ -3517,7 +3516,7 @@
         sealAgreenments.length ? sealAttachments = sealAttachments.concat(sealAgreenments) : null
         return sealAttachments
       },
-      combineSealsInfo1() {//不剔除空数据项
+      combineSealsInfo1() { //不剔除空数据项
         const contract = this.cardSealInfoForm.contract
         const agreenments = this.cardSealInfoForm.agreenments
         const others = this.cardSealInfoForm.others
@@ -3536,16 +3535,16 @@
         sealAgreenments.length ? sealAttachments = sealAttachments.concat(sealAgreenments) : null
         return sealAttachments
       },
-      combineSealsInfoWithoudAgreenments() {//剔除空数据项
+      combineSealsInfoWithoudAgreenments() { //剔除空数据项
         const contract = this.cardSealInfoForm.contract
         const others = this.cardSealInfoForm.others
         let sealAttachments = []
 
-        contract.map((item)=>{
-          const {filesSealed}=item
-          if(filesSealed){
-            const {sealFileCreateTime}=filesSealed[0]
-            filesSealed[0].sealFileCreateTime=formatDate(sealFileCreateTime)
+        contract.map((item) => {
+          const {filesSealed} = item
+          if (filesSealed) {
+            const {sealFileCreateTime} = filesSealed[0]
+            filesSealed[0].sealFileCreateTime = formatDate(sealFileCreateTime)
           }
         })
 
@@ -3554,10 +3553,10 @@
           for (let i = 0, len = others.length; i < len; i++) {
             const item = others[i]
             if (item[0] && item[0].fileName) {
-              const {filesSealed}=item[0]
-              if(filesSealed&&filesSealed[0]){
-                const {sealFileCreateTime}=filesSealed[0]
-                filesSealed[0].sealFileCreateTime=formatDate(sealFileCreateTime)
+              const {filesSealed} = item[0]
+              if (filesSealed && filesSealed[0]) {
+                const {sealFileCreateTime} = filesSealed[0]
+                filesSealed[0].sealFileCreateTime = formatDate(sealFileCreateTime)
               }
               sealOthers.push(item)
             }
@@ -3669,7 +3668,7 @@
             })
           }
         })
-          .catch(()=> {
+          .catch(() => {
             this.btnSubmitStatus = true
             this.$message.error('请填写完合同信息再提交！')
           })
@@ -3859,14 +3858,14 @@
         rows.splice(index, 1)
       },
       getRemotebusinessOperatorsByKeyWord(query) {
-        if (this.ifRequest&&query) {
+        if (this.ifRequest && query) {
           this.baseInfoForm.loading = true
-          console.log('getRemotebusinessOperatorsByKeyWord',query);
-            Api.getRemoteCreatePersonsByKeyWord({keyword: query})
-              .then((data) => {
-                this.baseInfoForm.loading = false
-                this.baseInfoForm.businessOperators = data.data.dataMap
-              })
+          console.log('getRemotebusinessOperatorsByKeyWord', query)
+          Api.getRemoteCreatePersonsByKeyWord({keyword: query})
+            .then((data) => {
+              this.baseInfoForm.loading = false
+              this.baseInfoForm.businessOperators = data.data.dataMap
+            })
         } else {
           this.baseInfoForm.businessOperatorId = ''
           this.baseInfoForm.businessOperatorName = ''
@@ -3874,16 +3873,16 @@
         }
       },
       getRemoteResponsiblesByKeyWord(query) {
-          if (this.ifRequest&&query) {
-            this.cardContCheckInfoForm.loading = true
-            Api.getRemoteCreatePersonsByKeyWord({keyword: query})
-              .then((data) => {
-                this.cardContCheckInfoForm.loading = false
-                this.cardContCheckInfoForm.responsibles = data.data.dataMap
-              })
-          } else {
-            this.cardContCheckInfoForm.responsibles = []
-          }
+        if (this.ifRequest && query) {
+          this.cardContCheckInfoForm.loading = true
+          Api.getRemoteCreatePersonsByKeyWord({keyword: query})
+            .then((data) => {
+              this.cardContCheckInfoForm.loading = false
+              this.cardContCheckInfoForm.responsibles = data.data.dataMap
+            })
+        } else {
+          this.cardContCheckInfoForm.responsibles = []
+        }
       },
       handleContractTextTypeChange(val) {
         const params = {}
@@ -3893,7 +3892,7 @@
           this.baseInfoForm.templateId = ''
         }
 
-        if(this.ifRequest){
+        if (this.ifRequest) {
           Api.getTemplateByBizTypeId(params).then((data) => {
             this.baseInfoForm.templateOptions = data.data.dataMap || []
           })
@@ -3901,7 +3900,7 @@
       },
       handleBusinessOperatorChange(val) {
         const businessOperators = this.baseInfoForm.businessOperators
-        if (this.ifRequest&&businessOperators.length) {
+        if (this.ifRequest && businessOperators.length) {
           for (let i = 0, len = businessOperators.length; i < len; i++) {
             if (val === businessOperators[i].userId) {
               this.baseInfoForm.businessOperatorName = businessOperators[i].userName
@@ -3917,7 +3916,6 @@
                   this.cardContCheckInfoForm.responsibleDeptName = ''
                   this.cardContCheckInfoForm.responsibleDeptId = ''
                 }
-
               })
             }
           }
@@ -3935,7 +3933,7 @@
         }
       },
       getRemoteCheckPersonsByKeyWord(query) {
-        if (this.ifRequest&&query !== '') {
+        if (this.ifRequest && query !== '') {
           this.formAddUnionCheck.loading = true
           Api.getRemoteCreatePersonsByKeyWord({keyword: query})
             .then((data) => {
@@ -3959,7 +3957,7 @@
         }
       },
       handleTemplateChange(val) {
-        if (this.ifRequest&&val) {
+        if (this.ifRequest && val) {
           const contractTextType = this.baseInfoForm.contractTextType
           const templateOptions = this.baseInfoForm.templateOptions
           let templateName = ''
@@ -3974,7 +3972,7 @@
               const dataMap = data.data.dataMap
               if (this.operateType === 'create') {
                 let contract = [], agreenments = [], others = []
-                if (dataMap&&dataMap.length) {
+                if (dataMap && dataMap.length) {
                   for (let i = 0, len = dataMap.length; i < len; i++) { // 初始化附件类型
                     const item = dataMap[i]
                     if (parseInt(item.attachType) === 3) {
@@ -4053,16 +4051,16 @@
             item.price = curForm.model.price
             item.amount = curForm.model.price
             item.taxCode = curForm.model.taxCode
-            item.taxRate = curForm.model.taxRates.find((item)=>item.code===curForm.model.taxCode).value
+            item.taxRate = curForm.model.taxRates.find((item) => item.code === curForm.model.taxCode).value
             item.operate = 'add'
             conStandard.push(item)
             this.cardContentInfoForm.dialogAddConStandard = false
             this.$refs[formName].resetFields()
           } else {
-            console.log('error submit!!');
-            return false;
+            console.log('error submit!!')
+            return false
           }
-        });
+        })
       },
       handleCancelAddConStandard(formName) {
         this.$refs[formName].resetFields()
@@ -4130,40 +4128,40 @@
           callback && callback(data)
         })
       },
-      enabledAllApply(code){
+      enabledAllApply(code) {
         let enabled = false
         if (code === '1001' && this.baseInfoForm.contractType >= 3 && this.operateType === 'create') {
           enabled = true
         }
         return enabled
       },
-      callback(params){//isSign:是否是加签人 isAgree:审批操作类型是否是同意
-        return new Promise((resolve, reject)=> {
-            const {isSign, isAgree}=params
-            if (!isSign && isAgree && this.ifRole) {
-              const para = {}
-              para.sealAttachments = this.combineSealsInfoWithoudAgreenments()
-              para.id = this.baseInfoForm.id
-              para.type = 1
-              Api.uploadSealAttachments(para)
-                .then(()=> {
-                  resolve()
-                })
-                .catch(()=> {
-                  reject()
-                })
-            }else{
-              resolve()
-            }
+      callback(params) { //isSign:是否是加签人 isAgree:审批操作类型是否是同意
+        return new Promise((resolve, reject) => {
+          const {isSign, isAgree} = params
+          if (!isSign && isAgree && this.ifRole) {
+            const para = {}
+            para.sealAttachments = this.combineSealsInfoWithoudAgreenments()
+            para.id = this.baseInfoForm.id
+            para.type = 1
+            Api.uploadSealAttachments(para)
+              .then(() => {
+                resolve()
+              })
+              .catch(() => {
+                reject()
+              })
+          } else {
+            resolve()
+          }
         })
       },
-      handleChangeValidateForms(){
+      handleChangeValidateForms() {
         if (this.isSubmit) {
-          this.validateForms().catch(()=> {
+          this.validateForms().catch(() => {
           })
         }
       },
-      initRelatedInfo(){
+      initRelatedInfo() {
         this.comLoading()
         Api.getConList(this.cardRelatedInfoForm).then((data) => {
           const dataMap = data.data.dataMap
@@ -4172,15 +4170,15 @@
             this.cardRelatedInfoForm.total = dataMap.total
           }
           this.comLoading(false)
-        }).catch(()=>{
+        }).catch(() => {
           this.comLoading(false)
         })
       },
-      handleRelatedInfoSizeChange(val){
+      handleRelatedInfoSizeChange(val) {
         this.cardRelatedInfoForm.pageSize = val
         this.initRelatedInfo()
       },
-      handleRelatedInfoCurrentChange(page){
+      handleRelatedInfoCurrentChange(page) {
         this.cardRelatedInfoForm.pageNo = page
         this.initRelatedInfo()
       },
@@ -4198,8 +4196,8 @@
           }
         }
       },
-      handleChangeUpdateMode(val){
-        if(val===2){
+      handleChangeUpdateMode(val) {
+        if (val === 2) {
           this.handleContractTextTypeChange(this.baseInfoForm.contractTextType)
         }
       }
@@ -4443,11 +4441,10 @@
                   ratio: ''
                 }
               ]
-            }],
+            }]
           }
           this.cardFinanceInfoForm.paymentMethods = paymentMethods
         }
-
       },
       'totalConMoney': function (val) {
         if (this.operateType === 'create') {

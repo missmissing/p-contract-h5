@@ -61,9 +61,9 @@ export default {
   },
   // 根据合同id查询合同详情
   getContractDetailByContractId(params) {
-    const {contractId,operate}=params
-    if(operate){
-      return Http.get(`${contract}/contract-web/contract/id/${contractId}`,params)
+    const {contractId, operate} = params
+    if (operate) {
+      return Http.get(`${contract}/contract-web/contract/id/${contractId}`, params)
     }
     return Http.get(`${contract}/contract-web/contract/id/${contractId}`)
   },
@@ -75,9 +75,9 @@ export default {
   /** ****变更合同接口start******/
   // 根据合同编号获取变更合同的数据
   getUpdateInfo(params) {
-    if(typeof params==='object'){
-      return Http.get(`${contract}/contract-web/contract/no/${params.code}`,params)
-    }else{
+    if (typeof params === 'object') {
+      return Http.get(`${contract}/contract-web/contract/no/${params.code}`, params)
+    } else {
       return Http.get(`${contract}/contract-web/contract/no/${params}`)
     }
   },

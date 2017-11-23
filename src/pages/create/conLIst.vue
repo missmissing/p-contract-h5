@@ -202,7 +202,7 @@
           label: 'businessName'
         },
         form: {
-          contractName:'',
+          contractName: '',
           contractNo: '',
           businessType: [], // 业务类型id
           contractType: '', // 合同模式
@@ -213,9 +213,9 @@
           createStart: '',
           createEnd: '',
           effective1: true,
-          suppliers:[],
-          loading:false,
-          supplierCode:'',
+          suppliers: [],
+          loading: false,
+          supplierCode: '',
           pageNo: 1,
           pageSize: 10
         },
@@ -244,7 +244,7 @@
             this.totalPage = dataMap.total
           }
           this.loading = false
-        }).catch(()=>{
+        }).catch(() => {
           this.loading = false
         })
       },

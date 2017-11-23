@@ -220,7 +220,7 @@
           this.setServerData()
           this.setContractForm()
           this.comLoading(false)
-        }).catch(()=>{
+        }).catch(() => {
           this.comLoading(false)
         })
       },

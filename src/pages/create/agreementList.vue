@@ -169,12 +169,12 @@
         if (query !== '') {
           this.agreementForm.agreementLoading = true
           Api.getRemoteSubjectsByKeyWord({key: query})
-            .then((data)=>{
+            .then((data) => {
               this.agreementForm.agreementLoading = false
               this.agreementForm.companies = data.data.dataMap || []
             })
         } else {
-          this.agreementForm.conSubjctName=''
+          this.agreementForm.conSubjctName = ''
           this.agreementForm.companies = []
         }
       },
@@ -198,7 +198,7 @@
               this.agreementForm.creators = data.data.dataMap || []
             })
         } else {
-          this.agreementForm.creatorName=''
+          this.agreementForm.creatorName = ''
           this.agreementForm.creators = []
         }
       },

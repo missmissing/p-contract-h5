@@ -62,7 +62,7 @@
         tableData: []
       }
     },
-    filters:{
+    filters: {
       formatDate
     },
     methods: {

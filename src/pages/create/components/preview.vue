@@ -77,71 +77,73 @@
             </table>
           </div>
           <div class="mb20" v-html="currentTpl"></div>
-          <div>合同标的：</div>
           <div v-if="materialTable.length">
-            <template v-if="[1,2,3].indexOf(contractType)>-1&&contractBusinessTypeFirst===2">
-              <table>
-                <thead>
-                <tr>
-                  <th>物料描述</th>
-                  <th>价格</th>
-                  <th width="100">税率</th>
-                </tr>
-                </thead>
-                <tbody>
-                <tr v-for="item in materialTable">
-                  <td>{{item.materialName}}</td>
-                  <td>{{item.price}}</td>
-                  <td>{{item.taxRate}}%</td>
-                </tr>
-                </tbody>
-              </table>
-            </template>
-            <template v-if="[1,2].indexOf(contractType)>-1&&[1,3].indexOf(contractBusinessTypeFirst)>-1">
-              <table>
-                <thead>
-                <tr>
-                  <th>物料编码</th>
-                  <th>物料描述</th>
-                  <th>数量</th>
-                  <th>含税单价</th>
-                  <th>税率</th>
-                </tr>
-                </thead>
-                <tbody>
-                <tr v-for="item in materialTable">
-                  <td>{{item.materialCode}}</td>
-                  <td>{{item.materialName}}</td>
-                  <td>{{item.total}}</td>
-                  <td>{{item.price}}</td>
-                  <td>{{item.taxRate}}%</td>
-                </tr>
-                </tbody>
-              </table>
-            </template>
-            <template v-if="contractType===3&&[1,3].indexOf(contractBusinessTypeFirst)>-1">
-              <table>
-                <thead>
-                <tr>
-                  <th>物料编码</th>
-                  <th>物料描述</th>
-                  <th>含税单价</th>
-                  <th>税率</th>
-                </tr>
-                </thead>
-                <tbody>
-                <tr v-for="item in materialTable">
-                  <td>{{item.materialCode}}</td>
-                  <td>{{item.materialName}}</td>
-                  <td>{{item.price}}</td>
-                  <td>{{item.taxRate}}%</td>
-                </tr>
-                </tbody>
-              </table>
-            </template>
-            <div class="mt20 mb20" v-if="corporeRemark">
-              <div>合同标的备注：</div>
-              <div>{{corporeRemark}}</div>
+            <div>合同标的：</div>
+            <div>
+              <template v-if="[1,2,3].indexOf(contractType)>-1&&contractBusinessTypeFirst===2">
+                <table>
+                  <thead>
+                  <tr>
+                    <th>物料描述</th>
+                    <th>价格</th>
+                    <th width="100">税率</th>
+                  </tr>
+                  </thead>
+                  <tbody>
+                  <tr v-for="item in materialTable">
+                    <td>{{item.materialName}}</td>
+                    <td>{{item.price}}</td>
+                    <td>{{item.taxRate}}%</td>
+                  </tr>
+                  </tbody>
+                </table>
+              </template>
+              <template v-if="[1,2].indexOf(contractType)>-1&&[1,3].indexOf(contractBusinessTypeFirst)>-1">
+                <table>
+                  <thead>
+                  <tr>
+                    <th>物料编码</th>
+                    <th>物料描述</th>
+                    <th>数量</th>
+                    <th>含税单价</th>
+                    <th>税率</th>
+                  </tr>
+                  </thead>
+                  <tbody>
+                  <tr v-for="item in materialTable">
+                    <td>{{item.materialCode}}</td>
+                    <td>{{item.materialName}}</td>
+                    <td>{{item.total}}</td>
+                    <td>{{item.price}}</td>
+                    <td>{{item.taxRate}}%</td>
+                  </tr>
+                  </tbody>
+                </table>
+              </template>
+              <template v-if="contractType===3&&[1,3].indexOf(contractBusinessTypeFirst)>-1">
+                <table>
+                  <thead>
+                  <tr>
+                    <th>物料编码</th>
+                    <th>物料描述</th>
+                    <th>含税单价</th>
+                    <th>税率</th>
+                  </tr>
+                  </thead>
+                  <tbody>
+                  <tr v-for="item in materialTable">
+                    <td>{{item.materialCode}}</td>
+                    <td>{{item.materialName}}</td>
+                    <td>{{item.price}}</td>
+                    <td>{{item.taxRate}}%</td>
+                  </tr>
+                  </tbody>
+                </table>
+              </template>
+              <div class="mt20 mb20" v-if="corporeRemark">
+                <div>合同标的备注：</div>
+                <div>{{corporeRemark}}</div>
+              </div>
             </div>
           </div>
           <div v-if="moneyInvolved">
@@ -364,7 +366,7 @@
         }
         const {contractNo, contractBusinessTypeThirdName, conStandard, cardFinanceInfoForm, endTime, startTime, conditionDesc, effectiveCondition, templateId, contractType, contractBusinessTypeFirst, corporeRemark, paymentRemark} = this.datas
         const {jiaBillingInfo, yiBillingInfo, moneyInvolved, totalAmount, paymentMethods, oneOffPay, paymentTimePeriods} = cardFinanceInfoForm
-        const {earnest,advance, progress, _final,deposit} = paymentMethods
+        const {earnest, advance, progress, _final, deposit} = paymentMethods
         this.paymentTimePeriods = paymentTimePeriods
         this.contractType = contractType
         this.contractBusinessTypeFirst = contractBusinessTypeFirst
@@ -377,21 +379,21 @@
         this.corporeRemark = corporeRemark
         this.paymentRemark = paymentRemark
         this.title = contractBusinessTypeThirdName
+        this.partAName = jiaBillingInfo.map((item) => {
+          return item.company
+        })
+        this.partBName = yiBillingInfo.length > 0 ? [yiBillingInfo[0].company] : []
+        this.supplierName = yiBillingInfo.length > 0 ? yiBillingInfo[0].company : ''
         if (moneyInvolved) {
           this.moneyInvolved = moneyInvolved
           this.totalAmount = totalAmount
           this.partA = jiaBillingInfo
           this.partB = yiBillingInfo[0] || {}
-          this.partAName = jiaBillingInfo.map((item) => {
-            return item.company
-          })
-          this.partBName = yiBillingInfo.length > 0 ? [yiBillingInfo[0].company] : []
-          this.supplierName = yiBillingInfo.length > 0 ? yiBillingInfo[0].company : ''
 
           if (oneOffPay) {
             this.oneOffPay = true
           } else {
-            this.priceTable = [...this.transformData(earnest, '定金'),...this.transformData(advance, '预付款'), ...this.transformData(progress, '进度款'), ...this.transformData(_final, '尾款'), ...this.transformData(deposit, '保证金')]
+            this.priceTable = [...this.transformData(earnest, '定金'), ...this.transformData(advance, '预付款'), ...this.transformData(progress, '进度款'), ...this.transformData(_final, '尾款'), ...this.transformData(deposit, '保证金')]
           }
         }
 

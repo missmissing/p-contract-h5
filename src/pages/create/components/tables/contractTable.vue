@@ -46,15 +46,15 @@
 
   export default {
     mixins: [comLoading],
-    props:{
-      contractInfo:Array
+    props: {
+      contractInfo: Array
     },
     data() {
       return {
         tableData: []
       }
     },
-    filters:{
+    filters: {
       formatDate
     }
   }

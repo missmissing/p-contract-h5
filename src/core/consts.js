@@ -21,7 +21,7 @@ export default {
         ERROR_500: 'NET_COMMUNICATION_NORMAL_ERROR_ERROR_500'
       }
     },
-    NET_REQUEST_TIMEOUT:'NET_REQUEST_TIMEOUT'
+    NET_REQUEST_TIMEOUT: 'NET_REQUEST_TIMEOUT'
   }
 }
 
@@ -63,8 +63,8 @@ export const routerNames = {
   con_compensate_see: '违约/赔付处理查看',
   con_check_reject: '合同验收不合格处理',
   con_check_reject_see: '合同验收不合格处理查看',
-  con_goods_receipt:'物资类验收',
-  con_services_receipt:'服务类验收',
+  con_goods_receipt: '物资类验收',
+  con_services_receipt: '服务类验收',
 
   con_process: '合同流程',
   con_handing_process: '我待办的流程',
@@ -73,7 +73,7 @@ export const routerNames = {
   con_process_see: '查看流程',
   con_process_approve: '审批流程',
 
-  con_query:'合同查询',
+  con_query: '合同查询',
   con_search: '报表查询',
   con_list: '合同模板/文本查询',
   con_tpl_list: '合同模板查询',

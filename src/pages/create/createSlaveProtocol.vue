@@ -405,9 +405,9 @@
     data: function () {
       return {
         procInstId: '', // 流程编号：
-        procTitle: '',//流程名称
+        procTitle: '', //流程名称
         queryContractForm: {
-          testtype:[],//??delete
+          testtype: [], //??delete
           visible: false, // 在创建从协议时控制从协议页面数据的显示与否
           code: '',
           rules: {
@@ -418,9 +418,9 @@
         users: user,
         downloadUrl: downloadUrl,
         uploadUrl: uploadUrl,
-        id:'',//从协议id
+        id: '', //从协议id
         protocolNo: null, // 从协议编号
-        code:null,//合同编号
+        code: null, //合同编号
         operateType: 'create', // 默认创建状态，query：查看
         activeTabName: 'tabBaseInfo',
         baseInfoForm: {
@@ -436,7 +436,7 @@
         },
         cardSealInfoForm: {
           sealAttachments: [
-           /* [{
+            /* [{
               testtype:['地推活动'],////??delte
               operate: 'add',
               id: '',
@@ -471,8 +471,8 @@
           ],
           attachmentErrorMsg: '',
           current: null, // 为上传功能保存当前所在附件列表的索引
-          type: null,// 为上传功能保存当前附件类型
-          rules:{
+          type: null, // 为上传功能保存当前附件类型
+          rules: {
             //testtype:[{ type: 'array', required: true, message: '请选择活动性质', trigger: 'change' }]
           }
         },
@@ -546,30 +546,30 @@
         }
         return show
       },
-      ifRole:function(){
-        let ifRole=false,reg=/印章保管人/g
-        reg.test(this.users.roleName)?ifRole= true:ifRole=false
+      ifRole: function() {
+        let ifRole = false, reg = /印章保管人/g
+        reg.test(this.users.roleName) ? ifRole = true : ifRole = false
         return ifRole
       },
-      enabledUpdateInApprove:function(){//在审批阶段修改附件时，控件的状态（仅用章保管人可用）
-        let enabled=false
-        if(this.operateType==='query'){
-          this.ifRole?enabled=true:enabled=false
+      enabledUpdateInApprove: function() { //在审批阶段修改附件时，控件的状态（仅用章保管人可用）
+        let enabled = false
+        if (this.operateType === 'query') {
+          this.ifRole ? enabled = true : enabled = false
         }
         return enabled
       },
-      enabledUpdateInApprovePrint:function(){//创建可用，审批阶段且角色是用章保管人可用
-        let enabled=true
-        if(this.operateType==='query'){
-          this.ifRole?enabled=true:enabled=false
+      enabledUpdateInApprovePrint: function() { //创建可用，审批阶段且角色是用章保管人可用
+        let enabled = true
+        if (this.operateType === 'query') {
+          this.ifRole ? enabled = true : enabled = false
         }
         return enabled
-      },
+      }
     },
     mounted: function () {
       const query = this.$route.query
-      if(query.processData){
-        this.procInstId=JSON.parse(query.processData).procInstId
+      if (query.processData) {
+        this.procInstId = JSON.parse(query.processData).procInstId
         this.procTitle = JSON.parse(query.processData).procTitle
         this.users.roleName = JSON.parse(query.processData).roleName
       }
@@ -777,25 +777,25 @@
             baseInfoForm.subjectErrorMsg = ''
           }
           //验证附件的数据是否填写完整
-          if (attachments&&attachments.length){
-            for(let i=0,len=attachments.length;i<len;i++){
-              const item=attachments[i]
-              if(item[0].haveSale){
-                if(item[0].printTime&&item[0].remainTime&&item[0].saleInfos.length){
-                  this.cardSealInfoForm.attachmentErrorMsg=''
-                }else{
-                  this.cardSealInfoForm.attachmentErrorMsg='请确保所有附件信息填写完整'
+          if (attachments && attachments.length) {
+            for (let i = 0, len = attachments.length; i < len; i++) {
+              const item = attachments[i]
+              if (item[0].haveSale) {
+                if (item[0].printTime && item[0].remainTime && item[0].saleInfos.length) {
+                  this.cardSealInfoForm.attachmentErrorMsg = ''
+                } else {
+                  this.cardSealInfoForm.attachmentErrorMsg = '请确保所有附件信息填写完整'
                 }
-              }else{
-                this.cardSealInfoForm.attachmentErrorMsg=''
+              } else {
+                this.cardSealInfoForm.attachmentErrorMsg = ''
               }
             }
-          }else{
-            this.cardSealInfoForm.attachmentErrorMsg='合同附件及盖章信息不能为空'
+          } else {
+            this.cardSealInfoForm.attachmentErrorMsg = '合同附件及盖章信息不能为空'
           }
-          if (suppliers.length === 1 && subjects.length >= 1 &&!this.cardSealInfoForm.attachmentErrorMsg) {
+          if (suppliers.length === 1 && subjects.length >= 1 && !this.cardSealInfoForm.attachmentErrorMsg) {
             resolve()
-          }else{
+          } else {
             reject()
           }
         })
@@ -825,23 +825,23 @@
             .catch(() => {
               this.btnStatus = true
             })
-        }).catch(()=>{
+        }).catch(() => {
           this.btnStatus = true
           this.$message.error('请填写完从协议信息再提交!')
         })
       },
       combineSealsInfo() {
-          let sealAttachments = this.cardSealInfoForm.sealAttachments
-          const sealAttachment = []
-          if (sealAttachments && sealAttachments.length) {
-            for (let i = 0, len = sealAttachments.length; i < len; i++) {
-              const item = sealAttachments[i]
-              if (item[0] && item[0].fileName) {
-                sealAttachment.push(item)
-              }
+        let sealAttachments = this.cardSealInfoForm.sealAttachments
+        const sealAttachment = []
+        if (sealAttachments && sealAttachments.length) {
+          for (let i = 0, len = sealAttachments.length; i < len; i++) {
+            const item = sealAttachments[i]
+            if (item[0] && item[0].fileName) {
+              sealAttachment.push(item)
             }
           }
-          return sealAttachment
+        }
+        return sealAttachment
       },
       handleContractDetail(index, row) {
         console.log('详情', index, row)
@@ -883,7 +883,7 @@
         }]
         this.cardSealInfoForm.sealAttachments.push(file)
         if (this.isSubmit) {
-          this.validateForms().catch(()=>{})
+          this.validateForms().catch(() => {})
         }
       },
       getContractAgreenmentName(id) {
@@ -929,36 +929,36 @@
           }
         })
       },
-      handleChangeValidateForms(){
-        if(this.isSubmit){
-          this.validateForms().catch(()=>{
-            console.log('handleChangeValidateForms-fail');
+      handleChangeValidateForms() {
+        if (this.isSubmit) {
+          this.validateForms().catch(() => {
+            console.log('handleChangeValidateForms-fail')
           })
         }
       },
-      callback(params){//isSign:是否是加签人 isAgree:审批操作类型是否是同意
-        return new Promise((resolve,reject)=>{
-          const {isSign,isAgree}=params
-          if(!isSign&&isAgree&&this.ifRole){
+      callback(params) { //isSign:是否是加签人 isAgree:审批操作类型是否是同意
+        return new Promise((resolve, reject) => {
+          const {isSign, isAgree} = params
+          if (!isSign && isAgree && this.ifRole) {
             const sealAttachments = this.combineSealsInfo()
-            const para={}
-            para.sealAttachments=sealAttachments
-            para.id=this.id
-            para.type=2
+            const para = {}
+            para.sealAttachments = sealAttachments
+            para.id = this.id
+            para.type = 2
             Api.uploadSealAttachments(para)
-              .then(()=>{
+              .then(() => {
                 resolve()
               })
-              .catch(()=>{
+              .catch(() => {
                 reject()
               })
-          }else{
+          } else {
             resolve()
           }
         })
       }
     },
-    filters:{
+    filters: {
       formatDate
     },
     watch: {

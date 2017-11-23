@@ -207,22 +207,22 @@
     mixins: [comLoading],
     data() {
       return {
-        procInstId: '',//流程id
-        procTitle: '',//流程名称
-        users:{},
+        procInstId: '', //流程id
+        procTitle: '', //流程名称
+        users: {},
         downloadUrl: downloadUrl,
         uploadUrl: uploadUrl,
-        isSubmit:false,
+        isSubmit: false,
 
         form: {
-          errorMsg:'',
-          sealAttachments:[],
+          errorMsg: '',
+          sealAttachments: [],
           suspendReason: '',
           suspendTime: '',
           suspendRemark: '',
-          current: null, // 为上传功能保存当前所在附件列表的索引
+          current: null // 为上传功能保存当前所在附件列表的索引
         },
-        id:'',
+        id: '',
         contractCode: '',
         signDate: '',
         contractStatus: '',
@@ -233,13 +233,13 @@
         toDetail: {name: routerNames.con_Check, query: {contractId: ''}}
       }
     },
-    computed:{
+    computed: {
       ifRole: function () {
         let ifRole = false, reg = /印章保管人/g
         reg.test(this.users.roleName) ? ifRole = true : ifRole = false
         return ifRole
       },
-      enabledUpdateInApprove: function () {//在审批阶段修改附件时，上传盖章合同控件的上传按钮状态（仅用章保管人可用）
+      enabledUpdateInApprove: function () { //在审批阶段修改附件时，上传盖章合同控件的上传按钮状态（仅用章保管人可用）
         let enabled = false
         this.ifRole ? enabled = true : enabled = false
         return enabled
@@ -248,7 +248,7 @@
     methods: {
       getInfo(id) {
         this.comLoading()
-        const paras={id, operate:'PROCESS'}
+        const paras = {id, operate: 'PROCESS'}
         Api.getContractDetailByCode(paras).then((res) => {
           this.comLoading(false)
           const data = res.data.dataMap
@@ -257,11 +257,11 @@
           this.comLoading(false)
         })
       },
-      getAttachmentsInProcess(data){
-        const arr=[]
-        if(data&&data.length){
-          data.map((item)=>{
-            if(item[0].attachStatus===2){//流程中
+      getAttachmentsInProcess(data) {
+        const arr = []
+        if (data && data.length) {
+          data.map((item) => {
+            if (item[0].attachStatus === 2) { //流程中
               arr.push(item)
             }
           })
@@ -269,64 +269,64 @@
         return arr
       },
       setData(data) {
-        const {baseInfoForm, cardContentInfoForm, contSuspend,cardSealInfoForm} = data
-        const {contractNo, approvalDate, contractStatusName,id} = baseInfoForm
+        const {baseInfoForm, cardContentInfoForm, contSuspend, cardSealInfoForm} = data
+        const {contractNo, approvalDate, contractStatusName, id} = baseInfoForm
         const {suspendReason, suspendTime, suspendRemark} = contSuspend || {}
         const {startTime, endTime} = cardContentInfoForm
-        const {sealAttachments}=cardSealInfoForm
+        const {sealAttachments} = cardSealInfoForm
         this.contractCode = contractNo
         this.signDate = approvalDate
         this.contractStatus = contractStatusName
         this.startTime = startTime
         this.endTime = endTime
-        this.id=id
+        this.id = id
 
         Object.assign(this.form, {
           suspendReason,
           suspendTime,
           suspendRemark,
-          sealAttachments:this.getAttachmentsInProcess(sealAttachments)
+          sealAttachments: this.getAttachmentsInProcess(sealAttachments)
         })
       },
-      handleChangeValidateForms(){
+      handleChangeValidateForms() {
         if (this.isSubmit) {
-          this.validateForms().catch(()=> {
+          this.validateForms().catch(() => {
             console.log('validate failed')
           })
         }
       },
       validateForms() {
-        return new Promise((resolve,reject)=>{
-            //验证附件的数据是否填写完整
-            const sealAttachments = this.form.sealAttachments
-            if (sealAttachments && sealAttachments.length) {
-              sealAttachments.map((item)=>{
-                if (item[0].haveSale) {
-                  if (item[0].printTime && item[0].remainTime && item[0].saleInfos.length) {
-                    this.form.errorMsg = ''
-                  } else {
-                    this.form.errorMsg = '请确保所有附件信息填写完整'
-                  }
+        return new Promise((resolve, reject) => {
+          //验证附件的数据是否填写完整
+          const sealAttachments = this.form.sealAttachments
+          if (sealAttachments && sealAttachments.length) {
+            sealAttachments.map((item) => {
+              if (item[0].haveSale) {
+                if (item[0].printTime && item[0].remainTime && item[0].saleInfos.length) {
+                  this.form.errorMsg = ''
+                } else {
+                  this.form.errorMsg = '请确保所有附件信息填写完整'
                 }
-              })
-            }
-            if(!this.form.errorMsg){
-              resolve()
-            }else{
-              reject()
-            }
+              }
+            })
+          }
+          if (!this.form.errorMsg) {
+            resolve()
+          } else {
+            reject()
+          }
         })
       },
-      combineAttachments(files){//上传附件剔除空附件
-        const newFiles=[]
-        if(files&&files.length){
-          files.map((item)=>{
-            if(item[0]&&item[0].fileName){
-              let  inItem=item[0]
-              let {filesSealed}=inItem
-              if(filesSealed&&filesSealed[0]){
-                const {sealFileCreateTime}=filesSealed[0]
-                filesSealed[0].sealFileCreateTime=formatDate(sealFileCreateTime)
+      combineAttachments(files) { //上传附件剔除空附件
+        const newFiles = []
+        if (files && files.length) {
+          files.map((item) => {
+            if (item[0] && item[0].fileName) {
+              let inItem = item[0]
+              let {filesSealed} = inItem
+              if (filesSealed && filesSealed[0]) {
+                const {sealFileCreateTime} = filesSealed[0]
+                filesSealed[0].sealFileCreateTime = formatDate(sealFileCreateTime)
               }
               newFiles.push(item)
             }
@@ -334,16 +334,16 @@
         }
         return newFiles
       },
-      combineAttachments(files){//上传附件剔除空附件
-        const newFiles=[]
-        if(files&&files.length){
-          files.map((item)=>{
-            if(item[0]&&item[0].fileName){
-              let  inItem=item[0]
-              let {filesSealed}=inItem
-              if(filesSealed&&filesSealed[0]){
-                const {sealFileCreateTime}=filesSealed[0]
-                filesSealed[0].sealFileCreateTime=formatDate(sealFileCreateTime)
+      combineAttachments(files) { //上传附件剔除空附件
+        const newFiles = []
+        if (files && files.length) {
+          files.map((item) => {
+            if (item[0] && item[0].fileName) {
+              let inItem = item[0]
+              let {filesSealed} = inItem
+              if (filesSealed && filesSealed[0]) {
+                const {sealFileCreateTime} = filesSealed[0]
+                filesSealed[0].sealFileCreateTime = formatDate(sealFileCreateTime)
               }
               newFiles.push(item)
             }
@@ -351,22 +351,22 @@
         }
         return newFiles
       },
-      callback(params){//isSign:是否是加签人 isAgree:审批操作类型是否是同意
-        return new Promise((resolve, reject)=> {
-          const {isSign, isAgree}=params
+      callback(params) { //isSign:是否是加签人 isAgree:审批操作类型是否是同意
+        return new Promise((resolve, reject) => {
+          const {isSign, isAgree} = params
           if (!isSign && isAgree && this.ifRole) {
             const para = {}
             para.sealAttachments = this.combineAttachments(this.form.sealAttachments)
             para.id = this.id
             para.type = 1
             Api.uploadSealAttachments(para)
-              .then(()=> {
+              .then(() => {
                 resolve()
               })
-              .catch(()=> {
+              .catch(() => {
                 reject()
               })
-          }else{
+          } else {
             resolve()
           }
         })
@@ -384,7 +384,7 @@
             sealFileCreateTime: formatDate(dataMap.createTime),
             operate: 'add'
           }]
-          console.log('this.cardSealInfoForm',this.form.sealAttachments);
+          console.log('this.cardSealInfoForm', this.form.sealAttachments)
           this.$message.success('文件上传成功')
         }
       },
@@ -400,18 +400,18 @@
       },
       handleUpload(type, index) {
         this.form.current = index || 0
-      },
+      }
     },
     created() {
       const {id, processData} = this.$route.query
       this.getInfo(id)
       if (processData) {
         const data = JSON.parse(processData)
-        const {procTitle, procInstId,roleName} = data
+        const {procTitle, procInstId, roleName} = data
         this.procInstId = procInstId
         this.procTitle = procTitle
         this.users.roleName = roleName
-        console.log('users',this.users)
+        console.log('users', this.users)
       }
     },
     filters: {

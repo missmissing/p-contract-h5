@@ -208,19 +208,19 @@
     mixins: [comLoading],
     data() {
       return {
-        procInstId: '',//流程id
-        procTitle: '',//流程名称
-        users:{},
+        procInstId: '', //流程id
+        procTitle: '', //流程名称
+        users: {},
         downloadUrl: downloadUrl,
         uploadUrl: uploadUrl,
-        isSubmit:false,
+        isSubmit: false,
         form: {
-          errorMsg:'',
+          errorMsg: '',
           /*suspendReason: '',*/
           suspendTime: '',
           suspendRemark: '',
-          sealAttachments:[],
-          current: null, // 为上传功能保存当前所在附件列表的索引
+          sealAttachments: [],
+          current: null // 为上传功能保存当前所在附件列表的索引
         },
         rules: {
           /*suspendReason: [
@@ -276,8 +276,8 @@
         })
       },
       submit() {
-        this.isSubmit=true
-        this.validateForms().then(()=>{
+        this.isSubmit = true
+        this.validateForms().then(() => {
           if (!this.info) {
             this.$message.warning('请输入合同编号查询')
             return
@@ -289,7 +289,7 @@
             suspendTime: formatDate(this.form.suspendTime),
             /*suspendReason: this.form.suspendReason,*/
             suspendRemark: this.form.suspendRemark,
-            sealAttachments:this.combineAttachments(this.form.sealAttachments)
+            sealAttachments: this.combineAttachments(this.form.sealAttachments)
           }
           this.comLoading({
             text: '正在提交中'
@@ -303,12 +303,12 @@
           }, () => {
             this.comLoading(false)
           })
-        }).catch(()=>{
+        }).catch(() => {
           console.log('error submit!!')
           return false
         })
       },
-      handleNewSealFile:function(){
+      handleNewSealFile: function() {
         const file = [{
           operate: 'add',
           id: '',
@@ -367,9 +367,9 @@
         fileName ? enabled = false : enabled = true
         return enabled
       },
-      handleChangeValidateForms(){
+      handleChangeValidateForms() {
         if (this.isSubmit) {
-          this.validateForms().catch(()=> {
+          this.validateForms().catch(() => {
             console.log('validate failed')
           })
         }
@@ -380,16 +380,16 @@
       handleRemoveAttachmentsItem(index, rows) {
         rows.splice(index, 1)
       },
-      combineAttachments(files){//上传附件剔除空附件
-        const newFiles=[]
-        if(files&&files.length){
-          files.map((item)=>{
-            if(item[0]&&item[0].fileName){
-              let  inItem=item[0]
-              let {filesSealed}=inItem
-              if(filesSealed&&filesSealed[0]){
-                const {sealFileCreateTime}=filesSealed[0]
-                filesSealed[0].sealFileCreateTime=formatDate(sealFileCreateTime)
+      combineAttachments(files) { //上传附件剔除空附件
+        const newFiles = []
+        if (files && files.length) {
+          files.map((item) => {
+            if (item[0] && item[0].fileName) {
+              let inItem = item[0]
+              let {filesSealed} = inItem
+              if (filesSealed && filesSealed[0]) {
+                const {sealFileCreateTime} = filesSealed[0]
+                filesSealed[0].sealFileCreateTime = formatDate(sealFileCreateTime)
               }
               newFiles.push(item)
             }
@@ -398,12 +398,12 @@
         return newFiles
       },
       validateForms() {
-        return new Promise((resolve,reject)=>{
-          this.$refs.form.validate((valid)=>{
+        return new Promise((resolve, reject) => {
+          this.$refs.form.validate((valid) => {
             //验证附件的数据是否填写完整
             const sealAttachments = this.form.sealAttachments
             if (sealAttachments && sealAttachments.length) {
-              sealAttachments.map((item)=>{
+              sealAttachments.map((item) => {
                 if (item[0].haveSale) {
                   if (item[0].printTime && item[0].remainTime && item[0].saleInfos.length) {
                     this.form.errorMsg = ''
@@ -412,20 +412,20 @@
                   }
                 }
               })
-            }else{
+            } else {
               this.form.errorMsg = '请确保所有附件信息填写完整'
             }
-            if(valid&&!this.form.errorMsg){
+            if (valid && !this.form.errorMsg) {
               resolve()
-            }else{
+            } else {
               reject()
             }
-          }).catch(()=>{
+          }).catch(() => {
             console.log('验证失败')
             reject()
           })
         })
-      },
+      }
     },
     filters: {
       formatDate
