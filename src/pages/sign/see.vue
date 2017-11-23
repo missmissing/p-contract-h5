@@ -122,7 +122,7 @@
                   <el-input :value="contractForm.contractNo" disabled></el-input>
                 </el-form-item>
               </el-col>
-              <el-button type="primary" class="ml20" v-show="toDetail.query.contractId">
+              <el-button type="primary" class="ml20" v-show="toDetail.query.contractNo">
                 <router-link class="router-link-default" :to="toDetail" target="_blank">详 情</router-link>
               </el-button>
             </el-row>
@@ -202,7 +202,7 @@
         procTitle: '',
         procInstId: '',
         info: {},
-        toDetail: {name: routerNames.con_Check, query: {contractId: ''}},
+        toDetail: {name: routerNames.con_Check, query: {contractNo: ''}},
         orderForm: {},
         orderData: [],
         serverData: [],
@@ -215,7 +215,7 @@
         Api.detailByPoId({id}).then((res) => {
           console.log(res)
           this.info = res.data.dataMap
-          this.toDetail.query.contractId = this.info.contractId
+          this.toDetail.query.contractNo = this.info.contractNo
           this.setOrderData()
           this.setServerData()
           this.setContractForm()
