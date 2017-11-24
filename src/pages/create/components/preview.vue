@@ -252,15 +252,15 @@
 </template>
 
 <script>
-  import Api from '@/api/support'
-  import numToChinese from '@/util/numToChinese'
+  import Api from '../../../api/support';
+  import numToChinese from '../../../util/numToChinese';
 
   export default {
     props: {
       visible: Boolean,
       datas: {
         default() {
-          return {}
+          return {};
         }
       }
     },
@@ -290,118 +290,125 @@
         currentTpl: null,
         corporeRemark: '',
         paymentRemark: ''
-      }
+      };
     },
     methods: {
       transformData(data, name) {
-        const priceTable = []
+        const priceTable = [];
         if (data.length) {
           data.forEach((item) => {
-            const {seriousPayments} = item
+            const {seriousPayments} = item;
             if (seriousPayments) {
-              const {subItem} = item
+              const {subItem} = item;
               subItem.forEach((item1, index1) => {
-                const {paymentAmount, paymentTimePeriod, remark, ratio} = item1
-                const type = `${name}${index1 + 1}`
+                const {
+                  paymentAmount, paymentTimePeriod, remark, ratio
+                } = item1;
+                const type = `${name}${index1 + 1}`;
                 priceTable.push({
                   type,
                   paymentAmount,
                   paymentTimePeriod: this.getPaymentTimePeriodName(paymentTimePeriod),
                   remark,
                   ratio: `${ratio}%`
-                })
-              })
-              return
+                });
+              });
+              return;
             }
             priceTable.push({
               ...item,
               paymentTimePeriod: this.getPaymentTimePeriodName(item.paymentTimePeriod),
               ratio: `${item.ratio}%`
-            })
-          })
+            });
+          });
         }
-        return priceTable
+        return priceTable;
       },
       getPaymentTimePeriodName(id) {
-        const paymentTimePeriods = this.paymentTimePeriods
-        let name = ''
+        const paymentTimePeriods = this.paymentTimePeriods;
+        let name = '';
         paymentTimePeriods.some((item) => {
           if (item.id === id) {
-            name = item.name
-            return true
+            name = item.name;
+            return true;
           }
-        })
+          return false;
+        });
 
-        return name
+        return name;
       },
       getTplData(templateId) {
-        const tplData = this.tplData[templateId]
+        const tplData = this.tplData[templateId];
         if (tplData) {
-          const {content} = tplData
-          this.currentTpl = content
-          return
+          const {content} = tplData;
+          this.currentTpl = content;
+          return;
         }
         if (!templateId) {
-          return
+          return;
         }
         Api.getTplData({templateId}).then((res) => {
-          const data = res.data.dataMap
-          const {content} = data
-          this.currentTpl = content
-          this.tplData[templateId] = data
-        })
+          const data = res.data.dataMap;
+          const {content} = data;
+          this.currentTpl = content;
+          this.tplData[templateId] = data;
+        });
       },
       ok() {
-        this.$emit('update:visible', false)
+        this.$emit('update:visible', false);
       },
       toPdf() {
-        document.getElementById('pdf-content').value = document.getElementById('pdf-wrap').innerHTML
-        document.getElementById('pdf-form').submit()
+        document.getElementById('pdf-content').value = document.getElementById('pdf-wrap').innerHTML;
+        document.getElementById('pdf-form').submit();
       }
     },
     watch: {
       datas() {
         if (!Object.keys(this.datas).length) {
-          return null
+          return;
         }
-        const {contractNo, contractBusinessTypeThirdName, conStandard, cardFinanceInfoForm, endTime, startTime, conditionDesc, effectiveCondition, templateId, contractType, contractBusinessTypeFirst, corporeRemark, paymentRemark} = this.datas
-        const {jiaBillingInfo, yiBillingInfo, moneyInvolved, totalAmount, paymentMethods, oneOffPay, paymentTimePeriods} = cardFinanceInfoForm
-        const {earnest, advance, progress, _final, deposit} = paymentMethods
-        this.paymentTimePeriods = paymentTimePeriods
-        this.contractType = contractType
-        this.contractBusinessTypeFirst = contractBusinessTypeFirst
-        this.materialTable = conStandard
-        this.startTime = startTime
-        this.endTime = endTime
-        this.conditionDesc = conditionDesc
-        this.effectiveCondition = effectiveCondition
-        this.contractNo = contractNo
-        this.corporeRemark = corporeRemark
-        this.paymentRemark = paymentRemark
-        this.title = contractBusinessTypeThirdName
-        this.partAName = jiaBillingInfo.map((item) => {
-          return item.company
-        })
-        this.partBName = yiBillingInfo.length > 0 ? [yiBillingInfo[0].company] : []
-        this.supplierName = yiBillingInfo.length > 0 ? yiBillingInfo[0].company : ''
+        const {
+          contractNo, contractBusinessTypeThirdName, conStandard, cardFinanceInfoForm, endTime, startTime, conditionDesc, effectiveCondition, templateId, contractType, contractBusinessTypeFirst, corporeRemark, paymentRemark
+        } = this.datas;
+        const {
+          jiaBillingInfo, yiBillingInfo, moneyInvolved, totalAmount, paymentMethods, oneOffPay, paymentTimePeriods
+        } = cardFinanceInfoForm;
+        const {
+          earnest, advance, progress, _final, deposit
+        } = paymentMethods;
+        this.paymentTimePeriods = paymentTimePeriods;
+        this.contractType = contractType;
+        this.contractBusinessTypeFirst = contractBusinessTypeFirst;
+        this.materialTable = conStandard;
+        this.startTime = startTime;
+        this.endTime = endTime;
+        this.conditionDesc = conditionDesc;
+        this.effectiveCondition = effectiveCondition;
+        this.contractNo = contractNo;
+        this.corporeRemark = corporeRemark;
+        this.paymentRemark = paymentRemark;
+        this.title = contractBusinessTypeThirdName;
+        this.partAName = jiaBillingInfo.map((item) => item.company);
+        this.partBName = yiBillingInfo.length > 0 ? [yiBillingInfo[0].company] : [];
+        this.supplierName = yiBillingInfo.length > 0 ? yiBillingInfo[0].company : '';
         if (moneyInvolved) {
-          this.moneyInvolved = moneyInvolved
-          this.totalAmount = totalAmount
-          this.partA = jiaBillingInfo
-          this.partB = yiBillingInfo[0] || {}
+          this.moneyInvolved = moneyInvolved;
+          this.totalAmount = totalAmount;
+          this.partA = jiaBillingInfo;
+          this.partB = yiBillingInfo[0] || {};
 
           if (oneOffPay) {
-            this.oneOffPay = true
+            this.oneOffPay = true;
           } else {
-            this.priceTable = [...this.transformData(earnest, '定金'), ...this.transformData(advance, '预付款'), ...this.transformData(progress, '进度款'), ...this.transformData(_final, '尾款'), ...this.transformData(deposit, '保证金')]
+            this.priceTable = [...this.transformData(earnest, '定金'), ...this.transformData(advance, '预付款'), ...this.transformData(progress, '进度款'), ...this.transformData(_final, '尾款'), ...this.transformData(deposit, '保证金')];
           }
         }
 
-        this.getTplData(templateId)
+        this.getTplData(templateId);
       }
     },
     filters: {
       numToChinese
     }
-  }
+  };
 </script>

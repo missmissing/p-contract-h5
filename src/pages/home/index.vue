@@ -21,8 +21,8 @@
 </template>
 
 <script>
-  import {processListMap} from '@/core/consts'
-  import List from './list.vue'
+  import { processListMap } from '../../core/consts';
+  import List from './list.vue';
 
   export default {
     data() {
@@ -42,7 +42,7 @@
           pageSize: 5,
           dataType: processListMap[1]
         }
-      }
+      };
     },
     methods: {},
     created() {
@@ -51,5 +51,5 @@
     components: {
       List
     }
-  }
+  };
 </script>

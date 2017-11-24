@@ -56,11 +56,11 @@
 </template>
 
 <script>
-  import {processListMap} from '@/core/consts'
-  import Api from '@/api/process'
-  import {formatTime} from '@/filters/moment'
-  import comLoading from '@/mixins/comLoading'
-  import toPage from '@/assets/js/toPage'
+  import { processListMap } from '../../core/consts';
+  import Api from '../../api/process';
+  import { formatTime } from '../../filters/moment';
+  import comLoading from '../../mixins/comLoading';
+  import toPage from '../../assets/js/toPage';
 
   export default {
     mixins: [comLoading],
@@ -71,41 +71,41 @@
         pageSize: 10,
         totalPage: 0,
         dataType: processListMap[2]
-      }
+      };
     },
     methods: {
       getProcess() {
-        this.comLoading()
+        this.comLoading();
         Api.getProcess({
           pageNumber: this.pageNumber,
           pageSize: this.pageSize,
           dataType: this.dataType
         }).then((res) => {
-          this.comLoading(false)
-          const {procList, totalPage} = res.data.dataMap
-          this.tableData = procList
-          this.totalPage = totalPage
-        })
+          this.comLoading(false);
+          const { procList, totalPage } = res.data.dataMap;
+          this.tableData = procList;
+          this.totalPage = totalPage;
+        });
       },
       handleSizeChange(val) {
-        console.log(`每页 ${val} 条`)
-        this.pageSize = val
-        this.getProcess()
+        console.log(`每页 ${val} 条`);
+        this.pageSize = val;
+        this.getProcess();
       },
       handleCurrentChange(val) {
-        console.log(`当前页: ${val}`)
-        this.pageNumber = val
-        this.getProcess()
+        console.log(`当前页: ${val}`);
+        this.pageNumber = val;
+        this.getProcess();
       },
       toPage(row) {
-        toPage.call(this, row)
+        toPage.call(this, row);
       }
     },
     created() {
-      this.getProcess()
+      this.getProcess();
     },
     filters: {
       formatTime
     }
-  }
+  };
 </script>

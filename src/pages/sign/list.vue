@@ -154,13 +154,13 @@
 </template>
 
 <script>
-  import Api from '@/api/sign'
-  import ContractApi from '@/api/manageContract'
-  import {routerNames, prTypeMap} from '@/core/consts'
-  import comLoading from '@/mixins/comLoading'
-  import {formatDate} from '@/filters/moment'
-  import SelectPerson from '@/components/selectPerson.vue'
-  import cutZero from '@/util/cutZero'
+  import Api from '../../api/sign';
+  import ContractApi from '../../api/manageContract';
+  import { routerNames, prTypeMap } from '../../core/consts';
+  import comLoading from '../../mixins/comLoading';
+  import { formatDate } from '../../filters/moment';
+  import SelectPerson from '../../components/selectPerson.vue';
+  import cutZero from '../../util/cutZero';
 
   export default {
     mixins: [comLoading],
@@ -189,83 +189,79 @@
         daterange: [],
         pickerOptions: {
           disabledDate(time) {
-            return time.getTime() > Date.now()
+            return time.getTime() > Date.now();
           }
         },
         tableData: []
-      }
+      };
     },
     methods: {
       search() {
-        console.log(JSON.stringify(this.form))
-        this.getList()
+        console.log(JSON.stringify(this.form));
+        this.getList();
       },
       selectPerson(val) {
-        this.form.initiator = val
+        this.form.initiator = val;
       },
       formatType(row, column, cellValue) {
-        return [1, 3].indexOf(cellValue) > -1 ? prTypeMap[1] : prTypeMap[2]
+        return [1, 3].indexOf(cellValue) > -1 ? prTypeMap[1] : prTypeMap[2];
       },
       getList() {
-        this.comLoading()
+        this.comLoading();
         Api.query(this.form).then((res) => {
-          console.log(res)
-          this.comLoading(false)
-          const {total, data} = res.data.dataMap
-          this.tableData = data
-          this.totalPage = total
+          console.log(res);
+          this.comLoading(false);
+          const { total, data } = res.data.dataMap;
+          this.tableData = data;
+          this.totalPage = total;
         }).catch(() => {
-          this.comLoading(false)
-        })
+          this.comLoading(false);
+        });
       },
       see(row) {
-        console.log(row)
-        const id = row.purchaseOrderId
+        console.log(row);
+        const id = row.purchaseOrderId;
         return {
           name: routerNames.con_purchase_see,
-          query: {id}
-        }
+          query: { id }
+        };
       },
       formatDateRange(value) {
-        const daterange = value.split(' ')
-        this.daterange = [daterange[0], daterange[2]]
-        this.form.createDateStart = daterange[0]
-        this.form.createDateEnd = daterange[2]
+        const daterange = value.split(' ');
+        this.daterange = [daterange[0], daterange[2]];
+        this.form.createDateStart = daterange[0];
+        this.form.createDateEnd = daterange[2];
       },
       handleSizeChange(val) {
-        console.log(`每页 ${val} 条`)
-        this.form.pageSize = val
-        this.getList()
+        console.log(`每页 ${val} 条`);
+        this.form.pageSize = val;
+        this.getList();
       },
       handleCurrentChange(val) {
-        console.log(`当前页: ${val}`)
-        this.form.pageNo = val
-        this.getList()
+        console.log(`当前页: ${val}`);
+        this.form.pageNo = val;
+        this.getList();
       },
       select(row, val) {
-        console.log(row, val)
+        console.log(row, val);
       },
       createFilter(result) {
-        return result.map((item) => {
-          return {value: item.companyCode, label: `${item.companyCode} ${item.company}`}
-        })
+        return result.map((item) => ({ value: item.companyCode, label: `${item.companyCode} ${item.company}` }));
       },
       querySearch(queryString, cb) {
         if (!queryString) {
-          return cb([])
+          return cb([]);
         }
-        ContractApi.getRemoteSubjectsByKeyWord({
+        return ContractApi.getRemoteSubjectsByKeyWord({
           key: queryString
         }).then((res) => {
-          const result = res.data.dataMap || []
-          cb(this.createFilter(result))
-        }, () => {
-          return cb([])
-        })
+          const result = res.data.dataMap || [];
+          cb(this.createFilter(result));
+        }, () => cb([]));
       }
     },
     created() {
-      this.getList()
+      this.getList();
     },
     filters: {
       formatDate,
@@ -274,5 +270,5 @@
     components: {
       SelectPerson
     }
-  }
+  };
 </script>

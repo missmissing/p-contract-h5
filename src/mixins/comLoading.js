@@ -4,7 +4,7 @@
  * @param false 则关闭
  */
 
-let loadingInstance = null
+let loadingInstance = null;
 
 const defaultOpts = {
   target: document.body,
@@ -13,17 +13,19 @@ const defaultOpts = {
   lock: false,
   text: '拼命加载中',
   customClass: ''
-}
+};
 
 class loading {
   static init(options = {}) {
     if (!options) {
-      loadingInstance && loadingInstance.close()
-      return
+      if (loadingInstance) {
+        loadingInstance.close();
+      }
+      return loadingInstance;
     }
-    const config = Object.assign(defaultOpts, options)
-    loadingInstance = this.$loading(config)
-    return loadingInstance
+    const config = Object.assign(defaultOpts, options);
+    loadingInstance = this.$loading(config);
+    return loadingInstance;
   }
 }
 
@@ -31,4 +33,4 @@ export default {
   methods: {
     comLoading: loading.init
   }
-}
+};

@@ -182,14 +182,14 @@
 </template>
 
 <script>
-  import _ from 'lodash'
-  import Tmpl from './tmpl.vue'
-  import Upload from '@/components/upload.vue'
-  import comLoading from '@/mixins/comLoading'
-  import supportModel from '@/api/support'
-  import {formatDate, formatTimeStamp, formatToDate} from '@/filters/moment'
-  import {tplTypeMap} from '@/core/consts'
-  import {downloadUrl} from '@/api/consts'
+  import _ from 'lodash';
+  import Tmpl from './tmpl.vue';
+  import Upload from '../../components/upload.vue';
+  import comLoading from '../../mixins/comLoading';
+  import supportModel from '../../api/support';
+  import {formatDate, formatTimeStamp, formatToDate} from '../../filters/moment';
+  import {tplTypeMap} from '../../core/consts';
+  import {downloadUrl} from '../../api/consts';
 
   const defaultData = {
     form: {
@@ -208,7 +208,7 @@
     },
     tplInfo: {},
     fileList: []
-  }
+  };
 
   export default {
     mixins: [comLoading],
@@ -218,104 +218,115 @@
         showTmpl: false,
         rules: {
           templateCode: [{required: true, message: '请输入模板编号', trigger: 'blur'}],
-          abolishDate: [{type: 'date', required: true, message: '请选择停用日期', trigger: 'change'}],
-          abolishReason: [{required: true, max: 300, message: '请填写停用原因', trigger: 'change'}]
+          abolishDate: [{
+            type: 'date', required: true, message: '请选择停用日期', trigger: 'change'
+          }],
+          abolishReason: [{
+            required: true, max: 300, message: '请填写停用原因', trigger: 'change'
+          }]
         },
         download: downloadUrl
-      }, _.cloneDeep(defaultData))
+      }, _.cloneDeep(defaultData));
     },
     methods: {
       createFilter(result) {
-        return result.map((item) => {
-          return {value: item}
-        })
+        return result.map((item) => ({value: item}));
       },
       querySearch(queryString, cb) {
         if (!queryString) {
-          return cb([])
+          return cb([]);
         }
-        supportModel.selectTemplateCode({
+        return supportModel.selectTemplateCode({
           templateCode: queryString,
           type: 2
         }).then((res) => {
-          const result = res.data.dataMap || []
-          cb(this.createFilter(result))
+          const result = res.data.dataMap || [];
+          cb(this.createFilter(result));
         }, () => {
-          cb([])
-        })
+          cb([]);
+        });
       },
       search() {
-        this.comLoading()
+        this.comLoading();
         supportModel.getCurrentTemplateByCode({
           templateCode: this.form.templateCode
         }).then((res) => {
-          console.log(res)
-          this.comLoading(false)
-          this.resetForm()
-          const tplInfo = res.data.dataMap
-          this.setData(tplInfo)
+          console.log(res);
+          this.comLoading(false);
+          this.resetForm();
+          const tplInfo = res.data.dataMap;
+          this.setData(tplInfo);
         }, () => {
-          this.comLoading(false)
-        })
+          this.comLoading(false);
+        });
       },
       setData(tplInfo) {
-        const {templateName, templateType, bizTypes, startDate, version, operatorName, creatorName, description, files} = tplInfo
-        this.tplInfo = tplInfo
-        this.form['templateName'] = templateName
-        this.form['templateType'] = tplTypeMap[templateType]
-        this.form['busiTypeText'] = bizTypes.map(item => item.businessName).join(',')
-        this.form['startDate'] = formatToDate(startDate)
-        this.form['version'] = `V${version}`
-        this.form['operatorName'] = operatorName
-        this.form['creatorName'] = creatorName
-        this.form['description'] = description
-        this.fileList = files
+        const {
+          templateName,
+          templateType,
+          bizTypes,
+          startDate,
+          version,
+          operatorName,
+          creatorName,
+          description,
+          files
+        } = tplInfo;
+        this.tplInfo = tplInfo;
+        this.form.templateName = templateName;
+        this.form.templateType = tplTypeMap[templateType];
+        this.form.busiTypeText = bizTypes.map(item => item.businessName).join(',');
+        this.form.startDate = formatToDate(startDate);
+        this.form.version = `V${version}`;
+        this.form.operatorName = operatorName;
+        this.form.creatorName = creatorName;
+        this.form.description = description;
+        this.fileList = files;
       },
       resetForm() {
-        const {id} = this.tplInfo
+        const {id} = this.tplInfo;
         if (id) {
-          const templateCode = this.form.templateCode
-          this.$refs['form'].resetFields()
-          this.form.templateCode = templateCode
-          this.fileList = []
-          this.tplInfo = {}
+          const templateCode = this.form.templateCode;
+          this.$refs.form.resetFields();
+          this.form.templateCode = templateCode;
+          this.fileList = [];
+          this.tplInfo = {};
         }
       },
       getResult() {
-        const {id} = this.tplInfo
-        const {abolishDate, abolishReason} = this.form
+        const {id} = this.tplInfo;
+        const {abolishDate, abolishReason} = this.form;
         return {
           templateId: id,
           endDate: formatTimeStamp(abolishDate),
-          abolishReason: abolishReason
-        }
+          abolishReason
+        };
       },
       back() { // 返回列表页
-        this.$router.push('/contemplate/list')
+        this.$router.push('/contemplate/list');
       },
       save() {
-        this.$refs['form'].validate((valid) => {
+        this.$refs.form.validate((valid) => {
           if (valid) {
             this.comLoading({
               text: '正在提交中'
-            })
-            const result = this.getResult()
+            });
+            const result = this.getResult();
             supportModel.setTemplateAbolish(result).then((res) => {
-              console.log(res)
-              this.comLoading(false)
+              console.log(res);
+              this.comLoading(false);
               this.$message({
                 message: '废除提交成功',
                 type: 'success'
-              })
-              this.back()
+              });
+              this.back();
             }, () => {
-              this.comLoading(false)
-            })
+              this.comLoading(false);
+            });
           } else {
-            console.log('error submit!!')
-            return false
+            console.log('error submit!!');
           }
-        })
+        });
       }
     },
     components: {
@@ -324,11 +335,11 @@
     },
     computed: {
       showTpl() {
-        return this.tplInfo.templateType === 'TEMPLATE'
+        return this.tplInfo.templateType === 'TEMPLATE';
       }
     },
     filters: {
       formatDate
     }
-  }
+  };
 </script>

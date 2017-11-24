@@ -123,11 +123,11 @@
   </div>
 </template>
 <script>
-  import Api from '@/api/manageContract'
-  import {formatDate} from '@/filters/moment'
+  import Api from '../../api/manageContract';
+  import {formatDate} from '../../filters/moment';
 
   export default {
-    data: function () {
+    data() {
       return {
         agreementForm: {
           protocolNo: '',
@@ -147,72 +147,72 @@
         },
         agreementList: [],
         totalPage: 0
-      }
+      };
     },
-    mounted: function () {
-      this.handleQuery()
+    mounted() {
+      this.handleQuery();
     },
     methods: {
       getRemoteSuppliersByKeyWord(query) {
         if (query !== '') {
-          this.agreementForm.loading = true
+          this.agreementForm.loading = true;
           Api.getRemoteSuppliersByKeyWord({key: query})
             .then((data) => {
-              this.agreementForm.loading = false
-              this.agreementForm.suppliers = data.data.dataMap || []
-            })
+              this.agreementForm.loading = false;
+              this.agreementForm.suppliers = data.data.dataMap || [];
+            });
         } else {
-          this.agreementForm.suppliers = []
+          this.agreementForm.suppliers = [];
         }
       },
       getRemoteCompanyByKeyWord(query) {
         if (query !== '') {
-          this.agreementForm.agreementLoading = true
+          this.agreementForm.agreementLoading = true;
           Api.getRemoteSubjectsByKeyWord({key: query})
             .then((data) => {
-              this.agreementForm.agreementLoading = false
-              this.agreementForm.companies = data.data.dataMap || []
-            })
+              this.agreementForm.agreementLoading = false;
+              this.agreementForm.companies = data.data.dataMap || [];
+            });
         } else {
-          this.agreementForm.conSubjctName = ''
-          this.agreementForm.companies = []
+          this.agreementForm.conSubjctName = '';
+          this.agreementForm.companies = [];
         }
       },
       handleQuery() {
-        const params = this.agreementForm
+        const params = this.agreementForm;
         Api.getAgreementList(params)
           .then((data) => {
-            const dataMap = data.data.dataMap
+            const dataMap = data.data.dataMap;
             if (dataMap) {
-              this.agreementList = dataMap.data || []
-              this.totalPage = dataMap.total
+              this.agreementList = dataMap.data || [];
+              this.totalPage = dataMap.total;
             }
-          })
+          });
       },
       getRemoteCreatorsByKeyWord(query) {
         if (query !== '') {
-          this.agreementForm.creatorLoading = true
+          this.agreementForm.creatorLoading = true;
           Api.getRemoteCreatePersonsByKeyWord({keyword: query})
             .then((data) => {
-              this.agreementForm.creatorLoading = false
-              this.agreementForm.creators = data.data.dataMap || []
-            })
+              this.agreementForm.creatorLoading = false;
+              this.agreementForm.creators = data.data.dataMap || [];
+            });
         } else {
-          this.agreementForm.creatorName = ''
-          this.agreementForm.creators = []
+          this.agreementForm.creatorName = '';
+          this.agreementForm.creators = [];
         }
       },
       handleSizeChange(val) {
-        this.agreementForm.pageSize = val
-        this.handleQuery()
+        this.agreementForm.pageSize = val;
+        this.handleQuery();
       },
       handleCurrentChange(page) {
-        this.agreementForm.pageNo = page
-        this.handleQuery()
+        this.agreementForm.pageNo = page;
+        this.handleQuery();
       }
     },
     filters: {
       formatDate
     }
-  }
+  };
 </script>

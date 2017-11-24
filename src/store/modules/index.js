@@ -1,5 +1,5 @@
-import support from './support'
+import support from './support';
 
 export default {
   support
-}
+};

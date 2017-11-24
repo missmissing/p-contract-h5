@@ -161,13 +161,13 @@
 </template>
 
 <script>
-  import Api from '@/api/performance'
-  import Upload from '@/components/upload.vue'
-  import {formatDate} from '@/filters/moment'
-  import {routerNames} from '@/core/consts'
-  import comLoading from '@/mixins/comLoading'
-  import Process from '@/components/process'
-  import {downloadUrl} from '@/api/consts'
+  import Api from '../../api/performance';
+  import Upload from '../../components/upload.vue';
+  import { formatDate } from '../../filters/moment';
+  import { routerNames } from '../../core/consts';
+  import comLoading from '../../mixins/comLoading';
+  import Process from '../../components/process.vue';
+  import { downloadUrl } from '../../api/consts';
 
   export default {
     mixins: [comLoading],
@@ -185,8 +185,8 @@
         compensateType: null,
         compensateMoney: '',
         fileList: [],
-        options: [{label: '供应商向我方赔付', value: 'PARTNER_GIVE_US'}, {label: '我方向供应商赔付', value: 'US_GIVE_PARTNER'}],
-        toDetail: {name: routerNames.con_Check, query: {contractId: ''}},
+        options: [{ label: '供应商向我方赔付', value: 'PARTNER_GIVE_US' }, { label: '我方向供应商赔付', value: 'US_GIVE_PARTNER' }],
+        toDetail: { name: routerNames.con_Check, query: { contractId: '' } },
         basicForm: {
           contractNo: ''
         },
@@ -196,51 +196,55 @@
           treatmentScheme: ''
         },
         download: downloadUrl
-      }
+      };
     },
     methods: {
       getInfo(id) {
-        this.comLoading()
-        Api.getViolateByProcInstId({procInstId: id}).then((res) => {
-          this.comLoading(false)
-          const data = res.data.dataMap
-          console.log(data)
-          this.setData(data)
+        this.comLoading();
+        Api.getViolateByProcInstId({ procInstId: id }).then((res) => {
+          this.comLoading(false);
+          const data = res.data.dataMap;
+          console.log(data);
+          this.setData(data);
         }, () => {
-          this.comLoading(false)
-        })
+          this.comLoading(false);
+        });
       },
       setData(data) {
-        const {contractBasic, violateDispose} = data
-        const {startTime, endTime, businessOperator, businessDept, signTime, contractId, contractNo} = contractBasic
-        const {files, schemeType, defaulter, compensateType, compensateStatus, compensateMoney, treatmentScheme, violateReason} = violateDispose
-        this.basicForm.contractNo = contractNo
-        this.fileList = files || []
-        this.startTime = startTime
-        this.endTime = endTime
-        this.signTime = signTime
-        this.businessDept = businessDept
-        this.businessOperator = businessOperator
-        this.defaulter = defaulter
-        this.compensateType = compensateType
-        this.compensateStatus = compensateStatus
-        this.compensateMoney = compensateMoney
+        const { contractBasic, violateDispose } = data;
+        const {
+          startTime, endTime, businessOperator, businessDept, signTime, contractId, contractNo
+        } = contractBasic;
+        const {
+          files, schemeType, defaulter, compensateType, compensateStatus, compensateMoney, treatmentScheme, violateReason
+        } = violateDispose;
+        this.basicForm.contractNo = contractNo;
+        this.fileList = files || [];
+        this.startTime = startTime;
+        this.endTime = endTime;
+        this.signTime = signTime;
+        this.businessDept = businessDept;
+        this.businessOperator = businessOperator;
+        this.defaulter = defaulter;
+        this.compensateType = compensateType;
+        this.compensateStatus = compensateStatus;
+        this.compensateMoney = compensateMoney;
         Object.assign(this.handleForm, {
           schemeType,
           violateReason,
           treatmentScheme
-        })
-        this.toDetail.query.contractId = contractId
+        });
+        this.toDetail.query.contractId = contractId;
       }
     },
     created() {
-      const {id, processData} = this.$route.query
-      this.getInfo(id)
+      const { id, processData } = this.$route.query;
+      this.getInfo(id);
       if (processData) {
-        const data = JSON.parse(processData)
-        const {procTitle, procInstId} = data
-        this.procInstId = procInstId
-        this.procTitle = procTitle
+        const data = JSON.parse(processData);
+        const { procTitle, procInstId } = data;
+        this.procInstId = procInstId;
+        this.procTitle = procTitle;
       }
     },
     components: {
@@ -250,5 +254,5 @@
     filters: {
       formatDate
     }
-  }
+  };
 </script>

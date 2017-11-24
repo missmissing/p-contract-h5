@@ -153,11 +153,11 @@
 </template>
 
 <script>
-  import {routerNames} from '@/core/consts'
-  import supportModel from '@/api/support'
-  import comLoading from '@/mixins/comLoading'
-  import {formatTime, formatDate, formatTimeStamp} from '@/filters/moment'
-  import tplStatus from '@/filters/tplStatus'
+  import { routerNames } from '../../core/consts';
+  import supportModel from '../../api/support';
+  import comLoading from '../../mixins/comLoading';
+  import { formatTime, formatDate, formatTimeStamp } from '../../filters/moment';
+  import tplStatus from '../../filters/tplStatus';
 
   export default {
     mixins: [comLoading],
@@ -178,38 +178,38 @@
         daterange: [],
         pickerOptions: {
           disabledDate(time) {
-            return time.getTime() > Date.now()
+            return time.getTime() > Date.now();
           }
         },
         tableData: []
-      }
+      };
     },
     methods: {
       search() {
-        this.getList()
+        this.getList();
       },
       getList() {
-        this.comLoading()
+        this.comLoading();
         supportModel.getList(this.form).then((res) => {
-          console.log(res)
-          this.comLoading(false)
+          console.log(res);
+          this.comLoading(false);
 
-          const {total, data} = res.data.dataMap
-          this.tableData = data
-          this.totalPage = total
+          const { total, data } = res.data.dataMap;
+          this.tableData = data;
+          this.totalPage = total;
         }, () => {
-          this.comLoading(false)
-        })
+          this.comLoading(false);
+        });
       },
       handleSizeChange(val) {
-        console.log(`每页 ${val} 条`)
-        this.form.pageSize = val
-        this.getList()
+        console.log(`每页 ${val} 条`);
+        this.form.pageSize = val;
+        this.getList();
       },
       handleCurrentChange(val) {
-        console.log(`当前页: ${val}`)
-        this.form.pageNumber = val
-        this.getList()
+        console.log(`当前页: ${val}`);
+        this.form.pageNumber = val;
+        this.getList();
       },
       see(row) {
         return {
@@ -217,13 +217,13 @@
           query: {
             id: row.id
           }
-        }
+        };
       },
       formatDateRange(value) {
-        const daterange = value.split(' ')
-        this.daterange = [daterange[0], daterange[2]]
-        this.form.startTime = formatTimeStamp(daterange[0])
-        this.form.endTime = formatTimeStamp(daterange[2])
+        const daterange = value.split(' ');
+        this.daterange = [daterange[0], daterange[2]];
+        this.form.startTime = formatTimeStamp(daterange[0]);
+        this.form.endTime = formatTimeStamp(daterange[2]);
       }
     },
     filters: {
@@ -232,7 +232,7 @@
       tplStatus
     },
     created() {
-      this.getList()
+      this.getList();
     }
-  }
+  };
 </script>

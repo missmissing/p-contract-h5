@@ -1,7 +1,7 @@
-import * as types from './consts'
+import * as types from './consts';
 
 export default {
   [types.ROUTE](state, payload) {
-    state.route = payload.data
+    state.route = payload.data;
   }
-}
+};

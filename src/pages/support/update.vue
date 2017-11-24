@@ -151,16 +151,16 @@
 </template>
 
 <script>
-  import _ from 'lodash'
-  import Tmpl from './tmpl.vue'
-  import Upload from '@/components/upload.vue'
-  import TreeModal from '@/components/treeModal.vue'
-  import supportModel from '@/api/support'
-  import getBusiType from '@/mixins/getBusiType'
-  import comLoading from '@/mixins/comLoading'
-  import createUpdate from '@/mixins/createUpdate'
-  import {formatTimeStamp, formatToDate} from '@/filters/moment'
-  import {tplTypeMap} from '@/core/consts'
+  import _ from 'lodash';
+  import Tmpl from './tmpl.vue';
+  import Upload from '../../components/upload.vue';
+  import TreeModal from '../../components/treeModal.vue';
+  import supportModel from '../../api/support';
+  import getBusiType from '../../mixins/getBusiType';
+  import comLoading from '../../mixins/comLoading';
+  import createUpdate from '../../mixins/createUpdate';
+  import {formatTimeStamp, formatToDate} from '../../filters/moment';
+  import {tplTypeMap} from '../../core/consts';
 
   const defaultData = {
     form: {
@@ -179,7 +179,7 @@
     },
     tplInfo: {},
     fileList: []
-  }
+  };
 
   export default {
     mixins: [getBusiType, comLoading, createUpdate],
@@ -195,68 +195,76 @@
         rules: {
           templateCode: [{required: true, message: '请输入模板编号', trigger: 'blur'}],
           busiTypeText: [{required: true, message: '请选择业务类型', trigger: 'change'}],
-          startDate: [{type: 'date', required: true, message: '请选择生效时间', trigger: 'change'}],
+          startDate: [{
+            type: 'date', required: true, message: '请选择生效时间', trigger: 'change'
+          }],
           description: [{max: 300, message: '长度不超过300个字符', trigger: 'change'}]
         }
-      }, _.cloneDeep(defaultData))
+      }, _.cloneDeep(defaultData));
     },
     methods: {
       createFilter(result) {
-        return result.map((item) => {
-          return {value: item}
-        })
+        return result.map((item) => ({value: item}));
       },
       querySearch(queryString, cb) {
         if (!queryString) {
-          return cb([])
+          return cb([]);
         }
-        supportModel.selectTemplateCode({
+        return supportModel.selectTemplateCode({
           templateCode: queryString,
           type: 1
         }).then((res) => {
-          const result = res.data.dataMap || []
-          cb(this.createFilter(result))
-        }, () => {
-          return cb([])
-        })
+          const result = res.data.dataMap || [];
+          cb(this.createFilter(result));
+        }, () => cb([]));
       },
       search() {
-        this.comLoading()
+        this.comLoading();
         supportModel.getCurrentTemplateByCode({
           templateCode: this.form.templateCode
         }).then((res) => {
-          this.comLoading(false)
-          this.resetForm()
-          const tplInfo = res.data.dataMap
-          this.setData(tplInfo)
+          this.comLoading(false);
+          this.resetForm();
+          const tplInfo = res.data.dataMap;
+          this.setData(tplInfo);
         }, () => {
-          this.comLoading(false)
-        })
+          this.comLoading(false);
+        });
       },
       setBusiType(value, tree) {
-        const bizTypes = []
-        const busiTypeText = []
-        const leafs = tree.getCheckedNodes(true)
+        const bizTypes = [];
+        const busiTypeText = [];
+        const leafs = tree.getCheckedNodes(true);
         leafs.forEach((item) => {
-          bizTypes.push(item.id)
-          busiTypeText.push(item.businessName)
-        })
-        this.form.bizTypes = bizTypes
-        this.form.busiTypeText = busiTypeText.join(',')
-        this.visible = false
+          bizTypes.push(item.id);
+          busiTypeText.push(item.businessName);
+        });
+        this.form.bizTypes = bizTypes;
+        this.form.busiTypeText = busiTypeText.join(',');
+        this.visible = false;
       },
       setData(tplInfo) {
-        const {templateName, templateType, bizTypes, startDate, version, operatorName, creatorName, description, files, contentModule} = tplInfo
-        this.tplInfo = tplInfo
-        this.form['templateName'] = templateName
-        this.form['templateType'] = tplTypeMap[templateType]
-        this.form['bizTypes'] = bizTypes.map(item => item.typeId)
-        this.form['busiTypeText'] = bizTypes.map(item => item.businessName).join(',')
-        this.form['startDate'] = formatToDate(startDate)
-        this.form['version'] = `V${version}`
-        this.form['operatorName'] = operatorName
-        this.form['creatorName'] = creatorName
-        this.form['description'] = description
+        const {
+          templateName,
+          templateType,
+          bizTypes,
+          startDate,
+          version,
+          operatorName,
+          creatorName,
+          description,
+          files
+        } = tplInfo;
+        this.tplInfo = tplInfo;
+        this.form.templateName = templateName;
+        this.form.templateType = tplTypeMap[templateType];
+        this.form.bizTypes = bizTypes.map(item => item.typeId);
+        this.form.busiTypeText = bizTypes.map(item => item.businessName).join(',');
+        this.form.startDate = formatToDate(startDate);
+        this.form.version = `V${version}`;
+        this.form.operatorName = operatorName;
+        this.form.creatorName = creatorName;
+        this.form.description = description;
         if (files.length) {
           files.forEach((item) => {
             this.fileList.push({
@@ -264,70 +272,70 @@
               url: `${this.download}${item.fileId}`,
               status: 'success',
               fileId: item.fileId
-            })
-          })
+            });
+          });
         }
       },
       resetForm() {
-        const {id} = this.tplInfo
+        const {id} = this.tplInfo;
         if (id) {
-          const templateCode = this.form.templateCode
-          this.$refs['form'].resetFields()
-          this.form.templateCode = templateCode
-          this.fileList = []
-          this.tplInfo = {}
+          const templateCode = this.form.templateCode;
+          this.$refs.form.resetFields();
+          this.form.templateCode = templateCode;
+          this.fileList = [];
+          this.tplInfo = {};
         }
       },
       getResult() {
-        const {id} = this.tplInfo
-        const {info} = this.$store.state.support.create
-        const {startDate, description, bizTypes} = this.form
+        const {id} = this.tplInfo;
+        const {info} = this.$store.state.support.create;
+        const {startDate, description, bizTypes} = this.form;
         const result = Object.assign({
           id,
           startDate: formatTimeStamp(startDate),
           description,
           bizTypes
-        }, info)
-        const files = _.map(this.fileList, (file) => {
+        }, info);
+        const files = [];
+        this.fileList.forEach((file) => {
           if (file.status === 'success') {
-            return file.fileId
+            files.push(file.fileId);
           }
-        })
+        });
         Object.assign(result, {
           files
-        })
-        return result
+        });
+        return result;
       },
       save(templateStatus) {
-        this.$refs['form'].validate((valid) => {
+        this.$refs.form.validate((valid) => {
           if (valid) {
-            const result = this.getResult()
+            const result = this.getResult();
 
             if (!this.check(result)) {
-              return
+              return;
             }
             this.comLoading({
               text: '正在提交中'
-            })
-            result.templateStatus = templateStatus
+            });
+            result.templateStatus = templateStatus;
 
-            supportModel.updateTemplate(result).then((res) => {
-              this.comLoading(false)
+            supportModel.updateTemplate(result).then(() => {
+              this.comLoading(false);
               this.$message({
                 message: '提交成功',
                 type: 'success'
-              })
+              });
               if (templateStatus === 1) {
-                this.back()
+                this.back();
               }
             }, () => {
-              this.comLoading(false)
-            })
+              this.comLoading(false);
+            });
           } else {
-            console.log('error submit!!')
-            return false
+            console.log('error submit!!');
           }
-        })
+        });
       }
     },
     components: {
@@ -337,8 +345,8 @@
     },
     computed: {
       showTpl() {
-        return this.tplInfo.templateType === 'TEMPLATE'
+        return this.tplInfo.templateType === 'TEMPLATE';
       }
     }
-  }
+  };
 </script>

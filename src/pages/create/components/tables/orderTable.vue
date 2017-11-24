@@ -52,10 +52,10 @@
 </template>
 
 <script>
-  import Api from '@/api/manageContract'
-  import {formatDate} from '@/filters/moment'
-  import comLoading from '@/mixins/comLoading'
-  import {routerNames} from '@/core/consts'
+  import Api from '../../../../api/manageContract';
+  import { formatDate } from '../../../../filters/moment';
+  import comLoading from '../../../../mixins/comLoading';
+  import { routerNames } from '../../../../core/consts';
 
   export default {
     props: ['contractNo'],
@@ -66,44 +66,44 @@
         pageSize: 10,
         total: 0,
         tableData: []
-      }
+      };
     },
     filters: {
       formatDate
     },
     methods: {
       getData() {
-        this.comLoading()
-        Api.getOrderTableData({'contractNo': this.contractNo, 'pageNo': this.pageNo, 'pageSize': this.pageSize})
+        this.comLoading();
+        Api.getOrderTableData({ contractNo: this.contractNo, pageNo: this.pageNo, pageSize: this.pageSize })
           .then((data) => {
             if (data.data.dataMap) {
-              this.tableData = data.data.dataMap.data
-              this.total = data.data.dataMap.total
+              this.tableData = data.data.dataMap.data;
+              this.total = data.data.dataMap.total;
             }
-            this.comLoading(false)
+            this.comLoading(false);
           })
           .catch(() => {
-            this.comLoading(false)
-          })
+            this.comLoading(false);
+          });
       },
       handleSizeChange(val) {
-        this.pageSize = val
-        this.getData()
+        this.pageSize = val;
+        this.getData();
       },
       handleCurrentChange(val) {
-        this.pageNo = val
-        this.getData()
+        this.pageNo = val;
+        this.getData();
       },
       see(row) {
-        const id = row.purchaseOrderId
+        const id = row.purchaseOrderId;
         return {
           name: routerNames.con_purchase_see,
-          query: {id}
-        }
+          query: { id }
+        };
       }
     },
     created() {
-      this.getData()
+      this.getData();
     }
-  }
+  };
 </script>

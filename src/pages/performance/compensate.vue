@@ -138,11 +138,11 @@
 </template>
 
 <script>
-  import Api from '@/api/performance'
-  import Upload from '@/components/upload.vue'
-  import {formatDate} from '@/filters/moment'
-  import {routerNames} from '@/core/consts'
-  import comLoading from '@/mixins/comLoading'
+  import Api from '../../api/performance';
+  import Upload from '../../components/upload.vue';
+  import {formatDate} from '../../filters/moment';
+  import {routerNames} from '../../core/consts';
+  import comLoading from '../../mixins/comLoading';
 
   export default {
     mixins: [comLoading],
@@ -183,36 +183,40 @@
             message: '长度不超过300个字符'
           }]
         }
-      }
+      };
     },
     methods: {
       search() {
         if (!this.basicForm.contractNo) {
-          return
+          return;
         }
-        this.comLoading()
+        this.comLoading();
         Api.getContractViolateBaseByContractNo({contractNo: this.basicForm.contractNo}).then((res) => {
-          const data = res.data.dataMap
-          console.log(data)
-          this.info = data
-          const {startTime, endTime, businessOperator, businessDept, signTime, contractId} = data
-          this.startTime = startTime
-          this.endTime = endTime
-          this.signTime = signTime
-          this.businessDept = businessDept
-          this.businessOperator = businessOperator
-          this.toDetail.query.contractId = contractId
-          this.comLoading(false)
+          const data = res.data.dataMap;
+          console.log(data);
+          this.info = data;
+          const {
+            startTime, endTime, businessOperator, businessDept, signTime, contractId
+          } = data;
+          this.startTime = startTime;
+          this.endTime = endTime;
+          this.signTime = signTime;
+          this.businessDept = businessDept;
+          this.businessOperator = businessOperator;
+          this.toDetail.query.contractId = contractId;
+          this.comLoading(false);
         }, () => {
-          this.comLoading(false)
-        })
+          this.comLoading(false);
+        });
       },
       getResult() {
-        this.handleForm.files = this.fileList.map((file) => {
+        const files = [];
+        this.fileList.forEach((file) => {
           if (file.status === 'success') {
-            return file.fileId
+            files.push(file.fileId);
           }
-        })
+        });
+        this.handleForm.files = files;
         return {
           contractNo: this.info.contractNo,
           defaulter: this.defaulter,
@@ -220,40 +224,40 @@
           compensateType: this.compensateType,
           compensateMoney: this.compensateMoney,
           ...this.handleForm
-        }
+        };
       },
-      check(result) {
-        let flag = false
-        this.$refs['basicForm'].validate((valid) => {
+      check() {
+        let flag = false;
+        this.$refs.basicForm.validate((valid) => {
           if (valid) {
-            this.$refs['handleForm'].validate((valid) => {
-              if (valid) {
-                flag = true
+            this.$refs.handleForm.validate((valid1) => {
+              if (valid1) {
+                flag = true;
               }
-            })
+            });
           }
-        })
+        });
 
-        return flag
+        return flag;
       },
       submit() {
-        const result = this.getResult()
-        console.log(result)
-        if (!this.check(result)) {
-          this.$message.warning('表单信息不完整！')
-          return
+        const result = this.getResult();
+        console.log(result);
+        if (!this.check()) {
+          this.$message.warning('表单信息不完整！');
+          return;
         }
         this.comLoading({
           text: '正在提交中'
-        })
-        Api.contractViolateSave(result).then((res) => {
-          this.comLoading(false)
+        });
+        Api.contractViolateSave(result).then(() => {
+          this.comLoading(false);
           this.$router.push({
             name: routerNames.con_index
-          })
+          });
         }, () => {
-          this.comLoading(false)
-        })
+          this.comLoading(false);
+        });
       }
     },
     components: {
@@ -262,5 +266,5 @@
     filters: {
       formatDate
     }
-  }
+  };
 </script>

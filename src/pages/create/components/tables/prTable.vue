@@ -48,9 +48,9 @@
 </template>
 
 <script>
-  import Api from '@/api/manageContract'
-  import {formatDate} from '@/filters/moment'
-  import comLoading from '@/mixins/comLoading'
+  import Api from '../../../../api/manageContract';
+  import { formatDate } from '../../../../filters/moment';
+  import comLoading from '../../../../mixins/comLoading';
 
   export default {
     mixins: [comLoading],
@@ -60,30 +60,30 @@
         pageSize: 10,
         total: 0,
         tableData: []
-      }
+      };
     },
     filters: {
       formatDate
     },
     methods: {
       getData() {
-        this.comLoading()
+        this.comLoading();
         Api.getPrTableData({}).then((res) => {
-          const {list, total, pageSize} = res.data.dataMap
-          this.tableData = list
-          this.total = total
-          this.pageSize = pageSize
-          this.comLoading(false)
+          const { list, total, pageSize } = res.data.dataMap;
+          this.tableData = list;
+          this.total = total;
+          this.pageSize = pageSize;
+          this.comLoading(false);
         }, () => {
-          this.comLoading(false)
-        })
+          this.comLoading(false);
+        });
       },
       handleSizeChange(val) {
-        this.pageSize = val
+        this.pageSize = val;
       },
       handleCurrentChange(val) {
-        this.currentPage = val
+        this.currentPage = val;
       }
     }
-  }
+  };
 </script>

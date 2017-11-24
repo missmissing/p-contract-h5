@@ -102,13 +102,13 @@
 </template>
 
 <script>
-  import _ from 'lodash'
-  import {mapMutations} from 'vuex'
-  import {quillEditor} from 'vue-quill-editor'
-  import {routerNames} from '@/core/consts'
-  import * as types from '../../store/consts'
-  import getModules from '@/mixins/getModules'
-  import Api from '@/api/support'
+  import _ from 'lodash';
+  import {mapMutations} from 'vuex';
+  import {quillEditor} from 'vue-quill-editor';
+  import {routerNames} from '../../core/consts';
+  import * as types from '../../store/consts';
+  import getModules from '../../mixins/getModules';
+  import Api from '../../api/support';
 
   export default {
     mixins: [getModules],
@@ -127,14 +127,14 @@
           modules: {
             toolbar: [
               [
-                {'header': [1, 2, 3, 4, 5, 6, false]},
-                {'align': ['', 'right', 'center']}
+                {header: [1, 2, 3, 4, 5, 6, false]},
+                {align: ['', 'right', 'center']}
               ]
             ]
           }
         },
         previewContent: ''
-      }
+      };
     },
     props: {
       showTmpl: {
@@ -145,19 +145,19 @@
     methods: {
       getTmplTypes() {
         Api.getTmplTypes({}).then((res) => {
-          this.options = res.data.dataMap
-        })
+          this.options = res.data.dataMap;
+        });
       },
       save() {
         if (!this.disabled) {
           this[types.SET_INFO]({
             info: this.form
-          })
+          });
         }
-        this.back()
+        this.back();
       },
       back() {
-        this.$emit('update:showTmpl', false)
+        this.$emit('update:showTmpl', false);
       },
       ...mapMutations([
         types.SET_INFO
@@ -165,62 +165,51 @@
     },
     watch: {
       modulesData() {
-        this.getTmplTypes()
+        this.getTmplTypes();
       },
       options() {
-        this.tplType = this.options[0].id
+        this.tplType = this.options[0].id;
       },
       tplType() {
-        const options = this.options
+        const options = this.options;
         if (!options.length) {
-          return
+          return;
         }
-        const option = _.find(options, (o) => {
-          return o.id === this.tplType
-        })
-        this.form.contentModule = option.moduleIds
+        const option = _.find(options, (o) => o.id === this.tplType);
+        this.form.contentModule = option.moduleIds;
       },
       tplInfo() {
-        const tplInfo = this.tplInfo
+        const tplInfo = this.tplInfo;
         if (!tplInfo) {
-          return
+          return;
         }
-        Object.keys(this.form).forEach((key) => {
-          if (tplInfo.hasOwnProperty(key)) {
-            if (key === 'contentModule') {
-              this.form[key] = tplInfo[key].map(item => item.id)
-            } else {
-              this.form[key] = tplInfo[key]
-            }
-          }
-        })
+        this.form.contentModule = tplInfo.contentModule.map(item => item.id);
+        this.form.content = tplInfo.content;
       },
-      'form.contentModule'() {
-        const value = this.form.contentModule
-        const modulesData = this.modulesData
+      'form.contentModule': function () {
+        const value = this.form.contentModule;
+        const modulesData = this.modulesData;
         if (!value.length || !modulesData.length) {
-          return []
+          return;
         }
-        const header = []
-        const footer = []
+        const header = [];
+        const footer = [];
         value.forEach((key) => {
-          const module = _.find(modulesData, (o) => {
-            return o.id === key
-          })
-          const content = module.moduleContent
+          const module = _.find(modulesData, (o) => o.id === key);
+          const content = module.moduleContent;
           if (module.moduleType === 1) {
-            header.push(content)
+            header.push(content);
           } else if (module.moduleType === 2) {
-            footer.push(content)
+            footer.push(content);
           }
-        })
-        this.header = header.join('')
-        this.footer = footer.join('')
+        });
+        this.header = header.join('');
+        this.footer = footer.join('');
       }
     },
     computed: {
       disabled() {
-        return [routerNames.con_tpl_see, routerNames.con_tpl_abolish].indexOf(this.$route.name) > -1
+        return [routerNames.con_tpl_see, routerNames.con_tpl_abolish].indexOf(this.$route.name) > -1;
       }
     },
     components: {
@@ -230,13 +219,13 @@
       setItemDisabled(items, self) {
         if (self.disabled) {
           return items.map((item) => {
-            const newItem = Object.assign({}, item)
-            newItem.disabled = true
-            return newItem
-          })
+            const newItem = Object.assign({}, item);
+            newItem.disabled = true;
+            return newItem;
+          });
         }
-        return items
+        return items;
       }
     }
-  }
+  };
 </script>

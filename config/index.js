@@ -1,6 +1,6 @@
 // see http://vuejs-templates.github.io/webpack for documentation.
 var path = require('path')
-var proxyTable = require('../api/proxy');
+var proxyTable = require('../build/proxy');
 
 module.exports = {
   build: {

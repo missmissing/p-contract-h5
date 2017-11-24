@@ -2,9 +2,11 @@
   .basic-info {
 
   }
+
   .basic-info .el-table__expanded-cell {
     z-index: 1
   }
+
   .basic-info .errorMsg {
     color: red;
     font-style: normal;
@@ -111,14 +113,16 @@
                       </el-col>
                       <el-col :span="6">
                         <el-form-item label="打印份数" prop="printTime" class="el-form-item is-required">
-                          <el-input-number  size="small" :max="10"
-                                           v-model="props.row.printTime" @change="handleChangeValidateForms"></el-input-number>
+                          <el-input-number size="small" :max="10"
+                                           v-model="props.row.printTime"
+                                           @change="handleChangeValidateForms"></el-input-number>
                         </el-form-item>
                       </el-col>
                       <el-col :span="6">
                         <el-form-item label="留存份数" prop="remainTime" class="el-form-item is-required">
-                          <el-input-number  size="small" :max="10"
-                                           v-model="props.row.remainTime" @change="handleChangeValidateForms"></el-input-number>
+                          <el-input-number size="small" :max="10"
+                                           v-model="props.row.remainTime"
+                                           @change="handleChangeValidateForms"></el-input-number>
                         </el-form-item>
                       </el-col>
                     </el-row>
@@ -126,8 +130,8 @@
                       <el-col :span="12">
                         <el-form-item label="选择用章" prop="saleInfos" class="is-required">
                           <el-checkbox-group v-model="props.row.saleInfos" @change="handleChangeValidateForms">
-                            <el-checkbox label="1" name="sealInfo" >公章</el-checkbox>
-                            <el-checkbox label="2" name="sealInfo" >法人章</el-checkbox>
+                            <el-checkbox label="1" name="sealInfo">公章</el-checkbox>
+                            <el-checkbox label="2" name="sealInfo">法人章</el-checkbox>
                           </el-checkbox-group>
                         </el-form-item>
                       </el-col>
@@ -198,11 +202,11 @@
 </template>
 
 <script>
-  import Api from '@/api/manageContract'
-  import {formatDate} from '@/filters/moment'
-  import comLoading from '@/mixins/comLoading'
-  import {routerNames} from '@/core/consts'
-  import {downloadUrl, uploadUrl} from '@/api/consts'
+  import Api from '../../api/manageContract';
+  import {formatDate} from '../../filters/moment';
+  import comLoading from '../../mixins/comLoading';
+  import {routerNames} from '../../core/consts';
+  import {downloadUrl, uploadUrl} from '../../api/consts';
 
   export default {
     mixins: [comLoading],
@@ -211,8 +215,8 @@
         procInstId: '', //流程id
         procTitle: '', //流程名称
         users: {},
-        downloadUrl: downloadUrl,
-        uploadUrl: uploadUrl,
+        downloadUrl,
+        uploadUrl,
         isSubmit: false,
         form: {
           errorMsg: '',
@@ -227,7 +231,9 @@
             {required: true, message: '请选择中止原因'}
           ],*/
           suspendTime: [
-            {type: 'date', required: true, message: '请选择中止时间', trigger: 'change'}
+            {
+              type: 'date', required: true, message: '请选择中止时间', trigger: 'change'
+            }
           ],
           suspendRemark: [
             {required: true, message: '请填写原因说明', trigger: 'change'},
@@ -240,75 +246,73 @@
         startTime: '',
         endTime: '',
         pickerOptions: {
-          disabledDate(time) {
-            return true
+          disabledDate() {
+            return true;
           }
         },
         options: [{value: 1, label: '合同违约中止'}, {value: 2, label: '合同变更后中止'}, {value: 3, label: '固定期限合同正常履行完成后中止'}],
         info: null,
         toDetail: {name: routerNames.con_Check, query: {contractId: ''}}
-      }
+      };
     },
     methods: {
       search() {
         if (!this.contractCode) {
-          this.$message.warning('请输入合同编号！')
-          return
+          this.$message.warning('请输入合同编号！');
+          return;
         }
-        this.comLoading()
+        this.comLoading();
         Api.getContractDetail(this.contractCode).then((res) => {
-          const data = res.data.dataMap
-          this.info = data
-          const {baseInfoForm, cardContentInfoForm} = data
-          const {id, approvalDate, contractStatusName} = baseInfoForm
-          const {startTime, endTime} = cardContentInfoForm
-          this.approvalDate = approvalDate
-          this.contractStatusName = contractStatusName
-          this.startTime = startTime
-          this.endTime = endTime
-          this.toDetail.query.contractId = id
-          this.pickerOptions.disabledDate = (time) => {
-            return time.getTime() < this.startTime
-          }
-          this.comLoading(false)
+          const data = res.data.dataMap;
+          this.info = data;
+          const {baseInfoForm, cardContentInfoForm} = data;
+          const {id, approvalDate, contractStatusName} = baseInfoForm;
+          const {startTime, endTime} = cardContentInfoForm;
+          this.approvalDate = approvalDate;
+          this.contractStatusName = contractStatusName;
+          this.startTime = startTime;
+          this.endTime = endTime;
+          this.toDetail.query.contractId = id;
+          this.pickerOptions.disabledDate = (time) => time.getTime() < this.startTime;
+          this.comLoading(false);
         }, () => {
-          this.comLoading(false)
-        })
+          this.comLoading(false);
+        });
       },
       submit() {
-        this.isSubmit = true
+        this.isSubmit = true;
         this.validateForms().then(() => {
           if (!this.info) {
-            this.$message.warning('请输入合同编号查询')
-            return
+            this.$message.warning('请输入合同编号查询');
+            return;
           }
-          const {baseInfoForm} = this.info
-          const {id} = baseInfoForm
+          const {baseInfoForm} = this.info;
+          const {id} = baseInfoForm;
           const result = {
             id,
             suspendTime: formatDate(this.form.suspendTime),
             /*suspendReason: this.form.suspendReason,*/
             suspendRemark: this.form.suspendRemark,
             sealAttachments: this.combineAttachments(this.form.sealAttachments)
-          }
+          };
           this.comLoading({
             text: '正在提交中'
-          })
+          });
           Api.contractSuspendSubmit(result).then((res) => {
-            console.log(res)
-            this.comLoading(false)
+            console.log(res);
+            this.comLoading(false);
             this.$router.push({
               name: routerNames.con_index
-            })
+            });
           }, () => {
-            this.comLoading(false)
-          })
+            this.comLoading(false);
+          });
         }).catch(() => {
-          console.log('error submit!!')
-          return false
-        })
+          console.log('error submit!!');
+          return false;
+        });
       },
-      handleNewSealFile: function() {
+      handleNewSealFile() {
         const file = [{
           operate: 'add',
           id: '',
@@ -342,93 +346,91 @@
               name: '法人章'
             }
           ], // 章列表
-          filesSealed: []// 上传的盖章后的文件信息
-        }]
-        this.form.sealAttachments.push(file)
+          filesSealed: [] // 上传的盖章后的文件信息
+        }];
+        this.form.sealAttachments.push(file);
       },
-      handleUploadSealFileSuccess(res, file, fileList) {
-        const dataMap = res.dataMap
+      handleUploadSealFileSuccess(res) {
+        const dataMap = res.dataMap;
         if (dataMap.fileId) {
-          const index = this.form.sealAttachments.current
-          const curentFile = this.form.sealAttachments[index]
-          curentFile[0].fileId = dataMap.fileId
-          curentFile[0].fileName = dataMap.fileName
-          curentFile[0].fileUrl = downloadUrl + dataMap.fileId
-          this.$message.success('文件上传成功')
+          const index = this.form.sealAttachments.current;
+          const curentFile = this.form.sealAttachments[index];
+          curentFile[0].fileId = dataMap.fileId;
+          curentFile[0].fileName = dataMap.fileName;
+          curentFile[0].fileUrl = downloadUrl + dataMap.fileId;
+          this.$message.success('文件上传成功');
         }
       },
       handleUploadSealFileError(err, file, fileList) {
-        console.log('error', err)
-        console.log('file', file)
-        console.log('fileList', fileList)
+        console.log('error', err);
+        console.log('file', file);
+        console.log('fileList', fileList);
       },
       getEnabledUploadBtnOuter(fileName) {
-        let enabled = true
-        fileName ? enabled = false : enabled = true
-        return enabled
+        return !fileName;
       },
       handleChangeValidateForms() {
         if (this.isSubmit) {
           this.validateForms().catch(() => {
-            console.log('validate failed')
-          })
+            console.log('validate failed');
+          });
         }
       },
       handleUploadOuter(index) {
-        this.form.sealAttachments.current = index
+        this.form.sealAttachments.current = index;
       },
       handleRemoveAttachmentsItem(index, rows) {
-        rows.splice(index, 1)
+        rows.splice(index, 1);
       },
       combineAttachments(files) { //上传附件剔除空附件
-        const newFiles = []
+        const newFiles = [];
         if (files && files.length) {
-          files.map((item) => {
+          files.forEach((item) => {
             if (item[0] && item[0].fileName) {
-              let inItem = item[0]
-              let {filesSealed} = inItem
+              const inItem = item[0];
+              const {filesSealed} = inItem;
               if (filesSealed && filesSealed[0]) {
-                const {sealFileCreateTime} = filesSealed[0]
-                filesSealed[0].sealFileCreateTime = formatDate(sealFileCreateTime)
+                const {sealFileCreateTime} = filesSealed[0];
+                filesSealed[0].sealFileCreateTime = formatDate(sealFileCreateTime);
               }
-              newFiles.push(item)
+              newFiles.push(item);
             }
-          })
+          });
         }
-        return newFiles
+        return newFiles;
       },
       validateForms() {
         return new Promise((resolve, reject) => {
           this.$refs.form.validate((valid) => {
             //验证附件的数据是否填写完整
-            const sealAttachments = this.form.sealAttachments
+            const sealAttachments = this.form.sealAttachments;
             if (sealAttachments && sealAttachments.length) {
-              sealAttachments.map((item) => {
+              sealAttachments.forEach((item) => {
                 if (item[0].haveSale) {
                   if (item[0].printTime && item[0].remainTime && item[0].saleInfos.length) {
-                    this.form.errorMsg = ''
+                    this.form.errorMsg = '';
                   } else {
-                    this.form.errorMsg = '请确保所有附件信息填写完整'
+                    this.form.errorMsg = '请确保所有附件信息填写完整';
                   }
                 }
-              })
+              });
             } else {
-              this.form.errorMsg = '请确保所有附件信息填写完整'
+              this.form.errorMsg = '请确保所有附件信息填写完整';
             }
             if (valid && !this.form.errorMsg) {
-              resolve()
+              resolve();
             } else {
-              reject()
+              reject();
             }
           }).catch(() => {
-            console.log('验证失败')
-            reject()
-          })
-        })
+            console.log('验证失败');
+            reject();
+          });
+        });
       }
     },
     filters: {
       formatDate
     }
-  }
+  };
 </script>

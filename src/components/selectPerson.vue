@@ -35,7 +35,7 @@
 </template>
 
 <script>
-  import Api from '@/api/manageContract'
+  import Api from '../api/manageContract';
 
   export default {
     name: 'SelectPerson',
@@ -49,25 +49,25 @@
         value: null,
         options: [],
         loading: false
-      }
+      };
     },
     methods: {
       remoteMethod(query) {
         if (query !== '') {
-          this.loading = true
-          Api.getRemoteCreatePersonsByKeyWord({keyword: query}).then(res => {
-            this.loading = false
-            this.options = res.data.dataMap
+          this.loading = true;
+          Api.getRemoteCreatePersonsByKeyWord({ keyword: query }).then(res => {
+            this.loading = false;
+            this.options = res.data.dataMap;
           }, () => {
-            this.options = []
-          })
+            this.options = [];
+          });
         } else {
-          this.options = []
+          this.options = [];
         }
       },
       change(value) {
-        this.$emit('change', value)
+        this.$emit('change', value);
       }
     }
-  }
+  };
 </script>

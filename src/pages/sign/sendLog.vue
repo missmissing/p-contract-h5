@@ -54,9 +54,9 @@
 </template>
 
 <script>
-  import Api from '@/api/sign'
-  import {formatTime} from '@/filters/moment'
-  import comLoading from '@/mixins/comLoading'
+  import Api from '../../api/sign';
+  import { formatTime } from '../../filters/moment';
+  import comLoading from '../../mixins/comLoading';
 
   export default {
     mixins: [comLoading],
@@ -69,48 +69,48 @@
           pageNo: 1,
           excludeOperationResults: ['S']
         }
-      }
+      };
     },
     methods: {
       getList() {
-        this.comLoading()
+        this.comLoading();
         Api.getLogs(this.form).then((res) => {
-          console.log(res)
-          const {data, total} = res.data.dataMap
-          this.tableData = data || []
-          this.total = total
-          this.comLoading(false)
-        })
+          console.log(res);
+          const { data, total } = res.data.dataMap;
+          this.tableData = data || [];
+          this.total = total;
+          this.comLoading(false);
+        });
       },
       handleSizeChange(val) {
-        console.log(`每页 ${val} 条`)
-        this.form.pageSize = val
-        this.getList()
+        console.log(`每页 ${val} 条`);
+        this.form.pageSize = val;
+        this.getList();
       },
       handleCurrentChange(val) {
-        console.log(`当前页: ${val}`)
-        this.form.pageNo = val
-        this.getList()
+        console.log(`当前页: ${val}`);
+        this.form.pageNo = val;
+        this.getList();
       },
       send(id) {
         this.comLoading({
           text: '推送执行中'
-        })
-        Api.sendOrder({id}).then((res) => {
-          this.comLoading(false)
-          this.$message.success('推送成功')
-          this.getList()
+        });
+        Api.sendOrder({ id }).then(() => {
+          this.comLoading(false);
+          this.$message.success('推送成功');
+          this.getList();
         }, () => {
-          this.$message.warning('推送失败，请重试！')
-          this.comLoading(false)
-        })
+          this.$message.warning('推送失败，请重试！');
+          this.comLoading(false);
+        });
       }
     },
     created() {
-      this.getList()
+      this.getList();
     },
     filters: {
       formatTime
     }
-  }
+  };
 </script>

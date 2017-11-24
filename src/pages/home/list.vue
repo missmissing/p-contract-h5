@@ -50,10 +50,10 @@
 </template>
 
 <script>
-  import Api from '@/api/process'
-  import {routerNames, processListMap} from '@/core/consts'
-  import {formatDate} from '@/filters/moment'
-  import toPage from '@/assets/js/toPage'
+  import Api from '../../api/process';
+  import {routerNames, processListMap} from '../../core/consts';
+  import {formatDate} from '../../filters/moment';
+  import toPage from '../../assets/js/toPage';
 
   export default {
     props: {
@@ -70,7 +70,7 @@
     data() {
       return {
         items: []
-      }
+      };
     },
     methods: {
       getProcess() {
@@ -79,35 +79,37 @@
           pageSize: this.pageSize,
           dataType: this.dataType
         }).then((res) => {
-          const {procList} = res.data.dataMap
+          const {procList} = res.data.dataMap;
           // console.log(procList)
-          this.items = procList || []
-        })
+          this.items = procList || [];
+        });
       },
       toDetailPage() {
-        let routerName = ''
+        let routerName = '';
         switch (this.dataType) {
           case processListMap[0]:
-            routerName = routerNames.con_handing_process
-            break
+            routerName = routerNames.con_handing_process;
+            break;
           case processListMap[1]:
-            routerName = routerNames.con_create_process
-            break
+            routerName = routerNames.con_create_process;
+            break;
           case processListMap[2]:
-            routerName = routerNames.con_handle_process
-            break
+            routerName = routerNames.con_handle_process;
+            break;
+          default:
+            break;
         }
-        this.$router.push({name: routerName})
+        this.$router.push({name: routerName});
       },
       toPage(row) {
-        toPage.call(this, row)
+        toPage.call(this, row);
       }
     },
     created() {
-      this.getProcess()
+      this.getProcess();
     },
     filters: {
       formatDate
     }
-  }
+  };
 </script>

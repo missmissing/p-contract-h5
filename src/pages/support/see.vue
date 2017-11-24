@@ -142,16 +142,16 @@
 </template>
 
 <script>
-  import _ from 'lodash'
-  import Tmpl from './tmpl.vue'
-  import Upload from '@/components/upload.vue'
-  import Process from '@/components/process.vue'
-  import supportModel from '@/api/support'
-  import comLoading from '@/mixins/comLoading'
-  import {formatDate} from '@/filters/moment'
-  import tplStatus from '@/filters/tplStatus'
-  import {tplMap} from '@/core/consts'
-  import {downloadUrl} from '@/api/consts'
+  import _ from 'lodash';
+  import Tmpl from './tmpl.vue';
+  import Upload from '../../components/upload.vue';
+  import Process from '../../components/process.vue';
+  import supportModel from '../../api/support';
+  import comLoading from '../../mixins/comLoading';
+  import {formatDate} from '../../filters/moment';
+  import tplStatus from '../../filters/tplStatus';
+  import {tplMap} from '../../core/consts';
+  import {downloadUrl} from '../../api/consts';
 
   const defaultData = {
     procTitle: '',
@@ -174,7 +174,7 @@
     versions: [],
     tplInfo: {},
     fileList: []
-  }
+  };
 
   export default {
     mixins: [comLoading],
@@ -184,50 +184,65 @@
         templateId: this.$route.query.id,
         showAbolish: false,
         download: downloadUrl
-      }, _.cloneDeep(defaultData))
+      }, _.cloneDeep(defaultData));
     },
     methods: {
       setData(tplInfo) {
-        const {templateCode, templateName, templateType, templateStatus, bizTypes, startDate, endDate, updateTime, abolishReason, version, operatorName, creatorName, description, files} = tplInfo
-        this.tplInfo = tplInfo
-        this.form['templateCode'] = templateCode
-        this.form['templateName'] = templateName
-        this.form['templateType'] = templateType
-        this.form['templateStatus'] = templateStatus
-        this.form['busiTypeText'] = bizTypes.map(item => item.businessName).join(',')
-        this.form['startDate'] = formatDate(startDate)
-        this.form['endDate'] = formatDate(endDate)
-        this.form['updateTime'] = formatDate(updateTime)
-        this.form['abolishReason'] = abolishReason
-        this.form['version'] = `V${version}`
-        this.form['operatorName'] = operatorName
-        this.form['creatorName'] = creatorName
-        this.form['description'] = description
-        this.fileList = files || []
+        const {
+          templateCode,
+          templateName,
+          templateType,
+          templateStatus,
+          bizTypes,
+          startDate,
+          endDate,
+          updateTime,
+          abolishReason,
+          version,
+          operatorName,
+          creatorName,
+          description,
+          files
+        } = tplInfo;
+        this.tplInfo = tplInfo;
+        this.form.templateCode = templateCode;
+        this.form.templateName = templateName;
+        this.form.templateType = templateType;
+        this.form.templateStatus = templateStatus;
+        this.form.busiTypeText = bizTypes.map(item => item.businessName).join(',');
+        this.form.startDate = formatDate(startDate);
+        this.form.endDate = formatDate(endDate);
+        this.form.updateTime = formatDate(updateTime);
+        this.form.abolishReason = abolishReason;
+        this.form.version = `V${version}`;
+        this.form.operatorName = operatorName;
+        this.form.creatorName = creatorName;
+        this.form.description = description;
+        this.fileList = files || [];
       },
       getTplData(id) {
-        this.comLoading()
+        this.comLoading();
         supportModel.getTplData({
           templateId: id
         }).then((res) => {
-          console.log(res)
-          const tplInfo = res.data.dataMap
-          this.setData(tplInfo)
-          this.comLoading(false)
+          console.log(res);
+          const tplInfo = res.data.dataMap;
+          this.setData(tplInfo);
+          this.comLoading(false);
         }).catch(() => {
-          this.comLoading(false)
-        })
+          this.comLoading(false);
+        });
       },
       getAllVersions() {
-        const {templateCode} = this.form
+        const {templateCode} = this.form;
         supportModel.getAllTemplateByCode({templateCode}).then((res) => {
-          this.versions = res.data.dataMap
+          this.versions = res.data.dataMap;
         }).catch(() => {
-          this.comLoading(false)
-        })
+          this.comLoading(false);
+        });
       },
       changeVersion(val) {
-        this.getTplData(val)
+        this.getTplData(val);
       }
     },
     components: {
@@ -236,13 +251,13 @@
       Process
     },
     created() {
-      const {id, processData} = this.$route.query
-      this.getTplData(id)
+      const {id, processData} = this.$route.query;
+      this.getTplData(id);
       if (processData) {
-        const {procCode, procInstId, procTitle} = JSON.parse(processData)
-        this.showAbolish = procCode === tplMap[2]
-        this.procInstId = procInstId
-        this.procTitle = procTitle
+        const {procCode, procInstId, procTitle} = JSON.parse(processData);
+        this.showAbolish = procCode === tplMap[2];
+        this.procInstId = procInstId;
+        this.procTitle = procTitle;
       }
     },
     filters: {
@@ -251,17 +266,17 @@
     },
     computed: {
       tplTypeShow() {
-        return this.form.templateType === 'TEXT'
+        return this.form.templateType === 'TEXT';
       }
     },
     watch: {
-      'form.templateCode'() {
-        this.getAllVersions()
+      'form.templateCode': function () {
+        this.getAllVersions();
       },
       versions() {
-        const {id} = this.$route.query
-        this.templateId = id
+        const {id} = this.$route.query;
+        this.templateId = id;
       }
     }
-  }
+  };
 </script>

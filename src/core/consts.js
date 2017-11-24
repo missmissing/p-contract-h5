@@ -23,7 +23,7 @@ export default {
     },
     NET_REQUEST_TIMEOUT: 'NET_REQUEST_TIMEOUT'
   }
-}
+};
 
 /**
  * 获取所有的路由名称
@@ -79,48 +79,48 @@ export const routerNames = {
   con_tpl_list: '合同模板查询',
   con_order_list: '采购订单查询',
   con_order_log_list: '采购订单日志'
-}
+};
 
 export const tplTypeMap = {
   TEMPLATE: '合同模板',
   TEXT: '合同文本'
-}
+};
 
-export const tplMap = ['CRS_Contract_CreateTemplate', 'CRS_Contract_UpdateTemplate', 'CRS_Contract_DeleteTemplate']
+export const tplMap = ['CRS_Contract_CreateTemplate', 'CRS_Contract_UpdateTemplate', 'CRS_Contract_DeleteTemplate'];
 
-export const contractMap = ['CRS_Contract_Create', 'CRS_Contract_Update']
+export const contractMap = ['CRS_Contract_Create', 'CRS_Contract_Update'];
 
-export const contractDel = ['CRS_Contract_Delete']
+export const contractDel = ['CRS_Contract_Delete'];
 
-export const prMap = ['CRS_Contract_CreatePO']
+export const prMap = ['CRS_Contract_CreatePO'];
 
-export const compensateMap = ['CRS_Contract_CompensateManage']
+export const compensateMap = ['CRS_Contract_CompensateManage'];
 
-export const inspectRejectMap = ['CRS_Contract_POCheckUnqualified']
+export const inspectRejectMap = ['CRS_Contract_POCheckUnqualified'];
 
-export const protocolMap = ['CRS_Contract_CreateProtocol']
+export const protocolMap = ['CRS_Contract_CreateProtocol'];
 
-export const processListMap = ['BACKLOG', 'STARTED', 'FINISHED']
+export const processListMap = ['BACKLOG', 'STARTED', 'FINISHED'];
 
 export const contractTextTypeMap = {
   1: '模板合同',
   2: '非模板合同'
-}
+};
 
 export const prTypeMap = {
   1: '一般物资',
   2: '服务',
   3: '固定资产'
-}
+};
 
 export const contractPatternMap = {
   1: '单一合同',
   2: '简易合同',
   3: '框架合同',
   4: '意向合同'
-}
+};
 
-export const procTitles = ['采购合同模板创建流程', '采购合同模板变更流程', '采购合同模板废除流程', '采购合同创建流程', '采购合同变更流程', '采购合同终止流程', '采购合同从协议创建流程', '采购订单创建流程', '合同违约处理流程', '合同验收不合格处理流程']
+export const procTitles = ['采购合同模板创建流程', '采购合同模板变更流程', '采购合同模板废除流程', '采购合同创建流程', '采购合同变更流程', '采购合同终止流程', '采购合同从协议创建流程', '采购订单创建流程', '合同违约处理流程', '合同验收不合格处理流程'];
 
 export const templateStatus = {
   DRAFT: '草稿',
@@ -133,4 +133,4 @@ export const templateStatus = {
   WAIT_ABOLISH: '废除审核通过',
   ABNORMAL: '异常',
   ALTER_AUDIT: '变更审核通过'
-}
+};

@@ -72,11 +72,11 @@
 </template>
 
 <script>
-  import Api from '@/api/process'
-  import {formatTime} from '@/filters/moment'
-  import SelectPerson from '@/components/selectPerson.vue'
-  import {routerNames, processListMap} from '@/core/consts'
-  import comLoading from '@/mixins/comLoading'
+  import Api from '../api/process';
+  import {formatTime} from '../filters/moment';
+  import SelectPerson from '../components/selectPerson.vue';
+  import {routerNames, processListMap} from '../core/consts';
+  import comLoading from '../mixins/comLoading';
 
   export default {
     mixins: [comLoading],
@@ -95,53 +95,54 @@
         actionName: '',
         receiver: '',
         approveRemark: ''
-      }
+      };
     },
     computed: {
       visible() {
-        return this.commonBtns.some(btn => btn === this.actionName)
+        return this.commonBtns.some(btn => btn === this.actionName);
       },
       required() {
-        return this.actionName === '拒绝'
+        return this.actionName === '拒绝';
       }
     },
     methods: {
       change(value) {
-        this.receiver = value
+        this.receiver = value;
       },
       beforeSubmit() {
         if (!this.actionName) {
-          this.$message.warning('请选择审批操作!')
-          return
+          this.$message.warning('请选择审批操作!');
+          return;
         }
         if (this.extraFn) {
-          const {sign} = this.processData
-          const isSign = sign === 1
-          const isAgree = this.actionName === '同意'
+          const {sign} = this.processData;
+          const isSign = sign === 1;
+          const isAgree = this.actionName === '同意';
           this.extraFn({isSign, isAgree}).then(() => {
-            this.submit()
-          })
-          return
+            this.submit();
+          });
+          return;
         }
-        this.submit()
+        this.submit();
       },
       check(data) {
-        if (this.actionName === '拒绝') {
+        const {actionName, redirectApproverId} = data;
+        if (actionName === '拒绝') {
           if (!this.approveRemark) {
-            this.$message.warning('请输入审批意见！')
-            return false
+            this.$message.warning('请输入审批意见！');
+            return false;
           }
         }
         if (this.visible) {
-          if (!this.receiver) {
-            this.$message.warning('请选择收文人！')
-            return false
+          if (!redirectApproverId) {
+            this.$message.warning('请选择收文人！');
+            return false;
           }
         }
-        return true
+        return true;
       },
       submit() {
-        const {procInstId, procCode, serialNumber} = this.processData
+        const {procInstId, procCode, serialNumber} = this.processData;
         const result = {
           procInstId,
           procCode,
@@ -149,42 +150,44 @@
           actionName: this.actionName,
           redirectApproverId: this.receiver,
           approveRemark: this.approveRemark
-        }
+        };
         if (!this.check(result)) {
-          return
+          return;
         }
         this.comLoading({
           text: '正在提交中'
-        })
-        Api.submitProcess(result).then((res) => {
-          this.comLoading(false)
-          this.$message.success('提交成功！')
-          this.$router.push({name: routerNames.con_index})
+        });
+        Api.submitProcess(result).then(() => {
+          this.comLoading(false);
+          this.$message.success('提交成功！');
+          this.$router.push({name: routerNames.con_index});
         }, () => {
-          this.comLoading(false)
-        })
+          this.comLoading(false);
+        });
       }
     },
     created() {
-      let {processData} = this.$route.query
+      let {processData} = this.$route.query;
       if (!processData) {
-        return
+        return;
       }
-      processData = JSON.parse(processData)
-      const {procInstId, procCode, actions, sign, dataType} = processData
+      processData = JSON.parse(processData);
+      const {
+        procInstId, procCode, actions, sign, dataType
+      } = processData;
       if (sign === 1) {
-        this.commonBtns = []
+        this.commonBtns = [];
       }
-      this.btns = actions || []
-      this.processData = processData
-      this.show = dataType === processListMap[0]
+      this.btns = actions || [];
+      this.processData = processData;
+      this.show = dataType === processListMap[0];
 
       Api.getStartedProcNodes({
         procInstId,
         procCode
       }).then((res) => {
-        this.lists = res.data.dataMap.nodes
-      })
+        this.lists = res.data.dataMap.nodes;
+      });
     },
     components: {
       SelectPerson
@@ -194,11 +197,11 @@
     },
     watch: {
       $route() {
-        const {processData} = this.$route.query
+        const {processData} = this.$route.query;
         if (!processData) {
-          this.processData = null
+          this.processData = null;
         }
       }
     }
-  }
+  };
 </script>

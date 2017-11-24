@@ -35,7 +35,7 @@
       return {
         currentNode: null,
         checkNodes: []
-      }
+      };
     },
     props: {
       defaultProps: {
@@ -51,7 +51,7 @@
       regions: {
         type: Array,
         default() {
-          return []
+          return [];
         }
       },
       visible: {
@@ -61,7 +61,7 @@
       initialKeys: {
         type: Array,
         default() {
-          return []
+          return [];
         }
       },
       multiple: {
@@ -71,38 +71,38 @@
     },
     methods: {
       nodeClick(node, nodeObj) {
-        console.log(node, nodeObj)
-        this.currentNode = nodeObj
+        console.log(node, nodeObj);
+        this.currentNode = nodeObj;
         if (!this.multiple) {
-          this.checkNodes = [node]
+          this.checkNodes = [node];
         }
       },
       getCheckedNodes() {
-        this.checkNodes = this.$refs.tree.getCheckedNodes()
+        this.checkNodes = this.$refs.tree.getCheckedNodes();
       },
       getNodeDetail(node, result) {
-        const {parent} = node
+        const { parent } = node;
         if (!parent) {
-          return result
+          return result;
         }
-        const {data} = node
-        result.unshift(data)
-        return this.getNodeDetail(parent, result)
+        const { data } = node;
+        result.unshift(data);
+        return this.getNodeDetail(parent, result);
       },
       ok() {
         if (!this.multiple) {
           if (this.currentNode && this.currentNode.childNodes && this.currentNode.childNodes.length) {
-            this.$message.warning('请选择最后一级节点!')
-            return
+            this.$message.warning('请选择最后一级节点!');
+            return;
           }
-          this.checkNodes = this.getNodeDetail(this.currentNode, [])
-          console.log(this.checkNodes)
+          this.checkNodes = this.getNodeDetail(this.currentNode, []);
+          console.log(this.checkNodes);
         }
-        this.$emit('ok', this.checkNodes, this.$refs.tree)
+        this.$emit('ok', this.checkNodes, this.$refs.tree);
       },
       close() {
-        this.$emit('update:visible', false)
+        this.$emit('update:visible', false);
       }
     }
-  }
+  };
 </script>

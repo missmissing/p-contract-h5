@@ -113,15 +113,15 @@
 </template>
 
 <script>
-  import _ from 'lodash'
-  import Tmpl from './tmpl.vue'
-  import Upload from '@/components/upload.vue'
-  import TreeModal from '@/components/treeModal.vue'
-  import supportModel from '@/api/support'
-  import getBusiType from '@/mixins/getBusiType'
-  import comLoading from '@/mixins/comLoading'
-  import createUpdate from '@/mixins/createUpdate'
-  import {formatTimeStamp} from '@/filters/moment'
+  import _ from 'lodash';
+  import Tmpl from './tmpl.vue';
+  import Upload from '../../components/upload.vue';
+  import TreeModal from '../../components/treeModal.vue';
+  import supportModel from '../../api/support';
+  import getBusiType from '../../mixins/getBusiType';
+  import comLoading from '../../mixins/comLoading';
+  import createUpdate from '../../mixins/createUpdate';
+  import { formatTimeStamp } from '../../filters/moment';
 
   const defaultData = {
     form: {
@@ -134,7 +134,7 @@
       files: []
     },
     fileList: []
-  }
+  };
 
   export default {
     mixins: [getBusiType, comLoading, createUpdate],
@@ -148,75 +148,79 @@
         visible: false,
         showTmpl: false,
         rules: {
-          templateName: [{required: true, message: '请输入模板/文本名称'}],
-          templateType: [{required: true, message: '请选择文本类型'}],
-          busiTypeText: [{required: true, message: '请选择业务类型', trigger: 'change'}],
-          startDate: [{type: 'date', required: true, message: '请选择生效时间', trigger: 'change'}],
-          description: [{max: 300, message: '长度不超过300个字符', trigger: 'change'}]
+          templateName: [{ required: true, message: '请输入模板/文本名称' }],
+          templateType: [{ required: true, message: '请选择文本类型' }],
+          busiTypeText: [{ required: true, message: '请选择业务类型', trigger: 'change' }],
+          startDate: [{
+            type: 'date', required: true, message: '请选择生效时间', trigger: 'change'
+          }],
+          description: [{ max: 300, message: '长度不超过300个字符', trigger: 'change' }]
         }
-      }, _.cloneDeep(defaultData))
+      }, _.cloneDeep(defaultData));
     },
     methods: {
       setBusiType(value, tree) {
-        const bizTypes = []
-        const busiTypeText = []
-        const leafs = tree.getCheckedNodes(true)
+        const bizTypes = [];
+        const busiTypeText = [];
+        const leafs = tree.getCheckedNodes(true);
         leafs.forEach((item) => {
-          bizTypes.push(item.id)
-          busiTypeText.push(item.businessName)
-        })
-        this.form.bizTypes = bizTypes
-        this.form.busiTypeText = busiTypeText.join(',')
-        this.visible = false
+          bizTypes.push(item.id);
+          busiTypeText.push(item.businessName);
+        });
+        this.form.bizTypes = bizTypes;
+        this.form.busiTypeText = busiTypeText.join(',');
+        this.visible = false;
       },
       getResult() {
-        const {info} = this.$store.state.support.create
-        const {templateName, templateType, startDate, description, bizTypes} = this.form
+        const { info } = this.$store.state.support.create;
+        const {
+          templateName, templateType, startDate, description, bizTypes
+        } = this.form;
         const result = Object.assign({
           templateName,
           templateType,
           startDate: formatTimeStamp(startDate),
           description,
           bizTypes
-        }, info)
-        const files = _.map(this.fileList, (file) => {
+        }, info);
+        const files = [];
+        this.fileList.forEach((file) => {
           if (file.status === 'success') {
-            return file.fileId
+            files.push(file.fileId);
           }
-        })
+        });
         Object.assign(result, {
           files
-        })
-        return result
+        });
+        return result;
       },
       save(templateStatus) {
-        this.$refs['form'].validate((valid) => {
+        this.$refs.form.validate((valid) => {
           if (valid) {
-            const result = this.getResult()
+            const result = this.getResult();
             if (!this.check(result)) {
-              return
+              return;
             }
-            result.templateStatus = templateStatus
+            result.templateStatus = templateStatus;
             this.comLoading({
               text: '正在提交中'
-            })
-            supportModel.addTpl(result).then((res) => {
-              this.comLoading(false)
+            });
+            supportModel.addTpl(result).then(() => {
+              this.comLoading(false);
               this.$message({
                 message: '提交成功',
                 type: 'success'
-              })
+              });
               if (templateStatus === 1) {
-                this.back()
+                this.back();
               }
             }, () => {
-              this.comLoading(false)
-            })
+              this.comLoading(false);
+            });
           } else {
-            console.log('error submit!!')
-            return false
+            console.log('error submit!!');
           }
-        })
+        });
       }
     },
     components: {
@@ -226,8 +230,8 @@
     },
     computed: {
       showTpl() {
-        return this.form.templateType === 'TEMPLATE'
+        return this.form.templateType === 'TEMPLATE';
       }
     }
-  }
+  };
 </script>

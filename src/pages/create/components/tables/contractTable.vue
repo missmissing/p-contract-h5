@@ -39,10 +39,8 @@
 </template>
 
 <script>
-  import Api from '@/api/manageContract'
-  import {formatDate} from '@/filters/moment'
-  import comLoading from '@/mixins/comLoading'
-  import moment from 'moment'
+  import { formatDate } from '../../../../filters/moment';
+  import comLoading from '../../../../mixins/comLoading';
 
   export default {
     mixins: [comLoading],
@@ -52,10 +50,10 @@
     data() {
       return {
         tableData: []
-      }
+      };
     },
     filters: {
       formatDate
     }
-  }
+  };
 </script>

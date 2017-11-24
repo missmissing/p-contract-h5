@@ -1,6 +1,6 @@
-import {Loading} from 'element-ui'
+import { Loading } from 'element-ui';
 
-let instance = null
+let instance = null;
 
 const defaultOpts = {
   target: document.body,
@@ -9,13 +9,13 @@ const defaultOpts = {
   lock: true,
   text: '拼命加载中',
   customClass: ''
-}
+};
 
 export default (options = {}) => {
   if (!options) {
-    instance && instance.close()
+    instance && instance.close();
   }
-  const config = Object.assign(defaultOpts, options)
-  instance = Loading.service(config)
-  return instance
-}
+  const config = Object.assign(defaultOpts, options);
+  instance = Loading.service(config);
+  return instance;
+};

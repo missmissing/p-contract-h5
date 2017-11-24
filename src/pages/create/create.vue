@@ -74,14 +74,14 @@
           property="startTime"
           label="发起时间">
           <template scope="scope">
-            {{curPriceList[scope.$index].startTime|formatDate}}
+            {{curPriceList[scope.$index].startTime | formatDate}}
           </template>
         </el-table-column>
         <el-table-column
           property="finishTime"
           label="结束时间">
           <template scope="scope">
-            {{curPriceList[scope.$index].finishTime|formatDate}}
+            {{curPriceList[scope.$index].finishTime | formatDate}}
           </template>
         </el-table-column>
       </el-table>
@@ -169,7 +169,7 @@
           label="发起时间"
           width="120">
           <template scope="scope">
-            {{priceList[scope.$index].startTime|formatDate}}
+            {{priceList[scope.$index].startTime | formatDate}}
           </template>
         </el-table-column>
         <el-table-column
@@ -177,7 +177,7 @@
           label="结束时间"
           width="120">
           <template scope="scope">
-            {{priceList[scope.$index].finishTime|formatDate}}
+            {{priceList[scope.$index].finishTime | formatDate}}
           </template>
         </el-table-column>
       </el-table>
@@ -208,14 +208,14 @@
 </template>
 
 <script>
-  import Api from '../../api/manageContract'
-  import store from 'store'
-  import getBusiType from '@/mixins/getBusiType'
-  import comLoading from '@/mixins/comLoading'
-  import TreeModal from '@/components/treeModal.vue'
-  import {formatDate} from '@/filters/moment'
+  import store from 'store';
+  import Api from '../../api/manageContract';
+  import getBusiType from '../../mixins/getBusiType';
+  import comLoading from '../../mixins/comLoading';
+  import TreeModal from '../../components/treeModal.vue';
+  import {formatDate} from '../../filters/moment';
 
-  const user = store.get('user')
+  const user = store.get('user');
   export default {
     mixins: [getBusiType, comLoading],
     data() {
@@ -255,18 +255,18 @@
               {
                 text: '最近一周',
                 onClick(picker) {
-                  const end = new Date()
-                  const start = new Date()
-                  start.setTime(start.getTime() - 3600 * 1000 * 24 * 6)
-                  picker.$emit('pick', [start, end])
+                  const end = new Date();
+                  const start = new Date();
+                  start.setTime(start.getTime() - (3600 * 1000 * 24 * 6));
+                  picker.$emit('pick', [start, end]);
                 }
               }, {
                 text: '最近一个月',
                 onClick(picker) {
-                  const end = new Date()
-                  const start = new Date()
-                  start.setTime(start.getTime() - 3600 * 1000 * 24 * 30)
-                  picker.$emit('pick', [start, end])
+                  const end = new Date();
+                  const start = new Date();
+                  start.setTime(start.getTime() - (3600 * 1000 * 24 * 30));
+                  picker.$emit('pick', [start, end]);
                 }
               }
             ]
@@ -285,27 +285,27 @@
         total: 0, // 总条目数
         pageCount: 0, // 总页数,
         regionSource: null
-      }
+      };
     },
     created() {
     },
     mounted() {
-      this.prForm.createPerson = user.userId
-      this.getRemoteCreatePersonsByKeyWord(user.userId)
+      this.prForm.createPerson = user.userId;
+      this.getRemoteCreatePersonsByKeyWord(user.userId);
     },
     computed: {
-      conModels: function () { ///??????
-        const conForm = this.conForm
+      conModels() { ///??????
+        const conForm = this.conForm;
         //return conForm.isPr ? [conForm.conModel[0], conForm.conModel[1], conForm.conModel[2]] : [conForm.conModel[2], conForm.conModel[3]]
         //return conForm.isPr ? [conForm.conModel[0], conForm.conModel[1], conForm.conModel[2]] : [conForm.conModel[3]]
-        return conForm.isPr ? [conForm.conModel[0], conForm.conModel[1]] : [conForm.conModel[2]]
+        return conForm.isPr ? [conForm.conModel[0], conForm.conModel[1]] : [conForm.conModel[2]];
       }
     },
     watch: {
-      'conForm.isPr': function (val, oldVal) {
+      'conForm.isPr': function (val) {
         if (!val) {
-          this.curPriceList = []
-          this.regions = this.regionSource ? this.regionSource : this.regions
+          this.curPriceList = [];
+          this.regions = this.regionSource ? this.regionSource : this.regions;
         }
       }
     },
@@ -316,53 +316,54 @@
       formatDate
     },
     methods: {
-      handleSwitch(newStatus) {
-        this.arrPr = []
-        this.conForm.strPC = ''
-        this.conForm.curConModelId = ''
-        this.conForm.conTypeName = ''
-        this.conForm.conType = ''
+      handleSwitch() {
+        this.arrPr = [];
+        this.conForm.strPC = '';
+        this.conForm.curConModelId = '';
+        this.conForm.conTypeName = '';
+        this.conForm.conType = '';
       },
       handleQuery() {
-        this.comLoading()
+        this.comLoading();
         Api.getQrDetail({
           folio: this.conForm.strPC
         }).then((data) => {
           if (data.data.dataMap) {
-            this.currentPr = data.data.dataMap
-            this.curPriceList = [data.data.dataMap]
+            this.currentPr = data.data.dataMap;
+            this.curPriceList = [data.data.dataMap];
 
-            const {createFixedFormatContractFlag, purchaseType} = this.currentPr
+            const {createFixedFormatContractFlag, purchaseType} = this.currentPr;
             //this.conModels[1] = {...this.conModels[1], disabled: !createFixedFormatContractFlag}
-            this.conForm.curConModelId = createFixedFormatContractFlag ? this.conForm.curConModelId : null
+            this.conForm.curConModelId = createFixedFormatContractFlag ? this.conForm.curConModelId : null;
             if (!this.regionSource) {
-              this.regionSource = this.regions
+              this.regionSource = this.regions;
             }
             if (this.conForm.conType) {
-              const conType = this.conForm.conType.split('-')[0]
+              const conType = this.conForm.conType.split('-')[0];
               if (purchaseType === 1 && conType === '2') {
-                this.conForm.conTypeName = ''
+                this.conForm.conTypeName = '';
               } else if (purchaseType === 2 && conType !== '2') {
-                this.conForm.conTypeName = ''
+                this.conForm.conTypeName = '';
               }
             }
             this.regions = this.regionSource.filter((item) => {
               if (!purchaseType) {
-                return true
+                return true;
               } else if (purchaseType === 1 && item.id !== 2) {
-                return true
+                return true;
               } else if (purchaseType === 2 && item.id === 2) {
-                return true
+                return true;
               }
-            })
+              return false;
+            });
           }
-          this.comLoading(false)
+          this.comLoading(false);
         }, () => {
-          this.comLoading(false)
-        })
+          this.comLoading(false);
+        });
       },
       handleHighQuery() {
-        this.dialogVisible = true
+        this.dialogVisible = true;
       },
       // 当前比加单列表接口缺少数据导致无法取得当前合同的总价格，需接口调整
       handleNext(formName) {
@@ -372,24 +373,26 @@
               this.$message({
                 message: '请选择一条比价单信息！',
                 type: 'warning'
-              })
-              return
+              });
+              return;
             }
 
-            let routePath = ''
+            let routePath;
             switch (this.conForm.curConModelId) {
               case '4':
-                routePath = '/ConCreate/CreateIntentionContract'
-                break
+                routePath = '/ConCreate/CreateIntentionContract';
+                break;
               case '3':
-                routePath = '/ConCreate/CreateFrameContract'
-                break
+                routePath = '/ConCreate/CreateFrameContract';
+                break;
               case '1':
-                routePath = '/ConCreate/CreateSingleContract'
-                break
+                routePath = '/ConCreate/CreateSingleContract';
+                break;
               case '2':
-                routePath = '/ConCreate/CreateSimpleContract'
-                break
+                routePath = '/ConCreate/CreateSimpleContract';
+                break;
+              default:
+                routePath = '';
             }
             this.$router.push({
               path: routePath,
@@ -399,65 +402,66 @@
                 curConTypeId: this.conForm.conType,
                 operateType: 'create'
               }
-            })
+            });
             if (this.curPriceList.length) {
-              this.curPriceList = []
-              this.currentPr = null
+              this.curPriceList = [];
+              this.currentPr = null;
             }
-            this.$refs[formName].resetFields()
-          } else {
-            return false
+            this.$refs[formName].resetFields();
           }
-        })
+        });
       },
       handleCloseDialog() {
-        this.dialogVisible = false
+        this.dialogVisible = false;
         if (this.currentPr) {
-          this.currentPr.clicked = false
-          this.currentPr.ifSelect = false
-          this.$refs.priceList.setCurrentRow(null)
-          this.priceList = []
+          this.currentPr.clicked = false;
+          this.currentPr.ifSelect = false;
+          this.$refs.priceList.setCurrentRow(null);
+          this.priceList = [];
         }
-        this.$refs.prForm.resetFields()
+        this.$refs.prForm.resetFields();
       },
       handleOKDialog() {
-        this.dialogVisible = false
+        this.dialogVisible = false;
         if (this.currentPr) {
-          const {folio} = this.currentPr
-          this.conForm.strPC = folio
-          this.handleQuery()
+          const {folio} = this.currentPr;
+          this.conForm.strPC = folio;
+          this.handleQuery();
         }
-        this.currentPr.clicked = false
-        this.currentPr.ifSelect = false
-        this.$refs.priceList.setCurrentRow(null)
-        this.priceList = []
-        this.$refs.prForm.resetFields()
+        this.currentPr.clicked = false;
+        this.currentPr.ifSelect = false;
+        this.$refs.priceList.setCurrentRow(null);
+        this.priceList = [];
+        this.$refs.prForm.resetFields();
       },
       handleDetailPR(index, row) {
-        window.open(row.processViewUrl)
+        window.open(row.processViewUrl);
       },
-      setBusiType(checkNodes, tree) {
-        const ids = [], names = []
+      setBusiType(checkNodes) {
+        const ids = [],
+          names = [];
         if (checkNodes.length) {
           for (let i = 0, len = checkNodes.length; i < len; i++) {
-            ids.push(checkNodes[i].id)
-            names.push(checkNodes[i].businessName)
+            ids.push(checkNodes[i].id);
+            names.push(checkNodes[i].businessName);
           }
         }
-        this.conForm.conType = ids.join('-')
-        this.conForm.conTypeName = names.join('-')
+        this.conForm.conType = ids.join('-');
+        this.conForm.conTypeName = names.join('-');
 
-        this.visible = false
+        this.visible = false;
       },
       handleQueryPriceList() {
-        this.priceList = []
-        let startTime = this.prForm.createTime[0] ? formatDate(this.prForm.createTime[0].toLocaleDateString()) : ''
-        let endTime = this.prForm.createTime[1] ? formatDate(this.prForm.createTime[1].toLocaleDateString()) : ''
-        let times = [], day = null, endDay = ''
+        this.priceList = [];
+        const startTime = this.prForm.createTime[0] ? formatDate(this.prForm.createTime[0].toLocaleDateString()) : '';
+        const endTime = this.prForm.createTime[1] ? formatDate(this.prForm.createTime[1].toLocaleDateString()) : '';
+        let times = [],
+          day = null,
+          endDay = '';
         if (endTime) {
-          times = endTime.split('-')
-          day = parseInt(times[2]) + 1
-          endDay = times[0] + '-' + times[1] + '-' + [day]
+          times = endTime.split('-');
+          day = parseInt(times[2], 10) + 1;
+          endDay = `${times[0]}-${times[1]}-${[day]}`;
         }
         const params = {
           pr: this.prForm.prCode,
@@ -466,77 +470,76 @@
           toDate: endDay,
           pageNo: this.prForm.pageNo,
           pageSize: this.prForm.pageSize
-        }
-        this.$refs['prForm'].validate((valid) => {
+        };
+        this.$refs.prForm.validate((valid) => {
           if (valid) {
             this.comLoading({
-              target: this.$refs['priceList'].$el
-            })
+              target: this.$refs.priceList.$el
+            });
             Api.getQrList(params).then((data) => {
               if (data.data.dataMap && data.data.dataMap.length > 0) {
-                let arr = data.data.dataMap
+                const arr = data.data.dataMap;
                 for (let i = 0, len = arr.length; i < len; i++) {
-                  arr[i].ifSelect = false
+                  arr[i].ifSelect = false;
                 }
-                this.priceList = arr
+                this.priceList = arr;
               }
-              this.comLoading(false)
+              this.comLoading(false);
             }, () => {
-              this.comLoading(false)
-            })
+              this.comLoading(false);
+            });
           } else {
-            console.log('error submit!!')
-            return false
+            console.log('error submit!!');
           }
-        })
+        });
       },
       handleSelectCurrent(currentRow, oldRow) {
         if (currentRow) {
-          currentRow.ifSelect = true
-          this.currentPr = currentRow
+          currentRow.ifSelect = true;
+          this.currentPr = currentRow;
         }
         if (oldRow) {
-          oldRow.ifSelect = false
-          oldRow.clicked = false
+          oldRow.ifSelect = false;
+          oldRow.clicked = false;
         }
       },
       handleRowClick(row, event) {
         if (event) {
-          event.stopPropagation()
-          event.preventDefault()
+          event.stopPropagation();
+          event.preventDefault();
         }
         if (row.clicked) {
-          row.clicked = false
-          this.$refs.priceList.setCurrentRow()
-          this.currentPr = null
+          row.clicked = false;
+          this.$refs.priceList.setCurrentRow();
+          this.currentPr = null;
         } else {
-          row.clicked = true
-          this.$refs.priceList.setCurrentRow(row)
+          row.clicked = true;
+          this.$refs.priceList.setCurrentRow(row);
         }
       },
       closeTree() {
-        this.visible = false
+        this.visible = false;
       },
       getRemoteCreatePersonsByKeyWord(query) {
         if (query !== '') {
-          this.prForm.loading = true
+          this.prForm.loading = true;
           Api.getRemoteCreatePersonsByKeyWord({keyword: query})
             .then((data) => {
-              this.prForm.loading = false
-              this.prForm.createPersons = data.data.dataMap
-            })
+              this.prForm.loading = false;
+              this.prForm.createPersons = data.data.dataMap;
+            });
         } else {
-          this.prForm.createPersons = []
-          this.prForm.createPerson = ''
+          this.prForm.createPersons = [];
+          this.prForm.createPerson = '';
         }
       },
       handleIfSelectChange(val) {
-        console.log('val', val)
+        console.log('val', val);
       },
       handleCurrentChange(page) {
-        this.prForm.pageNo = page
-        this.handleQueryPriceList()
+        this.prForm.pageNo = page;
+        this.handleQueryPriceList();
       }
     }
-  }
+  };
 </script>
