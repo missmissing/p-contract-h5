@@ -2605,8 +2605,7 @@
         let enabled = false;
         if (this.operateType === 'update') {
           enabled = this.updateForm.updateMode === 1;
-        }
-        if (this.operateType === 'query' || this.operateType === 'create') {
+        } else if (this.operateType === 'query' || this.operateType === 'create') {
           enabled = true;
         }
         return enabled;
@@ -2616,11 +2615,9 @@
         let enabled = false;
         if (this.operateType === 'update') {
           enabled = this.updateForm.updateMode === 1;
-        }
-        if (this.operateType === 'query') {
+        } else if (this.operateType === 'query') {
           enabled = true;
-        }
-        if (this.operateType === 'create') {
+        } else if (this.operateType === 'create') {
           enabled = false;
         }
         return enabled;
@@ -2635,18 +2632,24 @@
         return visible;
       },
       tabs() {
+        let type;
         switch (this.cardOtherInfo.condition) {
           case 1:
-            return 'PrTable';
+            type = 'PrTable';
+            break;
           case 2:
-            return 'PriceTable';
+            type = 'PriceTable';
+            break;
           case 3:
-            return 'ContractTable';
+            type = 'ContractTable';
+            break;
           case 4:
-            return 'OrderTable';
+            type = 'OrderTable';
+            break;
           default:
-            return '';
+            type = '';
         }
+        return type;
       },
       jia() {
         const jiaBillingInfo = this.cardFinanceInfoForm.jiaBillingInfo;
@@ -2673,11 +2676,9 @@
         let result = false;
         if (this.operateType === 'query') {
           result = false;
-        }
-        if (this.operateType === 'create') {
+        } else if (this.operateType === 'create') {
           result = true;
-        }
-        if (this.operateType === 'update') {
+        } else if (this.operateType === 'update') {
           result = this.updateForm.updateMode !== 1;
         }
         return result;
@@ -2686,11 +2687,9 @@
         let result = false;
         if (this.operateType === 'query') {
           result = false;
-        }
-        if (this.operateType === 'create') {
+        } else if (this.operateType === 'create') {
           result = true;
-        }
-        if (this.operateType === 'update') {
+        } else if (this.operateType === 'update') {
           // result = this.updateForm.updateMode === 1;
           result = true;
         }
@@ -2781,8 +2780,7 @@
         let enabled = true;
         if (this.operateType === 'query') {
           enabled = !!this.ifRole();
-        }
-        if (this.operateType === 'update') {
+        } else if (this.operateType === 'update') {
           enabled = this.updateForm.updateMode !== 1;
         }
         return enabled;
@@ -2791,8 +2789,7 @@
         let enabled = true;
         if (this.operateType === 'query') {
           enabled = !!this.ifRole();
-        }
-        if (this.operateType === 'update') {
+        } else if (this.operateType === 'update') {
           // enabled = this.updateForm.updateMode === 1;
           enabled = true;
         }
@@ -3060,31 +3057,6 @@
         this.$refs[formName].resetFields();
         this.cardContCheckInfoForm.dialogAddServiceVisible = false;
       },
-      handlebeforeFileUpload(file) {
-        return file;
-      },
-      handleFileUploadSuccess(res, file) {
-        console.log('res', res);
-        console.log('file', file);
-      },
-      handleFileUploadError(err, file, fileList) {
-        console.log('error', err);
-        console.log('file', file);
-        console.log('fileList', fileList);
-      },
-      handlebeforeFileUploadItem(file) {
-        console.log('upload-file', file);
-        return file;
-      },
-      handleFileUploadSuccessItem(res, file) {
-        console.log('res', res);
-        console.log('file', file);
-      },
-      handleFileUploadErrorItem(err, file, fileList) {
-        console.log('error', err);
-        console.log('file', file);
-        console.log('fileList', fileList);
-      },
       handleContractDetail(index, row) {
         this.$router.push({name: routerNames.con_Check, query: {contractNo: row.contractNo}});
       },
@@ -3115,8 +3087,7 @@
             curForm.resetFields();
             this.baseInfoForm.dialogNewSubjectVisible = false;
             if (this.isSubmit) {
-              this.validateForms().catch(() => {
-              });
+              this.validateForms().catch(() => {});
             }
           } else {
             console.log('error submit!!');

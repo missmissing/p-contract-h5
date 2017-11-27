@@ -390,7 +390,10 @@
             min-width="200">
             <template scope="scope">
               <template v-if="!scope.row.pr">
-                <el-radio v-model="scope.row.checked" @change.native="srChange(scope.$index)"></el-radio>
+                <el-radio
+                  v-model="scope.row.checked"
+                  :diabled="scope.row.disabled"
+                  @change.native="srChange(scope.row)"></el-radio>
               </template>
               <template v-else>
                 {{scope.row.materialName}}
@@ -616,7 +619,12 @@
               materialName
             });
             contVos.forEach((cont) => {
-              const newCont = {...cont, checked: false};
+              const newCont = {
+                ...cont,
+                checked: false,
+                disabled: false,
+                mapKey: prItemNo
+              };
               result.push(newCont);
             });
           }
@@ -698,39 +706,43 @@
       },
       getServerOrderData() {
         const orderData = [];
-        this.sr.forEach((i) => {
-          this.materialsMatchData.forEach((item) => {
-            const {
-              pr,
-              prItemNo,
-              materialName,
-              total,
-              availableTotal,
-              materialCode,
-              contVos,
-              category
-            } = item;
-            if (contVos && contVos.length) {
-              contVos.forEach((cont) => {
-                const {itemNo} = cont;
-                if (itemNo === this.matchData[this.sr[i]].itemNo) {
-                  orderData.push({
-                    pr,
-                    category,
-                    itemNo,
-                    prItemNo,
-                    materialName,
-                    materialCode,
-                    price: cont.price,
-                    total,
-                    availableTotal,
-                    taxRate: cont.taxRate,
-                    deliveryTime: ''
+        this.matchData.forEach((row) => {
+          if (row.checked) {
+            this.materialsMatchData.forEach((item) => {
+              const {
+                pr,
+                prItemNo,
+                materialName,
+                total,
+                availableTotal,
+                materialCode,
+                contVos,
+                category
+              } = item;
+              if (prItemNo === row.mapKey) {
+                if (contVos && contVos.length) {
+                  contVos.forEach((cont) => {
+                    const {itemNo} = cont;
+                    if (itemNo === row.itemNo) {
+                      orderData.push({
+                        pr,
+                        category,
+                        itemNo,
+                        prItemNo,
+                        materialName,
+                        materialCode,
+                        price: cont.price,
+                        total,
+                        availableTotal,
+                        taxRate: cont.taxRate,
+                        deliveryTime: ''
+                      });
+                    }
                   });
                 }
-              });
-            }
-          });
+              }
+            });
+          }
         });
         return orderData;
       },
@@ -773,28 +785,22 @@
           return false;
         });
       },
-      srChange(index) {
+      srChange(row) {
         if (this.prData[0].category !== 2) {
-          if (this.sr.length) {
-            this.matchData[this.sr[0]].checked = false;
-          }
-          this.sr = [index];
+          this.matchData.forEach((item) => {
+            if (item !== row) {
+              item.checked = false;
+            }
+          });
         } else {
-          if (!this.sr.length) {
-            this.sr = [index];
-            return;
-          }
-
-          this.sr.some((i) => {
-            const seq = [this.sr[i], index].sort();
-            const arr = this.matchData.slice(seq[0], seq[1]);
-            return arr.some((item) => {
-              if (!item.pr) {
-                this.matchData[this.sr[i]].checked = false;
-                return true;
+          this.matchData.forEach((item) => {
+            if (item.mapKey === row.mapKey) {
+              if (item !== row) {
+                item.checked = false;
               }
-              return false;
-            });
+            } else {
+              item.disabled = item.itemNo === row.itemNo;
+            }
           });
         }
       },
