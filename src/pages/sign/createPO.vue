@@ -148,43 +148,20 @@
                   label="数量"
                   width="120">
                   <template scope="scope">
-                    <el-input
-                      v-model.trim="scope.row.total"
-                      @blur="greaterZero($event,scope.row.availableTotal)"></el-input>
+                    <el-input v-model.trim="scope.row.total"></el-input>
                   </template>
                 </el-table-column>
                 <el-table-column
                   prop="price"
                   label="含税价"
                   width="120">
-                  <template scope="scope">
-                    <div v-if="radio">{{scope.row.price}}</div>
-                    <div v-else>
-                      {{scope.row.price = 1}}
-                    </div>
-                  </template>
                 </el-table-column>
                 <el-table-column
                   prop="taxRate"
                   label="税率"
                   width="130">
                   <template scope="scope">
-                    <div v-if="radio">{{scope.row.taxRate ? `${scope.row.taxRate}%` : ''}}</div>
-                    <div v-else>
-                      <el-select
-                        style="width:90px;"
-                        v-model="scope.row.taxRate"
-                        @change="selectTaxRate(scope.row)">
-                        <el-option
-                          v-for="item in taxRates"
-                          :key="item.value"
-                          :label="item.code"
-                          :value="item.value">
-                          <span class="fl mr20">{{ item.value}}</span>
-                          <span class="fr">{{ item.desc }}</span>
-                        </el-option>
-                      </el-select>
-                    </div>
+                    {{scope.row.taxRate ? `${scope.row.taxRate}%` : ''}}
                   </template>
                 </el-table-column>
                 <el-table-column
@@ -393,7 +370,8 @@
                 <el-radio
                   v-model="scope.row.checked"
                   :diabled="scope.row.disabled"
-                  @change.native="srChange(scope.row)"></el-radio>
+                  @change.native="srChange(scope.row)"
+                  label=""></el-radio>
               </template>
               <template v-else>
                 {{scope.row.materialName}}
@@ -470,7 +448,6 @@
         prData: [],
         materialsMatchData: [],
         matchData: [],
-        sr: [],
         orderData: [],
         serverData: [],
         serverDialogVisible: false,
@@ -632,17 +609,28 @@
         return result;
       },
       matchOk() {
+        const exist = this.matchData.some(item => item.checked === '');
+        if (!exist) {
+          this.$message.warning('请选择匹配项');
+          return;
+        }
+
         this.dialogVisible = false;
 
         this.setContractData();
         this.setOrderData();
         this.setOrderForm();
         this.showServiceTab();
-
-        this.sr = [];
       },
       setContractData() {
-        this.contractForm = this.matchData[this.sr[0]];
+        console.log(this.matchData);
+        this.matchData.some((item) => {
+          if (item.checked === '') {
+            this.contractForm = item;
+            return true;
+          }
+          return false;
+        });
         this.contractForm.contractType = contractPatternMap[this.contractForm.contractType];
         this.toDetail.query.contractId = this.contractForm.id;
       },
@@ -707,7 +695,7 @@
       getServerOrderData() {
         const orderData = [];
         this.matchData.forEach((row) => {
-          if (row.checked) {
+          if (row.checked === '') {
             this.materialsMatchData.forEach((item) => {
               const {
                 pr,
@@ -744,6 +732,7 @@
             });
           }
         });
+        console.log(orderData);
         return orderData;
       },
       showServiceTab() {
@@ -758,20 +747,6 @@
       },
       formatDate(row, value) {
         row.deliveryTime = formatDate(value);
-      },
-      greaterZero(event, availableTotal) {
-        const val = event.target.value;
-        if (!val) {
-          return;
-        }
-        if (!greaterZero(val)) {
-          this.$message.warning('数量必须大于0！');
-          event.target.value = '';
-        }
-        if (parseInt(val, 10) > parseInt(availableTotal, 10)) {
-          this.$message.warning(`不能大于可用数量:${availableTotal}！`);
-          event.target.value = '';
-        }
       },
       addService() {
         this.serverDialogVisible = true;
@@ -788,16 +763,12 @@
       srChange(row) {
         if (this.prData[0].category !== 2) {
           this.matchData.forEach((item) => {
-            if (item !== row) {
-              item.checked = false;
-            }
+            item.checked = item === row ? '' : false;
           });
         } else {
           this.matchData.forEach((item) => {
             if (item.mapKey === row.mapKey) {
-              if (item !== row) {
-                item.checked = false;
-              }
+              item.checked = item === row ? '' : false;
             } else {
               item.disabled = item.itemNo === row.itemNo;
             }
@@ -827,25 +798,24 @@
           this.$message.warning('订单信息不能为空！');
           return false;
         }
-        if (this.radio) {
-          const exist = purOrderMaterials.some(item => (!item.deliveryTime || !item.total));
-          if (exist) {
-            this.$message.warning('订单信息不完整！');
-            return false;
+        const exist = purOrderMaterials.some((item) => {
+          if (!item.total) {
+            this.$message.warning('请输入订单数量！');
+            return true;
+          } else if (!greaterZero(item.total)) {
+            this.$message.warning('数量格式错误，格式为数字且大于0！');
+            return true;
+          } else if (item.total > item.availableTotal) {
+            this.$message.warning('订单数量不能大于可下单数量！');
+            return true;
+          } else if (!item.deliveryTime) {
+            this.$message.warning('请选择订单交货日期！');
+            return true;
           }
-        } else {
-          const exist = purOrderMaterials.some(item => (!item.total || !item.taxRate || !item.deliveryTime));
-          if (exist) {
-            this.$message.warning('订单信息不完整！');
-            return false;
-          }
-          if (this.showService && !this.serverData.length) {
-            this.$message.warning('服务验收信息不能为空！');
-            return false;
-          }
-        }
+          return false;
+        });
 
-        return true;
+        return !exist;
       },
       getResult() {
         const {id, contractNo} = this.contractForm;
