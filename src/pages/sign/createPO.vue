@@ -250,50 +250,6 @@
               </el-form>
             </div>
           </el-tab-pane>
-          <template v-if="showService">
-            <el-tab-pane label="服务验收信息">
-              <div class="server-info">
-                <div class="mb20">
-                  <el-button type="primary" @click="addService">新 增</el-button>
-                </div>
-                <el-table
-                  :data="serverData"
-                  border
-                  style="width: 100%">
-                  <el-table-column
-                    type="index"
-                    label="序号"
-                    width="80">
-                  </el-table-column>
-                  <el-table-column
-                    prop="serviceName"
-                    label="验收要素">
-                  </el-table-column>
-                  <el-table-column
-                    prop="serviceRequire"
-                    label="参考标准">
-                  </el-table-column>
-                  <el-table-column
-                    prop="remark"
-                    label="备注">
-                  </el-table-column>
-                  <el-table-column
-                    fixed="right"
-                    label="操作"
-                    width="80">
-                    <template scope="scope">
-                      <el-button
-                        @click.native.prevent="deleteRow(scope.$index, serverData)"
-                        type="danger"
-                        size="small">
-                        移除
-                      </el-button>
-                    </template>
-                  </el-table-column>
-                </el-table>
-              </div>
-            </el-tab-pane>
-          </template>
         </el-tabs>
       </el-card>
       <div class="mt20 mb20 ml20">
@@ -301,37 +257,6 @@
         <el-button type="primary" @click="submit">提 交</el-button>
       </div>
     </div>
-    <el-dialog
-      title="新增服务验收信息"
-      :visible.sync="serverDialogVisible">
-      <el-form
-        ref="serverDialogForm"
-        :model="serverDialogForm"
-        :rules="serverRules"
-        label-width="80px">
-        <el-form-item label="服务名称" prop="serviceName">
-          <el-input v-model="serverDialogForm.serviceName"></el-input>
-        </el-form-item>
-        <el-form-item label="验收要求" prop="serviceRequire">
-          <el-input
-            type="textarea"
-            :autosize="{ minRows: 2 }"
-            resize="none"
-            v-model="serverDialogForm.serviceRequire"></el-input>
-        </el-form-item>
-        <el-form-item label="备注" prop="remark">
-          <el-input
-            type="textarea"
-            :autosize="{ minRows: 2 }"
-            resize="none"
-            v-model="serverDialogForm.remark"></el-input>
-        </el-form-item>
-      </el-form>
-      <div slot="footer">
-        <el-button @click="serverDialogVisible=false">取 消</el-button>
-        <el-button type="primary" @click="addDialogOk">确 定</el-button>
-      </div>
-    </el-dialog>
     <el-dialog
       title="匹配界面"
       size="large"
@@ -449,30 +374,6 @@
         materialsMatchData: [],
         matchData: [],
         orderData: [],
-        serverData: [],
-        serverDialogVisible: false,
-        serverDialogForm: {
-          serviceName: '',
-          serviceRequire: '',
-          remark: ''
-        },
-        serverRules: {
-          serviceName: [{
-            required: true,
-            message: '请输入服务名称',
-            trigger: 'blur'
-          }],
-          serviceRequire: [{
-            required: true,
-            message: '请输入验收要求',
-            trigger: 'blur'
-          }, {
-            max: 300,
-            message: '长度不超过300个字符',
-            trigger: 'change'
-          }],
-          remark: [{max: 300, message: '长度不超过300个字符', trigger: 'change'}]
-        },
         dialogVisible: false,
         contractForm: {},
         orderForm: {},
@@ -620,7 +521,6 @@
         this.setContractData();
         this.setOrderData();
         this.setOrderForm();
-        this.showServiceTab();
       },
       setContractData() {
         console.log(this.matchData);
@@ -735,21 +635,11 @@
         console.log(orderData);
         return orderData;
       },
-      showServiceTab() {
-        this.showService = (
-          this.prData.length &&
-          this.prData[0].category === 2 &&
-          this.orderData.length
-        );
-      },
       formatType(row, column, cellValue) {
         return prTypeMap[cellValue];
       },
       formatDate(row, value) {
         row.deliveryTime = formatDate(value);
-      },
-      addService() {
-        this.serverDialogVisible = true;
       },
       selectTaxRate(row) {
         this.taxRates.some((item) => {
@@ -777,20 +667,6 @@
       },
       deleteRow(index, rows) {
         rows.splice(index, 1);
-      },
-      addDialogOk() {
-        this.$refs.serverDialogForm.validate((valid) => {
-          if (valid) {
-            const form = this.serverDialogForm;
-            this.serverData.push({...form});
-            Object.keys(form).forEach((key) => {
-              form[key] = '';
-            });
-            this.serverDialogVisible = false;
-          } else {
-            console.log('error submit!!');
-          }
-        });
       },
       check(result) {
         const {purOrderMaterials} = result;
@@ -823,7 +699,6 @@
         return {
           contractId: id,
           contractNo,
-          orderCheckItems: this.serverData,
           purOrderMaterials: this.orderData
         };
       },
