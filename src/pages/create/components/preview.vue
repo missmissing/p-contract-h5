@@ -58,7 +58,7 @@
         <div>
           <div style="text-align: center;font-size:18px;font-weight:bold;padding-bottom: 10px;" class="mb20 f18 fb">{{title}}合同</div>
           <div class="mb20">
-            <table class="default-table">
+            <table class="default-table mb20">
               <tbody>
               <tr style="margin-bottom: 10px">
                 <td width="45" valign="top" class="w45">甲方：</td>
@@ -78,7 +78,7 @@
           </div>
           <div class="mb20" v-html="currentTpl"></div>
           <div v-if="materialTable.length">
-            <div>合同标的：</div>
+            <p>合同标的：</p>
             <div>
               <template v-if="[1,2,3].indexOf(contractType)>-1&&contractBusinessTypeFirst===2">
                 <table>
@@ -148,7 +148,7 @@
           </div>
           <div v-if="moneyInvolved">
             <div v-if="!oneOffPay">
-              付款方式：
+              <p>付款方式：</p>
               <table>
                 <thead>
                 <tr>
@@ -201,18 +201,18 @@
               </div>
             </div>-->
           </div>
-          <el-row class="mt20">
-            生效条件:
-            <span v-if="effectiveCondition===1">附期限生效</span>
-            <span v-if="effectiveCondition===2">附条件生效</span>
-            <span v-if="effectiveCondition===3">签订生效</span>
-          </el-row>
+          <!--<el-row class="mt20">-->
+          <!--生效条件:-->
+          <!--<span v-if="effectiveCondition===1">附期限生效</span>-->
+          <!--<span v-if="effectiveCondition===2">附条件生效</span>-->
+          <!--<span v-if="effectiveCondition===3">签订生效</span>-->
+          <!--</el-row>-->
           <el-row class="mt20" v-if="effectiveCondition===1">
             <el-col :span="5">合同生效日期：{{startTime}}</el-col>
             <el-col :span="5">合同终止日期：{{endTime}}</el-col>
           </el-row>
           <el-row class="mt20" v-if="effectiveCondition===2">
-            <el-col :span="3">附条件生效备注：</el-col>
+            <el-col :span="3">生效备注：</el-col>
             <el-col :span="21">{{conditionDesc}}</el-col>
           </el-row>
           <p></p>
@@ -304,7 +304,7 @@
                 const {
                   paymentAmount, paymentTimePeriod, remark, ratio
                 } = item1;
-                const type = `${name}${index1 + 1}`;
+                const type = `${name}${numToChinese(index1 + 1, true)}`;
                 priceTable.push({
                   type,
                   paymentAmount,
@@ -400,7 +400,7 @@
           if (oneOffPay) {
             this.oneOffPay = true;
           } else {
-            this.priceTable = [...this.transformData(earnest, '定金'), ...this.transformData(advance, '预付款'), ...this.transformData(progress, '进度款'), ...this.transformData(_final, '尾款'), ...this.transformData(deposit, '保证金')];
+            this.priceTable = [...this.transformData(earnest, '定金'), ...this.transformData(advance, '预付款'), ...this.transformData(progress, ''), ...this.transformData(_final, '尾款'), ...this.transformData(deposit, '保证金')];
           }
         }
 

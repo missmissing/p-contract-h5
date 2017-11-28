@@ -398,7 +398,7 @@
                 <el-form-item label="合同生效日期" prop="startTime">
                   <el-date-picker v-model="cardContentInfoForm.startTime"
                                   format="yyyy-MM-dd"
-                                  @change="handleChangeValidateForms"
+                                  @change="handleStartDateChange"
                                   :disabled="!enabledInupdated"
                                   placeholder="请输入合同生效期日期"
                                   type="date"></el-date-picker>
@@ -1694,12 +1694,15 @@
           </el-form>
           <h4 v-else>请选择合同基本信息的模版名称！</h4>
         </el-tab-pane>
-        <el-tab-pane label="备注" name="tabRemark">
-          <el-form rel="cardRemarkInfoForm" :model="cardRemarkInfoForm">
+        <el-tab-pane name="tabRemark">
+          <span slot="label" class="title">备注<i v-if="cardRemarkInfoForm.errorCount"
+                                                class="errorCount">{{cardRemarkInfoForm.errorCount}}</i></span>
+          <el-form ref="cardRemarkInfoForm" :model="cardRemarkInfoForm" :rules="cardRemarkInfoForm.rules">
             <el-form-item prop="otherInstruction" label="其他说明">
               <el-input :disabled="!enabledInupdated" type="textarea"
                         placeholder="请输入内容" :rows="4"
-                        v-model="cardRemarkInfoForm.otherInstruction"></el-input>
+                        v-model.trim="cardRemarkInfoForm.otherInstruction"
+                        @change="handleChangeValidateForms"></el-input>
             </el-form-item>
           </el-form>
         </el-tab-pane>
@@ -2004,7 +2007,7 @@
   import comLoading from '../../mixins/comLoading';
   import {downloadUrl, uploadUrl} from '../../api/consts';
   import Process from '../../components/process.vue';
-  import {formatDate} from '../../filters/moment';
+  import {formatDate, formatTimeStamp} from '../../filters/moment';
   import {routerNames} from '../../core/consts';
 
   const user = store.get('user');
@@ -2012,11 +2015,11 @@
   export default {
     mixins: [comLoading],
     data() {
-      const validateEffectiveDateRules = (rule, value, callback) => {
+      const validateStartDateRules = (rule, value, callback) => {
         const endTime = this.cardContentInfoForm.endTime;
         if (this.operateType === 'create' || (this.operateType === 'update' && this.updateForm.updateMode === 2)) {
-          if (formatDate(new Date(value)) < formatDate(new Date())) {
-            callback(new Error('合同生效日期必须大于等于今天'));
+          if (formatDate(new Date(value)) > formatDate(new Date())) {
+            callback(new Error('合同生效日期必须小于等于今天'));
           }
         }
         if (endTime) {
@@ -2029,9 +2032,9 @@
       const validateEndDate = (rule, value, callback) => {
         const startTime = this.cardContentInfoForm.startTime;
         if (this.operateType === 'create' || (this.operateType === 'update' && this.updateForm.updateMode === 2)) {
-          if (formatDate(new Date(value)) < formatDate(new Date())) {
+          /*if (formatDate(new Date(value)) < formatDate(new Date())) {
             callback(new Error('合同终止日期必须大于等于今天'));
-          }
+          }*/
         }
         if (startTime) {
           if (formatDate(new Date(value)) < formatDate(new Date(startTime))) {
@@ -2131,7 +2134,7 @@
           dialogAddConStandard: false,
           rules: {
             startTime: [{
-              validator: validateEffectiveDateRules,
+              validator: validateStartDateRules,
               trigger: 'change'
             }, {
               required: true,
@@ -2387,7 +2390,20 @@
           }
         },
         cardRemarkInfoForm: {
-          otherInstruction: ''
+          otherInstruction: '',
+          errorCount: 0,
+          rules: {
+            otherInstruction: [{
+              validator: (rule, value, callback) => {
+                if (this.cardContentInfoForm.effectiveCondition === 1 && this.cardContentInfoForm.startTime) {
+                  if (!value) {
+                    callback(new Error('合同生效日期小于今天，请输入倒签原因'));
+                  }
+                }
+                callback();
+              }
+            }]
+          }
         },
         cardRelatedInfoForm: {
           contractList: [],
@@ -3087,7 +3103,8 @@
             curForm.resetFields();
             this.baseInfoForm.dialogNewSubjectVisible = false;
             if (this.isSubmit) {
-              this.validateForms().catch(() => {});
+              this.validateForms().catch(() => {
+              });
             }
           } else {
             console.log('error submit!!');
@@ -3340,6 +3357,9 @@
             cardFinanceInfoForm: {
               errorCount: 0
             },
+            cardRemarkInfoForm: {
+              errorCount: 0
+            },
             baseInfoForm: false
           };
           if (this.operateType === 'update') {
@@ -3400,6 +3420,15 @@
               console.log('errors.cardFinanceInfoForm.errorCount', errors.cardFinanceInfoForm.errorCount);
             }
           });
+          this.$refs.cardRemarkInfoForm.validate((valid) => {
+            const cardRemarkInfoForm = this.cardRemarkInfoForm;
+            if (!valid) {
+              if (!cardRemarkInfoForm.otherInstruction) {
+                errors.cardRemarkInfoForm.errorCount = 1;
+              }
+              console.log('errors.cardRemarkInfoForm.errorCount', errors.cardRemarkInfoForm.errorCount);
+            }
+          });
 
           //验证附件的数据是否填写完整
           const sealAttachments = this.combineSealsInfo1();
@@ -3436,8 +3465,9 @@
           this.cardContCheckInfoForm.errorCount = errors.cardContCheckInfoForm.errorCount;
           this.cardContCheckInfoForm.serviceCheckMsg = errors.cardContCheckInfoForm.serviceCheckMsg;
           this.cardFinanceInfoForm.errorCount = errors.cardFinanceInfoForm.errorCount;
+          this.cardRemarkInfoForm.errorCount = errors.cardRemarkInfoForm.errorCount;
 
-          if (!this.cardContentInfoForm.errorCount && !this.cardContCheckInfoForm.errorCount && errors.baseInfoForm && !errors.cardFinanceInfoForm.errorCount && !this.cardSealInfoForm.errorMsg) {
+          if (!this.cardContentInfoForm.errorCount && !this.cardContCheckInfoForm.errorCount && errors.baseInfoForm && !errors.cardFinanceInfoForm.errorCount && !this.cardSealInfoForm.errorMsg && !this.cardRemarkInfoForm.errorCount) {
             if (this.operateType === 'update' && !errors.updateError) {
               reject();
             } else {
@@ -4174,6 +4204,12 @@
         if (val === 2) {
           this.handleContractTextTypeChange(this.baseInfoForm.contractTextType);
         }
+      },
+      handleStartDateChange(time) {
+        if (formatTimeStamp(time) < formatTimeStamp(formatDate(new Date()))) {
+          console.log(111);
+        }
+        this.handleChangeValidateForms();
       }
     },
     components: {

@@ -79,7 +79,8 @@
             <div>
               <quill-editor
                 :disabled="disabled"
-                v-model="form.content"
+                :content="form.content"
+                @change="onEditorChange"
                 ref="myQuillEditor"
                 :options="editorOption">
               </quill-editor>
@@ -148,10 +149,16 @@
           this.options = res.data.dataMap;
         });
       },
+      onEditorChange({editor, html, text}) {
+        console.log(html);
+        this.form.content = html;
+      },
       save() {
         if (!this.disabled) {
+          console.log(this.form.content);
+          const form = {...this.form, content: this.form.content.replace(/\s/g, '&nbsp;')};
           this[types.SET_INFO]({
-            info: this.form
+            info: form
           });
         }
         this.back();

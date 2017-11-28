@@ -99,7 +99,6 @@
               <el-radio class="radio" v-model="handleForm.schemeType" :label="0">继续履行</el-radio>
               <el-radio class="radio" v-model="handleForm.schemeType" :label="1">变更合同</el-radio>
               <el-radio class="radio" v-model="handleForm.schemeType" :label="2">按验收实际结果履行合同</el-radio>
-              <el-radio class="radio" v-model="handleForm.schemeType" :label="3">转合同违约处理</el-radio>
             </el-form-item>
             <el-form-item label="违约/赔付原因" prop="violateReason">
               <el-input

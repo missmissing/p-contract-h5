@@ -98,7 +98,7 @@
         </template>
       </el-table-column>
       <el-table-column prop="contractNo" label="合同编号" width="130"></el-table-column>
-      <el-table-column prop="supplierId" label="供应商编码" width="125"></el-table-column>
+      <el-table-column prop="supplierCode" label="供应商编码" width="125"></el-table-column>
       <el-table-column prop="supplierName" label="供应商名称" width="200"></el-table-column>
       <el-table-column prop="creatorName" label="发起人" width="100"></el-table-column>
       <el-table-column prop="deptName" label="发起部门"></el-table-column>
