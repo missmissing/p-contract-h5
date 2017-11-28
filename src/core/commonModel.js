@@ -9,11 +9,12 @@ import Consts from './consts';
 axios.defaults.withCredentials = true;
 
 function checkStatus(response) {
-  const { data } = response;
-  const { code, dataMap } = data;
+  const {data} = response;
+  const {code, dataMap} = data;
   if (code === 911) {
     LocalStore.remove('user');
     const currentUrl = encodeURIComponent(window.location.href);
+    LocalStore.set('toOa', data);
     window.location.href = `${dataMap}${currentUrl}`;
     return false;
   }
@@ -31,12 +32,12 @@ function cancelRequest() {
 
 export default class Http {
   static send(config) {
-    const configs = Object.assign({}, config, { timeout: 15000 });
+    const configs = Object.assign({}, config, {timeout: 15000});
     return axios(configs).then(checkStatus).catch((error) => {
-      const { response } = error;
+      const {response} = error;
       if (response) {
-        const { data = {}, status } = response;
-        const { message = '系统异常！' } = data;
+        const {data = {}, status} = response;
+        const {message = '系统异常！'} = data;
         emitter.emit(Consts.EVENT_KEY.ERROR);
         // 触发网络异常
         emitter.emit(Consts.EVENT_KEY.NET_COMMUNICATION.BUSINESS_ERROR.NOT_200, message);
