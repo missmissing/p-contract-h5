@@ -4178,9 +4178,7 @@
             para.sealAttachments = t.combineSealsInfoWithoudAgreenments();
             para.id = t.baseInfoForm.id;
             para.type = 1;
-            if (t.ifRole1) {
-              para.sb = 1;
-            }
+            para.uploadPerson = t.ifRole1;
             Api.uploadSealAttachments(para)
               .then(() => {
                 resolve();
