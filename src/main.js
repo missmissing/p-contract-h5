@@ -24,10 +24,8 @@ const init = () => {
 
 const query = queryString();
 const {ticket} = query || {};
-const user = LocalStore.get('user');
-if (user || !ticket) {
-  init();
-} else {
+
+if (ticket) {
   Api.login({ticket}).then((res) => {
     const data = res.data.dataMap;
     const {userInfo, powers, powerSwitch} = data;
@@ -36,4 +34,7 @@ if (user || !ticket) {
     LocalStore.set('powerSwitch', powerSwitch);
     init();
   });
+} else {
+  init();
 }
+

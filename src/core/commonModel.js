@@ -32,7 +32,7 @@ function cancelRequest() {
 
 export default class Http {
   static send(config) {
-    const configs = Object.assign({}, config, {timeout: 15000});
+    const configs = Object.assign({timeout: 15000}, config);
     return axios(configs).then(checkStatus).catch((error) => {
       const {response} = error;
       if (response) {
@@ -81,6 +81,8 @@ export default class Http {
     } else {
       urlParams = url;
     }
+
+    urlParams = `${urlParams}&v=${new Date().getTime()}`;
 
     const config = {
       url: urlParams
