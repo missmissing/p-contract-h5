@@ -1868,7 +1868,7 @@
         <el-form-item label="联合验收人" prop="name">
           <el-select
             style="width:300px"
-            v-model="formAddUnionCheck.name"
+            v-model="formAddUnionCheck.personName"
             filterable
             remote
             placeholder="请输入联合验收人"
@@ -1886,7 +1886,7 @@
           </el-select>
         </el-form-item>
         <el-form-item prop="depart" label="联合验收人部门">
-          <el-input style="width:300px" :disabled="true" v-model="formAddUnionCheck.depart"
+          <el-input style="width:300px" :disabled="true" v-model="formAddUnionCheck.personDept"
                     placeholder="请输入联合验收人部门"></el-input>
         </el-form-item>
         <el-form-item label="是否必选" prop="ifRequired">
@@ -2446,9 +2446,10 @@
         },
         formAddUnionCheck: {
           id: '',
-          name: '',
-          userName: '',
-          depart: '',
+          personId: '',
+          personName: '',
+          personDeptId: '',
+          personDept: '',
           ifRequired: true,
           loading: false,
           checkPersons: [],
@@ -3026,8 +3027,10 @@
 
             this.cardContCheckInfoForm.unionCheckPersons.push({
               id: this.formAddUnionCheck.id,
-              personName: this.formAddUnionCheck.userName,
-              personDept: this.formAddUnionCheck.depart,
+              personId: this.formAddUnionCheck.personId,
+              personName: this.formAddUnionCheck.personName,
+              personDeptId: this.formAddUnionCheck.personDeptId,
+              personDept: this.formAddUnionCheck.personDept,
               required: this.formAddUnionCheck.ifRequired,
               operate: 'add'
             });
@@ -3957,9 +3960,11 @@
         if (checkPersons.length) {
           for (let i = 0, len = checkPersons.length; i < len; i++) {
             if (val === checkPersons[i].userId) {
-              this.formAddUnionCheck.depart = checkPersons[i].deptName;
-              this.formAddUnionCheck.id = checkPersons[i].userId;
-              this.formAddUnionCheck.userName = checkPersons[i].userName;
+              this.formAddUnionCheck.personDept = checkPersons[i].deptName;
+              this.formAddUnionCheck.personDeptId = checkPersons[i].deptCode;
+              this.formAddUnionCheck.personId = checkPersons[i].userId;
+              this.formAddUnionCheck.personName = checkPersons[i].userName;
+              this.formAddUnionCheck.id = '';
             }
           }
         }
