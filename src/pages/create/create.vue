@@ -53,30 +53,30 @@
     <el-card v-if="curPriceList.length">
       <el-table ref="prTable" :data="curPriceList" class="wp100">
         <el-table-column
-          property="folio"
+          prop="folio"
           label="比价单编码">
           <template scope="scope">
             <a href="###" @click.stop="handleDetailPR(scope.$index,scope.row)">{{scope.row.folio}}</a>
           </template>
         </el-table-column>
         <el-table-column
-          property="originatorName"
+          prop="originatorName"
           label="发起人">
         </el-table-column>
         <el-table-column
-          property="originatorDepartmentName"
+          prop="originatorDepartmentName"
           label="发起部门"
           :show-overflow-tooltip="true">
         </el-table-column>
         <el-table-column
-          property="startTime"
+          prop="startTime"
           label="发起时间">
           <template scope="scope">
             {{curPriceList[scope.$index].startTime | formatDate}}
           </template>
         </el-table-column>
         <el-table-column
-          property="finishTime"
+          prop="finishTime"
           label="结束时间">
           <template scope="scope">
             {{curPriceList[scope.$index].finishTime | formatDate}}
@@ -151,20 +151,20 @@
           type="index"
           width="80px">
         </el-table-column>
-        <el-table-column property="folio" label="比价单编码" width="200">
+        <el-table-column prop="folio" label="比价单编码" width="200">
           <template scope="scope">
             <a href="###" @click.stop="handleDetailPR(scope.$index,scope.row)">{{scope.row.folio}}</a>
           </template>
         </el-table-column>
         <el-table-column
-          property="originatorName"
+          prop="originatorName"
           label="发起人"
           width="80">
         </el-table-column>
-        <el-table-column :show-overflow-tooltip="true" property="originatorDepartmentName" label="发起部门">
+        <el-table-column :show-overflow-tooltip="true" prop="originatorDepartmentName" label="发起部门">
         </el-table-column>
         <el-table-column
-          property="startTime"
+          prop="startTime"
           label="发起时间"
           width="120">
           <template scope="scope">
@@ -172,7 +172,7 @@
           </template>
         </el-table-column>
         <el-table-column
-          property="finishTime"
+          prop="finishTime"
           label="结束时间"
           width="120">
           <template scope="scope">

@@ -2806,6 +2806,10 @@
         const reg = /印章保管人/g;
         return reg.test(this.users.roleName);
       },
+      ifRole1() {
+        const reg = /采购合同上传/g;
+        return reg.test(this.users.roleName);
+      },
       enabledUpdateInApprove() { //在审批阶段修改附件时，上传盖章合同控件的上传按钮状态（仅用章保管人可用）
         let enabled = false;
         if (this.operateType === 'query') {
@@ -4169,11 +4173,14 @@
         console.log(t);
         return new Promise((resolve, reject) => {
           const {isSign, isAgree} = params;
-          if (!isSign && isAgree && t.ifRole) {
+          if (!isSign && isAgree && (t.ifRole || t.ifRole1)) {
             const para = {};
             para.sealAttachments = t.combineSealsInfoWithoudAgreenments();
             para.id = t.baseInfoForm.id;
             para.type = 1;
+            if (t.ifRole1) {
+              para.sb = 1;
+            }
             Api.uploadSealAttachments(para)
               .then(() => {
                 resolve();
