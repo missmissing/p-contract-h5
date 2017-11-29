@@ -1,7 +1,5 @@
 <style scope>
-  .create table {
-    width: 100% !important;
-  }
+
 </style>
 <template>
   <div class="create">
@@ -53,7 +51,7 @@
       </el-form>
     </el-card>
     <el-card v-if="curPriceList.length">
-      <el-table ref="prTable" :data="curPriceList">
+      <el-table ref="prTable" :data="curPriceList" class="wp100">
         <el-table-column
           property="folio"
           label="比价单编码">
@@ -122,15 +120,16 @@
           </el-col>
         </el-row>
         <el-row>
-          <el-col :span="8" prop="createTime">
+          <el-col :span="8">
             <el-form-item label="创建时间">
               <el-date-picker
                 style="width:100%"
-                v-model="prForm.createTime"
+                v-model="prForm.daterange"
                 type="daterange"
                 align="right"
                 placeholder="选择日期范围"
-                :picker-options="prForm.pickerOption">
+                :picker-options="prForm.pickerOption"
+                @change="formatDateRange">
               </el-date-picker>
             </el-form-item>
           </el-col>
@@ -140,7 +139,7 @@
         </el-row>
       </el-form>
       <el-table ref="priceList" :data="priceList" highlight-current-row border @current-change="handleSelectCurrent"
-                max-height="250" @row-click="handleRowClick" width="100%">
+                max-height="250" @row-click="handleRowClick" class="wp100">
         <el-table-column prop="ifSelect" label="选择" width="80">
           <template scope="scope">
             <el-checkbox v-model="scope.row.ifSelect"
@@ -249,7 +248,7 @@
           createPerson: '',
           createPersons: [],
           loading: false,
-          createTime: '',
+          daterange: [],
           pickerOption: {
             shortcuts: [
               {
@@ -451,23 +450,17 @@
 
         this.visible = false;
       },
+      formatDateRange(value) {
+        const daterange = value.split(' ');
+        this.daterange = [daterange[0], daterange[2]];
+      },
       handleQueryPriceList() {
         this.priceList = [];
-        const startTime = this.prForm.createTime[0] ? formatDate(this.prForm.createTime[0].toLocaleDateString()) : '';
-        const endTime = this.prForm.createTime[1] ? formatDate(this.prForm.createTime[1].toLocaleDateString()) : '';
-        let times = [],
-          day = null,
-          endDay = '';
-        if (endTime) {
-          times = endTime.split('-');
-          day = parseInt(times[2], 10) + 1;
-          endDay = `${times[0]}-${times[1]}-${[day]}`;
-        }
         const params = {
           pr: this.prForm.prCode,
           originator: this.prForm.createPerson,
-          fromDate: startTime,
-          toDate: endDay,
+          fromDate: this.daterange[0],
+          toDate: this.daterange[1],
           pageNo: this.prForm.pageNo,
           pageSize: this.prForm.pageSize
         };
@@ -532,9 +525,6 @@
           this.prForm.createPersons = [];
           this.prForm.createPerson = '';
         }
-      },
-      handleIfSelectChange(val) {
-        console.log('val', val);
       },
       handleCurrentChange(page) {
         this.prForm.pageNo = page;

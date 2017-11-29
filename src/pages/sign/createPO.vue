@@ -305,7 +305,7 @@
           </el-table-column>
           <el-table-column
             prop="contractNo"
-            width="120"
+            width="130"
             label="合同号">
           </el-table-column>
           <el-table-column
@@ -618,6 +618,7 @@
               } = item;
               if (prItemNo === row.mapKey) {
                 if (contVos && contVos.length) {
+                  debugger
                   contVos.forEach((cont) => {
                     const {itemNo} = cont;
                     if (itemNo === row.itemNo) {
