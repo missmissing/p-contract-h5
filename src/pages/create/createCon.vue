@@ -335,10 +335,10 @@
                 class="mb10"
                 type="primary">新增
               </el-button>
-              <el-table :data="cardContentInfoForm.conStandard">
+              <el-table :data="cardContentInfoForm.conStandard" class="wp100">
                 <el-table-column type="index" label="序号" width="80"></el-table-column>
-                <el-table-column v-if="baseInfoForm.contractBusinessTypeFirst!==2" prop="materialCode"
-                                 label="物料编码" width="250"></el-table-column>
+                <el-table-column v-if="baseInfoForm.contractBusinessTypeFirst!==2" prop="materialCode" label="物料编码"
+                                 width="250"></el-table-column>
                 <el-table-column prop="materialName" width="300"
                                  :label="baseInfoForm.contractBusinessTypeFirst===2?'服务名称':'物料名称'"></el-table-column>
                 <el-table-column v-if="baseInfoForm.contractType!==3" prop="total" label="数量"></el-table-column>
@@ -1980,7 +1980,7 @@
         <el-button type="primary" @click="handleAddConStandardItem('formAddConStandard')">确定</el-button>
       </footer>
     </el-dialog>
-    <Process :extraFn="callback"></Process>
+    <Process :extraFn="callback.bind(this)"></Process>
     <el-row class="mt20">
       <!--<el-col :span="4" :offset="4">
         <el-button v-if="operateType!=='query'" :disabled="!btnSaveStatus" type="primary" @click="handleSave('')">保存
@@ -2789,14 +2789,14 @@
       enabledUpdateInApprove() { //在审批阶段修改附件时，上传盖章合同控件的上传按钮状态（仅用章保管人可用）
         let enabled = false;
         if (this.operateType === 'query') {
-          enabled = !!this.ifRole();
+          enabled = !!this.ifRole;
         }
         return enabled;
       },
       enabledUpdateInApprovePrint() { //创建和变更阶段可用，审批阶段且角色是用章保管人可用
         let enabled = true;
         if (this.operateType === 'query') {
-          enabled = !!this.ifRole();
+          enabled = !!this.ifRole;
         } else if (this.operateType === 'update') {
           enabled = this.updateForm.updateMode !== 1;
         }
@@ -2805,7 +2805,7 @@
       enabledUpdateInApprovePrint1() { //创建和变更阶段可用，审批阶段且角色是用章保管人可用
         let enabled = true;
         if (this.operateType === 'query') {
-          enabled = !!this.ifRole();
+          enabled = !!this.ifRole;
         } else if (this.operateType === 'update') {
           // enabled = this.updateForm.updateMode === 1;
           enabled = true;
@@ -4145,12 +4145,14 @@
         return enabled;
       },
       callback(params) { //isSign:是否是加签人 isAgree:审批操作类型是否是同意
+        const t = this;
+        console.log(t);
         return new Promise((resolve, reject) => {
           const {isSign, isAgree} = params;
-          if (!isSign && isAgree && this.ifRole()) {
+          if (!isSign && isAgree && t.ifRole) {
             const para = {};
-            para.sealAttachments = this.combineSealsInfoWithoudAgreenments();
-            para.id = this.baseInfoForm.id;
+            para.sealAttachments = t.combineSealsInfoWithoudAgreenments();
+            para.id = t.baseInfoForm.id;
             para.type = 1;
             Api.uploadSealAttachments(para)
               .then(() => {
