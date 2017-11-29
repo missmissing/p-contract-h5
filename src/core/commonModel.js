@@ -82,10 +82,12 @@ export default class Http {
       urlParams = url;
     }
 
-    urlParams = `${urlParams}&v=${new Date().getTime()}`;
 
     const config = {
-      url: urlParams
+      url: urlParams,
+      params: {
+        randomTime: new Date().getTime() //防止缓存
+      }
     };
     return Http.send(config);
   }
