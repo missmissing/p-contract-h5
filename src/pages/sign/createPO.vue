@@ -309,6 +309,12 @@
             label="合同号">
           </el-table-column>
           <el-table-column
+            prop="materialName"
+            label="物料描述"
+            width="100"
+            v-if="prData.length&&prData[0].category === 2">
+          </el-table-column>
+          <el-table-column
             prop="supplierCode"
             label="供应商"
             width="100">
@@ -554,6 +560,9 @@
       setOrderData() {
         const orderData = this.prData[0].category !== 2 ? this.getMaterialsOrderData() : this.getServerOrderData();
         this.orderData = orderData.filter(item => item.availableTotal !== 0);
+        if (orderData.length !== this.orderData.length) {
+          this.$message.warning('可用数量为0的订单自动被移除');
+        }
       },
       getMaterialsOrderData() {
         const {id} = this.contractForm;

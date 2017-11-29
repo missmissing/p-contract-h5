@@ -246,7 +246,11 @@
                          class="mb10" type="primary">新增
               </el-button>
               <el-table :data="cardContentInfoForm.tableSupplierInfo">
-                <el-table-column type="index" label="序号" width="80"></el-table-column>
+                <el-table-column type="index" label="序号" width="80">
+                  <template scope="scope">
+                    {{scope.$index + 1}}
+                  </template>
+                </el-table-column>
                 <el-table-column prop="code" label="供应商编号"></el-table-column>
                 <el-table-column prop="name" label="供应商名称"></el-table-column>
                 <el-table-column
@@ -336,7 +340,11 @@
                 type="primary">新增
               </el-button>
               <el-table :data="cardContentInfoForm.conStandard" class="wp100">
-                <el-table-column type="index" label="序号" width="80"></el-table-column>
+                <el-table-column type="index" label="序号" width="80">
+                  <template scope="scope">
+                    {{scope.$index + 1}}
+                  </template>
+                </el-table-column>
                 <el-table-column v-if="baseInfoForm.contractBusinessTypeFirst!==2" prop="materialCode" label="物料编码"
                                  width="250"></el-table-column>
                 <el-table-column prop="materialName" width="300"
@@ -1337,7 +1345,11 @@
             <el-card v-if="showMaterialItems">
               <header slot="header">物资验收事项</header>
               <el-table :data="cardContCheckInfoForm.materialMatters">
-                <el-table-column type="index" label="序号" width="80"></el-table-column>
+                <el-table-column type="index" label="序号" width="80">
+                  <template scope="scope">
+                    {{scope.$index + 1}}
+                  </template>
+                </el-table-column>
                 <el-table-column prop="sampleCode" label="物料编码"></el-table-column>
                 <el-table-column prop="sampleDesc" label="物料描述"></el-table-column>
               </el-table>
@@ -1354,7 +1366,11 @@
                 添加
               </el-button>
               <el-table :data="cardContCheckInfoForm.serviceMatters">
-                <el-table-column type="index" label="序号" width="80"></el-table-column>
+                <el-table-column type="index" label="序号" width="80">
+                  <template scope="scope">
+                    {{scope.$index + 1}}
+                  </template>
+                </el-table-column>
                 <el-table-column prop="serviceName" label="服务名称"></el-table-column>
                 <el-table-column prop="serviceRequire" label="验收要求"></el-table-column>
                 <el-table-column prop="remark" label="备注"></el-table-column>
@@ -1709,7 +1725,11 @@
         <el-tab-pane label="相关数据" name="tabRelatedData" v-if="procInstId">
           <el-form rel="cardRelatedInfoForm" :model="cardRelatedInfoForm" label-width="100px">
             <el-table :data="cardRelatedInfoForm.contractList" border>
-              <el-table-column type="index" label="序号" width="80"></el-table-column>
+              <el-table-column type="index" label="序号" width="80">
+                <template scope="scope">
+                  {{scope.$index + 1}}
+                </template>
+              </el-table-column>
               <el-table-column prop="contractNo" label="合同号"></el-table-column>
               <el-table-column prop="contractType" label="类型">
                 <template scope="scope">
