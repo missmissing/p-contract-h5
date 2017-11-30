@@ -262,7 +262,7 @@
           return;
         }
         this.comLoading();
-        Api.getContractDetail(this.contractCode).then((res) => {
+        Api.getContractDetail({contractNo: this.contractCode, operate: 'SUSPENDED'}).then((res) => {
           const data = res.data.dataMap;
           this.info = data;
           const {baseInfoForm, cardContentInfoForm} = data;

@@ -1524,10 +1524,7 @@
                     v-model="cardSealInfoForm.contract[scope.$index].haveSale"></el-checkbox>
                 </template>
               </el-table-column>
-              <el-table-column
-                prop="remark"
-                label="备注"
-                width="200px">
+              <el-table-column prop="remark" label="备注" width="200px">
                 <template scope="scope">
                   <el-input
                     :disabled="true"
@@ -1536,7 +1533,7 @@
               </el-table-column>
             </el-table>
             <template v-if="cardSealInfoForm.others.length" v-for="(item,index) in cardSealInfoForm.others">
-              <el-table :data="item" :show-header="index===0?true:false">
+              <el-table :data="item" :show-header="index===0">
                 <el-table-column type="expand" v-if="item[0].haveSale">
                   <template scope="props" v-if="item[0].haveSale">
                     <div v-if="item[0].haveSale" v-bind:class="{tdPd:item[0].haveSale}">
@@ -1662,7 +1659,7 @@
                 <el-table-column
                   fixed="right"
                   label="操作"
-                  v-if="operateType!=='query'">
+                  v-if="operateType!=='query'&&item[0].attachStatus!==1">
                   <template scope="scope">
                     <el-button v-if="item[scope.$index].operate"
                                @click="handleRemoveOthersItem(index, cardSealInfoForm.others)"
@@ -1885,7 +1882,7 @@
                size="small">
       <el-form ref="formAddUnionCheck" :model="formAddUnionCheck" label-width="120px"
                :rules="formAddUnionCheck.rules">
-        <el-form-item label="联合验收人" prop="name">
+        <el-form-item label="联合验收人" prop="personName">
           <el-select
             style="width:300px"
             v-model="formAddUnionCheck.personName"
@@ -2474,7 +2471,7 @@
           loading: false,
           checkPersons: [],
           rules: {
-            name: [
+            personName: [
               {required: true, message: '请输入验收人', trigger: 'blur'}
             ]
           }
@@ -3357,6 +3354,7 @@
             sealFileName: dataMap.fileName,
             sealFileUrl: downloadUrl + dataMap.fileId,
             sealFileCreatorName: dataMap.userName,
+            sealFileCreatorId: dataMap.userId,
             sealFileCreateTime: formatDate(dataMap.createTime),
             operate: 'add'
           }];
@@ -3460,15 +3458,15 @@
           //验证附件的数据是否填写完整
           const sealAttachments = this.combineSealsInfo1();
           if (sealAttachments && sealAttachments.length) {
-            for (let i = 0, len = sealAttachments.length; i < len; i++) {
-              const item = sealAttachments[i];
+            this.cardSealInfoForm.errorMsg = '';
+            const exist = sealAttachments.some((item) => {
               if (item[0].haveSale) {
-                if (item[0].printTime && item[0].remainTime && item[0].saleInfos.length) {
-                  this.cardSealInfoForm.errorMsg = '';
-                } else {
-                  this.cardSealInfoForm.errorMsg = '请确保所有附件信息填写完整';
-                }
+                return !(item[0].printTime && item[0].remainTime && item[0].saleInfos.length);
               }
+              return false;
+            });
+            if (exist) {
+              this.cardSealInfoForm.errorMsg = '请确保所有附件信息填写完整';
             }
           }
 
@@ -3709,26 +3707,6 @@
           });
       },
 
-      handleCurTimeChange(value, row) {
-        if (value) {
-          row.paymentTime = '';
-        }
-      },
-      handleExactDateChange(value, row) {
-        if (value) {
-          row.paymentTimePeriod = null;
-        }
-      },
-      handleItemCurTimeChange(value, row) {
-        if (value) {
-          row.paymentTime = '';
-        }
-      },
-      handleItemExactDateChange(value, row) {
-        if (value) {
-          row.paymentTimePeriod = null;
-        }
-      },
       handleNewSealFile() {
         const file = {
           operate: 'add',

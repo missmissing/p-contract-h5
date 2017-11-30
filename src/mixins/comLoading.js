@@ -23,7 +23,7 @@ class loading {
       }
       return loadingInstance;
     }
-    const config = Object.assign(defaultOpts, options);
+    const config = Object.assign({}, defaultOpts, options);
     loadingInstance = this.$loading(config);
     return loadingInstance;
   }

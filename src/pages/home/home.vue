@@ -6,6 +6,7 @@
     top: 0;
     z-index: 101;
     border-bottom: 1px solid #eef1f6;
+    background-color: #FFF;
     .logo {
       display: inline-block;
       width: 200px;
@@ -46,7 +47,6 @@
     bottom: 0;
     width: 200px;
     background-color: #eef1f6;
-    z-index: 102;
     overflow: hidden;
     overflow-y: auto;
     &.collapse {

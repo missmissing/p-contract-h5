@@ -121,7 +121,7 @@
   import getBusiType from '../../mixins/getBusiType';
   import comLoading from '../../mixins/comLoading';
   import createUpdate from '../../mixins/createUpdate';
-  import { formatTimeStamp } from '../../filters/moment';
+  import {formatTimeStamp} from '../../filters/moment';
 
   const defaultData = {
     form: {
@@ -148,13 +148,13 @@
         visible: false,
         showTmpl: false,
         rules: {
-          templateName: [{ required: true, message: '请输入模板/文本名称' }],
-          templateType: [{ required: true, message: '请选择文本类型' }],
-          busiTypeText: [{ required: true, message: '请选择业务类型', trigger: 'change' }],
+          templateName: [{required: true, message: '请输入模板/文本名称'}],
+          templateType: [{required: true, message: '请选择文本类型'}],
+          busiTypeText: [{required: true, message: '请选择业务类型', trigger: 'change'}],
           startDate: [{
             type: 'date', required: true, message: '请选择生效时间', trigger: 'change'
           }],
-          description: [{ max: 300, message: '长度不超过300个字符', trigger: 'change' }]
+          description: [{max: 300, message: '长度不超过300个字符', trigger: 'change'}]
         }
       }, _.cloneDeep(defaultData));
     },
@@ -172,7 +172,7 @@
         this.visible = false;
       },
       getResult() {
-        const { info } = this.$store.state.support.create;
+        const {info} = this.$store.state.support.create;
         const {
           templateName, templateType, startDate, description, bizTypes
         } = this.form;

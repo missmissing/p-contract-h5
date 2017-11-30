@@ -56,12 +56,14 @@ export default {
     return Http.post(`${contract}/contract-web/contract/alter`, params);
   },
   // 根据合同编号查询合同详情
-  getContractDetail(contractNo) {
-    return Http.get(`${contract}/contract-web/contract/no/${contractNo}`);
+  getContractDetail(params) {
+    const {contractNo} = params;
+    delete params.contractNo;
+    return Http.get(`${contract}/contract-web/contract/no/${contractNo}`, params);
   },
   // 根据合同id查询合同详情
   getContractDetailByContractId(params) {
-    const { contractId, operate } = params;
+    const {contractId, operate} = params;
     if (operate) {
       return Http.get(`${contract}/contract-web/contract/id/${contractId}`, params);
     }
@@ -103,14 +105,6 @@ export default {
     return Http.post(`${contract}/contract-web/contract/seal/attach`, params);
   },
   /** ***从协议接口****/
-
-  /** ***根据合同编号获取详情接口****/
-  getContractDetailByCode(params) {
-    const { id } = params;
-    delete params.id;
-    return Http.get(`${contract}/contract-web/contract/id/${id}`, params);
-  },
-  /** ***根据合同编号获取详情接口****/
 
   /** ***合同中止提交****/
   contractSuspendSubmit(params) {
