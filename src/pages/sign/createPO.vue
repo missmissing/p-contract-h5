@@ -309,7 +309,7 @@
             label="合同号">
           </el-table-column>
           <el-table-column
-            prop="materialName"
+            prop="materialNameDesc"
             label="物料描述"
             width="100"
             v-if="prData.length&&prData[0].category === 2">
@@ -505,6 +505,7 @@
             contVos.forEach((cont) => {
               const newCont = {
                 ...cont,
+                materialNameDesc: cont.materialName,
                 checked: false,
                 disabled: false,
                 mapKey: prItemNo
