@@ -1482,7 +1482,7 @@
                             :on-success="handleUploadFileAfterSealSuccess"
                             :on-error="handleUploadFileAfterSealError"
                           >
-                            <el-button :disabled="!enabledUpdateInApprove||!getEnabledUploadBtn(props.row.filesSealed)"
+                            <el-button :disabled="!enabledUpdateInApprove||getEnabledUploadBtn(props.row.filesSealed)"
                                        size="small"
                                        type="primary" @click="handleUpload(cardSealInfoForm.contract[0].attachType)">上传
                             </el-button>
@@ -1596,7 +1596,7 @@
                               :on-error="handleUploadFileAfterSealError"
                             >
                               <el-button
-                                :disabled="!enabledUpdateInApprove||!getEnabledUploadBtn(props.row.filesSealed)"
+                                :disabled="!enabledUpdateInApprove||getEnabledUploadBtn(props.row.filesSealed)"
                                 size="small"
                                 type="primary" @click="handleUpload(item[props.$index].attachType,index)">上传
                               </el-button>
@@ -2810,10 +2810,10 @@
         const reg = /采购合同上传/g;
         return reg.test(this.users.roleName);
       },
-      enabledUpdateInApprove() { //在审批阶段修改附件时，上传盖章合同控件的上传按钮状态（仅用章保管人可用）
+      enabledUpdateInApprove() { //在审批阶段修改附件时，上传盖章合同控件的上传按钮状态（仅用章保管人，采购合同上传可用）
         let enabled = false;
         if (this.operateType === 'query') {
-          enabled = !!this.ifRole;
+          enabled = this.ifRole || this.ifRole1;
         }
         return enabled;
       },
@@ -2978,7 +2978,7 @@
         }
       },
       getEnabledUploadBtn(items) {
-        return !(items && items.length >= 1);
+        return (items && items.length > 0);
       },
       setRatio(item, val) {
         const result = this.getProportion(val);

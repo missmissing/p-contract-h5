@@ -69,7 +69,7 @@
     }
     .content {
       padding: 0 15px;
-      overflow: hidden;
+      overflow-x: hidden;
       overflow-y: auto;
       background: #fff;
       border-radius: 4px;
