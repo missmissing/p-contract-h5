@@ -29,7 +29,6 @@
     title="合同预览"
     :visible.sync="visible"
     size="large"
-    top="10%"
     @close="ok">
     <div>
       <form action="/api-contract/contract-web/contract/download/pdf" method="post" id="pdf-form">

@@ -4,7 +4,7 @@
   }
 </style>
 <template>
-  <div class="pd20" v-loading="loading" element-loading-text="拼命加载中">
+  <div class="pt20 pb20" v-loading="loading" element-loading-text="拼命加载中">
     <el-form class="mb20" ref="form" :model="form" label-width="100px">
       <el-row>
         <el-col :span="8">

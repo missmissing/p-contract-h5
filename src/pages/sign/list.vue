@@ -3,8 +3,8 @@
 </style>
 
 <template>
-  <div class="pd20">
-    <el-form class="mb20" ref="form" :model="form" label-width="100px">
+  <div class="pt20 pb20">
+    <el-form ref="form" :model="form" label-width="100px">
       <el-row>
         <el-col :span="21">
           <el-form-item label="查询条件">

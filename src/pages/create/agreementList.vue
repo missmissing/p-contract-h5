@@ -2,7 +2,7 @@
   /*.agreementList table{width:100%!important}*/
 </style>
 <template>
-  <div class="agreementList pd20">
+  <div class="agreementList pt20 pb20">
     <el-form ref="agreementForm" :model="agreementForm" :rules="agreementForm.rules" label-width="150px">
       <el-row>
         <el-col :span="8">

@@ -33,8 +33,9 @@
   }
 
   .main {
-    width: 100%;
     position: absolute;
+    left: 0;
+    right: 0;
     top: 60px;
     bottom: 0;
   }
@@ -60,7 +61,6 @@
     top: 0;
     right: 0;
     bottom: 0;
-    overflow: hidden;
     &.collapse {
       left: 0;
     }
@@ -68,11 +68,7 @@
       margin: 15px 0 15px 15px;
     }
     .content {
-      position: absolute;
-      top: 45px;
-      left: 15px;
-      right: 15px;
-      bottom: 0;
+      padding: 0 15px;
       overflow: hidden;
       overflow-y: auto;
       background: #fff;
@@ -133,7 +129,7 @@
 <script>
   import localStore from 'store';
   import Api from '../../api';
-  import { formatTimeText } from '../../filters/moment';
+  import {formatTimeText} from '../../filters/moment';
 
   export default {
     data() {
@@ -168,7 +164,7 @@
       },
       logout() {
         Api.logout().then((res) => {
-          const { dataMap } = res.data;
+          const {dataMap} = res.data;
           localStore.remove('user');
           const currentUrl = encodeURIComponent(`${window.location.origin}/#/con/index`);
           window.location.href = `${dataMap}${currentUrl}`;
@@ -178,7 +174,7 @@
         items.forEach((item) => {
           if (!item.meta.public) {
             item.meta.hidden = true;
-            const { children } = item;
+            const {children} = item;
             if (children && children.length) {
               this.allRoutesHiddenTrue(children);
             }
@@ -187,7 +183,7 @@
       },
       filterRoutes(items) {
         items.forEach((item) => {
-          const { name, children } = item;
+          const {name, children} = item;
           this.showRoute(name);
           if (children && children.length) {
             this.filterRoutes(children);
@@ -196,7 +192,7 @@
       },
       findRoute(routeNmae, items) {
         items.some((item) => {
-          const { name, children } = item;
+          const {name, children} = item;
           if (name === routeNmae) {
             item.meta.hidden = false;
             return true;
