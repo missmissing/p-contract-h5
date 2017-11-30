@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>红星美凯龙-内控合规</title>
+  <style>
+    * {
+      padding: 0;
+      margin: 0;
+    }
+
+    li {
+      list-style: none;
+    }
+
+    .clearfix:after {
+      content: " ";
+      visibility: hidden;
+      display: block;
+      clear: both;
+      height: 0;
+      font-size: 0;
+    }
+
+    body {
+      color: #666;
+      background: #EBEBEB
+    }
+
+    header {
+      height: 70px;
+      line-height: 70px;
+      background-color: #FFF;
+    }
+
+    header > div {
+      width: 1000px;
+      margin: 0 auto;
+    }
+
+    header img {
+      vertical-align: middle;
+    }
+
+    header span {
+      font-size: 24px;
+      vertical-align: middle;
+    }
+
+    .menu {
+      padding: 20px 0 50px 0;
+      width: 1000px;
+      height: 262px;
+      margin: 0 auto;
+      overflow: hidden;
+    }
+
+    .menu li {
+      float: left;
+      -webkit-transition-duration: 0.5s;
+      -moz-transition-duration: 0.5s;
+      -ms-transition-duration: 0.5s;
+      transition-duration: 0.5s;
+    }
+
+    .menu li:hover {
+      -webkit-transform: translateY(-20px);
+      -moz-transform: translateY(-20px);
+      -ms-transform: translateY(-20px);
+      transform: translateY(-20px);
+
+    }
+
+    .menu li a {
+      display: block;
+      width: 200px;
+      height: 262px;
+      font-size: 20px;
+      color: #ebebeb;
+      text-decoration: none;
+      font-family: "微软雅黑";
+      text-align: center;
+      line-height: 350px;
+      -webkit-transform: translateY(300px);
+      -moz-transform: translateY(300px);
+      -ms-transform: translateY(300px);
+      transform: translateY(300px);
+      -webkit-animation: comein .8s ease forwards;
+      -moz-animation: comein .8s ease forwards;
+      -ms-animation: comein .8s ease forwards;
+      animation: comein .8s ease forwards;
+    }
+
+    .menu .menu01 a {
+      background-color: #403e3e;
+      -webkit-animation-duration: .4s;
+      -moz-animation-duration: .4s;
+      -ms-animation-duration: .4s;
+      animation-duration: .4s;
+    }
+
+    .menu .menu02 a {
+      background-color: #0d3e5f;
+      -webkit-animation-duration: .6s;
+      -moz-animation-duration: .6s;
+      -ms-animation-duration: .6s;
+      animation-duration: .6s;
+    }
+
+    .menu .menu03 a {
+      background-color: #0a7cbb;
+      -webkit-animation-duration: .8s;
+      -moz-animation-duration: .8s;
+      -ms-animation-duration: .8s;
+      animation-duration: .8s;
+    }
+
+    .menu .menu04 a {
+      background-color: #3ac3a8;
+      -webkit-animation-duration: 1s;
+      -moz-animation-duration: 1s;
+      -ms-animation-duration: 1s;
+      animation-duration: 1s;
+    }
+
+    .menu .menu05 a {
+      background-color: #0d3e5f;
+      -webkit-animation-duration: 1.2s;
+      -moz-animation-duration: 1.2s;
+      -ms-animation-duration: 1.2s;
+      animation-duration: 1.2s;
+    }
+
+    .menu li a:hover {
+      color: #006fbc
+    }
+
+    @-webkit-keyframes comein {
+      from {
+        opacity: .5;
+      }
+      to {
+        -webkit-transform: translateY(0);
+        opacity: 1;
+      }
+    }
+
+    @-moz-keyframes comein {
+      from {
+        opacity: .5;
+      }
+      to {
+        -moz-transform: translateY(0);
+        opacity: 1;
+      }
+    }
+
+    @-ms-keyframes comein {
+      from {
+        opacity: .5;
+      }
+      to {
+        -moz-transform: translateY(0);
+        opacity: 1;
+      }
+    }
+
+    @keyframes comein {
+      from {
+        opacity: .5;
+      }
+      to {
+        transform: translateY(0);
+        opacity: 1;
+      }
+    }
+
+    footer {
+      background: #666;
+      text-align: center;
+      color: #ebebeb;
+      padding: 30px 0;
+    }
+  </style>
+</head>
+<body>
+<div>
+  <header>
+    <div>
+      <img src="../img/logo.png"/>
+      <span>内控合规</span>
+    </div>
+  </header>
+  <section>
+    <div class="menu">
+      <ol class="clearfix">
+        <li class="menu01"><a href="../../index.html" title="日常经营类合同">日常经营类合同</a></li>
+        <li class="menu02"><a href="javascript:void(0)" title="印章">印章</a></li>
+        <li class="menu03"><a href="javascript:void(0)" title="档案">档案</a></li>
+        <li class="menu04"><a href="javascript:void(0)" title="月报分析">关联交易</a></li>
+        <li class="menu05"><a href="javascript:void(0)" title="敬请期待...">敬请期待...</a></li>
+      </ol>
+    </div>
+  </section>
+  <footer>
+    <div>红星美凯龙•内控合规部</div>
+  </footer>
+</div>
+</body>
+</html>
