@@ -781,17 +781,15 @@
 
           //验证附件的数据是否填写完整
           if (attachments && attachments.length) {
-            for (let i = 0, len = attachments.length; i < len; i += 1) {
-              const item = attachments[i];
+            this.cardSealInfoForm.attachmentErrorMsg = '';
+            const exist = attachments.some((item) => {
               if (item[0].haveSale) {
-                if (item[0].printTime && item[0].remainTime && item[0].saleInfos.length) {
-                  this.cardSealInfoForm.attachmentErrorMsg = '';
-                } else {
-                  this.cardSealInfoForm.attachmentErrorMsg = '请确保所有附件信息填写完整';
-                }
-              } else {
-                this.cardSealInfoForm.attachmentErrorMsg = '';
+                return !(item[0].printTime && item[0].remainTime && item[0].saleInfos.length && item[0].fileName);
               }
+              return false;
+            });
+            if (exist) {
+              this.cardSealInfoForm.attachmentErrorMsg = '请确保所有附件信息填写完整';
             }
           } else {
             this.cardSealInfoForm.attachmentErrorMsg = '合同附件及盖章信息不能为空';
