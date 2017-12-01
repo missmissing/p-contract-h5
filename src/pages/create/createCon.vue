@@ -4147,7 +4147,6 @@
       },
       callback(params) { //isSign:是否是加签人 isAgree:审批操作类型是否是同意
         const t = this;
-        console.log(t);
         return new Promise((resolve, reject) => {
           const {isSign, isAgree} = params;
           if (!isSign && isAgree && (t.ifRole || t.ifRole1)) {

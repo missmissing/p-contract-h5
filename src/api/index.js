@@ -1,3 +1,4 @@
+
 import Http from '../core/commonModel';
 
 // const contract = 'api'
@@ -9,5 +10,8 @@ export default {
   },
   logout(params) {
     return Http.get(`${contract}/contract-web/process/logout`, params);
+  },
+  logoutForInvalidUser(params) {
+    return Http.get(`${contract}/contract-web/process/logoutForInvalidUser`, params);
   }
 };

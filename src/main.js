@@ -33,6 +33,22 @@ if (ticket) {
     LocalStore.set('powers', powers);
     LocalStore.set('powerSwitch', powerSwitch);
     init();
+  }).catch((res) => {
+    const {data = {}} = res.response;
+    const {code, message} = data;
+    if (code !== 200) {
+      new Vue().$alert(message, '标题', {
+        type: 'error',
+        confirmButtonText: '确定',
+        callback: () => {
+          Api.logoutForInvalidUser().then((ress) => {
+            const {dataMap} = ress.data;
+            const currentUrl = encodeURIComponent(`${window.location.origin}/#/con/index`);
+            window.location.href = `${dataMap}${currentUrl}`;
+          });
+        }
+      });
+    }
   });
 } else {
   init();

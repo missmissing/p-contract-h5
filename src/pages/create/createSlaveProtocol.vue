@@ -554,6 +554,10 @@
         const reg = /印章保管人/g;
         return reg.test(this.users.roleName);
       },
+      ifRole1() {
+        const reg = /采购合同上传/g;
+        return reg.test(this.users.roleName);
+      },
       enabledUpdateInApprove() { //在审批阶段修改附件时，控件的状态（仅用章保管人可用）
         let enabled = false;
         if (this.operateType === 'query') {
@@ -937,12 +941,13 @@
       callback(params) { //isSign:是否是加签人 isAgree:审批操作类型是否是同意
         return new Promise((resolve, reject) => {
           const {isSign, isAgree} = params;
-          if (!isSign && isAgree && this.ifRole) {
+          if (!isSign && isAgree && (this.ifRole || this.ifRole1)) {
             const sealAttachments = this.combineSealsInfo();
             const para = {};
             para.sealAttachments = sealAttachments;
             para.id = this.id;
             para.type = 2;
+            para.uploadPerson = this.ifRole1;
             Api.uploadSealAttachments(para)
               .then(() => {
                 resolve();
