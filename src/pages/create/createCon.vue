@@ -406,7 +406,7 @@
                 <el-form-item label="合同生效日期" prop="startTime">
                   <el-date-picker v-model="cardContentInfoForm.startTime"
                                   format="yyyy-MM-dd"
-                                  @change="handleStartDateChange"
+                                  @change="handleChangeValidateForms"
                                   :disabled="!enabledInupdated"
                                   placeholder="请输入合同生效期日期"
                                   type="date"></el-date-picker>
@@ -2412,7 +2412,7 @@
           rules: {
             otherInstruction: [{
               validator: (rule, value, callback) => {
-                if (this.cardContentInfoForm.effectiveCondition === 1 && this.cardContentInfoForm.startTime) {
+                if (this.cardContentInfoForm.effectiveCondition === 1 && this.cardContentInfoForm.startTime && formatDate(this.cardContentInfoForm.startTime) < formatDate(new Date())) {
                   if (!value) {
                     callback(new Error('合同生效日期小于今天，请输入倒签原因'));
                   }
@@ -4214,12 +4214,6 @@
         if (val === 2) {
           this.handleContractTextTypeChange(this.baseInfoForm.contractTextType);
         }
-      },
-      handleStartDateChange(time) {
-        if (formatTimeStamp(time) < formatTimeStamp(formatDate(new Date()))) {
-          console.log(111);
-        }
-        this.handleChangeValidateForms();
       }
     },
     components: {
