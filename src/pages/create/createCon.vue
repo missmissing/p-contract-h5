@@ -339,19 +339,18 @@
                 class="mb10"
                 type="primary">新增
               </el-button>
-              <el-table :data="cardContentInfoForm.conStandard" class="wp100">
+              <el-table :data="cardContentInfoForm.conStandard" border>
                 <el-table-column type="index" label="序号" width="80">
                   <template scope="scope">
                     {{scope.$index + 1}}
                   </template>
                 </el-table-column>
-                <el-table-column v-if="baseInfoForm.contractBusinessTypeFirst!==2" prop="materialCode" label="物料编码"
-                                 width="250"></el-table-column>
-                <el-table-column prop="materialName" width="300"
+                <el-table-column v-if="baseInfoForm.contractBusinessTypeFirst!==2" prop="materialCode" label="物料编码" width="250"></el-table-column>
+                <el-table-column prop="materialName"
                                  :label="baseInfoForm.contractBusinessTypeFirst===2?'服务名称':'物料名称'"></el-table-column>
-                <el-table-column v-if="baseInfoForm.contractType!==3" prop="total" label="数量"></el-table-column>
-                <el-table-column prop="price" label="价格"></el-table-column>
-                <el-table-column prop="taxRate" label="税率">
+                <el-table-column v-if="baseInfoForm.contractType!==3" prop="total" label="数量" width="100"></el-table-column>
+                <el-table-column prop="price" label="价格" width="100"></el-table-column>
+                <el-table-column prop="taxRate" label="税率" width="100">
                   <template scope="scope">
                     {{cardContentInfoForm.conStandard[scope.$index].taxRate}}%
                   </template>
