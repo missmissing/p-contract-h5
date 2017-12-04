@@ -15,7 +15,7 @@
   },
   "dependencies": {
     "axios": "^0.16.2",
-    "element-ui": "^1.4.11",
+    "element-ui": "^1.4.12",
     "js-cookie": "^2.2.0",
     "lodash": "^4.17.4",
     "mitt": "^1.1.2",
