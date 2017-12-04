@@ -73,7 +73,7 @@
     },
     methods: {
       getData() {
-        // this.comLoading();
+        this.comLoading();
         Api.getOrderTableData({contractNo: this.contractNo, pageNo: this.pageNo, pageSize: this.pageSize})
           .then((data) => {
             if (data.data.dataMap) {

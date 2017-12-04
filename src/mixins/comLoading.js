@@ -3,7 +3,6 @@
  * @param {object} options 同element-ui loading选项
  * @param false 则关闭
  */
-let loadingInstance = null;
 
 const defaultOpts = {
   target: document.body,
@@ -16,20 +15,15 @@ const defaultOpts = {
 
 class LoadingClass {
   static init(options = {}) {
-    //console.log(1, loadingInstance)
+    const loadingInstance = this.$loadingInstance;
     if (!options) {
       if (loadingInstance) {
         loadingInstance.close();
       }
       return loadingInstance;
     }
-    if (loadingInstance) {
-      //console.log(3, loadingInstance);
-      loadingInstance.close();
-    }
     const config = Object.assign({}, defaultOpts, options);
-    loadingInstance = this.$loading(config);
-    //console.log(2)
+    this.$loadingInstance = this.$loading(config);
     return loadingInstance;
   }
 }
