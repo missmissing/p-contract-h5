@@ -2024,7 +2024,7 @@
   import comLoading from '../../mixins/comLoading';
   import {downloadUrl, uploadUrl} from '../../api/consts';
   import Process from '../../components/process.vue';
-  import {formatDate, formatTimeStamp} from '../../filters/moment';
+  import {formatDate} from '../../filters/moment';
   import {routerNames} from '../../core/consts';
 
   const user = store.get('user');
@@ -2429,7 +2429,7 @@
           total: 0
         },
         cardOtherInfo: {
-          condition: 3,
+          condition: 4,
           conditionOptions: [
             /*{
               value: 1,
@@ -2884,11 +2884,15 @@
             }
           });
         } else { //使用No查询
+          this.comLoading();
           Api.getUpdateInfo(query.contractNo).then((data) => {
+            this.comLoading(false);
             const dataMap = data.data.dataMap;
             if (dataMap) {
               this.initData(dataMap);
             }
+          }).catch(() => {
+            this.comLoading(false);
           });
         }
       }
@@ -3618,7 +3622,6 @@
           paras.cardOtherInfo = this.cardOtherInfo;
           this.comLoading();
           Api.saveContract(paras).then((data) => {
-            this.comLoading();
             if (data.data.dataMap.id) {
               this.$message.success('保存成功！');
             }

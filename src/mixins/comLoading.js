@@ -15,13 +15,16 @@ const defaultOpts = {
   customClass: ''
 };
 
-class loading {
+class Loading {
   static init(options = {}) {
     if (!options) {
       if (loadingInstance) {
         loadingInstance.close();
       }
       return loadingInstance;
+    }
+    if (loadingInstance) {
+      loadingInstance.close();
     }
     const config = Object.assign({}, defaultOpts, options);
     loadingInstance = this.$loading(config);
@@ -31,6 +34,6 @@ class loading {
 
 export default {
   methods: {
-    comLoading: loading.init
+    comLoading: Loading.init
   }
 };

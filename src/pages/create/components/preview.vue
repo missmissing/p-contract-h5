@@ -303,7 +303,7 @@
                 const {
                   paymentAmount, paymentTimePeriod, remark, ratio
                 } = item1;
-                const type = `${name}${numToChinese(index1 + 1, true)}`;
+                const type = `${name}${index1 + 1}`;
                 priceTable.push({
                   type,
                   paymentAmount,
@@ -316,6 +316,7 @@
             }
             priceTable.push({
               ...item,
+              type: item.type === '进度款' ? '' : item.type,
               paymentTimePeriod: this.getPaymentTimePeriodName(item.paymentTimePeriod),
               ratio: `${item.ratio}%`
             });

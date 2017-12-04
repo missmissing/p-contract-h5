@@ -197,7 +197,6 @@
     },
     methods: {
       search() {
-        console.log(JSON.stringify(this.form));
         this.getList();
       },
       selectPerson(val) {
@@ -219,7 +218,6 @@
         });
       },
       see(row) {
-        console.log(row);
         const id = row.purchaseOrderId;
         return {
           name: routerNames.con_purchase_see,
