@@ -1240,8 +1240,7 @@
             </el-card>
           </el-form>
         </el-tab-pane>
-        <el-tab-pane name="tabContCheckInfo"
-                     v-if="baseInfoForm.contractType===3||baseInfoForm.contractType===1">
+        <el-tab-pane name="tabContCheckInfo" v-if="baseInfoForm.contractType===3||baseInfoForm.contractType===1">
           <span slot="label" class="title"><i v-if="cardContCheckInfoForm.errorCount"
                                               class="errorCount">{{cardContCheckInfoForm.errorCount}}</i>合同验收与样品信息</span>
           <el-form ref="cardContCheckInfoForm" :model="cardContCheckInfoForm" label-width="120px">
@@ -3041,7 +3040,7 @@
         const curForm = this.$refs[formName];
         curForm.validate((valid) => {
           if (valid) {
-            const index = _.findIndex(this.cardContCheckInfoForm.unionCheckPersons, (chr) => chr.id === curForm.model.id);
+            const index = _.findIndex(this.cardContCheckInfoForm.unionCheckPersons, (chr) => chr.personId === curForm.model.personId);
             if (index > -1) {
               this.$message.error('这条数据已存在咯！');
               return;
