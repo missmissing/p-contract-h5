@@ -23,7 +23,7 @@
                   <el-input :value="basicForm.contractNo" disabled></el-input>
                 </el-form-item>
               </el-col>
-              <el-button type="primary" class="ml20" v-show="toDetail.query.contractId">
+              <el-button type="primary" class="ml20" v-show="toDetail.query.contractNo">
                 <router-link class="router-link-default" :to="toDetail" target="_blank">详 情</router-link>
               </el-button>
             </el-row>
@@ -213,7 +213,7 @@
       setData(data) {
         const { contractBasic, violateDispose } = data;
         const {
-          startTime, endTime, businessOperator, businessDept, signTime, contractId, contractNo
+          startTime, endTime, businessOperator, businessDept, signTime, contractNo
         } = contractBasic;
         const {
           files, schemeType, defaulter, compensateType, compensateStatus, compensateMoney, treatmentScheme, violateReason
@@ -234,7 +234,7 @@
           violateReason,
           treatmentScheme
         });
-        this.toDetail.query.contractId = contractId;
+        this.toDetail.query.contractNo = contractNo;
       }
     },
     created() {

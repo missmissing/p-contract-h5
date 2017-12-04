@@ -24,7 +24,7 @@
                   </el-input>
                 </el-form-item>
               </el-col>
-              <el-button type="primary" class="ml20" v-show="toDetail.query.contractId">
+              <el-button type="primary" class="ml20" v-show="toDetail.query.contractNo">
                 <router-link class="router-link-default" :to="toDetail" target="_blank">详 情</router-link>
               </el-button>
             </el-row>
@@ -159,7 +159,7 @@
         fileList: [],
         options: [{label: '供应商向我方赔付', value: 0}, {label: '我方向供应商赔付', value: 1}],
         info: {},
-        toDetail: {name: routerNames.con_Check, query: {contractId: ''}},
+        toDetail: {name: routerNames.con_Check, query: {contractNo: ''}},
         basicForm: {
           contractNo: ''
         },
@@ -192,17 +192,16 @@
         this.comLoading();
         Api.getContractViolateBaseByContractNo({contractNo: this.basicForm.contractNo}).then((res) => {
           const data = res.data.dataMap;
-          console.log(data);
           this.info = data;
           const {
-            startTime, endTime, businessOperator, businessDept, signTime, contractId
+            startTime, endTime, businessOperator, businessDept, signTime
           } = data;
           this.startTime = startTime;
           this.endTime = endTime;
           this.signTime = signTime;
           this.businessDept = businessDept;
           this.businessOperator = businessOperator;
-          this.toDetail.query.contractId = contractId;
+          this.toDetail.query.contractNo = this.basicForm.contractNo;
           this.comLoading(false);
         }, () => {
           this.comLoading(false);
