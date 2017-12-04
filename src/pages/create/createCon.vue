@@ -1782,12 +1782,10 @@
               :value="item.value">
             </el-option>
           </el-select>
-          <keep-alive>
-            <transition name="component-fade" mode="out-in">
-              <component :contractInfo="contractInfo" :prNo="baseInfoForm.prNo" :contractNo="baseInfoForm.contractNo"
-                         :is="tabs"></component>
-            </transition>
-          </keep-alive>
+          <transition name="component-fade" mode="out-in">
+            <component :contractInfo="contractInfo" :prNo="baseInfoForm.prNo" :contractNo="baseInfoForm.contractNo"
+                       :is="tabs"></component>
+          </transition>
         </el-tab-pane>
       </el-tabs>
     </el-card>
@@ -2947,7 +2945,9 @@
             this.cardSealInfoForm.others = others;
           }
           //初始化相关数据信息
-          this.initRelatedInfo();
+          if (this.procInstId) {
+            this.initRelatedInfo();
+          }
           //初始化其他数据
           if (this.baseInfoForm.prNo) {
             this.cardOtherInfo.conditionOptions = [
@@ -4203,7 +4203,7 @@
           case 1:
             return '单一合同';
           case 2:
-            return '简易合同';
+            return '固定格式合同';
           case 3:
             return '框架合同';
           case 4:

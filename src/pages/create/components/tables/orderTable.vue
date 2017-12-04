@@ -26,7 +26,7 @@
         label="发起时间"
         width="120">
         <template scope="scope">
-          {{scope.row.initiateTime|formatDate}}
+          {{scope.row.initiateTime | formatDate}}
         </template>
       </el-table-column>
       <el-table-column
@@ -34,7 +34,7 @@
         label="下单时间"
         width="150">
         <template scope="scope">
-          {{scope.row.orderTime|formatDate}}
+          {{scope.row.orderTime | formatDate}}
         </template>
       </el-table-column>
     </el-table>
@@ -53,9 +53,9 @@
 
 <script>
   import Api from '../../../../api/manageContract';
-  import { formatDate } from '../../../../filters/moment';
+  import {formatDate} from '../../../../filters/moment';
   import comLoading from '../../../../mixins/comLoading';
-  import { routerNames } from '../../../../core/consts';
+  import {routerNames} from '../../../../core/consts';
 
   export default {
     props: ['contractNo'],
@@ -74,7 +74,7 @@
     methods: {
       getData() {
         this.comLoading();
-        Api.getOrderTableData({ contractNo: this.contractNo, pageNo: this.pageNo, pageSize: this.pageSize })
+        Api.getOrderTableData({contractNo: this.contractNo, pageNo: this.pageNo, pageSize: this.pageSize})
           .then((data) => {
             if (data.data.dataMap) {
               this.tableData = data.data.dataMap.data;
@@ -98,12 +98,21 @@
         const id = row.purchaseOrderId;
         return {
           name: routerNames.con_purchase_see,
-          query: { id }
+          query: {id}
         };
       }
     },
+    watch: {
+      contractNo(val) {
+        if (val) {
+          this.getData();
+        }
+      }
+    },
     created() {
-      this.getData();
+      if (this.contractNo) {
+        this.getData();
+      }
     }
   };
 </script>

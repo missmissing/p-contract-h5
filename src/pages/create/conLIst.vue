@@ -267,7 +267,7 @@
           case 1:
             return '单一合同';
           case 2:
-            return '简易合同';
+            return '固定格式合同';
           case 3:
             return '框架合同';
           case 4:
