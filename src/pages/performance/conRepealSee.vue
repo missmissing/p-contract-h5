@@ -18,7 +18,7 @@
               {{contractCode}}
             </el-form-item>
           </el-col>
-          <el-button type="primary" class="ml20" v-show="toDetail.query.contractId">
+          <el-button type="primary" class="ml20" v-show="toDetail.query.contractNo">
             <router-link class="router-link-default" :to="toDetail" target="_blank">详 情</router-link>
           </el-button>
         </el-row>
@@ -136,7 +136,7 @@
                           :on-error="handleUploadFileAfterSealError"
                         >
                           <el-button
-                            :disabled="!enabledUpdateInApprove||!getEnabledUploadBtn(props.row.filesSealed)"
+                            :disabled="!enabledUpdateInApprove||getEnabledUploadBtn(props.row.filesSealed)"
                             size="small"
                             type="primary" @click="form.current = index">上传
                           </el-button>
@@ -232,7 +232,7 @@
         endTime: '',
         options: [{value: 1, label: '合同违约中止'}, {value: 2, label: '合同变更后中止'}, {value: 3, label: '固定期限合同正常履行完成后中止'}],
         info: null,
-        toDetail: {name: routerNames.con_Check, query: {contractId: ''}}
+        toDetail: {name: routerNames.con_Check, query: {contractNo: ''}}
       };
     },
     computed: {
@@ -240,15 +240,19 @@
         const reg = /印章保管人/g;
         return reg.test(this.users.roleName);
       },
+      ifRole1() {
+        const reg = /采购合同上传/g;
+        return reg.test(this.users.roleName);
+      },
       enabledUpdateInApprove() { //在审批阶段修改附件时，上传盖章合同控件的上传按钮状态（仅用章保管人可用）
-        return this.ifRole;
+        return this.ifRole || this.ifRole1;
       }
     },
     methods: {
       getInfo(id) {
         this.comLoading();
-        const paras = {id, operate: 'PROCESS'};
-        Api.getContractDetailByCode(paras).then((res) => {
+        const paras = {contractId: id, operate: 'PROCESS'};
+        Api.getContractDetailByContractId(paras).then((res) => {
           this.comLoading(false);
           const data = res.data.dataMap;
           this.setData(data);
@@ -290,6 +294,8 @@
           suspendRemark,
           sealAttachments: this.getAttachmentsInProcess(sealAttachments)
         });
+
+        this.toDetail.query.contractNo = contractNo;
       },
       handleChangeValidateForms() {
         if (this.isSubmit) {
@@ -303,15 +309,16 @@
           //验证附件的数据是否填写完整
           const sealAttachments = this.form.sealAttachments;
           if (sealAttachments && sealAttachments.length) {
-            sealAttachments.forEach((item) => {
+            this.form.errorMsg = '';
+            const exist = sealAttachments.some((item) => {
               if (item[0].haveSale) {
-                if (item[0].printTime && item[0].remainTime && item[0].saleInfos.length) {
-                  this.form.errorMsg = '';
-                } else {
-                  this.form.errorMsg = '请确保所有附件信息填写完整';
-                }
+                return !(item[0].printTime && item[0].remainTime && item[0].saleInfos.length && item[0].fileName);
               }
+              return false;
             });
+            if (exist) {
+              this.form.errorMsg = '请确保所有附件信息填写完整';
+            }
           }
           if (!this.form.errorMsg) {
             resolve();
@@ -380,7 +387,7 @@
         console.log('fileList', fileList);
       },
       getEnabledUploadBtn(items) {
-        return !(items && items.length >= 1);
+        return (items && items.length > 0);
       },
       handleUpload(type, index) {
         this.form.current = index || 0;

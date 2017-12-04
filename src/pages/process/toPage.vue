@@ -23,7 +23,7 @@
 
   export default {
     data() {
-      return { dataType: '' };
+      return {dataType: ''};
     },
     methods: {
       getDataType() {
@@ -72,7 +72,7 @@
       },
       see(row) {
         console.log(row);
-        const { procInstId, serialNumber, procCode } = row;
+        const {procInstId, serialNumber, procCode} = row;
         if (this.dataType === processListMap[0]) {
           Api.getApproveNode({
             serialNumber,
@@ -92,7 +92,7 @@
         }
       },
       toPage(row, data) {
-        const { procInstId, serialNumber, procCode } = row;
+        const {procInstId, serialNumber, procCode} = row;
         const {
           actions, approveInfo, sign, actName
         } = data;
@@ -108,27 +108,27 @@
         let param = {};
         let name = null;
         if (tplMap.indexOf(procCode) > -1) {
-          const { id } = approveInfo;
+          const {id} = approveInfo;
           param = {
             id
           };
           name = routerNames.con_tpl_see;
         } else if (contractMap.indexOf(procCode) > -1) {
-          const { baseInfoForm } = approveInfo;
-          const { id } = baseInfoForm;
+          const {baseInfoForm} = approveInfo;
+          const {id} = baseInfoForm;
           param = {
             contractId: id
           };
           name = routerNames.con_Check;
         } else if (prMap.indexOf(procCode) > -1) {
-          const { purchaseOrderId } = approveInfo;
+          const {purchaseOrderId} = approveInfo;
           param = {
             id: purchaseOrderId
           };
           name = routerNames.con_purchase_see;
         } else if (contractDel.indexOf(procCode) > -1) {
-          const { baseInfoForm } = approveInfo;
-          const { id } = baseInfoForm;
+          const {baseInfoForm} = approveInfo;
+          const {id} = baseInfoForm;
           param = {
             id
           };
@@ -144,7 +144,7 @@
           };
           name = routerNames.con_check_reject_see;
         } else if (protocolMap.indexOf(procCode) > -1) {
-          const { id } = approveInfo;
+          const {id} = approveInfo;
           param = {
             id
           };
@@ -173,7 +173,7 @@
       console.log(this.$route.query);
       const newSerialNumber = serialNumber || sn;
       const newProcInstId = procInstId || newSerialNumber.split('_')[0];
-      this.see({ procInstId: newProcInstId, serialNumber: newSerialNumber, procCode });
+      this.see({procInstId: newProcInstId, serialNumber: newSerialNumber, procCode});
     }
   };
 </script>

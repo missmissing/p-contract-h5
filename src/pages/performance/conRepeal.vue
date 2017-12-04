@@ -32,7 +32,7 @@
               </el-form-item>
             </el-col>
             <el-col :span="8">
-              <el-button type="primary" class="ml20" v-show="toDetail.query.contractId">
+              <el-button type="primary" class="ml20" v-show="toDetail.query.contractNo">
                 <router-link class="router-link-default" :to="toDetail" target="_blank">详 情</router-link>
               </el-button>
             </el-col>
@@ -252,7 +252,7 @@
         },
         options: [{value: 1, label: '合同违约中止'}, {value: 2, label: '合同变更后中止'}, {value: 3, label: '固定期限合同正常履行完成后中止'}],
         info: null,
-        toDetail: {name: routerNames.con_Check, query: {contractId: ''}}
+        toDetail: {name: routerNames.con_Check, query: {contractNo: ''}}
       };
     },
     methods: {
@@ -266,13 +266,13 @@
           const data = res.data.dataMap;
           this.info = data;
           const {baseInfoForm, cardContentInfoForm} = data;
-          const {id, approvalDate, contractStatusName} = baseInfoForm;
+          const {approvalDate, contractStatusName} = baseInfoForm;
           const {startTime, endTime} = cardContentInfoForm;
           this.approvalDate = approvalDate;
           this.contractStatusName = contractStatusName;
           this.startTime = startTime;
           this.endTime = endTime;
-          this.toDetail.query.contractId = id;
+          this.toDetail.query.contractNo = this.contractCode;
           this.pickerOptions.disabledDate = (time) => time.getTime() < this.startTime;
           this.comLoading(false);
         }, () => {

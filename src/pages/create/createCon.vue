@@ -381,16 +381,6 @@
                     :rows="4"></el-input>
                 </el-form-item>
               </el-row>
-              <el-row class="mt20" v-if="operateType==='update'">
-                <el-col :span="8">
-                  <el-form-item label="是否固定期限">
-                    <el-radio-group v-model="cardContentInfoForm.fixedTermFlag" :disabled="!enabledInupdated">
-                      <el-radio :label="true">是</el-radio>
-                      <el-radio :label="false">否</el-radio>
-                    </el-radio-group>
-                  </el-form-item>
-                </el-col>
-              </el-row>
             </el-card>
             <el-row class="mt20">
               <el-form-item label="生效条件" prop="effectiveCondition">
@@ -1307,7 +1297,7 @@
               </el-col>
             </el-row>-->
             <el-button
-              v-if="operateType!=='query'"
+              v-if="operateType!=='query'&&operateType!=='update'"
               @click="handleAddUnionCheck"
               size="small"
               icon="plus"
@@ -2143,7 +2133,6 @@
           errorCount: 0,
           supplierErrorMsg: '',
           subjectsErrorMsg: '',
-          fixedTermFlag: null, // 是否固定期限（仅在变更合同时显示）
           dialogAddContractSupplier: false,
           dialogNewThirdPartyVisible: false,
           dialogAddConStandard: false,
