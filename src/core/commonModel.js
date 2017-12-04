@@ -16,7 +16,6 @@ function checkStatus(response) {
     const currentUrl = encodeURIComponent(window.location.href);
     LocalStore.set('toOa', data);
     window.location.href = `${dataMap}${currentUrl}`;
-    return false;
   }
   if (code >= 200 && code < 300) {
     return response;
