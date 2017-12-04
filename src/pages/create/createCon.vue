@@ -2077,7 +2077,7 @@
           remark: '',
           rules: {
             code: [{required: true, message: '请输入合同编号', trigger: 'blur'}],
-            remark: [{required: true, message: '请输入合同编号', trigger: 'blur'}]
+            remark: [{required: true, message: '请输入备注', trigger: 'blur'}]
           }
         },
         contractInfo: [], //合同信息

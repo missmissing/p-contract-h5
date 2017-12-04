@@ -216,7 +216,7 @@
                       <el-input :value="contractForm.contractNo" disabled></el-input>
                     </el-form-item>
                   </el-col>
-                  <el-button type="primary" class="ml20" v-show="toDetail.query.contractId">
+                  <el-button type="primary" class="ml20" v-show="toDetail.query.contractNo">
                     <router-link class="router-link-default" :to="toDetail" target="_blank">详 情</router-link>
                   </el-button>
                 </el-row>
@@ -421,7 +421,7 @@
             desc: '5%进税项'
           }
         ],
-        toDetail: {name: routerNames.con_Check, query: {contractId: ''}}
+        toDetail: {name: routerNames.con_Check, query: {contractNo: ''}}
       };
     },
     methods: {
@@ -479,6 +479,7 @@
           const {materialsMatchVoList} = data;
           this.materialsMatchData = materialsMatchVoList;
           this.matchData = this.getSource(materialsMatchVoList);
+          console.log(this.matchData);
           this.dialogVisible = true;
         }, () => {
           this.comLoading(false);
@@ -539,7 +540,7 @@
           return false;
         });
         this.contractForm.contractType = contractPatternMap[this.contractForm.contractType];
-        this.toDetail.query.contractId = this.contractForm.id;
+        this.toDetail.query.contractNo = this.contractForm.contractNo;
       },
       setOrderForm() {
         const {companyCode} = this.prData[0];

@@ -75,8 +75,8 @@
       onSuccess(response, file, fileList) {
         console.log(response, file, fileList);
         const {code, dataMap} = response;
-        this.$message.error(dataMap.message);
         if (code !== '200') {
+          this.$message.error(dataMap.message);
           fileList.splice(-1);
           this.$emit('update:fileList', fileList);
           return;
