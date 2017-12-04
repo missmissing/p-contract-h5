@@ -30,6 +30,7 @@ module.exports = {
       'object': 'disallowedObjectName',
       'property': 'disallowedPropertyName'
     }],
+    'linebreak-style': 0,
     'prefer-destructuring': 0,
     'global-require': 0,
     'func-names': ['error', 'as-needed'],
