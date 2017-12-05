@@ -2008,7 +2008,7 @@
   import store from 'store';
   import _ from 'lodash';
   import Api from '../../api/manageContract';
-  import Preview from './components/preview.vue';
+  import Preview from './preview.vue';
   import comLoading from '../../mixins/comLoading';
   import {downloadUrl, uploadUrl} from '../../api/consts';
   import Process from '../../components/process.vue';
@@ -4211,16 +4211,16 @@
       Preview,
       Process,
       PrTable: (resolve) => {
-        require(['./components/tables/prTable'], resolve);
+        require(['./prTable'], resolve);
       },
       PriceTable: (resolve) => {
-        require(['./components/tables/priceTable'], resolve);
+        require(['./priceTable'], resolve);
       },
       ContractTable: (resolve) => {
-        require(['./components/tables/contractTable'], resolve);
+        require(['./contractTable'], resolve);
       },
       OrderTable: (resolve) => {
-        require(['./components/tables/orderTable'], resolve);
+        require(['./orderTable'], resolve);
       }
     },
     watch: {

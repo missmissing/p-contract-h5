@@ -251,8 +251,8 @@
 </template>
 
 <script>
-  import Api from '../../../api/support';
-  import numToChinese from '../../../util/numToChinese';
+  import Api from '../../api/support/index';
+  import numToChinese from '../../util/numToChinese';
 
   export default {
     props: {

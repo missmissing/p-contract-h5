@@ -193,7 +193,7 @@
         </template>
       </el-form>
     </div>
-    <Process :extraFn="callback"></Process>
+    <Process :extraFn="callback.bind(this)"></Process>
   </div>
 </template>
 
@@ -344,14 +344,17 @@
         }
         return newFiles;
       },
-      callback(params) { //isSign:是否是加签人 isAgree:审批操作类型是否是同意
+      callback(params) {
+        const t = this;
+        //isSign:是否是加签人 isAgree:审批操作类型是否是同意
         return new Promise((resolve, reject) => {
           const {isSign, isAgree} = params;
-          if (!isSign && isAgree && this.ifRole) {
+          if (!isSign && isAgree && (t.ifRole || t.ifRole1)) {
             const para = {};
             para.sealAttachments = this.combineAttachments(this.form.sealAttachments);
             para.id = this.id;
             para.type = 1;
+            para.uploadPerson = this.ifRole1;
             Api.uploadSealAttachments(para)
               .then(() => {
                 resolve();

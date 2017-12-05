@@ -38,9 +38,9 @@
 </template>
 
 <script>
-  import Api from '../../../../api/manageContract';
-  import { formatDate } from '../../../../filters/moment';
-  import comLoading from '../../../../mixins/comLoading';
+  import Api from '../../api/manageContract/index';
+  import { formatDate } from '../../filters/moment';
+  import comLoading from '../../mixins/comLoading';
 
   export default {
     mixins: [comLoading],

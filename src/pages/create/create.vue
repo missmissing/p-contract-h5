@@ -11,15 +11,15 @@
         <el-row>
           <el-col :span="8">
             <el-form-item label="比价单" v-if="conForm.isPr" prop="strPC">
-              <el-input v-model="conForm.strPC" v-on:keyup.enter.native="handleQuery"
+              <el-input v-model.trim="conForm.strPC" @keyup.enter.native="handleQuery"
                         placeholder="请输入比价单号"></el-input>
             </el-form-item>
           </el-col>
           <el-col :span="8" v-if="conForm.isPr">
-            <el-button style="margin-left: 33px" :disabled="!conForm.strPC" class="btnSearch"
+            <el-button :disabled="!conForm.strPC" class="ml20 btnSearch"
                        @click="handleQuery" type="primary">查找
             </el-button>
-            <el-button @click="handleHighQuery" type="primary">高级
+            <el-button @click="dialogVisible = true" type="primary">高级
             </el-button>
           </el-col>
         </el-row>
@@ -84,9 +84,8 @@
         </el-table-column>
       </el-table>
     </el-card>
-    <div style="text-align: center;margin-top:20px">
-      <el-button type="primary" @click="handleNext('conForm')" :disabled="!!(arrPr.length&&!currentPr)">下一步
-      </el-button>
+    <div class="tc mt20">
+      <el-button type="primary" @click="handleNext('conForm')">下一步</el-button>
     </div>
     <el-dialog title="查询比价单" :visible.sync="dialogVisible" size="large">
       <el-form ref="prForm" :model="prForm" label-width="100px">
@@ -138,22 +137,24 @@
           </el-col>
         </el-row>
       </el-form>
-      <el-table ref="priceList" :data="priceList" highlight-current-row border @current-change="handleSelectCurrent"
-                max-height="250" @row-click="handleRowClick" class="wp100">
+      <el-table
+        ref="priceList"
+        :data="priceList"
+        @current-change="handleSelectCurrent"
+        max-height="250"
+        @row-click="handleRowClick"
+        highlight-current-row
+        border
+        class="wp100">
         <el-table-column prop="ifSelect" label="选择" width="80">
           <template scope="scope">
             <el-checkbox v-model="scope.row.ifSelect"
                          @change.stop.prevent="handleRowClick(priceList[scope.$index])"></el-checkbox>
           </template>
         </el-table-column>
-        <el-table-column
-          label="序号"
-          type="index"
-          width="80px">
-        </el-table-column>
         <el-table-column prop="folio" label="比价单编码" width="200">
           <template scope="scope">
-            <a href="###" @click.stop="handleDetailPR(scope.$index,scope.row)">{{scope.row.folio}}</a>
+            <a href="javascript:void(0)" @click.stop="handleDetailPR(scope.row)">{{scope.row.folio}}</a>
           </template>
         </el-table-column>
         <el-table-column
@@ -161,12 +162,11 @@
           label="发起人"
           width="80">
         </el-table-column>
-        <el-table-column :show-overflow-tooltip="true" prop="originatorDepartmentName" label="发起部门">
-        </el-table-column>
+        <el-table-column :show-overflow-tooltip="true" prop="originatorDepartmentName" label="发起部门"></el-table-column>
         <el-table-column
           prop="startTime"
           label="发起时间"
-          width="120">
+          width="130">
           <template scope="scope">
             {{priceList[scope.$index].startTime | formatDate}}
           </template>
@@ -174,9 +174,9 @@
         <el-table-column
           prop="finishTime"
           label="结束时间"
-          width="120">
+          width="130">
           <template scope="scope">
-            {{priceList[scope.$index].finishTime | formatDate}}
+            {{scope.row.finishTime | formatDate}}
           </template>
         </el-table-column>
       </el-table>
@@ -201,7 +201,7 @@
       :regions="regions"
       :defaultProps="defaultProps"
       @ok="setBusiType"
-      @close="closeTree">
+      @close="visible = false">
     </TreeModal>
   </div>
 </template>
@@ -209,6 +209,7 @@
 <script>
   import store from 'store';
   import Api from '../../api/manageContract';
+  import {routerNames} from '../../core/consts';
   import getBusiType from '../../mixins/getBusiType';
   import comLoading from '../../mixins/comLoading';
   import TreeModal from '../../components/treeModal.vue';
@@ -222,7 +223,7 @@
         conForm: {
           isPr: true,
           strPC: '', // 比价单编号
-          curConModelId: null,
+          curConModelId: '',
           conModel: [
             {id: '1', name: '单一合同'},
             /*{id: '2', name: '固定格式合同'},*/
@@ -293,10 +294,8 @@
       this.getRemoteCreatePersonsByKeyWord(user.userId);
     },
     computed: {
-      conModels() { ///??????
+      conModels() {
         const conForm = this.conForm;
-        //return conForm.isPr ? [conForm.conModel[0], conForm.conModel[1], conForm.conModel[2]] : [conForm.conModel[2], conForm.conModel[3]]
-        //return conForm.isPr ? [conForm.conModel[0], conForm.conModel[1], conForm.conModel[2]] : [conForm.conModel[3]]
         return conForm.isPr ? [conForm.conModel[0], conForm.conModel[1]] : [conForm.conModel[2]];
       }
     },
@@ -326,13 +325,13 @@
         this.comLoading();
         Api.getQrDetail({
           folio: this.conForm.strPC
-        }).then((data) => {
-          if (data.data.dataMap) {
-            this.currentPr = data.data.dataMap;
-            this.curPriceList = [data.data.dataMap];
+        }).then((res) => {
+          const data = res.data.dataMap;
+          if (data) {
+            this.currentPr = data;
+            this.curPriceList = [data];
 
-            const {createFixedFormatContractFlag, purchaseType} = this.currentPr;
-            //this.conModels[1] = {...this.conModels[1], disabled: !createFixedFormatContractFlag}
+            const {createFixedFormatContractFlag, purchaseType} = data;
             this.conForm.curConModelId = createFixedFormatContractFlag ? this.conForm.curConModelId : null;
             if (!this.regionSource) {
               this.regionSource = this.regions;
@@ -357,44 +356,38 @@
             });
           }
           this.comLoading(false);
-        }, () => {
+        }).catch(() => {
           this.comLoading(false);
         });
-      },
-      handleHighQuery() {
-        this.dialogVisible = true;
       },
       // 当前比加单列表接口缺少数据导致无法取得当前合同的总价格，需接口调整
       handleNext(formName) {
         this.$refs[formName].validate((valid) => {
           if (valid) {
             if (this.conForm.isPr && !this.curPriceList.length) {
-              this.$message({
-                message: '请选择一条比价单信息！',
-                type: 'warning'
-              });
+              this.$message.warning('请选择一条比价单信息！');
               return;
             }
 
-            let routePath;
+            let name;
             switch (this.conForm.curConModelId) {
               case '4':
-                routePath = '/ConCreate/CreateIntentionContract';
+                name = routerNames.con_createIntentionContract;
                 break;
               case '3':
-                routePath = '/ConCreate/CreateFrameContract';
+                name = routerNames.con_createFrameContract;
                 break;
               case '1':
-                routePath = '/ConCreate/CreateSingleContract';
+                name = routerNames.con_createSingleContract;
                 break;
               case '2':
-                routePath = '/ConCreate/CreateSimpleContract';
+                name = routerNames.con_createSimpleContract;
                 break;
               default:
-                routePath = '';
+                name = '';
             }
             this.$router.push({
-              path: routePath,
+              name,
               query: {
                 currentFolio: this.currentPr ? this.currentPr.folio : '',
                 curConModelId: this.conForm.curConModelId,
@@ -433,7 +426,7 @@
         this.priceList = [];
         this.$refs.prForm.resetFields();
       },
-      handleDetailPR(index, row) {
+      handleDetailPR(row) {
         window.open(row.processViewUrl);
       },
       setBusiType(checkNodes) {
@@ -509,9 +502,6 @@
           row.clicked = true;
           this.$refs.priceList.setCurrentRow(row);
         }
-      },
-      closeTree() {
-        this.visible = false;
       },
       getRemoteCreatePersonsByKeyWord(query) {
         if (query !== '') {

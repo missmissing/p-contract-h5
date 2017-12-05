@@ -39,8 +39,8 @@
 </template>
 
 <script>
-  import { formatDate } from '../../../../filters/moment';
-  import comLoading from '../../../../mixins/comLoading';
+  import { formatDate } from '../../filters/moment';
+  import comLoading from '../../mixins/comLoading';
 
   export default {
     mixins: [comLoading],

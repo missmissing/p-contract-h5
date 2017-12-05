@@ -6,7 +6,7 @@ import supportModel from '../api/support';
 import store from '../store';
 import { SET_BUSITYPE } from '../store/consts';
 
-class support {
+class Support {
   static getBusiType() {
     let regions = store.state.support.busiType;
     if (regions.length) {
@@ -30,6 +30,6 @@ export default {
     };
   },
   created() {
-    support.getBusiType.call(this);
+    Support.getBusiType.call(this);
   }
 };
