@@ -1,21 +1,18 @@
-import { routerNames, processListMap } from '../../core/consts';
+import {routerNames, processListMap} from '../../core/consts';
+import Jump from './jump';
 
 export default function (row) {
-  const { procInstId, serialNumber, procCode } = row;
+  const {procInstId, serialNumber, procCode} = row;
   const query = {
     procInstId,
     serialNumber: serialNumber || '',
-    procCode
+    procCode,
+    routeName: ''
   };
   if (this.dataType === processListMap[0]) {
-    this.$router.push({
-      name: routerNames.con_process_approve,
-      query
-    });
+    query.routeName = routerNames.con_process_approve;
   } else {
-    this.$router.push({
-      name: routerNames.con_process_see,
-      query
-    });
+    query.routeName = routerNames.con_process_see;
   }
+  new Jump(this.$router).init(query);
 }

@@ -52,9 +52,9 @@
 </template>
 
 <script>
-  import { processListMap } from '../../core/consts';
+  import {processListMap} from '../../core/consts';
   import Api from '../../api/process';
-  import { formatTime } from '../../filters/moment';
+  import {formatTime} from '../../filters/moment';
   import comLoading from '../../mixins/comLoading';
   import toPage from '../../assets/js/toPage';
 
@@ -78,7 +78,7 @@
           dataType: this.dataType
         }).then((res) => {
           this.comLoading(false);
-          const { procList, totalPage } = res.data.dataMap;
+          const {procList, totalPage} = res.data.dataMap;
           this.tableData = procList;
           this.totalPage = totalPage;
         });
