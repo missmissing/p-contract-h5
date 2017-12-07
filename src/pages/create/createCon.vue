@@ -93,11 +93,11 @@
             </el-form-item>
           </el-col>
         </el-row>-->
-        <el-form-item label="备注" prop="remark">
+        <el-form-item label="变更原因" prop="remark">
           <el-input
             :disabled="operateType==='query'"
             v-model="updateForm.remark"
-            placeholder="请输入备注"
+            placeholder="变更原因"
             type="textarea"
             :rows="4"></el-input>
         </el-form-item>
@@ -2077,7 +2077,7 @@
           remark: '',
           rules: {
             code: [{required: true, message: '请输入合同编号', trigger: 'blur'}],
-            remark: [{required: true, message: '请输入备注', trigger: 'blur'}]
+            remark: [{required: true, message: '请输入变更原因', trigger: 'blur'}]
           }
         },
         contractInfo: [], //合同信息
@@ -3380,16 +3380,6 @@
             },
             baseInfoForm: false
           };
-          if (this.operateType === 'update') {
-            errors.updateError = false;
-            this.$refs.updateForm.validate((valid) => {
-              if (!valid) {
-                this.$message.error('请填写完整变更原因再提交！');
-              } else {
-                errors.updateError = true;
-              }
-            });
-          }
           this.$refs.baseInfoForm.validate((valid) => {
             if (!valid) {
               return;
@@ -3460,6 +3450,22 @@
             });
             if (exist) {
               this.cardSealInfoForm.errorMsg = '请确保所有附件信息填写完整';
+            }
+          }
+
+          if (this.operateType === 'update') {
+            errors.updateError = false;
+            this.$refs.updateForm.validate((valid) => {
+              if (!valid) {
+                this.$message.warning('请填写完整变更原因再提交！');
+              } else {
+                errors.updateError = true;
+              }
+            });
+            const exist = sealAttachments.some(item => !item[0].id); //合同变更必须上传附件
+            if (!exist) {
+              this.$message.warning('变更合同必须上传附件！');
+              errors.updateError = false;
             }
           }
 
@@ -3695,7 +3701,6 @@
         })
           .catch(() => {
             this.btnSubmitStatus = true;
-            this.$message.error('请填写完合同信息再提交！');
           });
       },
 

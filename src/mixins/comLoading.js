@@ -7,8 +7,8 @@
 const defaultOpts = {
   target: document.body,
   body: false,
-  fullscreen: false,
-  lock: false,
+  fullscreen: true,
+  lock: true,
   text: '拼命加载中',
   customClass: ''
 };
