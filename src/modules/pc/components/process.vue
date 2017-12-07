@@ -160,6 +160,9 @@
         Api.submitProcess(result).then(() => {
           this.comLoading(false);
           this.$message.success('提交成功！');
+          if (this.$route.query.from === 'out') {
+            //return;
+          }
           this.$router.push({name: routerNames.con_index});
         }, () => {
           this.comLoading(false);

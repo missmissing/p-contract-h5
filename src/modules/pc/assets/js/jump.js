@@ -59,7 +59,6 @@ class Jump {
 
 
   see(row) {
-    console.log(row);
     const {procInstId, serialNumber, procCode} = row;
     if (this.dataType === processListMap[0]) {
       Api.getApproveNode({
@@ -81,7 +80,12 @@ class Jump {
   }
 
   toPage(row, data) {
-    const {procInstId, serialNumber, procCode} = row;
+    const {
+      procInstId,
+      serialNumber,
+      procCode,
+      from
+    } = row;
     const {
       actions, approveInfo, sign, actName
     } = data;
@@ -149,6 +153,7 @@ class Jump {
       name,
       query: {
         ...param,
+        from,
         processData: JSON.stringify(processData)
       }
     });
@@ -159,11 +164,16 @@ class Jump {
       this.dataType = processListMap[0];
     }
     const {
-      procInstId, serialNumber, procCode, sn
+      procInstId, serialNumber, procCode, sn, from
     } = query;
     const newSerialNumber = serialNumber || sn;
     const newProcInstId = procInstId || newSerialNumber.split('_')[0];
-    this.see({procInstId: newProcInstId, serialNumber: newSerialNumber, procCode});
+    this.see({
+      procInstId: newProcInstId,
+      serialNumber: newSerialNumber,
+      procCode,
+      from
+    });
   }
 }
 

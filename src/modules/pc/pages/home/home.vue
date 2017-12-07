@@ -79,7 +79,8 @@
 
 <template>
   <div>
-    <div class="header">
+    <el-button id="backToOA" class="mt10 ml10" v-show="false" @click="backToOA">返 回</el-button>
+    <div class="header" id="header">
       <div class="logo">
         <img :src="logo"/>
       </div>
@@ -95,7 +96,7 @@
       </div>
     </div>
     <div class="main">
-      <div :class="leftClass">
+      <div :class="leftClass" id="left">
         <div>
           <el-menu :default-active="$route.path" unique-opened router>
             <template v-for="(item,index) in $router.options.routes" v-if="!item.meta.hidden">
@@ -111,8 +112,8 @@
           </el-menu>
         </div>
       </div>
-      <div :class="rightClass">
-        <div class="breadcrumb">
+      <div :class="rightClass" id="right">
+        <div class="breadcrumb" id="breadcrumb">
           <el-breadcrumb separator="/">
             <el-breadcrumb-item :to="{ path: '/con/index' }">应用中心</el-breadcrumb-item>
             <el-breadcrumb-item :to="{path :$route.path}">{{$route.name}}</el-breadcrumb-item>
@@ -206,6 +207,9 @@
       showRoute(routeName) {
         const defaultRoutes = this.$router.options.routes;
         this.findRoute(routeName, defaultRoutes);
+      },
+      backToOA() {
+
       }
     },
     created() {
@@ -215,6 +219,15 @@
         const defaultRoutes = this.$router.options.routes;
         this.allRoutesHiddenTrue(defaultRoutes);
         this.filterRoutes(powers);
+      }
+    },
+    mounted() {
+      if (this.$route.query.from === 'out') {
+        document.getElementById('backToOA').style.display = '';
+        document.getElementById('header').style.display = 'none';
+        document.getElementById('left').style.display = 'none';
+        document.getElementById('right').style.left = '0px';
+        document.getElementById('breadcrumb').style.display = 'none';
       }
     }
   };

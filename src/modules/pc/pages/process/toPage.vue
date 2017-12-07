@@ -24,7 +24,8 @@
         serialNumber: serialNumber || '',
         sn,
         procCode,
-        routeName: name
+        routeName: name,
+        from: 'out'
       };
       new Jump(this.$router).init(query);
     }
