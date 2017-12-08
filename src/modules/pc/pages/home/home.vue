@@ -79,7 +79,6 @@
 
 <template>
   <div>
-    <el-button id="backToOA" class="mt10 ml10" v-show="false" @click="backToOA">返 回</el-button>
     <div class="header" id="header">
       <div class="logo">
         <img :src="logo"/>
@@ -207,9 +206,6 @@
       showRoute(routeName) {
         const defaultRoutes = this.$router.options.routes;
         this.findRoute(routeName, defaultRoutes);
-      },
-      backToOA() {
-
       }
     },
     created() {
@@ -223,7 +219,6 @@
     },
     mounted() {
       if (this.$route.query.from === 'out') {
-        document.getElementById('backToOA').style.display = '';
         document.getElementById('header').style.display = 'none';
         document.getElementById('left').style.display = 'none';
         document.getElementById('right').style.left = '0px';

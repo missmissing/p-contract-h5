@@ -5,6 +5,7 @@ import 'nprogress/nprogress.css';
 import store from '../store/index';
 import * as types from '../store/consts';
 import {routerNames} from '../core/consts';
+import env from '../../../util/env';
 
 Vue.use(Router);
 
@@ -322,13 +323,11 @@ const router = new Router({
         },
         beforeEnter: () => {
           nprogress.done();
-          const reg = /contract/gi;
-          const url = window.location.origin;
           const target = {
             dev: 'http://192.168.122.218:1001/purchase/receivepo.html',
             prd: 'http://fp.oa.chinaredstar.com/purchase/receivepo.html'
           };
-          if (reg.test(url)) {
+          if (env === 'prd') {
             window.open(target.prd);
           } else {
             window.open(target.dev);
@@ -345,13 +344,11 @@ const router = new Router({
         },
         beforeEnter: () => {
           nprogress.done();
-          const reg = /contract/gi;
-          const url = window.location.origin;
           const target = {
             prd: 'http://172.16.9.151:8081/Purchase/FWLCGSHQR/Start.aspx',
             dev: 'http://192.168.122.214:8081/Purchase/FWLCGSHQR/Start.aspx'
           };
-          if (reg.test(url)) {
+          if (env === 'prd') {
             window.open(target.prd);
           } else {
             window.open(target.dev);

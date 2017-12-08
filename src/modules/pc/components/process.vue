@@ -77,6 +77,7 @@
   import SelectPerson from './selectPerson.vue';
   import {routerNames, processListMap} from '../core/consts';
   import comLoading from '../mixins/comLoading';
+  import env from '../../../util/env';
 
   export default {
     mixins: [comLoading],
@@ -161,7 +162,12 @@
           this.comLoading(false);
           this.$message.success('提交成功！');
           if (this.$route.query.from === 'out') {
-            //return;
+            if (env === 'prd') {
+              window.location.href = 'http://a.oa.chinaredstar.com/tip/success?t=1';
+            } else {
+              window.location.href = 'http://10.11.25.157:81/tip/success?t=1 ';
+            }
+            return;
           }
           this.$router.push({name: routerNames.con_index});
         }, () => {
