@@ -156,12 +156,12 @@
           </el-form>
         </div>
       </el-tab-pane>
-      <el-tab-pane label="服务验收信息" v-if="serverData.length>0">
+      <el-tab-pane label="服务验收信息" v-if="serverData.length">
         <div class="server-info">
           <el-table
             :data="serverData"
             border
-            style="width: 100%">
+            class="wp100">
             <el-table-column
               type="index"
               label="序号"
@@ -181,6 +181,38 @@
             </el-table-column>
           </el-table>
         </div>
+      </el-tab-pane>
+      <el-tab-pane label="收货信息" v-if="receiveInfo.length">
+        <el-table :data="receiveInfo" border class="wp100">
+          <el-table-column type="expand">
+            <template scope="scope">
+              <el-table :data="scope.row.poReceiveBindVoList" border class="wp100 mb20">
+                <el-table-column prop="itemNo" label="行项目号"></el-table-column>
+                <el-table-column prop="materialsCode" label="物料编码"></el-table-column>
+                <el-table-column prop="materialsName" label="物料名称"></el-table-column>
+                <el-table-column prop="receiveNum" label="收货数量"></el-table-column>
+                <el-table-column prop="receiveAmount" label="收货金额"></el-table-column>
+              </el-table>
+              <el-table :data="scope.row.poServerCheckInfos" border class="wp100">
+                <el-table-column prop="checkElement" label="验收要素"></el-table-column>
+                <el-table-column prop="referenceStandard" label="参考标准"></el-table-column>
+                <el-table-column prop="examineResult" label="检查结果"></el-table-column>
+                <el-table-column prop="remark" label="备注"></el-table-column>
+              </el-table>
+            </template>
+          </el-table-column>
+          <el-table-column prop="materialsProof" label="收货凭证"></el-table-column>
+          <el-table-column prop="totalAmount" label="收货总金额"></el-table-column>
+          <el-table-column prop="initiator" label="发起人" width="130"></el-table-column>
+          <el-table-column prop="epoCreateTime" label="凭证创建日期" width="130">
+            <template scope="scope">{{scope.row.epoCreateTime | formatDate}}</template>
+          </el-table-column>
+          <el-table-column prop="checkResult" label="验收结论"></el-table-column>
+          <el-table-column prop="checkRemark" label="验收备注"></el-table-column>
+          <el-table-column prop="checkDate" label="验收日期" width="130">
+            <template scope="scope">{{scope.row.checkDate | formatDate}}</template>
+          </el-table-column>
+        </el-table>
       </el-tab-pane>
     </el-tabs>
     <Process></Process>
@@ -206,6 +238,7 @@
         orderForm: {},
         orderData: [],
         serverData: [],
+        receiveInfo: [],
         contractForm: {}
       };
     },
@@ -218,6 +251,7 @@
           this.toDetail.query.contractNo = this.info.contractNo;
           this.setOrderData();
           this.setServerData();
+          this.setReceiveData();
           this.setContractForm();
           this.comLoading(false);
         }).catch(() => {
@@ -261,6 +295,10 @@
       setServerData() {
         const {orderCheckItems} = this.info;
         this.serverData = orderCheckItems;
+      },
+      setReceiveData() {
+        const {receiveInfo = []} = this.info;
+        this.receiveInfo = receiveInfo;
       },
       formatType(row, column, cellValue) {
         return prTypeMap[cellValue];
