@@ -58,6 +58,8 @@
             <el-input v-model="form.businessOperatorName" placeholder="请输入业务申请人"></el-input>
           </el-form-item>
         </el-col>
+      </el-row>
+      <el-row>
         <el-col :span="8">
           <el-form-item label="创建时间">
             <el-date-picker
@@ -75,16 +77,15 @@
           </el-form-item>
         </el-col>
         <el-col :span="8">
-          <el-form-item label="有效合同">
-            <el-switch v-model="form.effective1"></el-switch>
-            <el-button type="primary" @click="search" style="margin-left:30px;">搜 索</el-button>
+          <el-form-item label="合同名称">
+            <el-input v-model="form.contractName" placeholder="请输入合同名称"></el-input>
           </el-form-item>
         </el-col>
       </el-row>
       <el-row>
         <el-col :span="8">
-          <el-form-item label="合同名称">
-            <el-input v-model="form.contractName" placeholder="请输入合同名称"></el-input>
+          <el-form-item label="比价单号">
+            <el-input v-model="form.prNo" placeholder="请输入比价单号"></el-input>
           </el-form-item>
         </el-col>
         <el-col :span="8">
@@ -92,7 +93,7 @@
             <el-select
               class="supplierInput"
               clearable
-              style="width:250px"
+              style="width:100%"
               size="small"
               v-model="form.supplierCode"
               filterable
@@ -109,6 +110,12 @@
                 <span style="float: left; color: #8492a6; font-size: 13px">{{ item.companyCode }}</span>
               </el-option>
             </el-select>
+          </el-form-item>
+        </el-col>
+        <el-col :span="8">
+          <el-form-item label="有效合同">
+            <el-switch v-model="form.effective1"></el-switch>
+            <el-button type="primary" @click="search" style="margin-left:30px;">搜 索</el-button>
           </el-form-item>
         </el-col>
       </el-row>
@@ -216,6 +223,7 @@
           suppliers: [],
           loading: false,
           supplierCode: '',
+          prNo: '',
           pageNo: 1,
           pageSize: 10
         },

@@ -17,9 +17,9 @@
         <el-button type="primary" @click="search" class="ml20">搜 索</el-button>
       </el-row>
       <el-row>
-        <el-col :span="6">
+        <el-col :span="7">
           <el-form-item label="订单类型">
-            <el-select v-model="form.category" clearable>
+            <el-select v-model="form.category" clearable class="wp100">
               <el-option
                 v-for="item in options"
                 :key="item.value"
@@ -29,12 +29,12 @@
             </el-select>
           </el-form-item>
         </el-col>
-        <el-col :span="6">
+        <el-col :span="7">
           <el-form-item label="发起人">
-            <SelectPerson @change="selectPerson"></SelectPerson>
+            <SelectPerson @change="selectPerson" class="wp100"></SelectPerson>
           </el-form-item>
         </el-col>
-        <el-col :span="9">
+        <el-col :span="7">
           <el-form-item label="创建时间">
             <el-date-picker
               style="width:100%;"
@@ -46,7 +46,7 @@
             </el-date-picker>
           </el-form-item>
         </el-col>
-        <el-col :span="6">
+        <el-col :span="7">
           <el-form-item label="公司编码">
             <el-autocomplete
               class="wp100"
@@ -57,7 +57,7 @@
             </el-autocomplete>
           </el-form-item>
         </el-col>
-        <el-col :span="6">
+        <el-col :span="7">
           <el-form-item label="合同编码">
             <el-input
               class="wp100"

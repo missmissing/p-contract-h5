@@ -1307,11 +1307,6 @@
             <el-table class="mb20" :data="cardContCheckInfoForm.unionCheckPersons">
               <el-table-column prop="personName" label="联合验收人"></el-table-column>
               <el-table-column prop="personDept" label="联合验收人部门"></el-table-column>
-              <el-table-column prop="required" label="是否必选">
-                <template scope="scope">
-                  {{cardContCheckInfoForm.unionCheckPersons[scope.$index].required === true ? '是' : '否'}}
-                </template>
-              </el-table-column>
               <el-table-column
                 fixed="right"
                 label="操作"
@@ -1418,7 +1413,8 @@
                       <el-table-column label="文件名" prop="sealFileName">
                         <template scope="scope">
                           <a
-                            :href="props.row.filesSealed[scope.$index].sealFileUrl" target="_blank">{{props.row.filesSealed[scope.$index].sealFileName}}</a>
+                            :href="props.row.filesSealed[scope.$index].sealFileUrl"
+                            target="_blank">{{props.row.filesSealed[scope.$index].sealFileName}}</a>
                         </template>
                       </el-table-column>
                       <el-table-column label="上传人" prop="sealFileCreatorName"></el-table-column>
@@ -1503,7 +1499,8 @@
                   <el-input v-if="baseInfoForm.contractTextType===1"
                             :disabled="true"
                             v-model="cardSealInfoForm.contract[scope.$index].fileName"></el-input>
-                  <a v-else :href="cardSealInfoForm.contract[scope.$index].fileUrl" target="_blank">{{cardSealInfoForm.contract[scope.$index].fileName}}</a>
+                  <a v-else :href="cardSealInfoForm.contract[scope.$index].fileUrl"
+                     target="_blank">{{cardSealInfoForm.contract[scope.$index].fileName}}</a>
                 </template>
               </el-table-column>
               <el-table-column prop="haveSale" label="是否盖章" width="70px">
@@ -1531,7 +1528,8 @@
                         <el-table-column label="文件名" prop="sealFileName">
                           <template scope="scope">
                             <a
-                              :href="props.row.filesSealed[scope.$index].sealFileUrl" target="_blank">{{props.row.filesSealed[scope.$index].sealFileName}}</a>
+                              :href="props.row.filesSealed[scope.$index].sealFileUrl"
+                              target="_blank">{{props.row.filesSealed[scope.$index].sealFileName}}</a>
                           </template>
                         </el-table-column>
                         <el-table-column label="上传人" prop="sealFileCreatorName"></el-table-column>
@@ -1892,12 +1890,6 @@
         <el-form-item prop="depart" label="联合验收人部门">
           <el-input style="width:300px" :disabled="true" v-model="formAddUnionCheck.personDept"
                     placeholder="请输入联合验收人部门"></el-input>
-        </el-form-item>
-        <el-form-item label="是否必选" prop="ifRequired">
-          <el-radio-group v-model="formAddUnionCheck.ifRequired">
-            <el-radio :label="true">是</el-radio>
-            <el-radio :label="false">否</el-radio>
-          </el-radio-group>
         </el-form-item>
       </el-form>
       <footer slot="footer">
