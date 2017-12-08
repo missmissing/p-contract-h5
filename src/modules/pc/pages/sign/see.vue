@@ -186,14 +186,18 @@
         <el-table :data="receiveInfo" border class="wp100">
           <el-table-column type="expand">
             <template scope="scope">
-              <el-table :data="scope.row.poReceiveBindVoList" border class="wp100 mb20">
+              <el-table :data="scope.row.poReceiveBindVoList" v-if="scope.row.poReceiveBindVoList.length" border
+                        class="wp100 mb20">
                 <el-table-column prop="itemNo" label="行项目号"></el-table-column>
                 <el-table-column prop="materialsCode" label="物料编码"></el-table-column>
-                <el-table-column prop="materialsName" label="物料名称"></el-table-column>
+                <el-table-column prop="materialsName" label="物料名称"
+                                 v-if="scope.row.poReceiveBindVoList[0].materialsCode"></el-table-column>
+                <el-table-column prop="materialsName" label="服务名称"
+                                 v-if="!scope.row.poReceiveBindVoList[0].materialsCode"></el-table-column>
                 <el-table-column prop="receiveNum" label="收货数量"></el-table-column>
                 <el-table-column prop="receiveAmount" label="收货金额"></el-table-column>
               </el-table>
-              <el-table :data="scope.row.poServerCheckInfos" border class="wp100">
+              <el-table :data="scope.row.poServerCheckInfos" v-if="scope.row.poServerCheckInfos.length" border class="wp100">
                 <el-table-column prop="checkElement" label="验收要素"></el-table-column>
                 <el-table-column prop="referenceStandard" label="参考标准"></el-table-column>
                 <el-table-column prop="examineResult" label="检查结果"></el-table-column>
@@ -297,8 +301,8 @@
         this.serverData = orderCheckItems;
       },
       setReceiveData() {
-        const {receiveInfo = []} = this.info;
-        this.receiveInfo = receiveInfo;
+        const {poReceiveInfo = []} = this.info;
+        this.receiveInfo = poReceiveInfo;
       },
       formatType(row, column, cellValue) {
         return prTypeMap[cellValue];
