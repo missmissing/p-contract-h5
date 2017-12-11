@@ -23,7 +23,7 @@
     "babel-plugin-component": "0.10.1",
     "element-ui": "1.4.6",
     "eslint-config-rs": "0.1.13",
-    "rstool": "^0.2.1"
+    "rstool": "^0.2.5"
   },
   "publishConfig": {
     "registry": "http://npm.corp.rs.com/"
