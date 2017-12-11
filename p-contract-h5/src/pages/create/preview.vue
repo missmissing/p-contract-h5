@@ -374,7 +374,11 @@
           jiaBillingInfo, yiBillingInfo, moneyInvolved, totalAmount, paymentMethods, oneOffPay, paymentTimePeriods
         } = cardFinanceInfoForm;
         const {
-          earnest, advance, progress, _final, deposit
+          earnest,
+          advance,
+          progress,
+          _final, // eslint-disable-next-line
+          deposit
         } = paymentMethods;
         this.paymentTimePeriods = paymentTimePeriods;
         this.contractType = contractType;
