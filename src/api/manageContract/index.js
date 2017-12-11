@@ -1,4 +1,4 @@
-import Http from '../../modules/pc/core/commonModel';
+import Http from '../../core/commonModel';
 
 const contract = '/api-contract';
 // const contract = ''

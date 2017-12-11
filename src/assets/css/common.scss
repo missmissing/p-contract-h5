@@ -1,0 +1,139 @@
+@import '../../../node_modules/font-awesome/css/font-awesome.min.css';
+@import "animate";
+
+html, body {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  font-size: 12px;
+}
+
+.fl {
+  float: left;
+}
+
+.fr {
+  float: right;
+}
+
+.tc {
+  text-align: center;
+}
+
+.clearfix:after {
+  display: table;
+  content: '';
+  clear: both;
+  height: 0;
+  overflow: hidden;
+  visibility: hidden;
+}
+
+.mt10 {
+  margin-top: 10px;
+}
+
+.mr10 {
+  margin-right: 10px;
+}
+
+.mb10 {
+  margin-bottom: 10px;
+}
+
+.ml10 {
+  margin-left: 10px;
+}
+
+.mt20 {
+  margin-top: 20px;
+}
+
+.mr20 {
+  margin-right: 20px;
+}
+
+.mb20 {
+  margin-bottom: 20px;
+}
+
+.ml20 {
+  margin-left: 20px;
+}
+
+.wp100 {
+  width: 100%;
+}
+
+.pd0 {
+  padding: 0;
+}
+
+.pd20 {
+  padding: 20px;
+}
+
+.pl20 {
+  padding-left: 20px;
+}
+
+.pr20 {
+  padding-right: 20px;
+}
+
+.pt20 {
+  padding-top: 20px;
+}
+
+.pb20 {
+  padding-bottom: 20px;
+}
+
+.fb {
+  font-weight: bold;
+}
+
+a {
+  text-decoration: none;
+}
+
+.common-title {
+  font-size: 16px;
+  color: #1c2438;
+  font-weight: 700;
+}
+
+.router-link-default {
+  color: #FFFFFF;
+}
+
+.router-link {
+  color: #20a0ff;
+}
+
+/**
+vue-router
+router-link
+default
+ */
+.router-link-active {
+  text-decoration: none;
+}
+
+/**
+vuejs
+ */
+[v-cloak] {
+  display: none;
+}
+
+/**
+vue-quill-editor
+ */
+.ql-editor {
+  min-height: 280px;
+  max-height: 500px;
+}

@@ -1,3 +1,3 @@
-import { templateStatus } from '../modules/pc/core/consts';
+import { templateStatus } from '../core/consts';
 
 export default (val) => templateStatus[val];
