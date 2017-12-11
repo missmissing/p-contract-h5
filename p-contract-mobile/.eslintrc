@@ -1,0 +1,5 @@
+{
+  "extends": "eslint-config-rs",
+  // add your custom rules here
+  "rules": {}
+}
