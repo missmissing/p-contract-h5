@@ -75,7 +75,6 @@
               </tbody>
             </table>
           </div>
-          <div class="mb20" v-html="currentTpl"></div>
           <div v-if="materialTable.length">
             <p>合同标的：</p>
             <div>
@@ -206,6 +205,7 @@
           <!--<span v-if="effectiveCondition===2">附条件生效</span>-->
           <!--<span v-if="effectiveCondition===3">签订生效</span>-->
           <!--</el-row>-->
+          <div class="mb20" v-html="currentTpl"></div>
           <el-row class="mt20" v-if="effectiveCondition===1">
             <el-col :span="5">合同生效日期：{{startTime}}</el-col>
             <el-col :span="5">合同终止日期：{{endTime}}</el-col>
