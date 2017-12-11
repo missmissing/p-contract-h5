@@ -377,7 +377,7 @@
           earnest,
           advance,
           progress,
-          _final, // eslint-disable-next-line
+          _final, // eslint-disable-line
           deposit
         } = paymentMethods;
         this.paymentTimePeriods = paymentTimePeriods;
