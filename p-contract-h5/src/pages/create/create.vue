@@ -1,6 +1,7 @@
 <style scope>
 
 </style>
+
 <template>
   <div class="create">
     <el-card>
@@ -123,7 +124,7 @@
             <el-form-item label="创建时间">
               <el-date-picker
                 style="width:100%"
-                v-model="prForm.daterange"
+                v-model="daterange"
                 type="daterange"
                 align="right"
                 placeholder="选择日期范围"
@@ -249,7 +250,6 @@
           createPerson: '',
           createPersons: [],
           loading: false,
-          daterange: [],
           pickerOption: {
             shortcuts: [
               {
@@ -274,6 +274,7 @@
           pageNo: 1,
           pageSize: 10
         },
+        daterange: [],
         priceList: [],
         currentPr: null, // 当前选择的比价单
         curPriceList: [], // 当前选择的比价单
@@ -452,11 +453,17 @@
         const params = {
           pr: this.prForm.prCode,
           originator: this.prForm.createPerson,
-          fromDate: this.daterange[0],
-          toDate: this.daterange[1],
+          fromDate: '',
+          toDate: '',
           pageNo: this.prForm.pageNo,
           pageSize: this.prForm.pageSize
         };
+        if (this.daterange.length) {
+          Object.assign(params, {
+            fromDate: this.daterange[0],
+            toDate: this.daterange[1]
+          });
+        }
         this.$refs.prForm.validate((valid) => {
           if (valid) {
             this.comLoading({
