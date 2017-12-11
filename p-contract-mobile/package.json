@@ -1,0 +1,31 @@
+{
+  "name": "p-contract-mobile",
+  "version": "1.0.0",
+  "description": "create project",
+  "private": true,
+  "scripts": {
+    "start": "rstool --server",
+    "dev": "rstool --env dev --hash --extract --cdn",
+    "uat1": "rstool --env uat1 --hash --extract --cdn",
+    "stg": "rstool --env stg --hash --extract --cdn",
+    "prd": "rstool --env prd --hash --extract --cdn ",
+    "lint": "eslint --ext .js,.vue src",
+    "lint-fix": "eslint --fix --ext .js,.vue src"
+  },
+  "dependencies": {
+    "axios": "0.16.2",
+    "lib-flexible": "0.3.2",
+    "rs-browser": "1.0.4",
+    "vue": "2.4.2",
+    "vue-router": "2.7.0"
+  },
+  "devDependencies": {
+    "babel-plugin-component": "0.10.1",
+    "element-ui": "1.4.6",
+    "eslint-config-rs": "0.1.13",
+    "rstool": "^0.2.5"
+  },
+  "publishConfig": {
+    "registry": "http://npm.corp.rs.com/"
+  }
+}
