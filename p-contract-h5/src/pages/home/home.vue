@@ -94,7 +94,7 @@
         <el-button type="text" @click="logout">注销</el-button>
       </div>
     </div>
-    <div class="main">
+    <div class="main" id="main">
       <div :class="leftClass" id="left">
         <div>
           <el-menu :default-active="$route.path" unique-opened router>
@@ -217,12 +217,15 @@
         this.filterRoutes(powers);
       }
     },
-    mounted() {
-      if (this.$route.query.from === 'out') {
-        document.getElementById('header').style.display = 'none';
-        document.getElementById('left').style.display = 'none';
-        document.getElementById('right').style.left = '0px';
-        document.getElementById('breadcrumb').style.display = 'none';
+    watch: {
+      $route() {
+        if (this.$route.query.from === 'out') {
+          document.getElementById('header').style.display = 'none';
+          document.getElementById('main').style.top = '15px';
+          document.getElementById('left').style.display = 'none';
+          document.getElementById('right').style.left = '0px';
+          document.getElementById('breadcrumb').style.display = 'none';
+        }
       }
     }
   };

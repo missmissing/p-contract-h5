@@ -168,11 +168,11 @@
               width="80">
             </el-table-column>
             <el-table-column
-              prop="serverName"
+              prop="serviceName"
               label="服务名称">
             </el-table-column>
             <el-table-column
-              prop="acceptRequire"
+              prop="serviceRequire"
               label="验收要求">
             </el-table-column>
             <el-table-column
