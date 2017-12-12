@@ -216,17 +216,6 @@
         this.allRoutesHiddenTrue(defaultRoutes);
         this.filterRoutes(powers);
       }
-    },
-    watch: {
-      $route() {
-        if (this.$route.query.from === 'out') {
-          document.getElementById('header').style.display = 'none';
-          document.getElementById('main').style.top = '15px';
-          document.getElementById('left').style.display = 'none';
-          document.getElementById('right').style.left = '0px';
-          document.getElementById('breadcrumb').style.display = 'none';
-        }
-      }
     }
   };
 </script>
