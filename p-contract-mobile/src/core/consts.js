@@ -26,7 +26,6 @@ export default {
 };
 
 
-
 export const tplTypeMap = {
   TEMPLATE: '合同模板',
   TEXT: '合同文本'

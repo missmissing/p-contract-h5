@@ -12,8 +12,11 @@ import {
 import {
   Button,
   Cell,
+  Navbar,
+  TabItem,
   TabContainer,
-  TabContainerItem
+  TabContainerItem,
+  Field
 } from 'mint-ui';
 
 export default (Vue) => {
@@ -28,8 +31,11 @@ export default (Vue) => {
   Vue.use(Card);
   Vue.use(Scrollbar);
   //mint-ui
-  Vue.use(Button);
-  Vue.use(Cell);
-  Vue.use(TabContainer);
-  Vue.use(TabContainerItem);
+  Vue.component(Button.name, Button);
+  Vue.component(Cell.name, Cell);
+  Vue.component(Navbar.name, Navbar);
+  Vue.component(TabItem.name, TabItem);
+  Vue.component(TabContainer.name, TabContainer);
+  Vue.component(TabContainerItem.name, TabContainerItem);
+  Vue.component(Field.name, Field);
 };

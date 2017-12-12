@@ -1,4 +1,3 @@
-import { Message } from 'element-ui';
 import emitter from './emitter';
 import Consts from './consts';
 
@@ -12,17 +11,17 @@ class Base {
   }
 
   static error500Process() {
-    Message.error('系统异常,请刷新页面重试!');
+    //Message.error('系统异常,请刷新页面重试!');
   }
 
   static errorNot200Process(msg) {
     if (msg) {
-      Message.warning(msg);
+      //Message.warning(msg);
     }
   }
 
   static errorRequestTimeout() {
-    Message.warning('请求超时!');
+    //Message.warning('请求超时!');
   }
 
   constructor() {
