@@ -159,7 +159,6 @@
           text: '正在提交中'
         });
         Api.submitProcess(result).then(() => {
-          this.comLoading(false);
           this.$message.success('提交成功！');
           if (this.$route.query.from === 'out') {
             if (env === 'prd') {
@@ -170,7 +169,7 @@
             return;
           }
           this.$router.push({name: routerNames.con_index});
-        }, () => {
+        }).finally(() => {
           this.comLoading(false);
         });
       }

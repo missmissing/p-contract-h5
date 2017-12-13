@@ -83,7 +83,8 @@ class Jump {
     const {
       procInstId,
       serialNumber,
-      procCode
+      procCode,
+      from
     } = row;
     const {
       actions, approveInfo, sign, actName
@@ -152,6 +153,7 @@ class Jump {
       name,
       query: {
         ...param,
+        from,
         processData: JSON.stringify(processData)
       }
     });
@@ -162,14 +164,15 @@ class Jump {
       this.dataType = processListMap[0];
     }
     const {
-      procInstId, serialNumber, procCode, sn
+      procInstId, serialNumber, procCode, sn, from
     } = query;
     const newSerialNumber = serialNumber || sn;
     const newProcInstId = procInstId || newSerialNumber.split('_')[0];
     this.see({
       procInstId: newProcInstId,
       serialNumber: newSerialNumber,
-      procCode
+      procCode,
+      from
     });
   }
 }
