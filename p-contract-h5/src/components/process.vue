@@ -143,11 +143,17 @@
         return true;
       },
       submit() {
-        const {procInstId, procCode, serialNumber} = this.processData;
+        const {
+          procInstId,
+          procCode,
+          serialNumber,
+          roleName
+        } = this.processData;
         const result = {
           procInstId,
           procCode,
           serialNumber,
+          actName: roleName,
           actionName: this.actionName,
           redirectApproverId: this.receiver,
           approveRemark: this.approveRemark
