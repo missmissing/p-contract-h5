@@ -2004,7 +2004,7 @@
   import {downloadUrl, uploadUrl} from '../../api/consts';
   import Process from '../../components/process.vue';
   import {formatDate} from '../../filters/moment';
-  import {routerNames} from '../../core/consts';
+  import {routerNames, contractMap} from '../../core/consts';
 
   const user = store.get('user');
 
@@ -2041,6 +2041,7 @@
       };
 
       return {
+        procCode: '', //流程code
         procInstId: '', //流程id
         procTitle: '', //流程名称
         updated: false, // 在变更合同提交后是否显示变更原因
@@ -2825,6 +2826,7 @@
     mounted() {
       const query = this.$route.query;
       if (query.processData) {
+        this.procCode = JSON.parse(query.processData).procCode;
         this.procInstId = JSON.parse(query.processData).procInstId;
         this.procTitle = JSON.parse(query.processData).procTitle;
         this.users.roleName = JSON.parse(query.processData).roleName;
@@ -3509,8 +3511,8 @@
           }
         });
 
-        const sealOthers = [],
-          sealAgreenments = [];
+        const sealOthers = [];
+        const sealAgreenments = [];
         if (others && others.length) {
           others.forEach((item) => {
             if (item[0]) {
@@ -3534,9 +3536,19 @@
         }
 
         // 判断附件类型，当该附件类型的数据为空是，则该数组为空
-        contract.length ? sealAttachments.push(contract) : null;
-        sealOthers.length ? sealAttachments = sealAttachments.concat(sealOthers) : null;
-        sealAgreenments.length ? sealAttachments = sealAttachments.concat(sealAgreenments) : null;
+        if (contract.length) {
+          sealAttachments.push(contract);
+        }
+        if (sealOthers.length) {
+          sealAttachments = sealAttachments.concat(sealOthers);
+        }
+        if (sealAgreenments.length) {
+          sealAttachments = sealAttachments.concat(sealAgreenments);
+        }
+
+        if (this.procCode === contractMap[1]) {
+          sealAttachments = sealAttachments.filter(item => item[0].attachStatus !== 1);
+        }
         return sealAttachments;
       },
       combineSealsInfo1() { //不剔除空数据项
