@@ -32,7 +32,7 @@
 
   export default {
     props: {
-      tplInfo: {
+      info: {
         type: Object,
         default() {
           return {};
@@ -80,7 +80,7 @@
           creatorName,
           description,
           files
-        } = this.tplInfo;
+        } = this.info;
         this.form.templateCode = templateCode;
         this.form.templateName = templateName;
         this.form.templateType = templateType;
@@ -119,7 +119,7 @@
       tplType
     },
     watch: {
-      tplInfo() {
+      info() {
         this.setData();
       },
       'form.templateCode': function () {

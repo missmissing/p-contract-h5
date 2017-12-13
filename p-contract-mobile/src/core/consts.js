@@ -79,3 +79,21 @@ export const templateStatus = {
   ABNORMAL: '异常',
   ALTER_AUDIT: '变更审核通过'
 };
+
+export const handleResult = {
+  CONTINUE_TO_PERFORM: '继续履行',
+  UPDATED_CONTRACT: '变更合同',
+  PERFORM_WITH_CHECK_RESULT: '按验收实际结果履行合同',
+  BREACH: '转合同违约处理'
+};
+
+export const defaultParty = {
+  US: '我方',
+  PARTNER: '对方',
+  BOTH: '双方'
+};
+
+export const compensateType = {
+  PARTNER_GIVE_US: '供应商向我方赔付',
+  US_GIVE_PARTNER: '我方向供应商赔付'
+};

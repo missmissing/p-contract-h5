@@ -28,8 +28,5 @@
     "lodash-webpack-plugin": "^0.11.4",
     "mint-ui": "^2.2.13",
     "rstool": "^0.2.6"
-  },
-  "publishConfig": {
-    "registry": "http://npm.corp.rs.com/"
   }
 }

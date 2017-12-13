@@ -49,7 +49,7 @@
 <script>
   export default {
     props: {
-      tplInfo: {
+      info: {
         type: Object,
         default() {
           return {};
@@ -65,7 +65,7 @@
     },
     methods: {
       setData() {
-        const {contentModule, content} = this.tplInfo;
+        const {contentModule, content} = this.info;
         this.content = content;
         const header = [];
         const footer = [];
@@ -81,7 +81,7 @@
       }
     },
     watch: {
-      tplInfo() {
+      info() {
         this.setData();
       }
     }
