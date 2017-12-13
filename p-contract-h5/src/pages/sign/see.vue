@@ -300,11 +300,11 @@
       },
       setServerData() {
         const {orderCheckItems} = this.info;
-        this.serverData = orderCheckItems;
+        this.serverData = orderCheckItems || [];
       },
       setReceiveData() {
-        const {poReceiveInfo = []} = this.info;
-        this.receiveInfo = poReceiveInfo;
+        const {poReceiveInfo} = this.info;
+        this.receiveInfo = poReceiveInfo || [];
       },
       formatType(row, column, cellValue) {
         return prTypeMap[cellValue];
