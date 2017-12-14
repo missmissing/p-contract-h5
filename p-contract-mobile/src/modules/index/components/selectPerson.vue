@@ -1,73 +1,95 @@
 <style type="text/scss" lang="scss" scoped>
-  .select-person {
-    .el-select-dropdown__item {
-      height: auto
-    }
-  }
+
 </style>
 
 <template>
-  <el-select
-    v-model="value"
-    :multiple="multiple"
-    clearable
-    @clear="value=null"
-    filterable
-    remote
-    placeholder="请输入关键词"
-    :remote-method="remoteMethod"
-    :loading="loading"
-    popper-class="select-person"
-    @change="change">
-    <el-option
-      v-for="item in options"
-      :key="item.userId"
-      :label="item.userName"
-      :value="item.userId">
+  <div>
+    <div @click="visible = true">
+      <mt-cell
+        title="选择人员"
+        is-link
+        :value="username">
+      </mt-cell>
+    </div>
+    <mt-popup
+      v-model="visible"
+      :modal="false"
+      :closeOnClickModal="false"
+      position="right"
+      class="popup">
       <div>
-        <div>
-          <span>{{item.userName}}</span><span>({{item.userId}})</span>
+        <mt-header fixed>
+          <mt-button icon="back" slot="left" @click="back"></mt-button>
+        </mt-header>
+        <div class="mt40">
+          <mt-search
+            v-model="key"
+            cancel-text="取消"
+            placeholder="搜索"
+            autofocus>
+            <mt-cell
+              v-for="item in result"
+              :key="item.userId"
+              @click="select(item)">
+              <div slot="title"><span>{{item.userName}}</span><span>({{item.userId}})</span></div>
+              <div>{{item.deptName}}</div>
+            </mt-cell>
+          </mt-search>
         </div>
-        <div>{{item.deptName}}</div>
       </div>
-    </el-option>
-  </el-select>
+    </mt-popup>
+  </div>
 </template>
 
 <script>
   import Api from '../../../api/manageContract/index';
 
   export default {
-    name: 'SelectPerson',
     props: {
-      multiple: {
-        default: false
+      value: {
+        type: Object,
+        default() {
+          return {};
+        }
       }
     },
     data() {
       return {
-        value: null,
-        options: [],
-        loading: false
+        username: '',
+        visible: false,
+        key: '',
+        result: []
       };
     },
     methods: {
-      remoteMethod(query) {
-        if (query !== '') {
-          this.loading = true;
-          Api.getRemoteCreatePersonsByKeyWord({ keyword: query }).then(res => {
-            this.loading = false;
-            this.options = res.data.dataMap;
-          }, () => {
-            this.options = [];
-          });
-        } else {
-          this.options = [];
+      back() {
+        this.visible = false;
+      },
+      select(item) {
+        this.visible = false;
+        this.username = item.userName;
+        this.$emit('input', item.userId);
+      },
+      getResult(keyword) {
+        Api.getRemoteCreatePersonsByKeyWord({keyword}).then(res => {
+          this.options = res.data.dataMap;
+        });
+      }
+    },
+    watch: {
+      value(val) {
+        if (!val) {
+          this.username = '';
         }
       },
-      change(value) {
-        this.$emit('change', value);
+      key(val) {
+        if (!val) {
+          this.result = [];
+          return;
+        }
+        this.getResult(val);
       }
     }
-  };
+  }
+  ;
 </script>

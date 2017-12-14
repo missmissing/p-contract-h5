@@ -4,23 +4,29 @@
 
 <template>
   <div>
-    <mt-navbar v-model="selected" fixed>
+    <mt-header fixed title="验收不合格查看">
+      <mt-button icon="back" slot="left"></mt-button>
+    </mt-header>
+    <div class="mt40">
+      <mt-cell title="采购订单号" :value="orderNo"></mt-cell>
+      <mt-cell title="业务经办人" :value="basicForm.businessOperatorName"></mt-cell>
+      <mt-cell title="业务部门" :value="basicForm.businessDeptName"></mt-cell>
+      <mt-cell title="合同编号" :value="basicForm.contractNo"></mt-cell>
+      <mt-cell title="合同模式" :value="basicForm.contractType"></mt-cell>
+      <mt-cell title="合同类型" :value="basicForm.contractTextType"></mt-cell>
+      <mt-cell title="所属项目" :value="basicForm.belongProject"></mt-cell>
+      <mt-cell title="验收责任人" :value="basicForm.responsibleName"></mt-cell>
+      <mt-cell title="合同生效日期" :value="basicForm.startTime | formatDate"></mt-cell>
+      <mt-cell title="合同验收日期" :value="contractCheckDate | formatDate"></mt-cell>
+    </div>
+    <mt-navbar v-model="selected">
       <mt-tab-item :id="1">基本信息</mt-tab-item>
       <mt-tab-item :id="2">验收信息</mt-tab-item>
       <mt-tab-item :id="3">处理结论</mt-tab-item>
     </mt-navbar>
     <mt-tab-container v-model="selected" class="mt49">
       <mt-tab-container-item :id="1">
-        <mt-cell title="采购订单号" :value="orderNo"></mt-cell>
-        <mt-cell title="业务经办人" :value="basicForm.businessOperatorName"></mt-cell>
-        <mt-cell title="业务部门" :value="basicForm.businessDeptName"></mt-cell>
-        <mt-cell title="合同编号" :value="basicForm.contractNo"></mt-cell>
-        <mt-cell title="合同模式" :value="basicForm.contractType"></mt-cell>
-        <mt-cell title="合同类型" :value="basicForm.contractTextType"></mt-cell>
-        <mt-cell title="所属项目" :value="basicForm.belongProject"></mt-cell>
-        <mt-cell title="验收责任人" :value="basicForm.responsibleName"></mt-cell>
-        <mt-cell title="合同生效日期" :value="basicForm.startTime | formatDate"></mt-cell>
-        <mt-cell title="合同验收日期" :value="contractCheckDate | formatDate"></mt-cell>
+
       </mt-tab-container-item>
       <mt-tab-container-item :id="2">
         <el-table
@@ -59,7 +65,6 @@
         <mt-field label="处理方案" type="textarea" rows="4" :value="treatmentScheme" readonly></mt-field>
       </mt-tab-container-item>
     </mt-tab-container>
-    <Process></Process>
   </div>
 </template>
 
@@ -69,7 +74,6 @@
   import routerNames from '../router/consts';
   import handleResult from '../../../filters/handleResult';
   import {formatDate} from '../../../filters/moment';
-  import Process from '../components/process.vue';
   import {downloadUrl} from '../../../api/consts';
 
   export default {
@@ -137,18 +141,17 @@
       }
     },
     created() {
-      const {id, processData} = this.$route.query;
-      //this.getInfo(id);
-      if (processData) {
-        const data = JSON.parse(processData);
-        const {procTitle, procInstId} = data;
-        this.procInstId = procInstId;
-        this.procTitle = procTitle;
+      const processData = this.$store.state.processData;
+      if (!Object.keys(processData).length) {
+        return;
       }
+      const id = this.$store.state.id;
+      //this.getInfo(id);
+      const {procTitle, procInstId} = processData;
+      this.procInstId = procInstId;
+      this.procTitle = procTitle;
     },
-    components: {
-      Process
-    },
+    components: {},
     filters: {
       formatDate,
       handleResult

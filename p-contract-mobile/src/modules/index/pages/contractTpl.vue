@@ -4,34 +4,40 @@
 
 <template>
   <div>
-    <mt-navbar v-model="selected" fixed>
+    <mt-header fixed title="模板查看">
+      <mt-button icon="back" slot="left"></mt-button>
+    </mt-header>
+    <TplBase :info="info" @changeVersion="getData" class="mt40"></TplBase>
+    <mt-navbar v-model="selected">
       <mt-tab-item :id="1">基本信息</mt-tab-item>
       <mt-tab-item :id="2">模板信息</mt-tab-item>
     </mt-navbar>
-    <mt-tab-container v-model="selected" class="mt49">
+    <mt-tab-container v-model="selected">
       <mt-tab-container-item :id="1">
-        <TplBase :info="info" @changeVersion="getData"></TplBase>
+        <TplContent :info="info"></TplContent>
       </mt-tab-container-item>
       <mt-tab-container-item :id="2">
         <TplContent :info="info"></TplContent>
       </mt-tab-container-item>
     </mt-tab-container>
-    <Process></Process>
+    <ActionSumit></ActionSumit>
   </div>
 </template>
 
 <script>
-  import Process from '../components/process.vue';
   import TplBase from './tplBase.vue';
   import TplContent from './tplContent.vue';
+  import ActionSumit from '../components/actionSubmit.vue';
 
   export default {
     data() {
       return {
         selected: 1,
-        procTitle: '',
-        procInstId: '',
-        info: {}
+        info: {},
+        processData: {
+          procTitle: '',
+          procInstId: ''
+        }
       }
     },
     methods: {
@@ -44,18 +50,17 @@
       }
     },
     created() {
-      const {id, processData} = this.$route.query;
-      //this.getData(id);
-      if (processData) {
-        const {procInstId, procTitle} = JSON.parse(processData);
-        this.procInstId = procInstId;
-        this.procTitle = procTitle;
+      const processData = this.$store.state.processData;
+      if (!Object.keys(processData).length) {
+        return;
       }
+      const id = this.$store.state.id;
+      //this.getData(id);
     },
     components: {
       TplBase,
       TplContent,
-      Process
+      ActionSumit
     }
   };
 </script>

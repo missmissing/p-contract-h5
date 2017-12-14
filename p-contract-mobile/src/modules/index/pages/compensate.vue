@@ -4,22 +4,28 @@
 
 <template>
   <div>
-    <mt-navbar v-model="selected" fixed>
+    <mt-header fixed title="违约赔付查看">
+      <mt-button icon="back" slot="left"></mt-button>
+    </mt-header>
+    <div class="mt40">
+      <mt-cell title="合同编号" :value="basicForm.contractNo"></mt-cell>
+      <mt-cell title="合同签署日期" :value="signTime | formatDate"></mt-cell>
+      <mt-cell title="合同生效日期" :value="startTime | formatDate"></mt-cell>
+      <mt-cell title="合同终止日期" :value="endTime | formatDate"></mt-cell>
+      <mt-cell title="业务经办人" :value="businessOperator"></mt-cell>
+      <mt-cell title="所属部门" :value="businessDept"></mt-cell>
+      <mt-cell title="违约方" :value="defaulter | defaultParty"></mt-cell>
+      <mt-cell title="涉及赔付" :value="compensateStatus | yesOrNo"></mt-cell>
+      <mt-cell title="赔付类型" :value="compensateType | sateType"></mt-cell>
+      <mt-cell title="赔付金额" :value="compensateMoney"></mt-cell>
+    </div>
+    <mt-navbar v-model="selected">
       <mt-tab-item :id="1">基本信息</mt-tab-item>
       <mt-tab-item :id="2">处理结论</mt-tab-item>
     </mt-navbar>
-    <mt-tab-container v-model="selected" class="mt49">
+    <mt-tab-container v-model="selected">
       <mt-tab-container-item :id="1">
-        <mt-cell title="合同编号" :value="basicForm.contractNo"></mt-cell>
-        <mt-cell title="合同签署日期" :value="signTime | formatDate"></mt-cell>
-        <mt-cell title="合同生效日期" :value="startTime | formatDate"></mt-cell>
-        <mt-cell title="合同终止日期" :value="endTime | formatDate"></mt-cell>
-        <mt-cell title="业务经办人" :value="businessOperator"></mt-cell>
-        <mt-cell title="所属部门" :value="businessDept"></mt-cell>
-        <mt-cell title="违约方" :value="defaulter | defaultParty"></mt-cell>
-        <mt-cell title="涉及赔付" :value="compensateStatus | yesOrNo"></mt-cell>
-        <mt-cell title="赔付类型" :value="compensateType | sateType"></mt-cell>
-        <mt-cell title="赔付金额" :value="compensateMoney"></mt-cell>
+
       </mt-tab-container-item>
       <mt-tab-container-item :id="2">
         <mt-cell title="选择" :value="handleForm.schemeType | handleResult"></mt-cell>
@@ -27,7 +33,6 @@
         <mt-field label="处理方案" type="textarea" rows="4" :value="handleForm.treatmentScheme" readonly></mt-field>
       </mt-tab-container-item>
     </mt-tab-container>
-    <Process></Process>
   </div>
 </template>
 
@@ -39,7 +44,6 @@
   import yesOrNo from '../../../filters/yesOrNo';
   import handleResult from '../../../filters/handleResult';
   import routerNames from '../router/consts';
-  import Process from '../components/process.vue';
   import {downloadUrl} from '../../../api/consts';
 
   export default {
@@ -106,18 +110,17 @@
       }
     },
     created() {
-      const {id, processData} = this.$route.query;
-      //this.getInfo(id);
-      if (processData) {
-        const data = JSON.parse(processData);
-        const {procTitle, procInstId} = data;
-        this.procInstId = procInstId;
-        this.procTitle = procTitle;
+      const processData = this.$store.state.processData;
+      if (!Object.keys(processData).length) {
+        return;
       }
+      const id = this.$store.state.id;
+      //this.getInfo(id);
+      const {procTitle, procInstId} = processData;
+      this.procInstId = procInstId;
+      this.procTitle = procTitle;
     },
-    components: {
-      Process
-    },
+    components: {},
     filters: {
       formatDate,
       defaultParty,

@@ -107,11 +107,12 @@
       }
     },
     created() {
-      const {processData} = this.$route.query;
-      if (processData) {
-        const {procCode} = JSON.parse(processData);
-        this.showAbolish = procCode === tplMap[2];
+      const processData = this.$store.state.processData;
+      if (!Object.keys(processData).length) {
+        return;
       }
+      const {procCode} = processData;
+      this.showAbolish = procCode === tplMap[2];
     },
     filters: {
       formatDate,

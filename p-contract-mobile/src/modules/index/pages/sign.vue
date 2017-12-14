@@ -4,7 +4,17 @@
 
 <template>
   <div>
-    <mt-navbar v-model="selected" fixed>
+    <mt-header fixed title="采购订单查看">
+      <mt-button icon="back" slot="left"></mt-button>
+    </mt-header>
+    <div class="mt40">
+      <mt-cell title="采购订单" :value="orderForm.purchaseOrderNo"></mt-cell>
+      <mt-cell title="供应商编码" :value="orderForm.supplierCode"></mt-cell>
+      <mt-cell title="供应商名称" :value="orderForm.supplierName"></mt-cell>
+      <mt-cell title="订单类型" :value="orderForm.type"></mt-cell>
+      <mt-cell title="公司编码" :value="orderForm.companyCode"></mt-cell>
+    </div>
+    <mt-navbar v-model="selected">
       <mt-tab-item :id="1">订单信息</mt-tab-item>
       <mt-tab-item :id="2">合同信息</mt-tab-item>
       <mt-tab-item :id="3" v-if="serverData.length">服务验收信息</mt-tab-item>
@@ -12,11 +22,6 @@
     </mt-navbar>
     <mt-tab-container v-model="selected" class="mt49">
       <mt-tab-container-item :id="1">
-        <mt-cell title="采购订单" :value="orderForm.purchaseOrderNo"></mt-cell>
-        <mt-cell title="供应商编码" :value="orderForm.supplierCode"></mt-cell>
-        <mt-cell title="供应商名称" :value="orderForm.supplierName"></mt-cell>
-        <mt-cell title="订单类型" :value="orderForm.type"></mt-cell>
-        <mt-cell title="公司编码" :value="orderForm.companyCode"></mt-cell>
         <el-table
           :data="orderData"
           border
@@ -152,7 +157,6 @@
         </el-table>
       </mt-tab-container-item>
     </mt-tab-container>
-    <Process></Process>
   </div>
 </template>
 
@@ -161,7 +165,6 @@
   import {formatDate} from '../../../filters/moment';
   import contractType from '../../../filters/contractType';
   import cutZero from '../../../util/cutZero';
-  import Process from '../components/process.vue';
 
   export default {
     data() {
@@ -232,20 +235,20 @@
       },
     },
     created() {
-      const {id, processData} = this.$route.query;
-      //this.getData(id);
-      if (processData) {
-        const {procInstId, procTitle} = JSON.parse(processData);
-        this.procInstId = procInstId;
-        this.procTitle = procTitle;
+      const processData = this.$store.state.processData;
+      if (!Object.keys(processData).length) {
+        return;
       }
+      const id = this.$store.state.id;
+      //this.getData(id);
+      const {procInstId, procTitle} = processData;
+      this.procInstId = procInstId;
+      this.procTitle = procTitle;
     },
     filters: {
       contractType,
       formatDate
     },
-    components: {
-      Process
-    }
+    components: {}
   };
 </script>
