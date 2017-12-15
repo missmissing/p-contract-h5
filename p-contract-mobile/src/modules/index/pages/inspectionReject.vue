@@ -74,7 +74,6 @@
   import routerNames from '../router/consts';
   import handleResult from '../../../filters/handleResult';
   import {formatDate} from '../../../filters/moment';
-  import {downloadUrl} from '../../../api/consts';
 
   export default {
     data() {
@@ -101,8 +100,7 @@
         unqualifiedReason: '',
         treatmentScheme: '',
         fileList: [],
-        toDetail: {name: routerNames.con_Check, query: {id: ''}},
-        download: downloadUrl
+        toDetail: {name: routerNames.con_Check, query: {id: ''}}
       };
     },
     methods: {

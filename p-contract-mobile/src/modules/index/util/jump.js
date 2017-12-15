@@ -1,21 +1,20 @@
 import {
-  routerNames,
   tplMap,
   prMap,
   contractMap,
   contractDel,
-  processListMap,
   compensateMap,
   inspectRejectMap,
   protocolMap,
   procTitles
-} from '../../core/consts';
-import Api from '../../api/process/index';
+} from '../../../core/consts';
+import routerNames from '../router';
+import Api from '../../../api/process/index';
 
 class Jump {
   constructor(router) {
     this.router = router;
-    this.dataType = '';
+    this.approve = false;
   }
 
   static getProcTitle(procCode) {
@@ -60,7 +59,7 @@ class Jump {
 
   see(row) {
     const {procInstId, serialNumber, procCode} = row;
-    if (this.dataType === processListMap[0]) {
+    if (this.approve) {
       Api.getApproveNode({
         serialNumber,
         procCode
@@ -83,8 +82,7 @@ class Jump {
     const {
       procInstId,
       serialNumber,
-      procCode,
-      from
+      procCode
     } = row;
     const {
       actions, approveInfo, sign, actName
@@ -96,7 +94,7 @@ class Jump {
       procCode,
       sign,
       roleName: actName,
-      dataType: this.dataType
+      approve: this.approve
     };
     let param = {};
     let name = null;
@@ -153,7 +151,6 @@ class Jump {
       name,
       query: {
         ...param,
-        from,
         processData: JSON.stringify(processData)
       }
     });
@@ -161,18 +158,17 @@ class Jump {
 
   init(query) {
     if (query.routeName === routerNames.con_process_approve) {
-      this.dataType = processListMap[0];
+      this.approve = true;
     }
     const {
-      procInstId, serialNumber, procCode, sn, from
+      procInstId, serialNumber, procCode, sn
     } = query;
     const newSerialNumber = serialNumber || sn;
     const newProcInstId = procInstId || newSerialNumber.split('_')[0];
     this.see({
       procInstId: newProcInstId,
       serialNumber: newSerialNumber,
-      procCode,
-      from
+      procCode
     });
   }
 }

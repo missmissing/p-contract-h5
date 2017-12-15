@@ -44,7 +44,6 @@
   import yesOrNo from '../../../filters/yesOrNo';
   import handleResult from '../../../filters/handleResult';
   import routerNames from '../router/consts';
-  import {downloadUrl} from '../../../api/consts';
 
   export default {
     data() {
@@ -70,8 +69,7 @@
           schemeType: null,
           violateReason: '',
           treatmentScheme: ''
-        },
-        download: downloadUrl
+        }
       };
     },
     methods: {

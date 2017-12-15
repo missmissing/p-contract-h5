@@ -7,7 +7,7 @@
 </template>
 
 <script>
-  import Jump from '../../../assets/js/jump';
+  import Jump from '../util/jump';
 
   export default {
     data() {
@@ -24,8 +24,7 @@
         serialNumber: serialNumber || '',
         sn,
         procCode,
-        routeName: name,
-        from: 'out'
+        routeName: name
       };
       new Jump(this.$router).init(query);
     }

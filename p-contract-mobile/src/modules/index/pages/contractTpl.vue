@@ -7,19 +7,21 @@
     <mt-header fixed title="模板查看">
       <mt-button icon="back" slot="left"></mt-button>
     </mt-header>
-    <TplBase :info="info" @changeVersion="getData" class="mt40"></TplBase>
-    <mt-navbar v-model="selected">
-      <mt-tab-item :id="1">基本信息</mt-tab-item>
-      <mt-tab-item :id="2">模板信息</mt-tab-item>
-    </mt-navbar>
-    <mt-tab-container v-model="selected">
-      <mt-tab-container-item :id="1">
-        <TplContent :info="info"></TplContent>
-      </mt-tab-container-item>
-      <mt-tab-container-item :id="2">
-        <TplContent :info="info"></TplContent>
-      </mt-tab-container-item>
-    </mt-tab-container>
+    <div class="mt40">
+      <TplBase :info="info" @changeVersion="getData"></TplBase>
+      <mt-navbar v-model="selected">
+        <mt-tab-item :id="1">基本信息</mt-tab-item>
+        <mt-tab-item :id="2">模板信息</mt-tab-item>
+      </mt-navbar>
+      <mt-tab-container v-model="selected">
+        <mt-tab-container-item :id="1">
+          <TplContent :info="info"></TplContent>
+        </mt-tab-container-item>
+        <mt-tab-container-item :id="2">
+          <TplContent :info="info"></TplContent>
+        </mt-tab-container-item>
+      </mt-tab-container>
+    </div>
     <ActionSumit></ActionSumit>
   </div>
 </template>

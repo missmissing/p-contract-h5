@@ -1,13 +1,7 @@
 import {
-  Input,
-  InputNumber,
   Table,
   TableColumn,
-  Icon,
-  Row,
-  Col,
-  Card,
-  Scrollbar
+  Checkbox
 } from 'element-ui';
 import {
   Header,
@@ -25,15 +19,9 @@ import {
 
 export default (Vue) => {
   //element-ui
-  Vue.use(Input);
-  Vue.use(InputNumber);
   Vue.use(Table);
   Vue.use(TableColumn);
-  Vue.use(Icon);
-  Vue.use(Row);
-  Vue.use(Col);
-  Vue.use(Card);
-  Vue.use(Scrollbar);
+  Vue.use(Checkbox);
   //mint-ui
   Vue.component(Header.name, Header);
   Vue.component(Button.name, Button);

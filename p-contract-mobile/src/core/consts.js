@@ -97,3 +97,46 @@ export const compensateType = {
   PARTNER_GIVE_US: '供应商向我方赔付',
   US_GIVE_PARTNER: '我方向供应商赔付'
 };
+
+export const paymentType = {
+  1: '定金',
+  2: '预付款',
+  3: '进度款',
+  4: '尾款',
+  5: '保证金'
+};
+
+export const paymentTimePeriods = [
+  {
+    id: 'Z015',
+    name: '到票日后15天付款'
+  },
+  {
+    id: 'Z020',
+    name: '到票日后20天付款'
+  },
+  {
+    id: 'Z025',
+    name: '到票日后25天付款'
+  },
+  {
+    id: 'Z030',
+    name: '到票日后30天付款'
+  },
+  {
+    id: 'Z035',
+    name: '到票日后35天付款'
+  },
+  {
+    id: 'Z040',
+    name: '到票日后40天付款'
+  },
+  {
+    id: 'Z045',
+    name: '到票日后45天付款'
+  },
+  {
+    id: 'Z000',
+    name: '立即付款'
+  }
+];

@@ -1,0 +1,101 @@
+<style type="text/scss" lang="scss" scoped>
+
+</style>
+
+<template>
+  <div>
+    <div class="title">合同供应商信息</div>
+    <el-table :data="info.tableSupplierInfo">
+      <el-table-column type="index" label="序号" width="80">
+        <template scope="scope">
+          {{scope.$index + 1}}
+        </template>
+      </el-table-column>
+      <el-table-column prop="code" label="供应商编号"></el-table-column>
+      <el-table-column prop="name" label="供应商名称"></el-table-column>
+    </el-table>
+    <div class="title">合同我方主体名称</div>
+    <el-table :data="info.conSubjctName">
+      <el-table-column prop="code" label="公司代码"></el-table-column>
+      <el-table-column prop="name" label="公司名称"></el-table-column>
+      <el-table-column prop="applyAll" label="全公司适用">
+        <template scope="scope">
+          <el-checkbox v-model="scope.row.applyAll"></el-checkbox>
+        </template>
+      </el-table-column>
+    </el-table>
+    <div v-if="moreData.baseInfoForm.contractType!==2">
+      <div class="title">第三方信息</div>
+      <el-table :data="info.thirdPartyInfo">
+        <el-table-column prop="code" label="供应商编号"></el-table-column>
+        <el-table-column prop="name" label="供应商名称"></el-table-column>
+      </el-table>
+    </div>
+    <div v-if="moreData.baseInfoForm.contractType!==4">
+      <div class="title">合同标的</div>
+      <el-table :data="info.conStandard">
+        <el-table-column type="index" label="序号" width="80">
+          <template scope="scope">
+            {{scope.$index + 1}}
+          </template>
+        </el-table-column>
+        <el-table-column v-if="moreData.baseInfoForm.contractBusinessTypeFirst!==2" prop="materialCode" label="物料编码"
+                         width="250"></el-table-column>
+        <el-table-column prop="materialName"
+                         :label="moreData.baseInfoForm.contractBusinessTypeFirst===2?'服务名称':'物料名称'"
+                         min-width="130"></el-table-column>
+        <el-table-column v-if="moreData.baseInfoForm.contractType!==3" prop="total" label="数量"
+                         width="100"></el-table-column>
+        <el-table-column prop="price" label="价格" width="100"></el-table-column>
+        <el-table-column prop="taxRate" label="税率" width="100">
+          <template scope="scope">
+            {{scope.row.taxRate}}%
+          </template>
+        </el-table-column>
+      </el-table>
+      <mt-field
+        label="备注"
+        type="textarea"
+        rows="4"
+        :value="info.corporeRemark"
+        readonly>
+      </mt-field>
+    </div>
+    <mt-cell title="生效条件"></mt-cell>
+    <div v-if="info.effectiveCondition===1">
+      <mt-cell title="合同生效日期"></mt-cell>
+      <mt-cell title="合同终止日期"></mt-cell>
+    </div>
+    <div v-if="info.effectiveCondition===2">
+      <mt-field
+        label="备注"
+        type="textarea"
+        rows="4"
+        :value="info.conditionDesc"
+        readonly>
+      </mt-field>
+    </div>
+  </div>
+</template>
+
+<script>
+  export default {
+    props: {
+      info: {
+        type: Object,
+        default() {
+          return {};
+        }
+      },
+      moreData: {
+        type: Object,
+        default() {
+          return {};
+        }
+      }
+    },
+    data() {
+      return {};
+    }
+  };
+</script>

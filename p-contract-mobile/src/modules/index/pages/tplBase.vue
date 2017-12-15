@@ -28,7 +28,6 @@
   import tplStatus from '../../../filters/tplStatus';
   import tplType from '../../../filters/tplType';
   import {tplMap} from '../../../core/consts';
-  import {downloadUrl} from '../../../api/consts';
 
   export default {
     props: {
@@ -43,7 +42,6 @@
       return {
         templateId: this.$route.query.id,
         showAbolish: false,
-        download: downloadUrl,
         form: {
           templateCode: '',
           templateName: '',

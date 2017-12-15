@@ -30,6 +30,13 @@ export default (Router) => {
           require(['../pages/compensate.vue'], resolve);
         },
         name: routerNames.con_compensate_see
+      },
+      {
+        path: '/contract',
+        component(resolve) {
+          require(['../pages/contract.vue'], resolve);
+        },
+        name: routerNames.con_Check
       }
     ]
   });
