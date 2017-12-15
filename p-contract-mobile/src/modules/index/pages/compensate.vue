@@ -75,7 +75,8 @@
       };
     },
     methods: {
-      getInfo(id) {
+      getInfo() {
+        const id = this.$store.state.id;
         Api.getViolateByProcInstId({procInstId: id}).then((res) => {
           const data = res.data.dataMap;
           console.log(data);
@@ -114,8 +115,7 @@
       if (!Object.keys(processData).length) {
         return;
       }
-      const id = this.$store.state.id;
-      //this.getInfo(id);
+      this.getInfo();
       const {procTitle, procInstId} = processData;
       this.procInstId = procInstId;
       this.procTitle = procTitle;

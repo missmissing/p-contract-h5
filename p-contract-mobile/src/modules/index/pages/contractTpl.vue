@@ -41,7 +41,8 @@
       }
     },
     methods: {
-      getData(id) {
+      getInfo() {
+        const id = this.$store.state.id;
         supportModel.getTplData({
           templateId: id
         }).then((res) => {
@@ -54,8 +55,7 @@
       if (!Object.keys(processData).length) {
         return;
       }
-      const id = this.$store.state.id;
-      //this.getData(id);
+      this.getInfo();
     },
     components: {
       TplBase,

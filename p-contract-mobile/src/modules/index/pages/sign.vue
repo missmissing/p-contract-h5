@@ -181,7 +181,8 @@
       }
     },
     methods: {
-      getData(id) {
+      getInfo() {
+        const id = this.$store.state.id;
         Api.detailByPoId({id}).then((res) => {
           console.log(res);
           this.info = res.data.dataMap;
@@ -239,8 +240,7 @@
       if (!Object.keys(processData).length) {
         return;
       }
-      const id = this.$store.state.id;
-      //this.getData(id);
+      this.getInfo();
       const {procInstId, procTitle} = processData;
       this.procInstId = procInstId;
       this.procTitle = procTitle;

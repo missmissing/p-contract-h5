@@ -46,21 +46,28 @@
   import Api from '../../../api/process';
 
   export default {
-    props: {
-      lists: {
-        type: Array
+    data() {
+      return {
+        lists: []
+      };
+    },
+    methods: {
+      getLists() {
+        const {procCode, procInstId} = this.$store.state.processData;
+        Api.getStartedProcNodes({
+          procInstId,
+          procCode
+        }).then((res) => {
+          this.lists = res.data.dataMap.nodes;
+        });
       }
     },
-    data() {
-      return {};
-    },
     created() {
-      Api.getStartedProcNodes({
-        procInstId,
-        procCode
-      }).then((res) => {
-        this.lists = res.data.dataMap.nodes;
-      });
+      const processData = this.$store.state.processData;
+      if (!Object.keys(processData).length) {
+        return;
+      }
+      this.getLists();
     }
   };
 </script>

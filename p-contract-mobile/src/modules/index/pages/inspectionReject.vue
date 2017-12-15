@@ -106,7 +106,8 @@
       };
     },
     methods: {
-      getData(procInstId) {
+      getInfo() {
+        const procInstId = this.$store.state.id;
         Api.getUnqualifiedByProcInstId({procInstId}).then((res) => {
           const data = res.data.dataMap;
           this.setData(data);
@@ -145,8 +146,7 @@
       if (!Object.keys(processData).length) {
         return;
       }
-      const id = this.$store.state.id;
-      //this.getInfo(id);
+      this.getInfo();
       const {procTitle, procInstId} = processData;
       this.procInstId = procInstId;
       this.procTitle = procTitle;
