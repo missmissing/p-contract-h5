@@ -17,6 +17,7 @@
         <mt-button icon="back" slot="left" @click="back"></mt-button>
       </mt-header>
       <div class="mt40">
+        <Actions v-model="actionName" :btns="btns"></Actions>
         <SelectPerson v-model="redirectApproverId" v-show="visible"></SelectPerson>
         <mt-field label="" placeholder="审批意见" type="textarea" rows="4" v-model="approveRemark"></mt-field>
         <div class="tc">
@@ -29,6 +30,7 @@
 
 <script>
   import Api from '../../../api/process';
+  import Actions from '../components/actions.vue';
   import SelectPerson from '../components/selectPerson.vue';
 
   export default {
@@ -96,6 +98,7 @@
       }
     },
     components: {
+      Actions,
       SelectPerson
     }
   };

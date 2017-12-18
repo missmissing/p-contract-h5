@@ -1,40 +1,38 @@
 import Http from '../../core/commonModel';
-
-// const contract = '/api-contract';
-const contract = 'http://hm-cm.dev.rs.com';
+import {domain} from '../consts';
 
 export default {
   getTmplTypes(params) {
-    return Http.get(`${contract}/contract-web/module/findModuleTemplates`, params);
+    return Http.get(`${domain}/contract-web/module/findModuleTemplates`, params);
   },
   getModuleData(params) {
-    return Http.get(`${contract}/contract-web/module/findDemoModule`, params);
+    return Http.get(`${domain}/contract-web/module/findDemoModule`, params);
   },
   getBusiType(params) {
-    return Http.get(`${contract}/contract-web/contractBizType/getAllTypes`, params);
+    return Http.get(`${domain}/contract-web/contractBizType/getAllTypes`, params);
   },
   getList(params) {
-    return Http.post(`${contract}/contract-web/template/getTemplate`, params);
+    return Http.post(`${domain}/contract-web/template/getTemplate`, params);
   },
   getTplData(params) {
-    return Http.get(`${contract}/contract-web/template/getTemplateById`, params);
+    return Http.get(`${domain}/contract-web/template/getTemplateById`, params);
   },
   getAllTemplateByCode(params) {
-    return Http.get(`${contract}/contract-web/template/getAllTemplateByCode`, params);
+    return Http.get(`${domain}/contract-web/template/getAllTemplateByCode`, params);
   },
   addTpl(params) {
-    return Http.post(`${contract}/contract-web/template/addTemplate`, params);
+    return Http.post(`${domain}/contract-web/template/addTemplate`, params);
   },
   getCurrentTemplateByCode(params) {
-    return Http.get(`${contract}/contract-web/template/getCurrentTemplateByCode`, params);
+    return Http.get(`${domain}/contract-web/template/getCurrentTemplateByCode`, params);
   },
   updateTemplate(params) {
-    return Http.post(`${contract}/contract-web/template/updateTemplate`, params);
+    return Http.post(`${domain}/contract-web/template/updateTemplate`, params);
   },
   selectTemplateCode(params) {
-    return Http.get(`${contract}/contract-web/template/selectTemplateCode`, params);
+    return Http.get(`${domain}/contract-web/template/selectTemplateCode`, params);
   },
   setTemplateAbolish(params) {
-    return Http.get(`${contract}/contract-web/template/setTemplateAbolish`, params);
+    return Http.get(`${domain}/contract-web/template/setTemplateAbolish`, params);
   }
 };

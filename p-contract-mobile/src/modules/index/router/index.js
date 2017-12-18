@@ -37,6 +37,20 @@ export default (Router) => {
           require(['../pages/contract.vue'], resolve);
         },
         name: routerNames.con_Check
+      },
+      {
+        path: '/see',
+        component(resolve) {
+          require(['../components/toPage.vue'], resolve);
+        },
+        name: routerNames.con_process_see
+      },
+      {
+        path: '/approve',
+        component(resolve) {
+          require(['../components/toPage.vue'], resolve);
+        },
+        name: routerNames.con_process_approve
       }
     ]
   });

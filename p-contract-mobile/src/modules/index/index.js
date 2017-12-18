@@ -4,12 +4,12 @@ import Vuex from 'vuex';
 import LocalStore from 'store';
 import vueStore from './store';
 import App from './App.vue';
-import component from '../../components';
+import component from './components';
 import errorHanding from '../../core/errorHanding';
 import getRouter from './router';
 import queryString from '../../util/queryString';
 import Api from '../../api';
-import {GET_PROCESSDATA} from './store/consts';
+import {GET_PROCESSDATA, GET_ID} from './store/consts';
 import '../../assets/css/common.scss';
 
 Vue.use(Router);
@@ -33,8 +33,8 @@ new Vue({
   methods: {
     can() {
       const query = queryString();
-      const {code} = query || {};
-      Api.login({userId: code}).then((res) => {
+      const {userId} = query || {};
+      Api.login({userId}).then((res) => {
         const data = res.data.dataMap;
         const {userInfo} = data;
         LocalStore.set('user', userInfo);
@@ -43,9 +43,9 @@ new Vue({
     }
   },
   created() {
-    //this.can();
+    this.can();
     this.canRender = true;
-    const {id, processData} = this.$route.query;
+    const {processData} = this.$route.query;
     if (!processData) {
       return;
     }
@@ -53,8 +53,8 @@ new Vue({
     this.$store.commit(GET_PROCESSDATA, {
       data
     });
-    this.$store.commit('GET_ID', {
-      data: id
+    this.$store.commit(GET_ID, {
+      data: data.userId
     });
   },
   render(h) {

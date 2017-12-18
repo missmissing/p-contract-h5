@@ -4,8 +4,8 @@
 
 <template>
   <div>
-    <Actions v-model="actionName" @change="actionChange"></Actions>
-    <Submit v-model="popupVisible" :actionName="actionName"></Submit>
+    <Actions v-model="actionName" @change="actionChange" :btns="btns"></Actions>
+    <Submit v-model="popupVisible" :actionName.sync="actionName" :btns="allBtns"></Submit>
   </div>
 </template>
 
@@ -17,6 +17,10 @@
     data() {
       return {
         actionName: '',
+        btns: [],
+        allBtns: [],
+        commonBtns: ['加签', '转签'],
+        sign: 0,
         popupVisible: false
       };
     },
@@ -26,7 +30,20 @@
       }
     },
     created() {
-
+      const processData = this.$store.state.processData;
+      if (!Object.keys(processData).length) {
+        return;
+      }
+      const {actions, sign} = processData;
+      if (sign === 1) {
+        this.commonBtns = [];
+      }
+      this.allBtns = [...actions, ...this.commonBtns];
+      if (this.allBtns.length > 4) {
+        this.btns = this.allBtns.slice(0, 2).push('其它');
+      } else {
+        this.btns = this.allBtns;
+      }
     },
     components: {
       Actions,

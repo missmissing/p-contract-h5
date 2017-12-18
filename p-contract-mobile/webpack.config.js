@@ -5,5 +5,19 @@ module.exports = (conf) => {
   }
   Object.assign(config.externals, {vue: 'Vue'});
 
+  const contract = 'http://cm.dev.rs.com';
+  config.devServer = {
+    proxy: {
+      '/api-contract/**': {
+        target: contract,
+        changeOrigin: true,
+        secure: false,
+        pathRewrite: {
+          '/api-contract': ''
+        }
+      }
+    }
+  };
+
   return config;
 };

@@ -27,6 +27,7 @@
 </template>
 
 <script>
+  import Api from '../../../api/support';
   import TplBase from './tplBase.vue';
   import TplContent from './tplContent.vue';
   import ActionSumit from '../components/actionSubmit.vue';
@@ -45,10 +46,11 @@
     methods: {
       getInfo() {
         const id = this.$store.state.id;
-        supportModel.getTplData({
+        Api.getTplData({
           templateId: id
         }).then((res) => {
-          this.tplInfo = res.data.dataMap;
+          this.info = res.data.dataMap;
+          console.log(this.info);
         });
       }
     },
@@ -58,6 +60,11 @@
         return;
       }
       this.getInfo();
+    },
+    watch: {
+      '$store.state.processData'() {
+        debugger
+      }
     },
     components: {
       TplBase,

@@ -15,18 +15,7 @@
     },
     methods: {},
     created() {
-      const {name} = this.$route;
-      const {
-        procInstId, serialNumber, procCode, sn
-      } = this.$route.query;
-      const query = {
-        procInstId,
-        serialNumber: serialNumber || '',
-        sn,
-        procCode,
-        routeName: name
-      };
-      new Jump(this.$router).init(query);
+      new Jump(this).init();
     }
   };
 </script>

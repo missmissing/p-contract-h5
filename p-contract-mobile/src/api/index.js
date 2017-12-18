@@ -1,10 +1,8 @@
 import Http from '../core/commonModel';
-
-const contract = '';
-// const contract = '/api-contract';
+import {domain} from './consts';
 
 export default {
   login(params) {
-    return Http.get(`${contract}/contract-web/process/loginForMobile`, params);
+    return Http.get(`${domain}/contract-web/process/loginForMobile`, params);
   }
 };

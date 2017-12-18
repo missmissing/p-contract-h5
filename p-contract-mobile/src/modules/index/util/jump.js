@@ -8,12 +8,12 @@ import {
   protocolMap,
   procTitles
 } from '../../../core/consts';
-import routerNames from '../router';
-import Api from '../../../api/process/index';
+import routerNames from '../router/consts';
+import Api from '../../../api/process';
 
 class Jump {
-  constructor(router) {
-    this.router = router;
+  constructor(routeSelf) {
+    this.routeSelf = routeSelf;
     this.approve = false;
   }
 
@@ -82,12 +82,14 @@ class Jump {
     const {
       procInstId,
       serialNumber,
-      procCode
+      procCode,
+      userId
     } = row;
     const {
       actions, approveInfo, sign, actName
     } = data;
     const processData = {
+      userId,
       procInstId,
       actions,
       serialNumber,
@@ -147,7 +149,7 @@ class Jump {
 
     processData.procTitle = Jump.getProcTitle(procCode);
 
-    this.router.push({
+    this.routeSelf.$router.push({
       name,
       query: {
         ...param,
@@ -156,19 +158,21 @@ class Jump {
     });
   }
 
-  init(query) {
-    if (query.routeName === routerNames.con_process_approve) {
+  init() {
+    const {name} = this.routeSelf.$route;
+    const {
+      userId, procInstId, serialNumber, procCode, sn
+    } = this.routeSelf.$route.query;
+    if (name === routerNames.con_process_approve) {
       this.approve = true;
     }
-    const {
-      procInstId, serialNumber, procCode, sn
-    } = query;
     const newSerialNumber = serialNumber || sn;
     const newProcInstId = procInstId || newSerialNumber.split('_')[0];
     this.see({
       procInstId: newProcInstId,
       serialNumber: newSerialNumber,
-      procCode
+      procCode,
+      userId
     });
   }
 }
