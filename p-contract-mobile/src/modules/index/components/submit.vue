@@ -16,12 +16,12 @@
       <mt-header fixed>
         <mt-button icon="back" slot="left" @click="back"></mt-button>
       </mt-header>
-      <div class="mt40">
+      <div class="container">
         <Actions v-model="actionName" :btns="btns"></Actions>
         <SelectPerson v-model="redirectApproverId" v-show="visible"></SelectPerson>
-        <mt-field label="" placeholder="审批意见" type="textarea" rows="4" v-model="approveRemark"></mt-field>
+        <mt-field label="" placeholder="请输入审批意见" type="textarea" rows="4" v-model="approveRemark"></mt-field>
         <div class="tc">
-          <mt-button type="primary" class="submit" @click="submit">提 交</mt-button>
+          <mt-button class="submit" size="small" @click="submit">提 交</mt-button>
         </div>
       </div>
     </div>
@@ -43,6 +43,12 @@
         type: Object,
         default() {
           return '';
+        }
+      },
+      btns: {
+        type: Array,
+        default() {
+          return [];
         }
       }
     },
@@ -93,7 +99,8 @@
       }
     },
     watch: {
-      actionName() {
+      actionName(val) {
+        this.$emit('update:actionName', val);
         this.redirectApproverId = '';
       }
     },

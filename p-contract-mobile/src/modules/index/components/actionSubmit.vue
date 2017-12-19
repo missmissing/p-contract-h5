@@ -1,10 +1,16 @@
 <style type="text/scss" lang="scss" scoped>
-
+  .fixed {
+    position: fixed;
+    left: 0;
+    bottom: 0;
+    right: 0;
+    z-index: 1;
+  }
 </style>
 
 <template>
   <div>
-    <Actions v-model="actionName" @change="actionChange" :btns="btns"></Actions>
+    <Actions v-model="actionName" @change="actionChange" :btns="btns" class="fixed"></Actions>
     <Submit v-model="popupVisible" :actionName.sync="actionName" :btns="allBtns"></Submit>
   </div>
 </template>

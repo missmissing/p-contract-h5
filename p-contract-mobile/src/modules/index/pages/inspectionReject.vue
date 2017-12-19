@@ -7,7 +7,7 @@
     <mt-header fixed title="验收不合格查看">
       <mt-button icon="back" slot="left"></mt-button>
     </mt-header>
-    <div class="mt40">
+    <div class="container">
       <mt-cell title="采购订单号" :value="orderNo"></mt-cell>
       <mt-cell title="业务经办人" :value="basicForm.businessOperatorName"></mt-cell>
       <mt-cell title="业务部门" :value="basicForm.businessDeptName"></mt-cell>

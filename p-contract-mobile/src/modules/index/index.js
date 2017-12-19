@@ -33,7 +33,7 @@ new Vue({
   methods: {
     can() {
       const query = queryString();
-      const {userId} = query || {};
+      const {userId} = query;
       Api.login({userId}).then((res) => {
         const data = res.data.dataMap;
         const {userInfo} = data;
@@ -44,18 +44,16 @@ new Vue({
   },
   created() {
     this.can();
-    this.canRender = true;
-    const {processData} = this.$route.query;
-    if (!processData) {
-      return;
+
+    const {id, processData} = queryString();
+    if (processData) {
+      this.$store.commit(GET_PROCESSDATA, {
+        data: JSON.parse(decodeURIComponent(processData))
+      });
+      this.$store.commit(GET_ID, {
+        data: id
+      });
     }
-    const data = JSON.parse(processData);
-    this.$store.commit(GET_PROCESSDATA, {
-      data
-    });
-    this.$store.commit(GET_ID, {
-      data: data.userId
-    });
   },
   render(h) {
     if (this.canRender) {

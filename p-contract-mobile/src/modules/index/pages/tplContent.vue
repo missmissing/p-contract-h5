@@ -66,14 +66,15 @@
     methods: {
       setData() {
         const {contentModule, content} = this.info;
+        console.log(contentModule);
         this.content = content;
         const header = [];
         const footer = [];
         contentModule.forEach((module) => {
-          if (module.moduleType === 1) {
-            header.push(content);
-          } else if (module.moduleType === 2) {
-            footer.push(content);
+          if (module.moduleType === 'HEAD') {
+            header.push(module.moduleContent);
+          } else if (module.moduleType === 'TAIL') {
+            footer.push(module.moduleContent);
           }
         });
         this.header = header.join('');

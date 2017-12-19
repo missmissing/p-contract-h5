@@ -21,7 +21,7 @@
     <mt-header fixed title="模板查看">
       <mt-button icon="back" slot="left"></mt-button>
     </mt-header>
-    <div class="mt40">
+    <div class="container">
       <ContractBaseInfo :info="baseInfoForm"></ContractBaseInfo>
       <mt-navbar v-model="selected">
         <mt-tab-item :id="1">合同内容信息</mt-tab-item>

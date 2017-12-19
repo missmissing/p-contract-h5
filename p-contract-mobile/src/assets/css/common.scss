@@ -1,13 +1,13 @@
+* {
+  box-sizing: border-box;
+}
+
 a:hover {
   text-decoration: none;
 }
 
 .mt20 {
   margin-top: 20px;
-}
-
-.mt40 {
-  margin-top: 40px;
 }
 
 .wp100 {
@@ -27,6 +27,12 @@ a:hover {
 }
 
 /**custom css**/
+.container {
+  margin-top: 40px;
+  margin-bottom: 60px;
+  position: relative;
+}
+
 .title {
   padding: 10px;
 }
@@ -36,3 +42,19 @@ a:hover {
   height: 100%;
   background-color: #FFF;
 }
+
+/*cover mint-ui css*/
+
+.mint-cell {
+  min-height: 36px;
+}
+
+.mint-cell-wrapper {
+  font-size: 12px;
+}
+
+.mint-cell-title {
+  white-space: nowrap;
+  margin-right: 20px;
+}
+

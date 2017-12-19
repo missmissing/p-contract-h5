@@ -7,7 +7,7 @@
     <mt-header fixed title="采购订单查看">
       <mt-button icon="back" slot="left"></mt-button>
     </mt-header>
-    <div class="mt40">
+    <div class="container">
       <mt-cell title="采购订单" :value="orderForm.purchaseOrderNo"></mt-cell>
       <mt-cell title="供应商编码" :value="orderForm.supplierCode"></mt-cell>
       <mt-cell title="供应商名称" :value="orderForm.supplierName"></mt-cell>

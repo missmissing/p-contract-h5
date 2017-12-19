@@ -9,11 +9,12 @@ import {
   procTitles
 } from '../../../core/consts';
 import routerNames from '../router/consts';
+import {GET_PROCESSDATA, GET_ID} from '../store/consts';
 import Api from '../../../api/process';
 
 class Jump {
-  constructor(routeSelf) {
-    this.routeSelf = routeSelf;
+  constructor(vueInstance) {
+    this.vueInstance = vueInstance;
     this.approve = false;
   }
 
@@ -86,7 +87,10 @@ class Jump {
       userId
     } = row;
     const {
-      actions, approveInfo, sign, actName
+      actions,
+      approveInfo,
+      sign,
+      actName
     } = data;
     const processData = {
       userId,
@@ -110,7 +114,7 @@ class Jump {
       const {baseInfoForm} = approveInfo;
       const {id} = baseInfoForm;
       param = {
-        contractId: id
+        id
       };
       name = routerNames.con_Check;
     } else if (prMap.indexOf(procCode) > -1) {
@@ -149,20 +153,28 @@ class Jump {
 
     processData.procTitle = Jump.getProcTitle(procCode);
 
-    this.routeSelf.$router.push({
+    this.vueInstance.$store.commit(GET_PROCESSDATA, {
+      data: processData
+    });
+    this.vueInstance.$store.commit(GET_ID, {
+      data: param.id
+    });
+
+    this.vueInstance.$router.push({
       name,
       query: {
         ...param,
+        userId,
         processData: JSON.stringify(processData)
       }
     });
   }
 
   init() {
-    const {name} = this.routeSelf.$route;
+    const {name} = this.vueInstance.$route;
     const {
       userId, procInstId, serialNumber, procCode, sn
-    } = this.routeSelf.$route.query;
+    } = this.vueInstance.$route.query;
     if (name === routerNames.con_process_approve) {
       this.approve = true;
     }

@@ -2,6 +2,10 @@ import Http from '../../core/commonModel';
 import {domain} from '../consts';
 
 export default {
+  // 根据关键字获取创建人列表
+  getRemoteCreatePersonsByKeyWord(params) {
+    return Http.get(`${domain}/contract-web/contract/user/list`, params);
+  },
   // 获取比价单列表数据
   getQrList(params) {
     return Http.post(`${domain}/contract-web/contract/folio/list`, params);

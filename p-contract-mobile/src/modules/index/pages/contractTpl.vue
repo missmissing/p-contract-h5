@@ -7,17 +7,13 @@
     <mt-header fixed title="模板查看">
       <mt-button icon="back" slot="left"></mt-button>
     </mt-header>
-    <div class="mt40">
+    <div class="container">
       <TplBase :info="info" @changeVersion="getData"></TplBase>
-      <mt-navbar v-model="selected">
-        <mt-tab-item :id="1">基本信息</mt-tab-item>
-        <mt-tab-item :id="2">模板信息</mt-tab-item>
+      <mt-navbar v-model="selected" class="mt20">
+        <mt-tab-item :id="1">模板信息</mt-tab-item>
       </mt-navbar>
       <mt-tab-container v-model="selected">
         <mt-tab-container-item :id="1">
-          <TplContent :info="info"></TplContent>
-        </mt-tab-container-item>
-        <mt-tab-container-item :id="2">
           <TplContent :info="info"></TplContent>
         </mt-tab-container-item>
       </mt-tab-container>
@@ -36,11 +32,7 @@
     data() {
       return {
         selected: 1,
-        info: {},
-        processData: {
-          procTitle: '',
-          procInstId: ''
-        }
+        info: {}
       }
     },
     methods: {
@@ -50,21 +42,12 @@
           templateId: id
         }).then((res) => {
           this.info = res.data.dataMap;
-          console.log(this.info);
+          //console.log(this.info);
         });
       }
     },
     created() {
-      const processData = this.$store.state.processData;
-      if (!Object.keys(processData).length) {
-        return;
-      }
       this.getInfo();
-    },
-    watch: {
-      '$store.state.processData'() {
-        debugger
-      }
     },
     components: {
       TplBase,

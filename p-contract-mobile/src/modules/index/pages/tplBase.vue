@@ -4,6 +4,7 @@
 
 <template>
   <div>
+    <div></div>
     <mt-cell title="模板编号" :value="templateId"></mt-cell>
     <mt-cell title="文本名称" :value="form.templateName"></mt-cell>
     <mt-cell title="类型" :value="form.templateType | tplType"></mt-cell>
@@ -13,7 +14,7 @@
     <mt-cell title="创建人" :value="form.creatorName"></mt-cell>
     <mt-cell title="最近更新人" :value="form.operatorName"></mt-cell>
     <mt-cell title="更新时间" :value="form.updateTime"></mt-cell>
-    <mt-field label="申请原因" type="textarea" rows="4" :value="form.description" readonly></mt-field>
+    <mt-cell title="申请原因" :value="form.description"></mt-cell>
     <div v-if="showAbolish">
       <mt-cell title="废除日期" :value="form.endDate"></mt-cell>
       <mt-field label="废除原因" type="textarea" rows="4" :value="form.abolishReason" readonly></mt-field>

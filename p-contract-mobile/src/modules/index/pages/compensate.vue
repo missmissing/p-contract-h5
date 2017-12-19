@@ -7,7 +7,7 @@
     <mt-header fixed title="违约赔付查看">
       <mt-button icon="back" slot="left"></mt-button>
     </mt-header>
-    <div class="mt40">
+    <div class="container">
       <mt-cell title="合同编号" :value="basicForm.contractNo"></mt-cell>
       <mt-cell title="合同签署日期" :value="signTime | formatDate"></mt-cell>
       <mt-cell title="合同生效日期" :value="startTime | formatDate"></mt-cell>

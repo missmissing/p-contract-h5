@@ -1,5 +1,7 @@
 <style type="text/scss" lang="scss" scoped>
-
+  .mint-search-list {
+    padding-top: 84px;
+  }
 </style>
 
 <template>
@@ -21,7 +23,7 @@
         <mt-header fixed>
           <mt-button icon="back" slot="left" @click="back"></mt-button>
         </mt-header>
-        <div class="mt40">
+        <div class="container">
           <mt-search
             v-model="key"
             cancel-text="取消"
@@ -30,7 +32,7 @@
             <mt-cell
               v-for="item in result"
               :key="item.userId"
-              @click="select(item)">
+              @click.native="select(item)">
               <div slot="title"><span>{{item.userName}}</span><span>({{item.userId}})</span></div>
               <div>{{item.deptName}}</div>
             </mt-cell>
@@ -42,7 +44,8 @@
 </template>
 
 <script>
-  import Api from '../../../api/manageContract/index';
+  import _ from 'lodash';
+  import Api from '../../../api/manageContract';
 
   export default {
     props: {
@@ -72,7 +75,8 @@
       },
       getResult(keyword) {
         Api.getRemoteCreatePersonsByKeyWord({keyword}).then(res => {
-          this.options = res.data.dataMap;
+          console.log(res);
+          this.result = res.data.dataMap;
         });
       }
     },
@@ -82,14 +86,14 @@
           this.username = '';
         }
       },
-      key(val) {
-        if (!val) {
-          this.result = [];
-          return;
-        }
-        this.getResult(val);
-      }
+      key: _.debounce(function (val) {
+          if (!val) {
+            this.result = [];
+            return;
+          }
+          this.getResult(val);
+        }, 500
+      )
     }
-  }
-  ;
+  };
 </script>

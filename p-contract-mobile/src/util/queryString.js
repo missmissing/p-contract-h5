@@ -10,5 +10,5 @@ export default function (url) {
     });
     return queryString;
   }
-  return null;
+  return {};
 }
