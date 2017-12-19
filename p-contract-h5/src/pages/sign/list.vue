@@ -121,7 +121,7 @@
         width="70"
         label="税率">
         <template scope="scope">
-          {{scope.row.taxRate ? `${scope.row.taxRate}%` : ''}}
+          {{scope.row.taxRate !== null ? `${scope.row.taxRate}%` : '0%'}}
         </template>
       </el-table-column>
       <el-table-column
@@ -138,7 +138,7 @@
         </template>
       </el-table-column>
     </el-table>
-    <div class="mt20">
+    <div class="clearfix mt20 mb20">
       <el-pagination
         class="fr"
         @size-change="handleSizeChange"
@@ -156,9 +156,9 @@
 <script>
   import Api from '../../api/sign';
   import ContractApi from '../../api/manageContract';
-  import { routerNames, prTypeMap } from '../../core/consts';
+  import {routerNames, prTypeMap} from '../../core/consts';
   import comLoading from '../../mixins/comLoading';
-  import { formatDate } from '../../filters/moment';
+  import {formatDate} from '../../filters/moment';
   import SelectPerson from '../../components/selectPerson.vue';
   import cutZero from '../../util/cutZero';
 
@@ -210,7 +210,7 @@
         Api.query(this.form).then((res) => {
           console.log(res);
           this.comLoading(false);
-          const { total, data } = res.data.dataMap;
+          const {total, data} = res.data.dataMap;
           this.tableData = data;
           this.totalPage = total;
         }).catch(() => {
@@ -221,7 +221,7 @@
         const id = row.purchaseOrderId;
         return {
           name: routerNames.con_purchase_see,
-          query: { id }
+          query: {id}
         };
       },
       formatDateRange(value) {
@@ -244,7 +244,7 @@
         console.log(row, val);
       },
       createFilter(result) {
-        return result.map((item) => ({ value: item.companyCode, label: `${item.companyCode} ${item.company}` }));
+        return result.map((item) => ({value: item.companyCode, label: `${item.companyCode} ${item.company}`}));
       },
       querySearch(queryString, cb) {
         if (!queryString) {
