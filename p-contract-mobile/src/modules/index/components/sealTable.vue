@@ -28,19 +28,19 @@
         </div>
       </template>
     </el-table-column>
-    <el-table-column prop="attachType" label="附件类型" width="150px">
+    <el-table-column prop="attachType" label="附件类型" width="100px">
       <template scope="scope">
         {{scope.row.attachType | attachmentType}}
       </template>
     </el-table-column>
-    <el-table-column prop="fileName" label="文件名称" width="200px">
+    <el-table-column prop="fileName" label="文件名称" min-width="200px">
       <template scope="scope">
-        <a :href="scope.row.fileUrl" target="_blank">{{scope.row.fileName}}</a>
+        <a :href="scope.row.fileUrl" target="_blank" class="file-item">{{scope.row.fileName}}</a>
       </template>
     </el-table-column>
-    <el-table-column prop="haveSale" label="是否盖章" width="150px">
+    <el-table-column prop="haveSale" label="是否盖章" width="100px">
       <template scope="scope">
-        <el-checkbox :checked="scope.row.haveSale"></el-checkbox>
+        {{scope.row.haveSale | yesOrNo}}
       </template>
     </el-table-column>
     <el-table-column prop="remark" label="备注"></el-table-column>
@@ -51,6 +51,7 @@
   import {formatDate} from '../../../filters/moment';
   import attachmentType from '../../../filters/attachmentType';
   import printChapter from '../../../filters/printChapter';
+  import yesOrNo from '../../../filters/yesOrNo';
 
   export default {
     props: {
@@ -66,16 +67,14 @@
       }
     },
     data() {
-      return {
-
-      };
+      return {};
     },
-    methods: {
-
-    },
+    methods: {},
     filters: {
       formatDate,
-      attachmentType
+      attachmentType,
+      printChapter,
+      yesOrNo
     }
   };
 </script>

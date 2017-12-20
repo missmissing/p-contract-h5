@@ -66,7 +66,6 @@
     methods: {
       setData() {
         const {contentModule, content} = this.info;
-        console.log(contentModule);
         this.content = content;
         const header = [];
         const footer = [];

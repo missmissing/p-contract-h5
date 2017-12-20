@@ -5,51 +5,42 @@ export default (Router) => {
     routes: [
       {
         path: '/tpl',
-        component(resolve) {
-          require(['../pages/contractTpl.vue'], resolve);
-        },
+        component: () => import('../pages/contractTpl/contractTpl.vue'),
         name: routerNames.con_tpl_see
       },
       {
         path: '/sign',
-        component(resolve) {
-          require(['../pages/sign.vue'], resolve);
-        },
+        component: () => import('../pages/sign/sign.vue'),
         name: routerNames.con_purchase_see
       },
       {
         path: '/reject',
-        component(resolve) {
-          require(['../pages/inspectionReject.vue'], resolve);
-        },
+        component: () => import('../pages/inspectionReject/inspectionReject.vue'),
         name: routerNames.con_check_reject_see
       },
       {
         path: '/sate',
-        component(resolve) {
-          require(['../pages/compensate.vue'], resolve);
-        },
+        component: () => import('../pages/compensate/compensate.vue'),
         name: routerNames.con_compensate_see
       },
       {
         path: '/contract',
-        component(resolve) {
-          require(['../pages/contract.vue'], resolve);
-        },
+        component: () => import('../pages/contract/contract.vue'),
         name: routerNames.con_Check
       },
       {
+        path: '/protocol',
+        component: () => import('../pages/agreement/agreement.vue'),
+        name: routerNames.con_querySlaveProtocol
+      },
+      {
         path: '/see',
-        component(resolve) {
-          require(['../components/toPage.vue'], resolve);
-        },
+        component: () => import('../components/toPage.vue'),
         name: routerNames.con_process_see
       },
       {
         path: '/approve',
-        component(resolve) {
-          require(['../components/toPage.vue'], resolve);
-        },
+        component: () => import('../components/toPage.vue'),
         name: routerNames.con_process_approve
       }
     ]

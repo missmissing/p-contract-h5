@@ -11,24 +11,25 @@
     <mt-cell title="状态" :value="form.templateStatus | tplStatus"></mt-cell>
     <mt-cell title="生效时间" :value="form.startDate"></mt-cell>
     <mt-cell title="终止时间" :value="form.endDate"></mt-cell>
+    <mt-cell title="版本" :value="form.version"></mt-cell>
     <mt-cell title="创建人" :value="form.creatorName"></mt-cell>
     <mt-cell title="最近更新人" :value="form.operatorName"></mt-cell>
     <mt-cell title="更新时间" :value="form.updateTime"></mt-cell>
     <mt-cell title="申请原因" :value="form.description"></mt-cell>
     <div v-if="showAbolish">
       <mt-cell title="废除日期" :value="form.endDate"></mt-cell>
-      <mt-field label="废除原因" type="textarea" rows="4" :value="form.abolishReason" readonly></mt-field>
+      <mt-cell title="废除原因" :value="form.abolishReason"></mt-cell>
     </div>
   </div>
 </template>
 
 <script>
   import _ from 'lodash';
-  import supportModel from '../../../api/support';
-  import {formatDate} from '../../../filters/moment';
-  import tplStatus from '../../../filters/tplStatus';
-  import tplType from '../../../filters/tplType';
-  import {tplMap} from '../../../core/consts';
+  import supportModel from '../../../../api/support/index';
+  import {formatDate} from '../../../../filters/moment';
+  import tplStatus from '../../../../filters/tplStatus';
+  import tplType from '../../../../filters/tplTypeMap';
+  import {tplMap} from '../../../../core/consts';
 
   export default {
     props: {

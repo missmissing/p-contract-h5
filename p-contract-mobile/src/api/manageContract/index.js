@@ -26,18 +26,16 @@ export default {
   },
   // 根据合同id查询合同详情
   getContractDetailByContractId(params) {
-    const {contractId, operate} = params;
-    if (operate) {
-      return Http.get(`${domain}/contract-web/contract/id/${contractId}`, params);
-    }
-    return Http.get(`${domain}/contract-web/contract/id/${contractId}`);
+    const {contractId} = params;
+    delete params.contractId;
+    return Http.get(`${domain}/contract-web/contract/id/${contractId}`, params);
   },
   /** ***相关数据-订单页****/
   getOrderTableData(params) {
     return Http.post(`${domain}/contract-web/purchaseOrder/getInitiatePo`, params);
   },
   /** ***标签页****/
-  /** ****变更合同接口start******/
+
   // 根据合同编号获取变更合同的数据
   getUpdateInfo(params) {
     if (typeof params === 'object') {
@@ -45,10 +43,15 @@ export default {
     }
     return Http.get(`${domain}/contract-web/contract/no/${params}`);
   },
-  /** ****变更合同接口end******/
   /** ***从协议接口****/
   // 根据从协议ID查询从协议详情
   getAgreenmentDetail(params) {
     return Http.get(`${domain}/contract-web/protocol/detail/id/${params}`);
+  },
+  getConList(params) {
+    return Http.post(`${domain}/contract-web/contract/query`, params);
+  },
+  getQrDetail(params) {
+    return Http.get(`${domain}/contract-web/contract/folio`, params);
   }
 };

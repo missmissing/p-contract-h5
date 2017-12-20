@@ -12,10 +12,6 @@
       flex: 1;
       font-size: 12px;
       margin: 0 10px;
-      background-color: #FFF;
-      &.active {
-
-      }
     }
   }
 </style>
@@ -26,8 +22,9 @@
       v-for="btn in btns"
       size="small"
       :key="btn"
-      :class="{'tab-item':true,active:selected===btn}"
-      @click="clickBtn(btn)">
+      :type="selected===btn?'primary':'default'"
+      :class="{'tab-item':true}"
+      @click.native="clickBtn(btn)">
       {{btn}}
     </mt-button>
   </div>

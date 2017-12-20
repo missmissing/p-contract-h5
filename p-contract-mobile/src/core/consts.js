@@ -25,12 +25,6 @@ export default {
   }
 };
 
-
-export const tplTypeMap = {
-  TEMPLATE: '合同模板',
-  TEXT: '合同文本'
-};
-
 export const tplMap = ['CRS_Contract_CreateTemplate', 'CRS_Contract_UpdateTemplate', 'CRS_Contract_DeleteTemplate'];
 
 export const contractMap = ['CRS_Contract_Create', 'CRS_Contract_Update'];
@@ -47,6 +41,16 @@ export const protocolMap = ['CRS_Contract_CreateProtocol'];
 
 export const processListMap = ['BACKLOG', 'STARTED', 'FINISHED'];
 
+export const tplTypeMap = {
+  TEMPLATE: '合同模板',
+  TEXT: '合同文本'
+};
+
+export const tplType = {
+  1: '合同模板',
+  2: '合同文本'
+};
+
 export const contractTextTypeMap = {
   1: '模板合同',
   2: '非模板合同'
@@ -60,7 +64,7 @@ export const prTypeMap = {
 
 export const contractPatternMap = {
   1: '单一合同',
-  2: '简易合同',
+  2: '固定格式合同',
   3: '框架合同',
   4: '意向合同'
 };

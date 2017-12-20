@@ -23,10 +23,10 @@
 </template>
 
 <script>
-  import Api from '../../../api/support';
+  import Api from '../../../../api/support/index';
   import TplBase from './tplBase.vue';
   import TplContent from './tplContent.vue';
-  import ActionSumit from '../components/actionSubmit.vue';
+  import ActionSumit from '../../components/actionSubmit.vue';
 
   export default {
     data() {

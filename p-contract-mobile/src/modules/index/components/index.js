@@ -1,7 +1,6 @@
 import {
   Table,
-  TableColumn,
-  Checkbox
+  TableColumn
 } from 'element-ui';
 import {
   Header,
@@ -14,14 +13,14 @@ import {
   TabContainerItem,
   Field,
   Popup,
-  Search
+  Search,
+  Actionsheet
 } from 'mint-ui';
 
 export default (Vue) => {
   //element-ui
   Vue.use(Table);
   Vue.use(TableColumn);
-  Vue.use(Checkbox);
   //mint-ui
   Vue.component(Header.name, Header);
   Vue.component(Button.name, Button);
@@ -34,4 +33,5 @@ export default (Vue) => {
   Vue.component(Field.name, Field);
   Vue.component(Popup.name, Popup);
   Vue.component(Search.name, Search);
+  Vue.component(Actionsheet.name, Actionsheet);
 };

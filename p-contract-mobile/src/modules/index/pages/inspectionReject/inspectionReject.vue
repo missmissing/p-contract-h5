@@ -18,62 +18,60 @@
       <mt-cell title="验收责任人" :value="basicForm.responsibleName"></mt-cell>
       <mt-cell title="合同生效日期" :value="basicForm.startTime | formatDate"></mt-cell>
       <mt-cell title="合同验收日期" :value="contractCheckDate | formatDate"></mt-cell>
+      <mt-navbar v-model="selected" class="mb20">
+        <mt-tab-item :id="1">验收信息</mt-tab-item>
+        <mt-tab-item :id="2">处理结论</mt-tab-item>
+      </mt-navbar>
+      <mt-tab-container v-model="selected">
+        <mt-tab-container-item :id="1">
+          <el-table
+            :data="checkItems"
+            border
+            class="wp100">
+            <el-table-column
+              type="index"
+              label="序号"
+              width="80">
+            </el-table-column>
+            <el-table-column
+              prop="serviceName"
+              label="验收要素"
+              min-width="130">
+            </el-table-column>
+            <el-table-column
+              prop="serviceRequire"
+              label="参考标准"
+              min-width="130">
+            </el-table-column>
+            <el-table-column
+              prop="checkResult"
+              label="检查结果"
+              min-width="130">
+            </el-table-column>
+            <el-table-column
+              prop="remark"
+              label="备注">
+            </el-table-column>
+          </el-table>
+        </mt-tab-container-item>
+        <mt-tab-container-item :id="2">
+          <mt-cell title="选择" :value="schemeType | handleResult"></mt-cell>
+          <mt-cell title="不合格原因" :value="unqualifiedReason"></mt-cell>
+          <mt-cell title="处理方案" :value="treatmentScheme"></mt-cell>
+        </mt-tab-container-item>
+      </mt-tab-container>
     </div>
-    <mt-navbar v-model="selected">
-      <mt-tab-item :id="1">基本信息</mt-tab-item>
-      <mt-tab-item :id="2">验收信息</mt-tab-item>
-      <mt-tab-item :id="3">处理结论</mt-tab-item>
-    </mt-navbar>
-    <mt-tab-container v-model="selected" class="mt49">
-      <mt-tab-container-item :id="1">
-
-      </mt-tab-container-item>
-      <mt-tab-container-item :id="2">
-        <el-table
-          :data="checkItems"
-          border
-          class="wp100">
-          <el-table-column
-            type="index"
-            label="序号"
-            width="80">
-          </el-table-column>
-          <el-table-column
-            prop="serviceName"
-            label="验收要素"
-            min-width="130">
-          </el-table-column>
-          <el-table-column
-            prop="serviceRequire"
-            label="参考标准"
-            min-width="130">
-          </el-table-column>
-          <el-table-column
-            prop="checkResult"
-            label="检查结果"
-            min-width="130">
-          </el-table-column>
-          <el-table-column
-            prop="remark"
-            label="备注">
-          </el-table-column>
-        </el-table>
-      </mt-tab-container-item>
-      <mt-tab-container-item :id="3">
-        <mt-cell title="选择" :value="schemeType | handleResult"></mt-cell>
-        <mt-field label="不合格原因" type="textarea" rows="4" :value="unqualifiedReason" readonly></mt-field>
-        <mt-field label="处理方案" type="textarea" rows="4" :value="treatmentScheme" readonly></mt-field>
-      </mt-tab-container-item>
-    </mt-tab-container>
+    <ActionSumit></ActionSumit>
   </div>
 </template>
 
 <script>
-  import Api from '../../../api/performance';
-  import {contractTextTypeMap, contractPatternMap} from '../../../core/consts';
-  import routerNames from '../router/consts';
-  import handleResult from '../../../filters/handleResult';
-  import {formatDate} from '../../../filters/moment';
+  import Api from '../../../../api/performance/index';
+  import ActionSumit from '../../components/actionSubmit.vue';
+  import {contractTextTypeMap, contractPatternMap} from '../../../../core/consts';
+  import routerNames from '../../router/consts';
+  import handleResult from '../../../../filters/handleResult';
+  import {formatDate} from '../../../../filters/moment';
 
   export default {
     data() {
@@ -149,10 +147,12 @@
       this.procInstId = procInstId;
       this.procTitle = procTitle;
     },
-    components: {},
     filters: {
       formatDate,
       handleResult
+    },
+    components: {
+      ActionSumit
     }
   };
 </script>

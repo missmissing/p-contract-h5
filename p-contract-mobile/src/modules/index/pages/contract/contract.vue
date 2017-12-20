@@ -1,34 +1,20 @@
 <style type="text/scss" lang="scss" scoped>
-  .mint-navbar {
-    overflow-x: auto;
-    &::-webkit-scrollbar {
-      display: none;
-    }
-  }
 
-  .mint-tab-item {
-    padding-left: 15px;
-    padding-right: 15px;
-    white-space: nowrap;
-    &.is-selected {
-      margin-bottom: 0;
-    }
-  }
 </style>
 
 <template>
   <div>
-    <mt-header fixed title="模板查看">
+    <mt-header fixed title="合同查看">
       <mt-button icon="back" slot="left"></mt-button>
     </mt-header>
     <div class="container">
       <ContractBaseInfo :info="baseInfoForm"></ContractBaseInfo>
-      <mt-navbar v-model="selected">
+      <mt-navbar v-model="selected" class="mt20 mb20">
         <mt-tab-item :id="1">合同内容信息</mt-tab-item>
         <mt-tab-item :id="2">合同财务信息</mt-tab-item>
         <mt-tab-item :id="3">合同验收与样品信息</mt-tab-item>
         <mt-tab-item :id="4">合同附件及盖章信息</mt-tab-item>
-        <mt-tab-item :id="5">备注</mt-tab-item>
+        <mt-tab-item :id="5" v-if="cardRemarkInfoForm.otherInstruction">备注</mt-tab-item>
         <mt-tab-item :id="6">相关数据</mt-tab-item>
         <mt-tab-item :id="7">其他</mt-tab-item>
       </mt-navbar>
@@ -46,7 +32,13 @@
           <SealInfo :info="cardSealInfoForm" :moreData="{baseInfoForm}"></SealInfo>
         </mt-tab-container-item>
         <mt-tab-container-item :id="5">
-          <mt-field label="" type="textarea" rows="4" :value="cardRemarkInfoForm.otherInstruction" readonly></mt-field>
+          <mt-cell :value="cardRemarkInfoForm.otherInstruction"></mt-cell>
+        </mt-tab-container-item>
+        <mt-tab-container-item :id="6">
+          <CardRelatedInfo></CardRelatedInfo>
+        </mt-tab-container-item>
+        <mt-tab-container-item :id="7">
+          <OtherInfo :info="baseInfoForm"></OtherInfo>
         </mt-tab-container-item>
       </mt-tab-container>
     </div>
@@ -54,11 +46,14 @@
 </template>
 
 <script>
+  import Api from '../../../../api/manageContract';
   import ContractBaseInfo from './contractBaseInfo.vue';
   import ContractContentInfo from './contractContentInfo.vue';
   import CardFinanceInfo from './cardFinanceInfo.vue';
   import CardContCheckInfo from './cardContCheckInfo.vue';
   import SealInfo from './sealInfo.vue';
+  import CardRelatedInfo from './cardRelatedInfo.vue';
+  import OtherInfo from './otherInfo.vue';
 
   export default {
     data() {
@@ -72,12 +67,37 @@
         cardRemarkInfoForm: {}
       };
     },
+    created() {
+      this.getInfo();
+    },
+    methods: {
+      getInfo() {
+        const params = {
+          contractId: this.$store.state.id,
+          operate: 'PROCESS'
+        };
+        Api.getContractDetailByContractId(params).then((res) => {
+          const data = res.data.dataMap;
+          this.initData(data);
+        });
+      },
+      initData(data) {
+        const {baseInfoForm, cardContentInfoForm, cardFinanceInfoForm, cardContCheckInfoForm, cardSealInfoForm} = data;
+        this.baseInfoForm = baseInfoForm;
+        this.cardContentInfoForm = cardContentInfoForm;
+        this.cardFinanceInfoForm = cardFinanceInfoForm;
+        this.cardContCheckInfoForm = cardContCheckInfoForm;
+        this.cardSealInfoForm = cardSealInfoForm;
+      }
+    },
     components: {
       ContractBaseInfo,
       ContractContentInfo,
       CardFinanceInfo,
       CardContCheckInfo,
-      SealInfo
+      SealInfo,
+      CardRelatedInfo,
+      OtherInfo
     }
   };
 </script>

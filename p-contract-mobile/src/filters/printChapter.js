@@ -3,4 +3,10 @@ const map = {
   2: '法人章'
 };
 
-export default arr => arr.map((item) => map[item]).join(',');
+export default (arr) => {
+  if (arr.length === 1) {
+    return map[arr[0]];
+  }
+
+  return arr.map(item => map[item]).join(',');
+};

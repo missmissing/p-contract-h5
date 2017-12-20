@@ -18,32 +18,30 @@
       <mt-cell title="涉及赔付" :value="compensateStatus | yesOrNo"></mt-cell>
       <mt-cell title="赔付类型" :value="compensateType | sateType"></mt-cell>
       <mt-cell title="赔付金额" :value="compensateMoney"></mt-cell>
+      <mt-navbar v-model="selected" class="mb20">
+        <mt-tab-item :id="1">处理结论</mt-tab-item>
+      </mt-navbar>
+      <mt-tab-container v-model="selected">
+        <mt-tab-container-item :id="1">
+          <mt-cell title="选择" :value="handleForm.schemeType | handleResult"></mt-cell>
+          <mt-cell title="违约/赔付原因" :value="handleForm.violateReason"></mt-cell>
+          <mt-cell title="处理方案" t :value="handleForm.treatmentScheme"></mt-cell>
+        </mt-tab-container-item>
+      </mt-tab-container>
     </div>
-    <mt-navbar v-model="selected">
-      <mt-tab-item :id="1">基本信息</mt-tab-item>
-      <mt-tab-item :id="2">处理结论</mt-tab-item>
-    </mt-navbar>
-    <mt-tab-container v-model="selected">
-      <mt-tab-container-item :id="1">
-
-      </mt-tab-container-item>
-      <mt-tab-container-item :id="2">
-        <mt-cell title="选择" :value="handleForm.schemeType | handleResult"></mt-cell>
-        <mt-field label="违约/赔付原因" type="textarea" rows="4" :value="handleForm.violateReason" readonly></mt-field>
-        <mt-field label="处理方案" type="textarea" rows="4" :value="handleForm.treatmentScheme" readonly></mt-field>
-      </mt-tab-container-item>
-    </mt-tab-container>
+    <ActionSumit></ActionSumit>
   </div>
 </template>
 
 <script>
-  import Api from '../../../api/performance';
-  import {formatDate} from '../../../filters/moment';
-  import defaultParty from '../../../filters/defaultParty';
-  import sateType from '../../../filters/compensateType';
-  import yesOrNo from '../../../filters/yesOrNo';
-  import handleResult from '../../../filters/handleResult';
-  import routerNames from '../router/consts';
+  import Api from '../../../../api/performance/index';
+  import ActionSumit from '../../components/actionSubmit.vue';
+  import {formatDate} from '../../../../filters/moment';
+  import defaultParty from '../../../../filters/defaultParty';
+  import sateType from '../../../../filters/compensateType';
+  import yesOrNo from '../../../../filters/yesOrNo';
+  import handleResult from '../../../../filters/handleResult';
+  import routerNames from '../../router/consts';
 
   export default {
     data() {
@@ -118,13 +116,15 @@
       this.procInstId = procInstId;
       this.procTitle = procTitle;
     },
-    components: {},
     filters: {
       formatDate,
       defaultParty,
       yesOrNo,
       sateType,
       handleResult
+    },
+    components: {
+      ActionSumit
     }
   };
 </script>

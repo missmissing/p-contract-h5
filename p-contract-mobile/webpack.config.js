@@ -5,7 +5,7 @@ module.exports = (conf) => {
   }
   Object.assign(config.externals, {vue: 'Vue'});
 
-  const contract = 'http://cm.dev.rs.com';
+  const contract = 'http://cm.uat1.rs.com';
   config.devServer = {
     proxy: {
       '/api-contract/**': {
