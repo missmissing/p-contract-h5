@@ -1774,6 +1774,13 @@
                        :is="tabs"></component>
           </transition>
         </el-tab-pane>
+        <el-tab-pane label="历史信息" name="conHistory" v-if="operateType==='query'&&!procInstId">
+          <el-table :data="historyDatas">
+            <el-table-column prop="operatorName" label="操作者"></el-table-column>
+            <el-table-column prop="operateTime" label="操作时间"></el-table-column>
+            <el-table-column prop="operateType" label="操作类型"></el-table-column>
+          </el-table>
+        </el-tab-pane>
       </el-tabs>
     </el-card>
     <el-dialog title="新增合同供应商信息" :visible.sync="cardContentInfoForm.dialogAddContractSupplier" size="small">
@@ -2543,7 +2550,8 @@
         },
         isSubmit: false,
         btnSubmitStatus: true, // 提交按钮状态
-        btnSaveStatus: true // 保存按钮状态
+        btnSaveStatus: true, // 保存按钮状态,
+        historyDatas: []
       };
     },
     computed: {
@@ -2945,6 +2953,10 @@
                 value: 4,
                 label: '订单信息'
               }];
+          }
+
+          if (this.operateType === 'query' && !this.procInstId) {
+            this.historyDatas = data.simpleContract || [];
           }
         } else {
           this.baseInfoForm.contractTypeName = this.getContractModelName(parseInt(params.contractType, 10));// 初始化合同模式
