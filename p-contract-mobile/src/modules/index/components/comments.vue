@@ -26,7 +26,7 @@
 </style>
 
 <template>
-  <div>
+  <div v-if="lists.length">
     <div class="title">审批意见</div>
     <div class="main">
       <div class="item" v-for="list in lists" :key="list.commentId">
