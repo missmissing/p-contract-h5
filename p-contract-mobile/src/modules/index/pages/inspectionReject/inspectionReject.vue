@@ -19,10 +19,14 @@
       <mt-cell title="合同生效日期" :value="basicForm.startTime | formatDate"></mt-cell>
       <mt-cell title="合同验收日期" :value="contractCheckDate | formatDate"></mt-cell>
       <mt-navbar v-model="selected" class="mb20">
+        <mt-tab-item :id="0">审批意见</mt-tab-item>
         <mt-tab-item :id="1">验收信息</mt-tab-item>
         <mt-tab-item :id="2">处理结论</mt-tab-item>
       </mt-navbar>
       <mt-tab-container v-model="selected">
+        <mt-tab-container-item :id="0">
+          <Comments></Comments>
+        </mt-tab-container-item>
         <mt-tab-container-item :id="1">
           <el-table
             :data="checkItems"
@@ -68,6 +72,7 @@
 <script>
   import Api from '../../../../api/performance/index';
   import ActionSumit from '../../components/actionSubmit.vue';
+  import Comments from '../../components/comments.vue';
   import {contractTextTypeMap, contractPatternMap} from '../../../../core/consts';
   import routerNames from '../../router/consts';
   import handleResult from '../../../../filters/handleResult';
@@ -152,7 +157,8 @@
       handleResult
     },
     components: {
-      ActionSumit
+      ActionSumit,
+      Comments
     }
   };
 </script>

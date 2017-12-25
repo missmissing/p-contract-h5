@@ -28,11 +28,15 @@
         <mt-cell :value="baseInfoForm.sealReason" v-if="baseInfoForm.radioSealOrder==0"></mt-cell>
       </div>
       <mt-navbar v-model="selected" class="mt20 mb20">
+        <mt-tab-item :id="1">审批意见</mt-tab-item>
         <mt-tab-item :id="3">合同附件及盖章信息</mt-tab-item>
         <mt-tab-item :id="4">补充信息</mt-tab-item>
         <mt-tab-item :id="5" v-if="cardRelatedInfoForm.contractList.length">相关数据</mt-tab-item>
       </mt-navbar>
       <mt-tab-container v-model="selected">
+        <mt-tab-container-item :id="1">
+          <Comments></Comments>
+        </mt-tab-container-item>
         <mt-tab-container-item :id="3">
           <template v-if="cardSealInfoForm.sealAttachments&&cardSealInfoForm.sealAttachments.length"
                     v-for="(item,index) in cardSealInfoForm.sealAttachments">
@@ -63,6 +67,7 @@
   import printOpts from '../../../../filters/printOpts';
   import ActionSumit from '../../components/actionSubmit.vue';
   import SealTable from '../../components/sealTable.vue';
+  import Comments from '../../components/comments.vue';
 
   export default {
     data() {
@@ -118,7 +123,8 @@
     },
     components: {
       SealTable,
-      ActionSumit
+      ActionSumit,
+      Comments
     }
   };
 </script>

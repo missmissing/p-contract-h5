@@ -10,6 +10,7 @@
     <div class="container">
       <ContractBaseInfo :info="baseInfoForm"></ContractBaseInfo>
       <mt-navbar v-model="selected" class="mt20 mb20">
+        <mt-tab-item :id="0">审批意见</mt-tab-item>
         <mt-tab-item :id="1">合同内容信息</mt-tab-item>
         <mt-tab-item :id="2">合同财务信息</mt-tab-item>
         <mt-tab-item :id="3">合同验收与样品信息</mt-tab-item>
@@ -19,6 +20,9 @@
         <mt-tab-item :id="7">其他</mt-tab-item>
       </mt-navbar>
       <mt-tab-container v-model="selected">
+        <mt-tab-container-item :id="0">
+          <Comments></Comments>
+        </mt-tab-container-item>
         <mt-tab-container-item :id="1">
           <ContractContentInfo :info="cardContentInfoForm" :moreData="{baseInfoForm}"></ContractContentInfo>
         </mt-tab-container-item>
@@ -42,6 +46,7 @@
         </mt-tab-container-item>
       </mt-tab-container>
     </div>
+    <ActionSumit></ActionSumit>
   </div>
 </template>
 
@@ -54,6 +59,8 @@
   import SealInfo from './sealInfo.vue';
   import CardRelatedInfo from './cardRelatedInfo.vue';
   import OtherInfo from './otherInfo.vue';
+  import Comments from '../../components/comments.vue';
+  import ActionSumit from '../../components/actionSubmit.vue';
 
   export default {
     data() {
@@ -97,7 +104,9 @@
       CardContCheckInfo,
       SealInfo,
       CardRelatedInfo,
-      OtherInfo
+      OtherInfo,
+      Comments,
+      ActionSumit
     }
   };
 </script>

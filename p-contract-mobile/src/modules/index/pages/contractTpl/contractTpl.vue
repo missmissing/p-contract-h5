@@ -8,12 +8,16 @@
       <mt-button icon="back" slot="left"></mt-button>
     </mt-header>
     <div class="container">
-      <TplBase :info="info" @changeVersion="getData"></TplBase>
+      <TplBase :info="info"></TplBase>
       <mt-navbar v-model="selected" class="mt20">
-        <mt-tab-item :id="1">模板信息</mt-tab-item>
+        <mt-tab-item :id="1">审批意见</mt-tab-item>
+        <mt-tab-item :id="2">模板信息</mt-tab-item>
       </mt-navbar>
       <mt-tab-container v-model="selected">
         <mt-tab-container-item :id="1">
+          <Comments></Comments>
+        </mt-tab-container-item>
+        <mt-tab-container-item :id="2">
           <TplContent :info="info"></TplContent>
         </mt-tab-container-item>
       </mt-tab-container>
@@ -26,6 +30,7 @@
   import Api from '../../../../api/support/index';
   import TplBase from './tplBase.vue';
   import TplContent from './tplContent.vue';
+  import Comments from '../../components/comments.vue';
   import ActionSumit from '../../components/actionSubmit.vue';
 
   export default {
@@ -52,6 +57,7 @@
     components: {
       TplBase,
       TplContent,
+      Comments,
       ActionSumit
     }
   };

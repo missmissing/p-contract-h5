@@ -14,13 +14,17 @@
       <mt-cell title="订单类型" :value="orderForm.type"></mt-cell>
       <mt-cell title="公司编码" :value="orderForm.companyCode"></mt-cell>
       <mt-navbar v-model="selected" class="mb20">
-        <mt-tab-item :id="1">订单信息</mt-tab-item>
-        <mt-tab-item :id="2">合同信息</mt-tab-item>
-        <mt-tab-item :id="3" v-if="serverData.length">服务验收信息</mt-tab-item>
-        <mt-tab-item :id="4" v-if="receiveInfo.length">收货信息</mt-tab-item>
+        <mt-tab-item :id="1">审批意见</mt-tab-item>
+        <mt-tab-item :id="2">订单信息</mt-tab-item>
+        <mt-tab-item :id="3">合同信息</mt-tab-item>
+        <mt-tab-item :id="4" v-if="serverData.length">服务验收信息</mt-tab-item>
+        <mt-tab-item :id="5" v-if="receiveInfo.length">收货信息</mt-tab-item>
       </mt-navbar>
       <mt-tab-container v-model="selected">
         <mt-tab-container-item :id="1">
+          <Comments></Comments>
+        </mt-tab-container-item>
+        <mt-tab-container-item :id="2">
           <el-table
             :data="orderData"
             border
@@ -87,7 +91,7 @@
             </el-table-column>
           </el-table>
         </mt-tab-container-item>
-        <mt-tab-container-item :id="2">
+        <mt-tab-container-item :id="3">
           <mt-cell title="合同编号" :value="contractForm.contractNo"></mt-cell>
           <mt-cell title="合同模式" :value="contractForm.contractBusinessTypeThirdName"></mt-cell>
           <mt-cell title="合同类型" :value="contractForm.contractType"></mt-cell>
@@ -95,7 +99,7 @@
           <mt-cell title="生效日期" :value="contractForm.startTime | formatDate"></mt-cell>
           <mt-cell title="终止日期" :value="contractForm.endTime | formatDate"></mt-cell>
         </mt-tab-container-item>
-        <mt-tab-container-item :id="3">
+        <mt-tab-container-item :id="4">
           <el-table
             :data="serverData"
             border
@@ -119,7 +123,7 @@
             </el-table-column>
           </el-table>
         </mt-tab-container-item>
-        <mt-tab-container-item :id="4">
+        <mt-tab-container-item :id="5">
           <el-table :data="receiveInfo" border class="wp100">
             <el-table-column type="expand">
               <template scope="scope">
@@ -166,6 +170,7 @@
 <script>
   import Api from '../../../../api/sign/index';
   import ActionSumit from '../../components/actionSubmit.vue';
+  import Comments from '../../components/comments.vue';
   import {formatDate} from '../../../../filters/moment';
   import contractType from '../../../../filters/contractType';
   import {prTypeMap, contractPatternMap} from '../../../../core/consts';
@@ -255,7 +260,8 @@
       formatDate
     },
     components: {
-      ActionSumit
+      ActionSumit,
+      Comments
     }
   };
 </script>

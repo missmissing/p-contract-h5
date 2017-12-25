@@ -1,12 +1,6 @@
 <style type="text/scss" lang="scss" scoped>
-  .title {
-    padding: 5px 10px;
-    border-bottom: 1px solid #dedede;
-    font-size: 16px;
-  }
-
   .main {
-    padding: 20px;
+    padding: 10px;
   }
 
   .item {
@@ -27,7 +21,6 @@
 
 <template>
   <div v-if="lists.length">
-    <div class="title">审批意见</div>
     <div class="main">
       <div class="item" v-for="list in lists" :key="list.commentId">
         <div class="header">
@@ -44,6 +37,7 @@
 
 <script>
   import Api from '../../../api/process';
+  import {formatTime} from '../../../filters/moment';
 
   export default {
     data() {
@@ -68,6 +62,9 @@
         return;
       }
       this.getLists();
+    },
+    filters: {
+      formatTime
     }
   };
 </script>

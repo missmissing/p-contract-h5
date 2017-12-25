@@ -19,10 +19,14 @@
       <mt-cell title="赔付类型" :value="compensateType | sateType"></mt-cell>
       <mt-cell title="赔付金额" :value="compensateMoney"></mt-cell>
       <mt-navbar v-model="selected" class="mb20">
-        <mt-tab-item :id="1">处理结论</mt-tab-item>
+        <mt-tab-item :id="1">审批意见</mt-tab-item>
+        <mt-tab-item :id="2">处理结论</mt-tab-item>
       </mt-navbar>
       <mt-tab-container v-model="selected">
         <mt-tab-container-item :id="1">
+          <Comments></Comments>
+        </mt-tab-container-item>
+        <mt-tab-container-item :id="2">
           <mt-cell title="选择" :value="handleForm.schemeType | handleResult"></mt-cell>
           <mt-cell title="违约/赔付原因" :value="handleForm.violateReason"></mt-cell>
           <mt-cell title="处理方案" t :value="handleForm.treatmentScheme"></mt-cell>
@@ -36,6 +40,7 @@
 <script>
   import Api from '../../../../api/performance/index';
   import ActionSumit from '../../components/actionSubmit.vue';
+  import Comments from '../../components/comments.vue';
   import {formatDate} from '../../../../filters/moment';
   import defaultParty from '../../../../filters/defaultParty';
   import sateType from '../../../../filters/compensateType';
@@ -124,7 +129,8 @@
       handleResult
     },
     components: {
-      ActionSumit
+      ActionSumit,
+      Comments
     }
   };
 </script>

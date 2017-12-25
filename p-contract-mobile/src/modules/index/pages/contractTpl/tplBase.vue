@@ -4,7 +4,6 @@
 
 <template>
   <div>
-    <div></div>
     <mt-cell title="模板编号" :value="templateId"></mt-cell>
     <mt-cell title="文本名称" :value="form.templateName"></mt-cell>
     <mt-cell title="类型" :value="form.templateType | tplType"></mt-cell>
@@ -16,6 +15,32 @@
     <mt-cell title="最近更新人" :value="form.operatorName"></mt-cell>
     <mt-cell title="更新时间" :value="form.updateTime"></mt-cell>
     <mt-cell title="申请原因" :value="form.description"></mt-cell>
+    <el-table
+      v-if="fileList.length"
+      :data="fileList"
+      class="wp100">
+      <el-table-column
+        prop="fileName"
+        label="文件名"
+        min-width="200">
+        <template scope="scope">
+          <a class="router-link" :href="`${download}${scope.row.fileId}`" target="_blank">{{scope.row.fileName}}</a>
+        </template>
+      </el-table-column>
+      <el-table-column
+        prop="operatorName"
+        width="100"
+        label="上传人">
+      </el-table-column>
+      <el-table-column
+        prop="createTime"
+        width="130"
+        label="上传时间">
+        <template scope="scope">
+          {{scope.row.createTime | formatDate}}
+        </template>
+      </el-table-column>
+    </el-table>
     <div v-if="showAbolish">
       <mt-cell title="废除日期" :value="form.endDate"></mt-cell>
       <mt-cell title="废除原因" :value="form.abolishReason"></mt-cell>
@@ -30,6 +55,7 @@
   import tplStatus from '../../../../filters/tplStatus';
   import tplType from '../../../../filters/tplTypeMap';
   import {tplMap} from '../../../../core/consts';
+  import {downloadUrl} from '../../../../api/consts';
 
   export default {
     props: {
@@ -42,8 +68,9 @@
     },
     data() {
       return {
-        templateId: this.$route.query.id,
+        templateId: this.$store.state.id,
         showAbolish: false,
+        download: downloadUrl,
         form: {
           templateCode: '',
           templateName: '',
