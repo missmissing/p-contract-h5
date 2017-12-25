@@ -134,7 +134,8 @@
           spinnerType: 'triple-bounce'
         });
         Api.submitProcess(result).then(() => {
-
+          window._____processCenterPageAction('pagebackrefresh');
+          window._____processCenterPageAction('addnativebadgenum');
         }).finally(() => {
           Indicator.close();
           this.disabled = false;

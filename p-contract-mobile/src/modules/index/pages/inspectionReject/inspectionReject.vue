@@ -4,9 +4,7 @@
 
 <template>
   <div>
-    <mt-header fixed title="验收不合格查看">
-      <mt-button icon="back" slot="left"></mt-button>
-    </mt-header>
+    <Header title="验收不合格查看"></Header>
     <div class="container">
       <mt-cell title="采购订单号" :value="orderNo"></mt-cell>
       <mt-cell title="业务经办人" :value="basicForm.businessOperatorName"></mt-cell>
@@ -71,6 +69,7 @@
 
 <script>
   import Api from '../../../../api/performance/index';
+  import Header from '../../components/header.vue';
   import ActionSumit from '../../components/actionSubmit.vue';
   import Comments from '../../components/comments.vue';
   import {contractTextTypeMap, contractPatternMap} from '../../../../core/consts';
@@ -157,6 +156,7 @@
       handleResult
     },
     components: {
+      Header,
       ActionSumit,
       Comments
     }

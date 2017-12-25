@@ -4,9 +4,7 @@
 
 <template>
   <div>
-    <mt-header fixed title="违约赔付查看">
-      <mt-button icon="back" slot="left"></mt-button>
-    </mt-header>
+    <Header title="违约赔付查看"></Header>
     <div class="container">
       <mt-cell title="合同编号" :value="basicForm.contractNo"></mt-cell>
       <mt-cell title="合同签署日期" :value="signTime | formatDate"></mt-cell>
@@ -39,6 +37,7 @@
 
 <script>
   import Api from '../../../../api/performance/index';
+  import Header from '../../components/header.vue';
   import ActionSumit from '../../components/actionSubmit.vue';
   import Comments from '../../components/comments.vue';
   import {formatDate} from '../../../../filters/moment';
@@ -129,6 +128,7 @@
       handleResult
     },
     components: {
+      Header,
       ActionSumit,
       Comments
     }

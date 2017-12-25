@@ -4,9 +4,7 @@
 
 <template>
   <div>
-    <mt-header fixed title="从协议查看">
-      <mt-button icon="back" slot="left"></mt-button>
-    </mt-header>
+    <Header title="从协议查看"></Header>
     <div class="container">
       <mt-cell title="从协议编号" :value="protocolNo" v-if="protocolNo"></mt-cell>
       <mt-cell title="关联合同编号" :value="code"></mt-cell>
@@ -65,6 +63,7 @@
 <script>
   import Api from '../../../../api/manageContract';
   import printOpts from '../../../../filters/printOpts';
+  import Header from '../../components/header.vue';
   import ActionSumit from '../../components/actionSubmit.vue';
   import SealTable from '../../components/sealTable.vue';
   import Comments from '../../components/comments.vue';
@@ -122,6 +121,7 @@
       printOpts
     },
     components: {
+      Header,
       SealTable,
       ActionSumit,
       Comments

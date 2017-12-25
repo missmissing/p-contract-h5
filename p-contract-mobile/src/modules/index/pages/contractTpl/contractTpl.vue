@@ -4,9 +4,7 @@
 
 <template>
   <div>
-    <mt-header fixed title="模板查看">
-      <mt-button icon="back" slot="left"></mt-button>
-    </mt-header>
+    <Header title="模板查看"></Header>
     <div class="container">
       <TplBase :info="info"></TplBase>
       <mt-navbar v-model="selected" class="mt20">
@@ -28,6 +26,7 @@
 
 <script>
   import Api from '../../../../api/support/index';
+  import Header from '../../components/header.vue';
   import TplBase from './tplBase.vue';
   import TplContent from './tplContent.vue';
   import Comments from '../../components/comments.vue';
@@ -55,6 +54,7 @@
       this.getInfo();
     },
     components: {
+      Header,
       TplBase,
       TplContent,
       Comments,

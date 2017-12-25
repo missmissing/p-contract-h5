@@ -4,9 +4,7 @@
 
 <template>
   <div>
-    <mt-header fixed title="合同查看">
-      <mt-button icon="back" slot="left"></mt-button>
-    </mt-header>
+    <Header title="合同查看"></Header>
     <div class="container">
       <ContractBaseInfo :info="baseInfoForm"></ContractBaseInfo>
       <mt-navbar v-model="selected" class="mt20 mb20">
@@ -52,6 +50,7 @@
 
 <script>
   import Api from '../../../../api/manageContract';
+  import Header from '../../components/header.vue';
   import ContractBaseInfo from './contractBaseInfo.vue';
   import ContractContentInfo from './contractContentInfo.vue';
   import CardFinanceInfo from './cardFinanceInfo.vue';
@@ -98,6 +97,7 @@
       }
     },
     components: {
+      Header,
       ContractBaseInfo,
       ContractContentInfo,
       CardFinanceInfo,

@@ -10,6 +10,7 @@ import getRouter from './router';
 import queryString from '../../util/queryString';
 import Api from '../../api';
 import {GET_PROCESSDATA, GET_ID} from './store/consts';
+import './util/loadScripts';
 import '../../assets/css/common.scss';
 
 Vue.use(Router);

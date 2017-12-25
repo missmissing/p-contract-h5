@@ -4,9 +4,7 @@
 
 <template>
   <div>
-    <mt-header fixed title="采购订单查看">
-      <mt-button icon="back" slot="left"></mt-button>
-    </mt-header>
+    <Header title="采购订单查看"></Header>
     <div class="container">
       <mt-cell title="采购订单" :value="orderForm.purchaseOrderNo" v-if="orderForm.purchaseOrderNo"></mt-cell>
       <mt-cell title="供应商编码" :value="orderForm.supplierCode"></mt-cell>
@@ -169,6 +167,7 @@
 
 <script>
   import Api from '../../../../api/sign/index';
+  import Header from '../../components/header.vue';
   import ActionSumit from '../../components/actionSubmit.vue';
   import Comments from '../../components/comments.vue';
   import {formatDate} from '../../../../filters/moment';
@@ -260,6 +259,7 @@
       formatDate
     },
     components: {
+      Header,
       ActionSumit,
       Comments
     }
