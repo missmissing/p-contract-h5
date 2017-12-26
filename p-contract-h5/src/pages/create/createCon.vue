@@ -2021,9 +2021,9 @@
       const validateStartDateRules = (rule, value, callback) => {
         const endTime = this.cardContentInfoForm.endTime;
         if (this.operateType === 'create' || (this.operateType === 'update' && this.updateForm.updateMode === 2)) {
-          if (formatDate(new Date(value)) > formatDate(new Date())) {
+          /*if (formatDate(new Date(value)) > formatDate(new Date())) {
             callback(new Error('合同生效日期必须小于等于今天'));
-          }
+          }*/
         }
         if (endTime) {
           if (formatDate(new Date(value)) > formatDate(new Date(endTime))) {
