@@ -125,7 +125,7 @@
       border
       highlight-current-row
       class="wp100">
-      <el-table-column prop="id" label="合同编号" width="130px">
+      <el-table-column prop="id" label="合同编号" width="140px">
         <template scope="scope">
           <router-link class="router-link"
                        :to="{path:'/ConCreate/conCheck', query:{contractNo:''+tableData[scope.$index].contractNo}}">
