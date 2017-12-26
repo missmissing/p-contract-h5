@@ -2409,6 +2409,7 @@
           }
         },
         cardRelatedInfoForm: {
+          protocolNo: null,
           contractList: [],
           pageNo: 1,
           pageSize: 10,
@@ -4188,6 +4189,7 @@
       },
       initRelatedInfo() {
         this.comLoading();
+        this.cardRelatedInfoForm.protocolNo = this.cardContentInfoForm.tableSupplierInfo[0].code;
         Api.getConList(this.cardRelatedInfoForm).then((data) => {
           const dataMap = data.data.dataMap;
           if (dataMap) {
