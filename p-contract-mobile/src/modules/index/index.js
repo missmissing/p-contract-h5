@@ -9,7 +9,7 @@ import errorHanding from '../../core/errorHanding';
 import getRouter from './router';
 import queryString from '../../util/queryString';
 import Api from '../../api';
-import {GET_PROCESSDATA, GET_ID} from './store/consts';
+import Jump from './util/jump';
 import './util/loadScripts';
 import '../../assets/css/common.scss';
 
@@ -34,27 +34,20 @@ new Vue({
   methods: {
     can() {
       const query = queryString();
-      const {userId} = query;
-      Api.login({userId}).then((res) => {
-        const data = res.data.dataMap;
-        const {userInfo} = data;
-        LocalStore.set('user', userInfo);
-        this.canRender = true;
-      });
+      const {employeecode} = query;
+      Api.login({userId: employeecode})
+        .then((res) => {
+          const data = res.data.dataMap;
+          const {userInfo} = data;
+          LocalStore.set('user', userInfo);
+        }).then(() => new Jump(this).init())
+        .then(() => {
+          this.canRender = true;
+        });
     }
   },
   created() {
     this.can();
-
-    const {id, processData} = queryString();
-    if (processData) {
-      this.$store.commit(GET_PROCESSDATA, {
-        data: JSON.parse(decodeURIComponent(processData))
-      });
-      this.$store.commit(GET_ID, {
-        data: id
-      });
-    }
   },
   render(h) {
     if (this.canRender) {

@@ -2,8 +2,12 @@ import {env} from '../../../util/env';
 
 const createScript = function (url) {
   const script = document.createElement('script');
-  script.src = url;
+  script.setAttribute('type', 'text/javascript');
+  script.setAttribute('src', url);
   document.body.appendChild(script);
+  script.onload = () => {
+    window._____processCenterPageAction('pageloaded');
+  };
 };
 
 if (env === 'prd') {
@@ -12,4 +16,3 @@ if (env === 'prd') {
   createScript('http://10.11.25.157:8000/public/moa/static/crossdomainpage.min.js');
 }
 
-window._____processCenterPageAction('pageloaded');

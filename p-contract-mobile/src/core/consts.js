@@ -27,9 +27,7 @@ export default {
 
 export const tplMap = ['CRS_Contract_CreateTemplate', 'CRS_Contract_UpdateTemplate', 'CRS_Contract_DeleteTemplate'];
 
-export const contractMap = ['CRS_Contract_Create', 'CRS_Contract_Update'];
-
-export const contractDel = ['CRS_Contract_Delete'];
+export const contractMap = ['CRS_Contract_Create', 'CRS_Contract_Update','CRS_Contract_Delete'];
 
 export const prMap = ['CRS_Contract_CreatePO'];
 

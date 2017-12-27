@@ -4,44 +4,54 @@ export default (Router) => {
   const routes = new Router({
     routes: [
       {
-        path: '/tpl',
+        path: '/tpl/create',
         component: () => import('../pages/contractTpl/contractTpl.vue'),
-        name: routerNames.con_tpl_see
+        name: routerNames.con_tpl_create
       },
       {
-        path: '/sign',
+        path: '/tpl/update',
+        component: () => import('../pages/contractTpl/contractTpl.vue'),
+        name: routerNames.con_tpl_update
+      },
+      {
+        path: '/tpl/delete',
+        component: () => import('../pages/contractTpl/contractTpl.vue'),
+        name: routerNames.con_tpl_delete
+      },
+      {
+        path: '/sign/create',
         component: () => import('../pages/sign/sign.vue'),
-        name: routerNames.con_purchase_see
+        name: routerNames.con_sign_create
       },
       {
-        path: '/reject',
+        path: '/reject/create',
         component: () => import('../pages/inspectionReject/inspectionReject.vue'),
-        name: routerNames.con_check_reject_see
+        name: routerNames.con_check_reject_create
       },
       {
-        path: '/sate',
+        path: '/sate/create',
         component: () => import('../pages/compensate/compensate.vue'),
-        name: routerNames.con_compensate_see
+        name: routerNames.con_compensate_create
       },
       {
-        path: '/contract',
+        path: '/contract/create',
         component: () => import('../pages/contract/contract.vue'),
-        name: routerNames.con_Check
+        name: routerNames.con_create
       },
       {
-        path: '/protocol',
+        path: '/contract/update',
+        component: () => import('../pages/contract/contract.vue'),
+        name: routerNames.con_update
+      },
+      {
+        path: '/contract/delete',
+        component: () => import('../pages/contract/contract.vue'),
+        name: routerNames.con_delete
+      },
+      {
+        path: '/protocol/create',
         component: () => import('../pages/agreement/agreement.vue'),
-        name: routerNames.con_querySlaveProtocol
-      },
-      {
-        path: '/see',
-        component: () => import('../components/toPage.vue'),
-        name: routerNames.con_process_see
-      },
-      {
-        path: '/approve',
-        component: () => import('../components/toPage.vue'),
-        name: routerNames.con_process_approve
+        name: routerNames.con_protocol_create
       }
     ]
   });

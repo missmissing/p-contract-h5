@@ -160,7 +160,7 @@
     },
     computed: {
       show() {
-        return !!this.$store.state.processData.approve;
+        return !!this.$store.state.processData.type === 1;
       },
       visible() {
         return this.commonBtns.indexOf(this.actionName) > -1;

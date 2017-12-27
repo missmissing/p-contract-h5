@@ -2,81 +2,80 @@ import {
   tplMap,
   prMap,
   contractMap,
-  contractDel,
   compensateMap,
   inspectRejectMap,
-  protocolMap,
-  procTitles
+  protocolMap
 } from '../../../core/consts';
 import routerNames from '../router/consts';
 import {GET_PROCESSDATA, GET_ID} from '../store/consts';
+import queryString from '../../../util/queryString';
 import Api from '../../../api/process';
 
 class Jump {
   constructor(vueInstance) {
     this.vueInstance = vueInstance;
-    this.approve = false;
   }
-
-  static getProcTitle(procCode) {
-    let title = '';
-    switch (procCode) {
-      case tplMap[0]:
-        title = procTitles[0];
-        break;
-      case tplMap[1]:
-        title = procTitles[1];
-        break;
-      case tplMap[2]:
-        title = procTitles[2];
-        break;
-      case contractMap[0]:
-        title = procTitles[3];
-        break;
-      case contractMap[1]:
-        title = procTitles[4];
-        break;
-      case contractDel[0]:
-        title = procTitles[5];
-        break;
-      case protocolMap[0]:
-        title = procTitles[6];
-        break;
-      case prMap[0]:
-        title = procTitles[7];
-        break;
-      case compensateMap[0]:
-        title = procTitles[8];
-        break;
-      case inspectRejectMap[0]:
-        title = procTitles[9];
-        break;
-      default:
-        break;
-    }
-    return title;
-  }
-
 
   see(row) {
-    const {procInstId, serialNumber, procCode} = row;
-    if (this.approve) {
-      Api.getApproveNode({
+    const {procInstId, serialNumber, type} = row;
+    const procCode = this.getProcCode();
+    row.procCode = procCode;
+    if (type === 1) {
+      return Api.getApproveNode({
         serialNumber,
         procCode
       }).then((res) => {
         const data = res.data.dataMap;
         this.toPage(row, data);
       });
-    } else {
-      Api.getStartedProcNodes({
-        procInstId,
-        procCode
-      }).then((res) => {
-        const data = res.data.dataMap;
-        this.toPage(row, data);
-      });
     }
+    return Api.getStartedProcNodes({
+      procInstId,
+      procCode
+    }).then((res) => {
+      const data = res.data.dataMap;
+      this.toPage(row, data);
+    });
+  }
+
+  getProcCode() {
+    const {name} = this.vueInstance.$route;
+    let procCode;
+    switch (name) {
+      case routerNames.con_tpl_create:
+        procCode = tplMap[0];
+        break;
+      case routerNames.con_tpl_update:
+        procCode = tplMap[1];
+        break;
+      case routerNames.con_tpl_delete:
+        procCode = tplMap[2];
+        break;
+      case routerNames.con_create:
+        procCode = contractMap[0];
+        break;
+      case routerNames.con_update:
+        procCode = contractMap[1];
+        break;
+      case routerNames.con_delete:
+        procCode = contractMap[2];
+        break;
+      case routerNames.con_purchase_create:
+        procCode = prMap[0];
+        break;
+      case routerNames.con_compensate_create:
+        procCode = compensateMap[0];
+        break;
+      case routerNames.con_check_reject_create:
+        procCode = inspectRejectMap[0];
+        break;
+      case routerNames.con_protocol_create:
+        procCode = protocolMap[0];
+        break;
+      default:
+        break;
+    }
+    return procCode;
   }
 
   toPage(row, data) {
@@ -84,7 +83,8 @@ class Jump {
       procInstId,
       serialNumber,
       procCode,
-      userId
+      userId,
+      type
     } = row;
     const {
       actions,
@@ -93,98 +93,63 @@ class Jump {
       actName
     } = data;
     const processData = {
+      type,
       userId,
       procInstId,
       actions,
       serialNumber,
       procCode,
       sign,
-      roleName: actName,
-      approve: this.approve
+      roleName: actName
     };
-    let param = {};
-    let name = null;
-    if (tplMap.indexOf(procCode) > -1) {
-      const {id} = approveInfo;
-      param = {
-        id
-      };
-      name = routerNames.con_tpl_see;
-    } else if (contractMap.indexOf(procCode) > -1) {
+    let id;
+    const {name} = this.vueInstance.$route;
+    if (name === routerNames.con_tpl_create) {
+      id = approveInfo.id;
+    } else if (name === routerNames.con_tpl_update) {
+      id = approveInfo.id;
+    } else if (name === routerNames.con_tpl_delete) {
+      id = approveInfo.id;
+    } else if (name === routerNames.con_create) {
       const {baseInfoForm} = approveInfo;
-      const {id} = baseInfoForm;
-      param = {
-        id
-      };
-      name = routerNames.con_Check;
-    } else if (prMap.indexOf(procCode) > -1) {
-      const {purchaseOrderId} = approveInfo;
-      param = {
-        id: purchaseOrderId
-      };
-      name = routerNames.con_purchase_see;
-    } else if (contractDel.indexOf(procCode) > -1) {
+      id = baseInfoForm.id;
+    } else if (name === routerNames.con_update) {
       const {baseInfoForm} = approveInfo;
-      const {id} = baseInfoForm;
-      param = {
-        id
-      };
-      name = routerNames.con_stop_see;
-    } else if (compensateMap.indexOf(procCode) > -1) {
-      param = {
-        id: procInstId
-      };
-      name = routerNames.con_compensate_see;
-    } else if (inspectRejectMap.indexOf(procCode) > -1) {
-      param = {
-        id: procInstId
-      };
-      name = routerNames.con_check_reject_see;
-    } else if (protocolMap.indexOf(procCode) > -1) {
-      const {id} = approveInfo;
-      param = {
-        id
-      };
-      name = routerNames.con_querySlaveProtocol;
-    } else {
-      console.log('找不到相应类型', procCode);
-      return;
+      id = baseInfoForm.id;
+    } else if (name === routerNames.con_delete) {
+      const {baseInfoForm} = approveInfo;
+      id = baseInfoForm.id;
+    } else if (name === routerNames.con_sign_create) {
+      id = approveInfo.purchaseOrderId;
+    } else if (name === routerNames.con_compensate_create) {
+      id = procInstId;
+    } else if (name === routerNames.con_check_reject_create) {
+      id = approveInfo.id;
+    } else if (name === routerNames.con_protocol_create) {
+      id = approveInfo.id;
     }
-
-    processData.procTitle = Jump.getProcTitle(procCode);
 
     this.vueInstance.$store.commit(GET_PROCESSDATA, {
       data: processData
     });
     this.vueInstance.$store.commit(GET_ID, {
-      data: param.id
-    });
-
-    this.vueInstance.$router.push({
-      name,
-      query: {
-        ...param,
-        userId,
-        processData: JSON.stringify(processData)
-      }
+      data: id
     });
   }
 
   init() {
-    const {name} = this.vueInstance.$route;
     const {
-      userId, procInstId, serialNumber, procCode, sn
-    } = this.vueInstance.$route.query;
-    if (name === routerNames.con_process_approve) {
-      this.approve = true;
-    }
-    const newSerialNumber = serialNumber || sn;
-    const newProcInstId = procInstId || newSerialNumber.split('_')[0];
-    this.see({
+      type,
+      employeecode,
+      processInstanceId,
+      sn
+    } = queryString();
+    const newProcInstId = processInstanceId || sn.split('_')[0];
+    return this.see({
       procInstId: newProcInstId,
-      serialNumber: newSerialNumber,
-      procCode,
-      userId
+      serialNumber: sn,
+      userId: employeecode,
+      type //1：待办 2：已办 3：我发起
     });
   }
 }
