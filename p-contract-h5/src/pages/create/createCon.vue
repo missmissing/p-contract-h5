@@ -379,6 +379,7 @@
                     placeholder="请输入备注"
                     type="textarea"
                     :rows="4"></el-input>
+                  <span style="color:#FF0000;font-size:12px;">注：备注内容将会被添加到合同条款中</span>
                 </el-form-item>
               </el-row>
             </el-card>
@@ -1099,6 +1100,7 @@
                     placeholder="请输入备注"
                     type="textarea"
                     :rows="4"></el-input>
+                  <span style="color:#FF0000;font-size:12px;">注：备注内容将会被添加到合同条款中</span>
                 </el-form-item>
               </el-row>
             </el-card>
@@ -1776,8 +1778,18 @@
         </el-tab-pane>
         <el-tab-pane label="历史信息" name="conHistory" v-if="operateType==='query'&&!procInstId">
           <el-table :data="historyDatas">
+            <el-table-column prop="procInstId" label="流程id">
+              <template scope="scope">
+                <div v-if="[2,4].indexOf(scope.row.contractType)>-1||!scope.row.procInstId">自动创建</div>
+                <div class="router-link" @click="goToProcess(scope.row)" v-else>
+                  {{scope.row.procInstId}}
+                </div>
+              </template>
+            </el-table-column>
             <el-table-column prop="operatorName" label="操作者"></el-table-column>
-            <el-table-column prop="operateTime" label="操作时间"></el-table-column>
+            <el-table-column prop="operateTime" label="操作时间">
+              <template scope="scope">{{scope.row.operateTime | formatDate}}</template>
+            </el-table-column>
             <el-table-column prop="operateType" label="操作类型"></el-table-column>
           </el-table>
         </el-tab-pane>
@@ -2012,6 +2024,7 @@
   import Process from '../../components/process.vue';
   import {formatDate} from '../../filters/moment';
   import {routerNames, contractMap} from '../../core/consts';
+  import toPage from '../../assets/js/toPage';
 
   const user = store.get('user');
 
@@ -2409,7 +2422,7 @@
           }
         },
         cardRelatedInfoForm: {
-          protocolNo: null,
+          supplierCode: null,
           contractList: [],
           pageNo: 1,
           pageSize: 10,
@@ -4189,7 +4202,7 @@
       },
       initRelatedInfo() {
         this.comLoading();
-        this.cardRelatedInfoForm.protocolNo = this.cardContentInfoForm.tableSupplierInfo[0].code;
+        this.cardRelatedInfoForm.supplierCode = this.cardContentInfoForm.tableSupplierInfo[0].code;
         Api.getConList(this.cardRelatedInfoForm).then((data) => {
           const dataMap = data.data.dataMap;
           if (dataMap) {
@@ -4227,6 +4240,9 @@
         if (val === 2) {
           this.handleContractTextTypeChange(this.baseInfoForm.contractTextType);
         }
+      },
+      goToProcess(row) {
+        toPage.call(this, row);
       }
     },
     components: {
