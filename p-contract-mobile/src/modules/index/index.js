@@ -18,7 +18,7 @@ Vue.use(Vuex);
 component(Vue);
 
 loadScripts(() => {
-  window._____processCenterPageAction('setheaderdisplay', {show: false});
+  window._____processCenterPageAction('setpageloadedheaderhide');
 
   const router = getRouter(Router);
   const store = vueStore(Vuex);
@@ -42,9 +42,6 @@ loadScripts(() => {
         const {userInfo} = data;
         LocalStore.set('user', userInfo);
       });
-    },
-    mounted() {
-      window._____processCenterPageAction('pageloaded');
     },
     watch: {
       $route() {
