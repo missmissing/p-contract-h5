@@ -50,8 +50,10 @@
         });
       }
     },
-    created() {
-      this.getInfo();
+    watch: {
+      '$store.state.id'() {
+        this.getInfo();
+      }
     },
     components: {
       Header,

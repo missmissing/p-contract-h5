@@ -244,15 +244,8 @@
         this.receiveInfo = poReceiveInfo || [];
       },
     },
-    created() {
-      const processData = this.$store.state.processData;
-      if (!Object.keys(processData).length) {
-        return;
-      }
+    '$store.state.id'() {
       this.getInfo();
-      const {procInstId, procTitle} = processData;
-      this.procInstId = procInstId;
-      this.procTitle = procTitle;
     },
     filters: {
       contractType,

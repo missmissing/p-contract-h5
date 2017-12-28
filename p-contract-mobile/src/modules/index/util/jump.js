@@ -8,38 +8,16 @@ import {
 } from '../../../core/consts';
 import routerNames from '../router/consts';
 import {GET_PROCESSDATA, GET_ID} from '../store/consts';
-import queryString from '../../../util/queryString';
 import Api from '../../../api/process';
 
 class Jump {
-  constructor(vueInstance) {
-    this.vueInstance = vueInstance;
-  }
-
-  see(row) {
-    const {procInstId, serialNumber, type} = row;
-    const procCode = this.getProcCode();
-    row.procCode = procCode;
-    if (type === 1) {
-      return Api.getApproveNode({
-        serialNumber,
-        procCode
-      }).then((res) => {
-        const data = res.data.dataMap;
-        this.toPage(row, data);
-      });
-    }
-    return Api.getStartedProcNodes({
-      procInstId,
-      procCode
-    }).then((res) => {
-      const data = res.data.dataMap;
-      this.toPage(row, data);
-    });
+  constructor(store, router) {
+    this.Store = store;
+    this.Router = router;
   }
 
   getProcCode() {
-    const {name} = this.vueInstance.$route;
+    const {name} = this.Router.currentRoute;
     let procCode;
     switch (name) {
       case routerNames.con_tpl_create:
@@ -78,6 +56,28 @@ class Jump {
     return procCode;
   }
 
+  see(row) {
+    const {procInstId, serialNumber, type} = row;
+    const procCode = this.getProcCode();
+    row.procCode = procCode;
+    if (type === 1) {
+      return Api.getApproveNode({
+        serialNumber,
+        procCode
+      }).then((res) => {
+        const data = res.data.dataMap;
+        this.toPage(row, data);
+      });
+    }
+    return Api.getStartedProcNodes({
+      procInstId,
+      procCode
+    }).then((res) => {
+      const data = res.data.dataMap;
+      this.toPage(row, data);
+    });
+  }
+
   toPage(row, data) {
     const {
       procInstId,
@@ -103,7 +103,7 @@ class Jump {
       roleName: actName
     };
     let id;
-    const {name} = this.vueInstance.$route;
+    const {name} = this.Router.currentRoute;
     if (name === routerNames.con_tpl_create) {
       id = approveInfo.id;
     } else if (name === routerNames.con_tpl_update) {
@@ -129,10 +129,10 @@ class Jump {
       id = approveInfo.id;
     }
 
-    this.vueInstance.$store.commit(GET_PROCESSDATA, {
+    this.Store.commit(GET_PROCESSDATA, {
       data: processData
     });
-    this.vueInstance.$store.commit(GET_ID, {
+    this.Store.commit(GET_ID, {
       data: id
     });
   }
@@ -143,8 +143,9 @@ class Jump {
       employeecode,
       processInstanceId,
       sn
-    } = queryString();
+    } = this.Router.currentRoute.query;
     const newProcInstId = processInstanceId || sn.split('_')[0];
+    console.log(this.Router);
     return this.see({
       procInstId: newProcInstId,
       serialNumber: sn,

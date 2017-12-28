@@ -110,11 +110,7 @@
           });
       },
     },
-    created() {
-      const processData = this.$store.state.processData;
-      if (!Object.keys(processData).length) {
-        return;
-      }
+    '$store.state.id'() {
       this.getInfo();
     },
     filters: {

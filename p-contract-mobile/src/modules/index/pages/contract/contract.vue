@@ -73,9 +73,6 @@
         cardRemarkInfoForm: {}
       };
     },
-    created() {
-      this.getInfo();
-    },
     methods: {
       getInfo() {
         const params = {
@@ -95,6 +92,9 @@
         this.cardContCheckInfoForm = cardContCheckInfoForm;
         this.cardSealInfoForm = cardSealInfoForm;
       }
+    },
+    '$store.state.id'() {
+      this.getInfo();
     },
     components: {
       Header,

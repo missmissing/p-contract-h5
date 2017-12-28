@@ -1,9 +1,5 @@
 <template>
-  <transition name="slide">
-    <keep-alive>
-      <router-view></router-view>
-    </keep-alive>
-  </transition>
+  <router-view></router-view>
 </template>
 
 <script>

@@ -110,15 +110,8 @@
         this.toDetail.query.contractNo = contractNo;
       }
     },
-    created() {
-      const processData = this.$store.state.processData;
-      if (!Object.keys(processData).length) {
-        return;
-      }
+    '$store.state.id'() {
       this.getInfo();
-      const {procTitle, procInstId} = processData;
-      this.procInstId = procInstId;
-      this.procTitle = procTitle;
     },
     filters: {
       formatDate,

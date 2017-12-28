@@ -40,14 +40,20 @@ new Vue({
           const data = res.data.dataMap;
           const {userInfo} = data;
           LocalStore.set('user', userInfo);
-        }).then(() => new Jump(this).init())
+        })
+        // .then(() => new Jump(store, router).init())
         .then(() => {
           this.canRender = true;
         });
     }
   },
-  created() {
+  mounted() {
     this.can();
+  },
+  watch: {
+    $route() {
+      new Jump(store, router).init();
+    }
   },
   render(h) {
     if (this.canRender) {
