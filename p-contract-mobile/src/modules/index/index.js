@@ -19,7 +19,6 @@ component(Vue);
 
 loadScripts(() => {
   window._____processCenterPageAction('setheaderdisplay', {show: false});
-  window._____processCenterPageAction('pageloaded');
 
   const router = getRouter(Router);
   const store = vueStore(Vuex);
@@ -51,8 +50,11 @@ loadScripts(() => {
           });
       }
     },
-    mounted() {
+    created() {
       this.can();
+    },
+    mounted() {
+      window._____processCenterPageAction('pageloaded');
     },
     watch: {
       $route() {
