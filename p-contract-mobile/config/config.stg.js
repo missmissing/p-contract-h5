@@ -1,5 +1,5 @@
 const env = {
-  domain: 'https://hm-cm.mklmall.com'
+  domain: 'https://cm.mklmall.com'
 };
 
 window.__config_env = env;

@@ -1,5 +1,5 @@
 const env = {
-  domain: 'https://hm-contract.chinaredstar.com'
+  domain: 'https://contract.chinaredstar.com'
 };
 
 window.__config_env = env;
