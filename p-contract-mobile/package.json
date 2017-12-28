@@ -4,11 +4,11 @@
   "description": "create project",
   "private": true,
   "scripts": {
-    "start": "rstool --server --port 9001 --autoOpenBrowser",
-    "dev": "rstool --env dev --hash --extract --cdn",
-    "uat1": "rstool --env uat1 --hash --extract --cdn",
-    "stg": "rstool --env stg --hash --extract --cdn",
-    "prd": "rstool --env prd --hash --extract --cdn ",
+    "start": "rstool --server --port 9001 --autoOpenBrowser --useRem",
+    "dev": "rstool --env dev --hash --extract --cdn --useRem",
+    "uat1": "rstool --env uat1 --hash --extract --cdn --useRem",
+    "stg": "rstool --env stg --hash --extract --cdn --useRem",
+    "prd": "rstool --env prd --hash --extract --cdn --useRem",
     "lint": "eslint --ext .js,.vue src",
     "lint-fix": "eslint --fix --ext .js,.vue src"
   },

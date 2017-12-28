@@ -10,55 +10,60 @@ import getRouter from './router';
 import queryString from '../../util/queryString';
 import Api from '../../api';
 import Jump from './util/jump';
-import './util/loadScripts';
+import loadScripts from './util/loadScripts';
 import '../../assets/css/common.scss';
 
 Vue.use(Router);
 Vue.use(Vuex);
 component(Vue);
 
-const router = getRouter(Router);
-const store = vueStore(Vuex);
+loadScripts(() => {
+  window._____processCenterPageAction('setheaderdisplay', {show: false});
+  window._____processCenterPageAction('pageloaded');
 
-new Vue({
-  el: '#app',
-  mixins: [errorHanding],
-  router,
-  store,
-  components: {App},
-  data() {
-    return {
-      canRender: false
-    };
-  },
-  methods: {
-    can() {
-      const query = queryString();
-      const {employeecode} = query;
-      Api.login({userId: employeecode})
-        .then((res) => {
-          const data = res.data.dataMap;
-          const {userInfo} = data;
-          LocalStore.set('user', userInfo);
-        })
-        // .then(() => new Jump(store, router).init())
-        .then(() => {
-          this.canRender = true;
-        });
+  const router = getRouter(Router);
+  const store = vueStore(Vuex);
+
+  new Vue({
+    el: '#app',
+    mixins: [errorHanding],
+    router,
+    store,
+    components: {App},
+    data() {
+      return {
+        canRender: false
+      };
+    },
+    methods: {
+      can() {
+        const query = queryString();
+        const {employeecode} = query;
+        Api.login({userId: employeecode})
+          .then((res) => {
+            const data = res.data.dataMap;
+            const {userInfo} = data;
+            LocalStore.set('user', userInfo);
+          })
+          // .then(() => new Jump(store, router).init())
+          .then(() => {
+            this.canRender = true;
+          });
+      }
+    },
+    mounted() {
+      this.can();
+    },
+    watch: {
+      $route() {
+        new Jump(store, router).init();
+      }
+    },
+    render(h) {
+      if (this.canRender) {
+        return h(App);
+      }
+      return '<div></div>';
     }
-  },
-  mounted() {
-    this.can();
-  },
-  watch: {
-    $route() {
-      new Jump(store, router).init();
-    }
-  },
-  render(h) {
-    if (this.canRender) {
-      return h(App);
-    }
-    return '<div></div>';
-  }
+  });
 });

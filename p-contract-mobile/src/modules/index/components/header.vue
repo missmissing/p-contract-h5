@@ -1,5 +1,8 @@
 <style type="text/scss" lang="scss" scoped>
-
+  .mint-header.is-fixed {
+    padding-top: 60px;
+    height: 100px;
+  }
 </style>
 
 <template>
