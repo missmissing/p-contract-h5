@@ -4,7 +4,6 @@
 
 <template>
   <div>
-    <Header title="模板查看"></Header>
     <div class="container">
       <TplBase :info="info"></TplBase>
       <mt-navbar v-model="selected" class="mt20">

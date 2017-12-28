@@ -4,7 +4,6 @@
 
 <template>
   <div>
-    <Header title="采购订单查看"></Header>
     <div class="container">
       <mt-cell title="采购订单" :value="orderForm.purchaseOrderNo" v-if="orderForm.purchaseOrderNo"></mt-cell>
       <mt-cell title="供应商编码" :value="orderForm.supplierCode"></mt-cell>

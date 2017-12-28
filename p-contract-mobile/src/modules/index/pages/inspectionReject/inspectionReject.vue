@@ -4,7 +4,6 @@
 
 <template>
   <div>
-    <Header title="验收不合格查看"></Header>
     <div class="container">
       <mt-cell title="采购订单号" :value="orderNo"></mt-cell>
       <mt-cell title="业务经办人" :value="basicForm.businessOperatorName"></mt-cell>

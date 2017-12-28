@@ -39,6 +39,9 @@ new Vue({
       LocalStore.set('user', userInfo);
     });
   },
+  mounted() {
+    window._____processCenterPageAction('pageloaded');
+  },
   watch: {
     $route() {
       new Jump(store, router).init().then(() => {

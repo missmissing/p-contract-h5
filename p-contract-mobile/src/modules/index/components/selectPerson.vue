@@ -6,7 +6,7 @@
 
 <template>
   <div>
-    <div @click="visible = true">
+    <div @click="show">
       <mt-cell
         title="选择人员"
         is-link
@@ -65,7 +65,12 @@
       };
     },
     methods: {
+      show() {
+        window._____processCenterPageAction('setheaderdisplay', {show: false});
+        this.visible = true;
+      },
       back() {
+        window._____processCenterPageAction('setheaderdisplay', {show: true});
         this.visible = false;
       },
       select(item) {

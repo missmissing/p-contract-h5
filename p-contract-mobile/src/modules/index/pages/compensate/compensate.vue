@@ -4,7 +4,6 @@
 
 <template>
   <div>
-    <Header title="违约赔付查看"></Header>
     <div class="container">
       <mt-cell title="合同编号" :value="basicForm.contractNo"></mt-cell>
       <mt-cell title="合同签署日期" :value="signTime | formatDate"></mt-cell>

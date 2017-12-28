@@ -4,7 +4,6 @@
 
 <template>
   <div>
-    <Header title="合同查看"></Header>
     <div class="container">
       <ContractBaseInfo :info="baseInfoForm"></ContractBaseInfo>
       <mt-navbar v-model="selected" class="mt20 mb20">

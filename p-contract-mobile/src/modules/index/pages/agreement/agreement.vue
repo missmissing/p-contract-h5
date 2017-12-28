@@ -4,7 +4,6 @@
 
 <template>
   <div>
-    <Header title="从协议查看"></Header>
     <div class="container">
       <mt-cell title="从协议编号" :value="protocolNo" v-if="protocolNo"></mt-cell>
       <mt-cell title="关联合同编号" :value="code"></mt-cell>

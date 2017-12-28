@@ -102,9 +102,11 @@
         }
       },
       back() {
+        window._____processCenterPageAction('setheaderdisplay', {show: true});
         this.popupVisible = false;
       },
       actionChange() {
+        window._____processCenterPageAction('setheaderdisplay', {show: false});
         this.popupVisible = true;
       },
       clickBtn(btn) {
