@@ -34,31 +34,23 @@ loadScripts(() => {
         canRender: false
       };
     },
-    methods: {
-      can() {
-        const query = queryString();
-        const {employeecode} = query;
-        Api.login({userId: employeecode})
-          .then((res) => {
-            const data = res.data.dataMap;
-            const {userInfo} = data;
-            LocalStore.set('user', userInfo);
-          })
-          // .then(() => new Jump(store, router).init())
-          .then(() => {
-            this.canRender = true;
-          });
-      }
-    },
-    created() {
-      this.can();
+    beforeCreate() {
+      const query = queryString();
+      const {employeecode} = query;
+      Api.login({userId: employeecode}).then((res) => {
+        const data = res.data.dataMap;
+        const {userInfo} = data;
+        LocalStore.set('user', userInfo);
+      });
     },
     mounted() {
       window._____processCenterPageAction('pageloaded');
     },
     watch: {
       $route() {
-        new Jump(store, router).init();
+        new Jump(store, router).init().then(() => {
+          this.canRender = true;
+        });
       }
     },
     render(h) {

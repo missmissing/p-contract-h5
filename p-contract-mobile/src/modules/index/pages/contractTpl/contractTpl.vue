@@ -51,7 +51,7 @@
       }
     },
     watch: {
-      '$store.state.id'() {
+      created() {
         this.getInfo();
       }
     },

@@ -110,7 +110,7 @@
         this.toDetail.query.contractNo = contractNo;
       }
     },
-    '$store.state.id'() {
+    created() {
       this.getInfo();
     },
     filters: {

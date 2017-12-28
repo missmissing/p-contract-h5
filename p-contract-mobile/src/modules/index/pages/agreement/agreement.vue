@@ -110,7 +110,7 @@
           });
       },
     },
-    '$store.state.id'() {
+    created() {
       this.getInfo();
     },
     filters: {

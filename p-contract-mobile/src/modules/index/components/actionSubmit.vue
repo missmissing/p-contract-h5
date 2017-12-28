@@ -89,6 +89,18 @@
       };
     },
     methods: {
+      getInfo() {
+        const {actions, sign} = this.$store.state.processData;
+        if (sign === 1) {
+          this.commonBtns = [];
+        }
+        this.allBtns = [...actions, ...this.commonBtns];
+        if (this.allBtns.length > 4) {
+          this.btns = this.allBtns.slice(0, 2).push('其它');
+        } else {
+          this.btns = this.allBtns;
+        }
+      },
       back() {
         this.popupVisible = false;
       },
@@ -142,29 +154,16 @@
         });
       },
     },
-    created() {
-      const processData = this.$store.state.processData;
-      if (!Object.keys(processData).length) {
-        return;
-      }
-      const {actions, sign} = processData;
-      if (sign === 1) {
-        this.commonBtns = [];
-      }
-      this.allBtns = [...actions, ...this.commonBtns];
-      if (this.allBtns.length > 4) {
-        this.btns = this.allBtns.slice(0, 2).push('其它');
-      } else {
-        this.btns = this.allBtns;
-      }
-    },
     computed: {
       show() {
-        return !!this.$store.state.processData.type === 1;
+        return this.$store.state.processData.type === '1';
       },
       visible() {
         return this.commonBtns.indexOf(this.actionName) > -1;
       }
+    },
+    created() {
+      this.getInfo();
     },
     filters: {
       type(btn) {

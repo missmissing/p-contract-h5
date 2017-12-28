@@ -244,7 +244,7 @@
         this.receiveInfo = poReceiveInfo || [];
       },
     },
-    '$store.state.id'() {
+    created() {
       this.getInfo();
     },
     filters: {

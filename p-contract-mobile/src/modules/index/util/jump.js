@@ -38,7 +38,7 @@ class Jump {
       case routerNames.con_delete:
         procCode = contractMap[2];
         break;
-      case routerNames.con_purchase_create:
+      case routerNames.con_sign_create:
         procCode = prMap[0];
         break;
       case routerNames.con_compensate_create:
@@ -60,7 +60,7 @@ class Jump {
     const {procInstId, serialNumber, type} = row;
     const procCode = this.getProcCode();
     row.procCode = procCode;
-    if (type === 1) {
+    if (type === '1') {
       return Api.getApproveNode({
         serialNumber,
         procCode
@@ -145,7 +145,6 @@ class Jump {
       sn
     } = this.Router.currentRoute.query;
     const newProcInstId = processInstanceId || sn.split('_')[0];
-    console.log(this.Router);
     return this.see({
       procInstId: newProcInstId,
       serialNumber: sn,

@@ -141,7 +141,7 @@
         this.fileList = files || [];
       }
     },
-    '$store.state.id'() {
+    created() {
       this.getInfo();
     },
     filters: {

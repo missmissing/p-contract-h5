@@ -93,7 +93,7 @@
         this.cardSealInfoForm = cardSealInfoForm;
       }
     },
-    '$store.state.id'() {
+    created() {
       this.getInfo();
     },
     components: {
