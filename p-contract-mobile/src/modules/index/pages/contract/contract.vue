@@ -64,7 +64,7 @@
   export default {
     data() {
       return {
-        selected: 1,
+        selected: 0,
         baseInfoForm: {},
         cardContentInfoForm: {},
         cardFinanceInfoForm: {},

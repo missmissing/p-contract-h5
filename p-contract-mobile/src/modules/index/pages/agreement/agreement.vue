@@ -71,7 +71,7 @@
   export default {
     data() {
       return {
-        selected: 3,
+        selected: 1,
         protocolNo: null, // 从协议编号
         code: null, //合同编号
         baseInfoForm: {

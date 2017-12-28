@@ -82,7 +82,7 @@
       return {
         procTitle: '',
         procInstId: '',
-        selected: 1,
+        selected: 0,
         orderNo: '',
         basicForm: {
           businessOperatorName: '',
