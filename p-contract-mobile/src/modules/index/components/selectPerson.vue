@@ -2,6 +2,10 @@
   .mint-search-list {
     padding-top: 84px;
   }
+
+  .container {
+    top: 62px;
+  }
 </style>
 
 <template>

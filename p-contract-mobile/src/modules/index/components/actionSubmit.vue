@@ -26,6 +26,10 @@
       margin: 0 10px;
     }
   }
+
+  .container {
+    top: 62px;
+  }
 </style>
 
 <template>

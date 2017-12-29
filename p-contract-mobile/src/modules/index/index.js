@@ -16,6 +16,10 @@ Vue.use(Router);
 Vue.use(Vuex);
 component(Vue);
 
+window.onload = () => {
+  window._____processCenterPageAction('pageloaded');
+};
+
 const router = getRouter(Router);
 const store = vueStore(Vuex);
 
@@ -38,9 +42,6 @@ new Vue({
       const {userInfo} = data;
       LocalStore.set('user', userInfo);
     });
-  },
-  mounted() {
-    window._____processCenterPageAction('pageloaded');
   },
   watch: {
     $route() {
