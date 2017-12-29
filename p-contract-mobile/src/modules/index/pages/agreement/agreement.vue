@@ -112,6 +112,9 @@
     created() {
       this.getInfo();
     },
+    mounted() {
+      window._____processCenterPageAction('pageloaded');
+    },
     filters: {
       printOpts
     },

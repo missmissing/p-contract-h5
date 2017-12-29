@@ -52,6 +52,9 @@
     created() {
       this.getInfo();
     },
+    mounted() {
+      window._____processCenterPageAction('pageloaded');
+    },
     components: {
       Header,
       TplBase,
