@@ -49,10 +49,8 @@
         });
       }
     },
-    watch: {
-      created() {
-        this.getInfo();
-      }
+    created() {
+      this.getInfo();
     },
     components: {
       Header,
