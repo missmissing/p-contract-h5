@@ -5,7 +5,7 @@
 <template>
   <div>
     <template v-for="item in fileList">
-      <div><a :href="item.fileId | download" target="_blank">{item.fileName}}</a>{</div>
+      <div><a :href="item.fileId | download" :download="item.fileName">{item.fileName}}</a>{</div>
     </template>
   </div>
 </template>

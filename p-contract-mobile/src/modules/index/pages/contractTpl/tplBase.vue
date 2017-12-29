@@ -24,7 +24,7 @@
         label="文件名"
         min-width="200">
         <template scope="scope">
-          <a class="router-link" :href="`${download}${scope.row.fileId}`" target="_blank">{{scope.row.fileName}}</a>
+          <a class="router-link" :href="`${download}${scope.row.fileId}`" :download="fileName">{{scope.row.fileName}}</a>
         </template>
       </el-table-column>
       <el-table-column
@@ -151,7 +151,7 @@
         this.setData();
       },
       'form.templateCode': function () {
-        this.getAllVersions();
+        //this.getAllVersions();
       }
     }
   };

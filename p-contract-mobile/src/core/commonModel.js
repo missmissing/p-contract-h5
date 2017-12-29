@@ -7,7 +7,6 @@ import emitter from './emitter';
 import Consts from './consts';
 
 axios.defaults.withCredentials = true;
-axios.defaults.baseURL = window.__config_env ? window.__config_env.domain : '';
 
 function checkStatus(response) {
   const {data} = response;
