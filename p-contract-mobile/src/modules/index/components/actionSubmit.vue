@@ -152,8 +152,15 @@
           spinnerType: 'triple-bounce'
         });
         Api.submitProcess(result).then(() => {
-          window._____processCenterPageAction('pagebackrefresh');
-          window._____processCenterPageAction('addnativebadgenum');
+          MessageBox({
+            title: '提示',
+            message: '审批成功',
+            showConfirmButton: false
+          });
+          setTimeout(() => {
+            window._____processCenterPageAction('pagebackrefresh');
+            window._____processCenterPageAction('addnativebadgenum');
+          }, 1000);
         }).finally(() => {
           Indicator.close();
           this.disabled = false;
