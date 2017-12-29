@@ -17,7 +17,7 @@
       v-model="visible"
       :modal="false"
       :closeOnClickModal="false"
-      position="right"
+      position="bottom"
       class="popup">
       <div>
         <mt-header fixed>
