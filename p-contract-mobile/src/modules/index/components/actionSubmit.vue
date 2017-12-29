@@ -164,7 +164,7 @@
           MessageBox.alert('操作成功').then(() => {
             window._____processCenterPageAction('pagebackrefresh');
           });
-        }).finally(() => {
+        }).catch(() => {
           Indicator.close();
           this.disabled = false;
         });
