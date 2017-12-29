@@ -14,7 +14,6 @@ function checkStatus(response) {
   if (code === 911) {
     LocalStore.remove('user');
     const currentUrl = encodeURIComponent(window.location.href);
-    LocalStore.set('toOa', data);
     window.location.href = `${dataMap}${currentUrl}`;
   }
   if (code >= 200 && code < 300) {

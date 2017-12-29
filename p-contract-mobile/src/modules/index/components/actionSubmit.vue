@@ -35,40 +35,48 @@
 <template>
   <div v-if="show">
     <div class="fixed">
-      <mt-field label="" placeholder="请输入审批意见" v-model="approveRemark"></mt-field>
-      <div class="tab-bars">
-        <mt-button
-          v-for="btn in btns"
-          size="small"
-          :key="btn"
-          :type="btn | type"
-          :class="{'tab-item':true}"
-          @click.native="clickBtn(btn)"
-          :disabled="btn===actionName&&disabled">
-          {{btn}}
-        </mt-button>
-      </div>
-    </div>
-    <mt-popup
-      v-model="popupVisible"
-      :modal="false"
-      :closeOnClickModal="false"
-      position="bottom"
-      class="popup">
-      <div>
-        <mt-header fixed title="审批">
-          <mt-button icon="back" slot="left" @click="back"></mt-button>
-        </mt-header>
-        <div class="container">
-          <Actions v-model="actionName" :btns="btns"></Actions>
-          <SelectPerson v-model="redirectApproverId" v-show="visible"></SelectPerson>
-          <mt-field label="" placeholder="请输入审批意见" type="textarea" rows="4" v-model="approveRemark"></mt-field>
-          <div class="tc">
-            <mt-button class="submit" type="primary" size="small" @click="submit" :disabled="disabled">提 交</mt-button>
-          </div>
+      <div v-if="pcApprove">
+        <div style="color:#b45349;text-align: center;background-color:#f19ca1;height:40px;line-height:40px;">
+          该环节需要您进行表单操作，请在电脑上审批
         </div>
       </div>
-    </mt-popup>
+      <div v-else>
+        <mt-field label="" placeholder="请输入审批意见" v-model="approveRemark"></mt-field>
+        <div class="tab-bars">
+          <mt-button
+            v-for="btn in btns"
+            size="small"
+            :key="btn"
+            :type="btn | type"
+            :class="{'tab-item':true}"
+            @click.native="clickBtn(btn)"
+            :disabled="btn===actionName&&disabled">
+            {{btn}}
+          </mt-button>
+        </div>
+        <mt-popup
+          v-model="popupVisible"
+          :modal="false"
+          :closeOnClickModal="false"
+          position="bottom"
+          class="popup">
+          <div>
+            <mt-header fixed title="审批">
+              <mt-button icon="back" slot="left" @click="back"></mt-button>
+            </mt-header>
+            <div class="container">
+              <Actions v-model="actionName" :btns="btns"></Actions>
+              <SelectPerson v-model="redirectApproverId" v-show="visible"></SelectPerson>
+              <mt-field label="" placeholder="请输入审批意见" type="textarea" rows="4" v-model="approveRemark"></mt-field>
+              <div class="tc">
+                <mt-button class="submit" type="primary" size="small" @click="submit" :disabled="disabled">提 交
+                </mt-button>
+              </div>
+            </div>
+          </div>
+        </mt-popup>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -139,6 +147,7 @@
           procInstId,
           procCode,
           serialNumber,
+          actName: this.$store.state.processData.roleName,
           actionName: this.actionName,
           redirectApproverId: this.redirectApproverId,
           approveRemark: this.approveRemark
@@ -164,18 +173,26 @@
     },
     computed: {
       show() {
-        if (this.$store.state.processData.type === '1') {
-          return true;
-        }
-        document.querySelector('.container').style.bottom = '0px';
-        return false;
+        return this.$store.state.processData.type === '1';
       },
       visible() {
         return this.commonBtns.indexOf(this.actionName) > -1;
+      },
+      pcApprove() {
+        return ['印章保管人', '采购合同上传'].indexOf(this.$store.state.processData.roleName) > -1;
       }
     },
     created() {
       this.getInfo();
+    },
+    mounted() {
+      if (this.show) {
+        if (this.pcApprove) {
+          document.querySelector('.container').style.bottom = '50px';
+        } else {
+          document.querySelector('.container').style.bottom = '0px';
+        }
+      }
     },
     filters: {
       type(btn) {
