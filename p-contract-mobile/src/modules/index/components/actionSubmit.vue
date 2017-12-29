@@ -164,7 +164,11 @@
     },
     computed: {
       show() {
-        return this.$store.state.processData.type === '1';
+        if (this.$store.state.processData.type === '1') {
+          return true;
+        }
+        document.querySelector('.container').style.bottom = '0px';
+        return false;
       },
       visible() {
         return this.commonBtns.indexOf(this.actionName) > -1;
