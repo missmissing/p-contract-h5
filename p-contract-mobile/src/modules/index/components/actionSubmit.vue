@@ -188,9 +188,9 @@
       if (this.show) {
         if (this.pcApprove) {
           document.querySelector('.container').style.bottom = '50px';
-        } else {
-          document.querySelector('.container').style.bottom = '0px';
         }
+      } else {
+        document.querySelector('.container').style.bottom = '0px';
       }
     },
     filters: {
