@@ -66,11 +66,9 @@
     },
     methods: {
       show() {
-        window._____processCenterPageAction('setheaderdisplay', {show: false});
         this.visible = true;
       },
       back() {
-        window._____processCenterPageAction('setheaderdisplay', {show: true});
         this.visible = false;
       },
       select(item) {
