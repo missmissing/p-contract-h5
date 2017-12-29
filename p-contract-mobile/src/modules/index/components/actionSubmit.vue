@@ -73,7 +73,7 @@
 </template>
 
 <script>
-  import {Toast, Indicator} from 'mint-ui';
+  import {Toast, Indicator, MessageBox} from 'mint-ui';
   import Api from '../../../api/process';
   import Actions from '../components/actions.vue';
   import SelectPerson from '../components/selectPerson.vue';
@@ -152,15 +152,10 @@
           spinnerType: 'triple-bounce'
         });
         Api.submitProcess(result).then(() => {
-          MessageBox({
-            title: '提示',
-            message: '审批成功',
-            showConfirmButton: false
-          });
-          setTimeout(() => {
+          MessageBox.alert('操作成功').then(action => {
             window._____processCenterPageAction('pagebackrefresh');
             window._____processCenterPageAction('addnativebadgenum');
-          }, 1000);
+          });
         }).finally(() => {
           Indicator.close();
           this.disabled = false;
