@@ -89,7 +89,7 @@
   export default {
     data() {
       return {
-        disabled: null,
+        disabled: false,
         actionName: '',
         btns: [],
         allBtns: [],
@@ -161,9 +161,8 @@
           spinnerType: 'triple-bounce'
         });
         Api.submitProcess(result).then(() => {
-          MessageBox.alert('操作成功').then(action => {
+          MessageBox.alert('操作成功').then(() => {
             window._____processCenterPageAction('pagebackrefresh');
-            window._____processCenterPageAction('addnativebadgenum');
           });
         }).finally(() => {
           Indicator.close();
