@@ -12,7 +12,7 @@
   <div>
     <div @click="show">
       <mt-cell
-        title="选择人员"
+        title="选择员工"
         is-link
         :value="username">
       </mt-cell>
@@ -24,7 +24,7 @@
       position="bottom"
       class="popup">
       <div>
-        <mt-header fixed>
+        <mt-header fixed title="选择员工">
           <mt-button icon="back" slot="left" @click="back"></mt-button>
         </mt-header>
         <div class="container">

@@ -56,7 +56,7 @@
       position="bottom"
       class="popup">
       <div>
-        <mt-header fixed>
+        <mt-header fixed title="审批">
           <mt-button icon="back" slot="left" @click="back"></mt-button>
         </mt-header>
         <div class="container">
