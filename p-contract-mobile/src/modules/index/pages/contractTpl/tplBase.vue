@@ -24,7 +24,7 @@
         label="文件名"
         min-width="200">
         <template scope="scope">
-          <a class="router-link" :href="`${download}${scope.row.fileId}`" :download="fileName">{{scope.row.fileName}}</a>
+          <a class="router-link" :download="fileName" onclick="openFile(scope.row.fileId)">{{scope.row.fileName}}</a>
         </template>
       </el-table-column>
       <el-table-column
@@ -55,7 +55,7 @@
   import tplStatus from '../../../../filters/tplStatus';
   import tplType from '../../../../filters/tplTypeMap';
   import {tplMap} from '../../../../core/consts';
-  import {downloadUrl} from '../../../../api/consts';
+  import download from '../../../../filters/download';
 
   export default {
     props: {
@@ -131,6 +131,10 @@
       },
       changeVersion(val) {
         this.$emit('changeVersion', val);
+      },
+      openFile(id) {
+        const path = download(id);
+        window._____processCenterPageAction('opennewwindow', {path});
       }
     },
     created() {

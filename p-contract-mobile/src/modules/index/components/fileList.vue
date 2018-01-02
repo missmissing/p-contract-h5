@@ -5,7 +5,9 @@
 <template>
   <div>
     <template v-for="item in fileList">
-      <div><a :href="item.fileId | download" :download="item.fileName">{item.fileName}}</a>{</div>
+      <div><a :download="item.fileName"
+              onclick="openFile(item.fileId)">{item.fileName}}</a>{
+      </div>
     </template>
   </div>
 </template>
@@ -24,6 +26,12 @@
     },
     data() {
       return {};
+    },
+    methods: {
+      openFile(id) {
+        const path = download(id);
+        window._____processCenterPageAction('opennewwindow', {path});
+      }
     },
     filters: {
       download
