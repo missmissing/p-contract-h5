@@ -161,6 +161,7 @@
           spinnerType: 'triple-bounce'
         });
         Api.submitProcess(result).then(() => {
+          Indicator.close();
           MessageBox.alert('操作成功').then(() => {
             window._____processCenterPageAction('pagebackrefresh');
           });
