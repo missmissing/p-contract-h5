@@ -11,7 +11,8 @@
                     v-if="scope.row.filesSealed&&scope.row.filesSealed.length">
             <el-table-column label="文件名" prop="sealFileName">
               <template scope="scope1">
-                <a :download="scope1.row.sealFileName" @click="openFile(scope1.row.sealFileUrl)">{{scope1.row.sealFileName}}</a>
+                <a :download="scope1.row.sealFileName"
+                   @click="openFile(scope1.row.sealFileUrl)">{{scope1.row.sealFileName}}</a>
               </template>
             </el-table-column>
             <el-table-column label="上传人" prop="sealFileCreatorName" width="130"></el-table-column>
@@ -35,7 +36,8 @@
     </el-table-column>
     <el-table-column prop="fileName" label="文件名称" min-width="200px">
       <template scope="scope">
-        <a class="file-item" :download="scope.row.fileName" @click="openFile(scope.row.fileUrl)">{{scope.row.fileName}}</a>
+        <a class="file-item" :download="scope.row.fileName"
+           @click="openFile(scope.row.fileUrl)">{{scope.row.fileName}}</a>
       </template>
     </el-table-column>
     <el-table-column prop="haveSale" label="是否盖章" width="100px">
@@ -71,6 +73,9 @@
     },
     methods: {
       openFile(path) {
+        if (!path) {
+          return;
+        }
         window._____processCenterPageAction('opennewwindow', {path});
       }
     },
