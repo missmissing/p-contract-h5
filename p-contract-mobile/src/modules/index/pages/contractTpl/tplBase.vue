@@ -24,7 +24,7 @@
         label="文件名"
         min-width="200">
         <template scope="scope">
-          <a class="router-link" :download="fileName" onclick="openFile(scope.row.fileId)">{{scope.row.fileName}}</a>
+          <a class="router-link" :download="fileName" @click="openFile(scope.row.fileId)">{{scope.row.fileName}}</a>
         </template>
       </el-table-column>
       <el-table-column
@@ -70,7 +70,6 @@
       return {
         templateId: this.$store.state.id,
         showAbolish: false,
-        download: downloadUrl,
         form: {
           templateCode: '',
           templateName: '',

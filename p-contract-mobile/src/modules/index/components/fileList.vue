@@ -6,7 +6,7 @@
   <div>
     <template v-for="item in fileList">
       <div><a :download="item.fileName"
-              onclick="openFile(item.fileId)">{item.fileName}}</a>{
+              @click="openFile(item.fileId)">{item.fileName}}</a>{
       </div>
     </template>
   </div>
