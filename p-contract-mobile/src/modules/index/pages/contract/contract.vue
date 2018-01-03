@@ -36,7 +36,7 @@
           <mt-cell :value="cardRemarkInfoForm.otherInstruction"></mt-cell>
         </mt-tab-container-item>
         <mt-tab-container-item :id="6">
-          <CardRelatedInfo></CardRelatedInfo>
+          <CardRelatedInfo :moreData="{cardContentInfoForm}"></CardRelatedInfo>
         </mt-tab-container-item>
         <mt-tab-container-item :id="7">
           <OtherInfo :info="baseInfoForm"></OtherInfo>

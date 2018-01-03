@@ -5,7 +5,7 @@
 <template>
   <div>
     <el-table :data="contractList" border>
-      <el-table-column type="index" label="序号" width="60"></el-table-column>
+      <el-table-column type="index" label="序号" width="80"></el-table-column>
       <el-table-column prop="contractNo" label="合同号" min-width="120"></el-table-column>
       <el-table-column prop="contractType" label="类型" min-width="100">
         <template scope="scope">
@@ -33,19 +33,36 @@
   import contractType from '../../../../filters/contractType';
 
   export default {
+    props: {
+      moreData: {
+        type: Object,
+        default() {
+          return {};
+        }
+      }
+    },
     data() {
       return {
         contractList: [],
+        supplierCode: null,
         pageNo: 1,
         pageSize: 100
       };
     },
-    created() {
-      this.getInfo();
+    watch: {
+      moreData(val) {
+        if (val.cardContentInfoForm) {
+          if (this.supplierCode !== val.cardContentInfoForm.tableSupplierInfo[0].code) {
+            this.supplierCode = val.cardContentInfoForm.tableSupplierInfo[0].code;
+            this.getInfo();
+          }
+        }
+      }
     },
     methods: {
       getInfo() {
         Api.getConList({
+          supplierCode: this.supplierCode,
           pageNo: this.pageNo,
           pageSize: this.pageSize
         }).then((res) => {
