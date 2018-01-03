@@ -49,7 +49,7 @@
             :key="btn"
             :type="btn | type"
             :class="{'tab-item':true}"
-            @click.native="clickBtn(btn)"
+            @click="clickBtn(btn)"
             :disabled="btn===actionName&&disabled">
             {{btn}}
           </mt-button>
@@ -155,6 +155,7 @@
         if (!this.check(result)) {
           return;
         }
+        document.activeElement.blur();
         this.disabled = true;
         Indicator.open({
           text: '提交中',
