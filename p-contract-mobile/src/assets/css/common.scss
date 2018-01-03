@@ -43,13 +43,8 @@ a:hover {
 
 /**custom css**/
 .container {
-  width: 100%;
-  position: absolute;
-  //top: 62px;
-  top: 0;
-  bottom: 100px;
-  height: auto;
-  overflow-y: auto;
+  margin-bottom: 100px;
+  overflow-scrolling: touch;
   -webkit-overflow-scroll: touch;
 }
 

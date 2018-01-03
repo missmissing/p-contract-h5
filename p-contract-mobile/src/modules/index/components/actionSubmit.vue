@@ -27,8 +27,8 @@
     }
   }
 
-  .container {
-    top: 62px;
+  .submit-container {
+    margin-top: 62px;
   }
 </style>
 
@@ -64,7 +64,7 @@
             <mt-header fixed title="审批">
               <mt-button icon="back" slot="left" @click="back"></mt-button>
             </mt-header>
-            <div class="container">
+            <div class="submit-container">
               <Actions v-model="actionName" :btns="btns"></Actions>
               <SelectPerson v-model="redirectApproverId" v-show="visible"></SelectPerson>
               <mt-field label="" placeholder="请输入审批意见" type="textarea" rows="4" v-model="approveRemark"></mt-field>
@@ -189,10 +189,10 @@
     mounted() {
       if (this.show) {
         if (this.pcApprove) {
-          document.querySelector('.container').style.bottom = '50px';
+          document.querySelector('.container').style.marginBottom = '50px';
         }
       } else {
-        document.querySelector('.container').style.bottom = '0px';
+        document.querySelector('.container').style.marginBottom = '0px';
       }
     },
     filters: {

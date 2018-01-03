@@ -3,8 +3,8 @@
     padding-top: 84px;
   }
 
-  .container {
-    top: 62px;
+  .select-person-container {
+    margin-top: 62px;
   }
 </style>
 
@@ -27,7 +27,7 @@
         <mt-header fixed title="选择员工">
           <mt-button icon="back" slot="left" @click="back"></mt-button>
         </mt-header>
-        <div class="container">
+        <div class="select-person-container">
           <mt-search
             v-model="key"
             cancel-text="取消"
@@ -36,7 +36,7 @@
             <mt-cell
               v-for="item in result"
               :key="item.userId"
-              @click.native="select(item)">
+              @click="select(item)">
               <div slot="title"><span>{{item.userName}}</span><span>({{item.userId}})</span></div>
               <div>{{item.deptName}}</div>
             </mt-cell>
