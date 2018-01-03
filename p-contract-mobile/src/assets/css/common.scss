@@ -101,17 +101,11 @@ a:hover {
 }
 
 .mint-navbar {
-  overflow-x: auto;
   padding-bottom: 3px;
-  &::-webkit-scrollbar {
-    display: none;
-  }
-
   .mint-tab-item {
     padding-left: 15px;
     padding-right: 15px;
-    white-space: nowrap;
-    flex-flow: row nowrap;
+
   }
 }
 

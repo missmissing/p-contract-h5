@@ -1,21 +1,29 @@
 <style type="text/scss" lang="scss" scoped>
-
+  .navbar {
+    overflow-x: auto;
+    white-space: nowrap;
+    &::-webkit-scrollbar {
+      display: none;
+    }
+  }
 </style>
 
 <template>
   <div>
     <div class="container">
       <ContractBaseInfo :info="baseInfoForm"></ContractBaseInfo>
-      <mt-navbar v-model="selected" class="mt20 mb20">
-        <mt-tab-item :id="0">审批意见</mt-tab-item>
-        <mt-tab-item :id="1">合同内容信息</mt-tab-item>
-        <mt-tab-item :id="2">合同财务信息</mt-tab-item>
-        <mt-tab-item :id="3">合同验收与样品信息</mt-tab-item>
-        <mt-tab-item :id="4">合同附件及盖章信息</mt-tab-item>
-        <mt-tab-item :id="5" v-if="cardRemarkInfoForm.otherInstruction">备注</mt-tab-item>
-        <mt-tab-item :id="6">相关数据</mt-tab-item>
-        <mt-tab-item :id="7">其他</mt-tab-item>
-      </mt-navbar>
+      <div class="navbar">
+        <mt-navbar v-model="selected" class="mt20 mb20">
+          <mt-tab-item :id="0">审批意见</mt-tab-item>
+          <mt-tab-item :id="1">合同内容信息</mt-tab-item>
+          <mt-tab-item :id="2">合同财务信息</mt-tab-item>
+          <mt-tab-item :id="3">合同验收与样品信息</mt-tab-item>
+          <mt-tab-item :id="4">合同附件及盖章信息</mt-tab-item>
+          <mt-tab-item :id="5" v-if="cardRemarkInfoForm.otherInstruction">备注</mt-tab-item>
+          <mt-tab-item :id="6">相关数据</mt-tab-item>
+          <mt-tab-item :id="7">其他</mt-tab-item>
+        </mt-navbar>
+      </div>
       <mt-tab-container v-model="selected">
         <mt-tab-container-item :id="0">
           <Comments></Comments>
