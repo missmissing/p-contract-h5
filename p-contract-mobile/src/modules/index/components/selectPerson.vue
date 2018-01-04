@@ -1,10 +1,9 @@
 <style type="text/scss" lang="scss" scoped>
-  .mint-search-list {
-    padding-top: 84px;
-  }
-
   .select-person-container {
     margin-top: 62px;
+    .mint-search-list {
+      padding-top: 106px;
+    }
   }
 </style>
 
@@ -36,7 +35,7 @@
             <mt-cell
               v-for="item in result"
               :key="item.userId"
-              @click="select(item)">
+              @click.native="select(item)">
               <div slot="title"><span>{{item.userName}}</span><span>({{item.userId}})</span></div>
               <div>{{item.deptName}}</div>
             </mt-cell>

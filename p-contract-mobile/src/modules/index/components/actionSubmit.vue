@@ -189,10 +189,10 @@
     mounted() {
       if (this.show) {
         if (this.pcApprove) {
-          document.querySelector('.container').style.marginBottom = '50px';
+          document.querySelector('.container').style.bottom = '50px';
         }
       } else {
-        document.querySelector('.container').style.marginBottom = '0px';
+        document.querySelector('.container').style.bottom = '0px';
       }
     },
     filters: {
