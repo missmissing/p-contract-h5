@@ -2,9 +2,9 @@
   box-sizing: border-box;
 }
 
-html, body {
-  height: 100%;
-}
+//html, body {
+//  height: 100%;
+//}
 
 body {
   padding-top: constant(safe-area-inset-top); //为导航栏+状态栏的高度 88px
@@ -48,7 +48,9 @@ a:hover {
   bottom: 100px;
   left: 0;
   right: 0;
-  overflow: auto;
+  overflow-x: hidden;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
 }
 
 .title {

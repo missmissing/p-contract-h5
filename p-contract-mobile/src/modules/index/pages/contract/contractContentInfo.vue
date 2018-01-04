@@ -60,7 +60,7 @@
       <mt-cell title="备注" :value="info.corporeRemark">
       </mt-cell>
     </div>
-    <div class="title">生效条件</div>
+    <mt-cell title="生效条件" :value="info.effectiveCondition | effectiveCondition"></mt-cell>
     <div v-if="info.effectiveCondition===1">
       <mt-cell title="合同生效日期" :value="info.startTime | formatDate"></mt-cell>
       <mt-cell title="合同终止日期" :value="info.endTime | formatDate"></mt-cell>
@@ -73,6 +73,7 @@
 
 <script>
   import yesOrNo from '../../../../filters/yesOrNo';
+  import effectiveCondition from '../../../../filters/effectiveCondition';
   import {formatDate} from '../../../../filters/moment';
 
   export default {
@@ -95,7 +96,8 @@
     },
     filters: {
       yesOrNo,
-      formatDate
+      formatDate,
+      effectiveCondition
     }
   };
 </script>
