@@ -2,10 +2,6 @@
   box-sizing: border-box;
 }
 
-//html, body {
-//  height: 100%;
-//}
-
 body {
   padding-top: constant(safe-area-inset-top); //为导航栏+状态栏的高度 88px
   padding-left: constant(safe-area-inset-left); //如果未竖屏时为0
@@ -43,7 +39,8 @@ a:hover {
 
 /**custom css**/
 .container {
-  position: fixed;
+  //position: fixed;
+  margin-bottom:100px;
   top: 0;
   bottom: 100px;
   left: 0;

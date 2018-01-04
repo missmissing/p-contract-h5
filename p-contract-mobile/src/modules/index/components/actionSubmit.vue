@@ -170,7 +170,7 @@
           Indicator.close();
           this.disabled = false;
         });
-      },
+      }
     },
     computed: {
       show() {

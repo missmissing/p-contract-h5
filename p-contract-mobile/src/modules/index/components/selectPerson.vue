@@ -73,6 +73,7 @@
       },
       back() {
         this.visible = false;
+        document.activeElement.blur();
       },
       select(item) {
         this.visible = false;
