@@ -28,7 +28,7 @@
   }
 
   .submit-container {
-    margin-top: 62px;
+    padding-top: 62px;
   }
 </style>
 

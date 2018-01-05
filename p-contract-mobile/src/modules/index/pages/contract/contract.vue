@@ -9,7 +9,7 @@
 </style>
 
 <template>
-  <div style="height:100vh;overflow:hidden;">
+  <div>
     <div class="container">
       <ContractBaseInfo :info="baseInfoForm"></ContractBaseInfo>
       <div class="navbar">

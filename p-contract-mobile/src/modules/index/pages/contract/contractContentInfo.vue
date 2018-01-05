@@ -7,11 +7,7 @@
     <div class="mb20">
       <div class="title">合同供应商信息</div>
       <el-table :data="info.tableSupplierInfo">
-        <el-table-column type="index" label="序号" width="80">
-          <template scope="scope">
-            {{scope.$index + 1}}
-          </template>
-        </el-table-column>
+        <el-table-column type="index" label="序号" width="80"></el-table-column>
         <el-table-column prop="code" label="供应商编号" width="120"></el-table-column>
         <el-table-column prop="name" label="供应商名称" min-width="250"></el-table-column>
       </el-table>
@@ -38,11 +34,7 @@
     <div class="mb20" v-if="moreData.baseInfoForm.contractType!==4">
       <div class="title">合同标的</div>
       <el-table :data="info.conStandard">
-        <el-table-column type="index" label="序号" width="80">
-          <template scope="scope">
-            {{scope.$index + 1}}
-          </template>
-        </el-table-column>
+        <el-table-column type="index" label="序号" width="80"></el-table-column>
         <el-table-column v-if="moreData.baseInfoForm.contractBusinessTypeFirst!==2" prop="materialCode" label="物料编码"
                          width="130"></el-table-column>
         <el-table-column prop="materialName"

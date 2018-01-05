@@ -1,6 +1,6 @@
 <style type="text/scss" lang="scss" scoped>
   .select-person-container {
-    margin-top: 62px;
+    padding-top: 62px;
     .mint-search-list {
       padding-top: 106px;
     }
