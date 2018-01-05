@@ -11,7 +11,7 @@
 <template>
   <div>
     <div class="container">
-      <div style="padding-bottom:100px;">
+      <div>
         <ContractBaseInfo :info="baseInfoForm"></ContractBaseInfo>
         <div class="navbar">
           <mt-navbar v-model="selected" class="mt20 mb20">
