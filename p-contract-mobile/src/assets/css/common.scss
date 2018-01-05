@@ -50,16 +50,10 @@ a:hover {
 }
 
 /**custom css**/
-.main {
-  height: 100%;
-}
-
 .container {
   width: 100%;
-  position: fixed;
-  top: 0;
-  bottom: 101px;
-  overflow: auto;
+  overflow-x: hidden;
+  overflow-y: auto;
   -webkit-overflow-scrolling: touch;
 }
 
