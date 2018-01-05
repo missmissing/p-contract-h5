@@ -55,9 +55,9 @@ a:hover {
 }
 
 .container {
+  width: 100%;
   position: fixed;
   top: 0;
-  width: 100%;
   bottom: 101px;
   overflow: auto;
   -webkit-overflow-scrolling: touch;

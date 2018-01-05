@@ -1,10 +1,9 @@
 <style type="text/scss" lang="scss" scoped>
   .fixed {
+    width: 100%;
     position: fixed;
-    left: 0;
     bottom: 0;
-    right: 0;
-    z-index: 100;
+    z-index: 10;
   }
 
   .submit {
@@ -191,6 +190,9 @@
         } else {
           document.querySelector('.container').style.height = document.documentElement.clientHeight - 101 + 'px';
         }
+      } else {
+        document.querySelector('.container').style.bottom = '0px';
+        document.querySelector('.container').style.height = document.documentElement.clientHeight + 'px';
       }
     },
     filters: {
