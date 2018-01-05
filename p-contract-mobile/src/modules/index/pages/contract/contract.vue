@@ -9,7 +9,7 @@
 </style>
 
 <template>
-  <div>
+  <div class="main">
     <div class="container">
       <ContractBaseInfo :info="baseInfoForm"></ContractBaseInfo>
       <div class="navbar">
