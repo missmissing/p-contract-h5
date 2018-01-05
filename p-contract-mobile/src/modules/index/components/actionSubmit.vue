@@ -189,9 +189,9 @@
     mounted() {
       if (this.show) {
         if (this.pcApprove) {
-          document.querySelector('.container').style.height = document.documentElement.clientHeight - 50 + 'px';
+//          document.querySelector('.container').style.height = document.documentElement.clientHeight - 50 + 'px';
         } else {
-          document.querySelector('.container').style.height = document.documentElement.clientHeight - 100 + 'px';
+//          document.querySelector('.container').style.height = document.documentElement.clientHeight - 100 + 'px';
         }
       }
     },
