@@ -1,8 +1,19 @@
 * {
   box-sizing: border-box;
-  &::-webkit-scrollbar {
-    display: none;
-  }
+  //&::-webkit-scrollbar {
+  //  display: none;
+  //}
+}
+
+html {
+  -ms-text-size-adjust: 100%;
+  -webkit-text-size-adjust: 100%;
+  -webkit-tap-highlight-color: transparent;
+}
+
+html, body {
+  -webkit-overflow-scrolling: touch;
+  user-select: none;
 }
 
 body {
@@ -10,7 +21,6 @@ body {
   padding-left: constant(safe-area-inset-left); //如果未竖屏时为0
   padding-right: constant(safe-area-inset-right); //如果未竖屏时为0
   padding-bottom: constant(safe-area-inset-bottom); //为底下圆弧的高度 34px
-  overflow-x: hidden;
 }
 
 a:hover {
@@ -43,14 +53,9 @@ a:hover {
 
 /**custom css**/
 .container {
-  position: absolute;
-  top: 0;
-  bottom: 100px;
-  left: 0;
-  right: 0;
-  overflow-x: hidden;
-  overflow-y: auto;
-  -webkit-overflow-scrolling: touch;
+  overflow: auto;
+  height: 100%;
+  padding-bottom: 100px;
 }
 
 .title {
