@@ -189,10 +189,10 @@
     mounted() {
       if (this.show) {
         if (this.pcApprove) {
-          //document.querySelector('.container').style.bottom = '50px';
+          document.querySelector('.container').style.height = window.innerHeight - 50 + 'px';
+        } else {
+          document.querySelector('.container').style.height = window.innerHeight - 100 + 'px';
         }
-      } else {
-        //document.querySelector('.container').style.bottom = '0px';
       }
     },
     filters: {
