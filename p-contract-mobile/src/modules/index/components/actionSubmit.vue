@@ -1,10 +1,10 @@
 <style type="text/scss" lang="scss" scoped>
   .fixed {
-    /*position: fixed;*/
-    /*left: 0;*/
-    /*bottom: 0;*/
-    /*right: 0;*/
-    /*z-index: 10;*/
+    position: fixed;
+    left: 0;
+    bottom: 0;
+    right: 0;
+    z-index: 100;
   }
 
   .submit {
@@ -33,49 +33,47 @@
 </style>
 
 <template>
-  <div v-if="show">
-    <div class="fixed">
-      <div v-if="pcApprove">
-        <div style="color:#b45349;text-align: center;background-color:#f19ca1;height:40px;line-height:40px;">
-          该环节需要您进行表单操作，请在电脑上审批
-        </div>
+  <div class="fixed" v-if="show">
+    <div v-if="pcApprove">
+      <div style="color:#b45349;text-align: center;background-color:#f19ca1;height:40px;line-height:40px;">
+        该环节需要您进行表单操作，请在电脑上审批
       </div>
-      <div v-else>
-        <mt-field label="" placeholder="请输入审批意见" v-model="approveRemark"></mt-field>
-        <div class="tab-bars">
-          <mt-button
-            v-for="btn in btns"
-            size="small"
-            :key="btn"
-            :type="btn | type"
-            :class="{'tab-item':true}"
-            @click="clickBtn(btn)"
-            :disabled="btn===actionName&&disabled">
-            {{btn}}
-          </mt-button>
-        </div>
-        <mt-popup
-          v-model="popupVisible"
-          :modal="false"
-          :closeOnClickModal="false"
-          position="bottom"
-          class="popup">
-          <div>
-            <mt-header fixed title="审批">
-              <mt-button icon="back" slot="left" @click="back"></mt-button>
-            </mt-header>
-            <div class="submit-container">
-              <Actions v-model="actionName" :btns="btns"></Actions>
-              <SelectPerson v-model="redirectApproverId" v-show="visible"></SelectPerson>
-              <mt-field label="" placeholder="请输入审批意见" type="textarea" rows="4" v-model="approveRemark"></mt-field>
-              <div class="tc">
-                <mt-button class="submit" type="primary" size="small" @click="submit" :disabled="disabled">提 交
-                </mt-button>
-              </div>
+    </div>
+    <div v-else>
+      <mt-field label="" placeholder="请输入审批意见" v-model="approveRemark"></mt-field>
+      <div class="tab-bars">
+        <mt-button
+          v-for="btn in btns"
+          size="small"
+          :key="btn"
+          :type="btn | type"
+          :class="{'tab-item':true}"
+          @click="clickBtn(btn)"
+          :disabled="btn===actionName&&disabled">
+          {{btn}}
+        </mt-button>
+      </div>
+      <mt-popup
+        v-model="popupVisible"
+        :modal="false"
+        :closeOnClickModal="false"
+        position="bottom"
+        class="popup">
+        <div>
+          <mt-header fixed title="审批">
+            <mt-button icon="back" slot="left" @click="back"></mt-button>
+          </mt-header>
+          <div class="submit-container">
+            <Actions v-model="actionName" :btns="btns"></Actions>
+            <SelectPerson v-model="redirectApproverId" v-show="visible"></SelectPerson>
+            <mt-field label="" placeholder="请输入审批意见" type="textarea" rows="4" v-model="approveRemark"></mt-field>
+            <div class="tc">
+              <mt-button class="submit" type="primary" size="small" @click="submit" :disabled="disabled">提 交
+              </mt-button>
             </div>
           </div>
-        </mt-popup>
-      </div>
+        </div>
+      </mt-popup>
     </div>
   </div>
 </template>
@@ -189,9 +187,9 @@
     mounted() {
       if (this.show) {
         if (this.pcApprove) {
-//          document.querySelector('.container').style.height = document.documentElement.clientHeight - 50 + 'px';
+          document.querySelector('.container').style.height = document.documentElement.clientHeight - 51 + 'px';
         } else {
-//          document.querySelector('.container').style.height = document.documentElement.clientHeight - 100 + 'px';
+          document.querySelector('.container').style.height = document.documentElement.clientHeight - 101 + 'px';
         }
       }
     },

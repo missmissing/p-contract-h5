@@ -3,14 +3,7 @@
 }
 
 html {
-  -ms-text-size-adjust: 100%;
-  -webkit-text-size-adjust: 100%;
-  -webkit-tap-highlight-color: transparent;
-}
-
-html, body {
-  user-select: none;
-  height: 100%;
+  -webkit-font-smoothing: antialiased;
 }
 
 body {
@@ -18,6 +11,8 @@ body {
   padding-left: constant(safe-area-inset-left); //如果未竖屏时为0
   padding-right: constant(safe-area-inset-right); //如果未竖屏时为0
   padding-bottom: constant(safe-area-inset-bottom); //为底下圆弧的高度 34px
+  user-select: none;
+  -webkit-text-size-adjust: none;
 }
 
 a, button, button:active, input {
@@ -57,12 +52,13 @@ a:hover {
 /**custom css**/
 .main {
   height: 100%;
-  display: flex;
-  flex-direction: column;
 }
 
 .container {
-  flex: 1;
+  position: fixed;
+  top: 0;
+  width: 100%;
+  bottom: 101px;
   overflow: auto;
   -webkit-overflow-scrolling: touch;
 }
