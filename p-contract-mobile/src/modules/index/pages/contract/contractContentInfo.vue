@@ -6,7 +6,7 @@
   <div>
     <div class="mb20">
       <div class="title">合同供应商信息</div>
-      <el-table :data="info.tableSupplierInfo">
+      <el-table :data="info.tableSupplierInfo" class="wp100">
         <el-table-column type="index" label="序号" width="80"></el-table-column>
         <el-table-column prop="code" label="供应商编号" width="120"></el-table-column>
         <el-table-column prop="name" label="供应商名称" min-width="250"></el-table-column>
@@ -14,7 +14,7 @@
     </div>
     <div class="mb20">
       <div class="title">合同我方主体名称</div>
-      <el-table :data="info.conSubjctName">
+      <el-table :data="info.conSubjctName" class="wp100">
         <el-table-column prop="code" label="公司代码" width="100"></el-table-column>
         <el-table-column prop="name" label="公司名称" min-width="250"></el-table-column>
         <el-table-column prop="applyAll" label="全公司适用" min-width="130">
@@ -33,13 +33,13 @@
     </div>
     <div class="mb20" v-if="moreData.baseInfoForm.contractType!==4">
       <div class="title">合同标的</div>
-      <el-table :data="info.conStandard">
+      <el-table :data="info.conStandard" class="wp100">
         <el-table-column type="index" label="序号" width="80"></el-table-column>
         <el-table-column v-if="moreData.baseInfoForm.contractBusinessTypeFirst!==2" prop="materialCode" label="物料编码"
                          width="130"></el-table-column>
         <el-table-column prop="materialName"
                          :label="moreData.baseInfoForm.contractBusinessTypeFirst===2?'服务名称':'物料名称'"
-                         min-width="250"></el-table-column>
+                         width="250"></el-table-column>
         <el-table-column v-if="moreData.baseInfoForm.contractType!==3" prop="total" label="数量"
                          width="100"></el-table-column>
         <el-table-column prop="price" label="价格" width="100"></el-table-column>

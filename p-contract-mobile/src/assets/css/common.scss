@@ -52,8 +52,13 @@ a:hover {
 }
 
 /**custom css**/
+.main {
+  height: 100vh;
+}
+
 .container {
   overflow: auto;
+  width: 100%;
   height: 100%;
   padding-bottom: 100px;
 }
