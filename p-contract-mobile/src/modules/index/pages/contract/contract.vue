@@ -105,18 +105,19 @@
     },
     mounted() {
       window._____processCenterPageAction('pageloaded');
-      alert(this.$store.state.processData.type);
-      alert(document.getElementsByClassName('container').length);
-      if (this.$store.state.processData.type === '1') {
-        if (this.pcApprove) {
-          document.querySelector('.container').style.height = document.documentElement.clientHeight - 51 + 'px';
-        } else {
-          document.querySelector('.container').style.height = document.documentElement.clientHeight - 101 + 'px';
-        }
-      } else {
-        document.querySelector('.container').style.bottom = '0px';
-        document.querySelector('.container').style.height = document.documentElement.clientHeight + 'px';
-      }
+      setInterval(() => {
+        document.querySelector('.container').style.height = document.documentElement.clientHeight - 101 + 'px';
+      }, 500);
+//      if (this.$store.state.processData.type === '1') {
+//        if (this.pcApprove) {
+//          document.querySelector('.container').style.height = document.documentElement.clientHeight - 51 + 'px';
+//        } else {
+//          document.querySelector('.container').style.height = document.documentElement.clientHeight - 101 + 'px';
+//        }
+//      } else {
+//        document.querySelector('.container').style.bottom = '0px';
+//        document.querySelector('.container').style.height = document.documentElement.clientHeight + 'px';
+//      }
     },
     components: {
       Header,
