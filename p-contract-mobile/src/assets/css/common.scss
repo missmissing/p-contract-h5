@@ -64,6 +64,7 @@ a:hover {
   overflow-x: hidden;
   overflow-y: scroll;
   -webkit-overflow-scrolling: touch;
+  z-index: 9;
 }
 
 .title {
