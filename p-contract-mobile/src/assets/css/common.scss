@@ -54,12 +54,13 @@ a:hover {
 /**custom css**/
 
 .container {
-  position: fixed;
   overflow: auto;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 100px;
+  height: 500px;
+  //position: fixed;
+  //top: 0;
+  //left: 0;
+  //right: 0;
+  //bottom: 100px;
   -webkit-overflow-scrolling: touch;
 }
 
