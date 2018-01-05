@@ -105,6 +105,16 @@
     },
     mounted() {
       window._____processCenterPageAction('pageloaded');
+      if (this.$store.state.processData.type === '1') {
+        if (this.pcApprove) {
+          document.querySelector('.container').style.height = document.documentElement.clientHeight - 51 + 'px';
+        } else {
+          document.querySelector('.container').style.height = document.documentElement.clientHeight - 101 + 'px';
+        }
+      } else {
+        document.querySelector('.container').style.bottom = '0px';
+        document.querySelector('.container').style.height = document.documentElement.clientHeight + 'px';
+      }
     },
     components: {
       Header,
