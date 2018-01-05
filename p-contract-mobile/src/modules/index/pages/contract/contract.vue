@@ -112,7 +112,7 @@
           document.querySelector('.container').style.paddingBottom = '101px';
         }
       }
-      document.body.scrollTop = '1px';
+      document.querySelector('.container').scrollTo(0, 1);
     },
     components: {
       Header,
