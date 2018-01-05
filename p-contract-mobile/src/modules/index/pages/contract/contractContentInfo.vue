@@ -36,10 +36,9 @@
       <el-table :data="info.conStandard" class="wp100">
         <el-table-column type="index" label="序号" width="80"></el-table-column>
         <el-table-column v-if="moreData.baseInfoForm.contractBusinessTypeFirst!==2" prop="materialCode" label="物料编码"
-                         width="130"></el-table-column>
+                         width="100"></el-table-column>
         <el-table-column prop="materialName"
-                         :label="moreData.baseInfoForm.contractBusinessTypeFirst===2?'服务名称':'物料名称'"
-                         width="250"></el-table-column>
+                         :label="moreData.baseInfoForm.contractBusinessTypeFirst===2?'服务名称':'物料名称'"></el-table-column>
         <el-table-column v-if="moreData.baseInfoForm.contractType!==3" prop="total" label="数量"
                          width="100"></el-table-column>
         <el-table-column prop="price" label="价格" width="100"></el-table-column>
