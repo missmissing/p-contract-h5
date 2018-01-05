@@ -24,32 +24,46 @@
           <mt-tab-item :id="7">其他</mt-tab-item>
         </mt-navbar>
       </div>
-      <mt-tab-container v-model="selected">
-        <mt-tab-container-item :id="0">
+      <div>
+        <div v-show="selected===0">
           <Comments></Comments>
-        </mt-tab-container-item>
-        <mt-tab-container-item :id="1">
+        </div>
+        <div v-show="selected===1">
           <ContractContentInfo :info="cardContentInfoForm" :moreData="{baseInfoForm}"></ContractContentInfo>
-        </mt-tab-container-item>
-        <mt-tab-container-item :id="2">
+        </div>
+        <div v-show="selected===2">
           <CardFinanceInfo :info="cardFinanceInfoForm"></CardFinanceInfo>
-        </mt-tab-container-item>
-        <mt-tab-container-item :id="3">
+        </div>
+        <div v-show="selected===3">
           <CardContCheckInfo :info="cardContCheckInfoForm" :moreData="{baseInfoForm}"></CardContCheckInfo>
-        </mt-tab-container-item>
-        <mt-tab-container-item :id="4">
-          <SealInfo :info="cardSealInfoForm" :moreData="{baseInfoForm}"></SealInfo>
-        </mt-tab-container-item>
-        <mt-tab-container-item :id="5">
-          <mt-cell :value="cardRemarkInfoForm.otherInstruction"></mt-cell>
-        </mt-tab-container-item>
-        <mt-tab-container-item :id="6">
-          <CardRelatedInfo :moreData="{cardContentInfoForm}"></CardRelatedInfo>
-        </mt-tab-container-item>
-        <mt-tab-container-item :id="7">
-          <OtherInfo :info="baseInfoForm"></OtherInfo>
-        </mt-tab-container-item>
-      </mt-tab-container>
+        </div>
+      </div>
+      <!--<mt-tab-container v-model="selected">-->
+        <!--<mt-tab-container-item :id="0">-->
+          <!--<Comments></Comments>-->
+        <!--</mt-tab-container-item>-->
+        <!--<mt-tab-container-item :id="1">-->
+          <!--<ContractContentInfo :info="cardContentInfoForm" :moreData="{baseInfoForm}"></ContractContentInfo>-->
+        <!--</mt-tab-container-item>-->
+        <!--<mt-tab-container-item :id="2">-->
+          <!--<CardFinanceInfo :info="cardFinanceInfoForm"></CardFinanceInfo>-->
+        <!--</mt-tab-container-item>-->
+        <!--<mt-tab-container-item :id="3">-->
+          <!--<CardContCheckInfo :info="cardContCheckInfoForm" :moreData="{baseInfoForm}"></CardContCheckInfo>-->
+        <!--</mt-tab-container-item>-->
+        <!--<mt-tab-container-item :id="4">-->
+          <!--<SealInfo :info="cardSealInfoForm" :moreData="{baseInfoForm}"></SealInfo>-->
+        <!--</mt-tab-container-item>-->
+        <!--<mt-tab-container-item :id="5">-->
+          <!--<mt-cell :value="cardRemarkInfoForm.otherInstruction"></mt-cell>-->
+        <!--</mt-tab-container-item>-->
+        <!--<mt-tab-container-item :id="6">-->
+          <!--<CardRelatedInfo :moreData="{cardContentInfoForm}"></CardRelatedInfo>-->
+        <!--</mt-tab-container-item>-->
+        <!--<mt-tab-container-item :id="7">-->
+          <!--<OtherInfo :info="baseInfoForm"></OtherInfo>-->
+        <!--</mt-tab-container-item>-->
+      <!--</mt-tab-container>-->
     </div>
     <ActionSumit></ActionSumit>
   </div>
@@ -112,7 +126,6 @@
           document.querySelector('.container').style.paddingBottom = '101px';
         }
       }
-      document.querySelector('.container').scrollTo(0, 1);
     },
     components: {
       Header,
