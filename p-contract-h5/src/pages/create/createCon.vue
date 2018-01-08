@@ -59,12 +59,11 @@
       <div class="fl" style="font-weight: bolder">{{procTitle}}</div>
     </div>
     <el-card v-if="operateType==='update'||updated">
-      <!--<header slot="header">变更原因</header>-->
       <el-form ref="updateForm" :model="updateForm" label-width="100px" :rules="updateForm.rules">
         <el-row>
           <el-col :span="8">
             <el-form-item label="合同编号" prop="code">
-              <el-input :disabled="operateType==='query'" v-model="updateForm.code" placeholder="请输入合同编号"></el-input>
+              <el-input :readonly="operateType==='query'" v-model="updateForm.code" placeholder="请输入合同编号"></el-input>
             </el-form-item>
           </el-col>
           <el-col :span="4" :offset="1" v-if="operateType==='update'">
@@ -73,29 +72,9 @@
             </el-button>
           </el-col>
         </el-row>
-        <!--<el-row>
-          <el-col :span="8">
-            <el-form-item label="变更方式" prop="updateMode">
-              <el-select class="wp100" :disabled="operateType==='query'" v-model="updateForm.updateMode"
-                         placeholder="请选择变更方式" @change="handleChangeUpdateMode">
-                <el-option
-                  v-for="item in updateForm.updateModes"
-                  :key="item.id"
-                  :label="item.name"
-                  :value="item.id">
-                </el-option>
-              </el-select>
-            </el-form-item>
-          </el-col>
-          <el-col :span="8" v-if="updateForm.updateMode===2">
-            <el-form-item label="新合同编号" prop="newCode">
-              <el-input :disabled="true" v-model="updateForm.newCode" placeholder="新合同编号"></el-input>
-            </el-form-item>
-          </el-col>
-        </el-row>-->
         <el-form-item label="变更原因" prop="remark">
           <el-input
-            :disabled="operateType==='query'"
+            :readonly="operateType==='query'"
             v-model="updateForm.remark"
             placeholder="变更原因"
             type="textarea"
@@ -109,7 +88,8 @@
         <el-row>
           <el-col :span="8">
             <el-form-item label="合同名称" prop="contractName">
-              <el-input :disabled="isEnabled1" v-model="baseInfoForm.contractName" placeholder="请输入合同名称"
+              <el-input :readonly="isEnabled1" :class="{disabledInput:isEnabled1}" v-model="baseInfoForm.contractName"
+                        placeholder="请输入合同名称"
                         :maxlength="30"></el-input>
             </el-form-item>
           </el-col>
@@ -139,27 +119,31 @@
               </el-select>
             </el-form-item>
             <el-form-item v-else label="业务申请人" prop="businessOperatorId">
-              <el-input :disabled="isEnabled1" v-model="baseInfoForm.businessOperatorName" class="wp100"
+              <el-input :readonly="isEnabled1" v-model="baseInfoForm.businessOperatorName"
+                        :class="{wp100:true,disabledInput:isEnabled1}"
                         placeholder="请输入业务申请人"></el-input>
             </el-form-item>
           </el-col>
           <el-col :span="8">
             <el-form-item label="业务部门" prop="businessDeptName">
-              <el-input :disabled="isEnabled" v-model="baseInfoForm.businessDeptName"
-                        placeholder="请输入业务部门"></el-input>
+              <el-input
+                :readonly="isEnabled"
+                :class="{disabledInput:isEnabled}"
+                v-model="baseInfoForm.businessDeptName"
+                placeholder="请输入业务部门"></el-input>
             </el-form-item>
           </el-col>
         </el-row>
         <el-row>
           <el-col :span="8">
             <el-form-item label="合同模式">
-              <el-input :disabled="isEnabled" v-model="baseInfoForm.contractTypeName"
+              <el-input :readonly="true" :class="{disabledInput:true}" v-model="baseInfoForm.contractTypeName"
                         placeholder="请输入合同模式"></el-input>
             </el-form-item>
           </el-col>
           <el-col :span="8">
             <el-form-item label="业务类型">
-              <el-input :disabled="isEnabled" v-model="baseInfoForm.contractBusinessTypeName"
+              <el-input :readonly="true" :class="{disabledInput:true}" v-model="baseInfoForm.contractBusinessTypeName"
                         placeholder="请输入业务类型"></el-input>
             </el-form-item>
           </el-col>
@@ -190,7 +174,8 @@
                   :value="item.templateId">
                 </el-option>
               </el-select>
-              <el-input v-else :disabled="isEnabled1" v-model="baseInfoForm.templateName"
+              <el-input v-else :readonly="isEnabled1" :class="{disabledInput:isEnabled1}"
+                        v-model="baseInfoForm.templateName"
                         placeholder="请选择合同模版"></el-input>
               {{conVersion}}
             </el-form-item>
@@ -204,14 +189,15 @@
         <el-row>
           <el-col :span="8">
             <el-form-item label="所属项目" prop="belongProject">
-              <el-input :disabled="operateType==='query'" v-model="baseInfoForm.belongProject"
+              <el-input :readonly="operateType==='query'" :class="{disabledInput:operateType==='query'}"
+                        v-model="baseInfoForm.belongProject"
                         placeholder="请输入所属项目"></el-input>
             </el-form-item>
           </el-col>
           <el-col :span="8" v-if="operateType!=='create'&&updateForm.updateMode===1">
             <el-form-item label="合同编号">
               <el-input v-model="baseInfoForm.contractNo" placeholder="请输入合同编号"
-                        :disabled="true"></el-input>
+                        :readonly="true" :class="{disabledInput:true}"></el-input>
             </el-form-item>
           </el-col>
         </el-row>
@@ -227,7 +213,8 @@
         </el-row>
         <el-row v-if="baseInfoForm.sealOrder===0">
           <el-col :span="16" style="margin-left: 100px">
-            <el-input :disabled="isEnabled1" type="textarea" :rows="4" placeholder="请输入内容"
+            <el-input :disabled="isEnabled1" type="textarea" :rows="4"
+                      placeholder="请输入内容"
                       v-model="baseInfoForm.ourSealOpinion"></el-input>
           </el-col>
         </el-row>
@@ -432,7 +419,7 @@
               <el-col :span="8">
                 <el-form-item label="是否涉及金额">
                   <el-radio-group v-model="cardFinanceInfoForm.moneyInvolved"
-                                  :disabled="operateType==='query'||!enaledMoneyInvolved||!enabledFianceBtn">
+                                  :disabled="moneyInvolvedDisabled">
                     <el-radio :label="true">是</el-radio>
                     <el-radio :label="false">否</el-radio>
                   </el-radio-group>
@@ -441,7 +428,7 @@
               <el-col :span="8" v-if="cardFinanceInfoForm.moneyInvolved">
                 <el-form-item label="是否一次性付款">
                   <el-radio-group v-model="cardFinanceInfoForm.oneOffPay"
-                                  :disabled="operateType==='query'||baseInfoForm.contractType===3">
+                                  :disabled="oneOffPayDisabled">
                     <el-radio :label="true">是</el-radio>
                     <el-radio :label="false">否</el-radio>
                   </el-radio-group>
@@ -450,13 +437,8 @@
             </el-row>
             <el-row v-if="cardFinanceInfoForm.moneyInvolved">
               <el-col :span="8">
-                <!--<el-form-item v-if="cardFinanceInfoForm.moneyInvolved&&cardFinanceInfoForm.oneOffPay" label="合同总金额" prop="totalAmount" :rules="[{ required: true, message: '请输入合同总金额', trigger: 'blur' }]">
-                  <el-input  :disabled="!cardFinanceInfoForm.oneOffPay||operateType==='query'"
-                            v-model="cardFinanceInfoForm.totalAmount" placeholder="根据上表累加(含税价)">{{totalConMoney}}
-                  </el-input>
-                </el-form-item>-->
                 <el-form-item v-if="baseInfoForm.contractType===3" label="合同总金额" prop="totalAmount">
-                  <el-input :disabled="!enabledContractSum" v-model.number="cardFinanceInfoForm.totalAmount"
+                  <el-input :disabled="totalAmountDisabled" v-model.number="cardFinanceInfoForm.totalAmount"
                             placeholder="根据上表累加(含税价)"></el-input>
                 </el-form-item>
                 <el-form-item v-else label="合同总金额" prop="totalAmount">
@@ -468,7 +450,7 @@
               <el-col :span="8">
                 <el-form-item label="开票类型" prop="invoiceType">
                   <el-select class="wp100" v-model="cardFinanceInfoForm.invoiceType" placeholder="请选择开票类型"
-                             :disabled="operateType==='query'" @change="handleChangeValidateForms">
+                             :disabled="invoiceTypeDisabled" @change="handleChangeValidateForms">
                     <el-option
                       v-for="item in cardFinanceInfoForm.invoiceTypeOptions"
                       :key="item.value"
@@ -481,7 +463,7 @@
               <el-col :span="8">
                 <el-form-item label="币种" prop="currency">
                   <el-select class="wp100" v-model="cardFinanceInfoForm.currency" placeholder="请选择币种"
-                             :disabled="operateType==='query'">
+                             :disabled="currencyDisabled">
                     <el-option
                       v-for="item in cardFinanceInfoForm.currencyOptions"
                       :key="item.value"
@@ -494,31 +476,16 @@
             </el-row>
             <el-row v-if="cardFinanceInfoForm.oneOffPay&&cardFinanceInfoForm.moneyInvolved">
               <el-col :span="8">
-                <el-form-item v-if="cardFinanceInfoForm.moneyInvolved&&cardFinanceInfoForm.oneOffPay" label="付款条件"
-                              prop="paymentTimePeriod"
-                              :rules="{required: true, message: '请输入付款条件'}">
+                <el-form-item
+                  label="付款条件"
+                  prop="paymentTimePeriod"
+                  :rules="{required: true, message: '请输入付款条件'}">
                   <el-select
                     @change="handleChangeValidateForms"
                     v-model="cardFinanceInfoForm.paymentTimePeriod"
                     placeholder="请选择付款条件"
                     class="wp100"
-                    :disabled="operateType==='query'"
-                  >
-                    <el-option
-                      v-for="item in cardFinanceInfoForm.paymentTimePeriods"
-                      :key="item.id"
-                      :value="item.id"
-                      :label="item.name"
-                    >
-                    </el-option>
-                  </el-select>
-                </el-form-item>
-                <el-form-item v-else label="付款条件" prop="paymentTimePeriod">
-                  <el-select
-                    v-model="cardFinanceInfoForm.paymentTimePeriod"
-                    placeholder="请选择付款条件"
-                    class="wp100"
-                    :disabled="operateType==='query'"
+                    :disabled="paymentTimePeriodDisabled"
                   >
                     <el-option
                       v-for="item in cardFinanceInfoForm.paymentTimePeriods"
@@ -1106,129 +1073,8 @@
             </el-card>
             <el-card class="mt20">
               <header slot="header">开票信息</header>
-              <el-row>
-                <el-col v-if="cardFinanceInfoForm.jiaBillingInfo.length>1" :span="12">
-                  <h4>具体开票信息以采购提供为准</h4>
-                </el-col>
-                <el-col v-else :span="12" class="billingInfo">
-                  <h4>甲方增值税专用开票信息：</h4>
-                  <el-row>
-                    <el-col :span="6">
-                      公司名称:
-                    </el-col>
-                    <el-col :span="16">
-                      {{jia.company}}
-                    </el-col>
-                  </el-row>
-                  <el-row>
-                    <el-col :span="6">
-                      统一社会信用代码:
-                    </el-col>
-                    <el-col :span="16">
-                      {{jia.unifiedSocialCreditCode}}
-                    </el-col>
-                  </el-row>
-                  <el-row>
-                    <el-col :span="6">
-                      注册地址:
-                    </el-col>
-                    <el-col :span="16">
-                      {{jia.registeredAddress}}
-                    </el-col>
-                  </el-row>
-                  <el-row>
-                    <el-col :span="6">
-                      经营地址:
-                    </el-col>
-                    <el-col :span="16">
-                      {{jia.businessAddress}}
-                    </el-col>
-                  </el-row>
-                  <el-row>
-                    <el-col :span="6">
-                      联系电话:
-                    </el-col>
-                    <el-col :span="16">
-                      {{jia.contactNumber}}
-                    </el-col>
-                  </el-row>
-                  <el-row>
-                    <el-col :span="6">
-                      银行账号:
-                    </el-col>
-                    <el-col :span="16">
-                      {{jia.bankAccount}}
-                    </el-col>
-                  </el-row>
-                  <el-row>
-                    <el-col :span="6">
-                      开 户 行:
-                    </el-col>
-                    <el-col :span="16">
-                      {{jia.depositBank}}
-                    </el-col>
-                  </el-row>
-                </el-col>
-                <el-col :span="12" class="billingInfo">
-                  <h4>乙方指定甲方汇款的账户为：</h4>
-                  <el-row>
-                    <el-col :span="6">
-                      乙方:
-                    </el-col>
-                    <el-col :span="16">
-                      {{yi.company}}
-                    </el-col>
-                  </el-row>
-                  <el-row>
-                    <el-col :span="6">
-                      银行账号:
-                    </el-col>
-                    <el-col :span="16">
-                      {{yi.bankAccount}}
-                    </el-col>
-                  </el-row>
-                  <el-row>
-                    <el-col :span="6">
-                      开 户 行:
-                    </el-col>
-                    <el-col :span="16">
-                      {{yi.depositBank}}
-                    </el-col>
-                  </el-row>
-                  <el-row>
-                    <el-col :span="6">
-                      联系人:
-                    </el-col>
-                    <el-col :span="16">
-                      {{yi.contacts}}
-                    </el-col>
-                  </el-row>
-                  <el-row>
-                    <el-col :span="6">
-                      注册地址:
-                    </el-col>
-                    <el-col :span="16">
-                      {{yi.registeredAddress}}
-                    </el-col>
-                  </el-row>
-                  <el-row>
-                    <el-col :span="6">
-                      联系电话:
-                    </el-col>
-                    <el-col :span="16">
-                      {{yi.contactNumber}}
-                    </el-col>
-                  </el-row>
-                  <el-row>
-                    <el-col :span="6">
-                      E-mail:
-                    </el-col>
-                    <el-col :span="16">
-                      {{yi.email}}
-                    </el-col>
-                  </el-row>
-                </el-col>
-              </el-row>
+              <BothInfo :jiaBillingInfo="cardFinanceInfoForm.jiaBillingInfo"
+                        :yiBillingInfo="cardFinanceInfoForm.yiBillingInfo"></BothInfo>
             </el-card>
           </el-form>
         </el-tab-pane>
@@ -1241,25 +1087,6 @@
                 <el-form-item label="验收责任人" prop="responsibleName">
                   <el-input class="wp100" :disabled="true" v-model="cardContCheckInfoForm.responsibleName"
                             placeholder="请输入验收责任人"></el-input>
-                  <!--<el-select
-                    class="wp100"
-                    :disabled="true"
-                    v-model="cardContCheckInfoForm.responsibleId"
-                    filterable
-                    remote
-                    placeholder="请输入验收责任人"
-                    :remote-method="getRemoteResponsiblesByKeyWord"
-                    :loading="cardContCheckInfoForm.loading"
-                    @change="handleResponsibleChange">
-                    <el-option
-                      v-for="item in cardContCheckInfoForm.responsibles"
-                      :key="item.userId"
-                      :label="item.userName"
-                      :value="item.userId">
-                      <span style="float: left">{{ item.userName }}</span>
-                      <span style="float: right; color: #8492a6; font-size: 13px">{{ item.deptName }}</span>
-                    </el-option>
-                  </el-select>-->
                 </el-form-item>
               </el-col>
               <el-col :span="8">
@@ -1284,20 +1111,6 @@
                 </el-form-item>
               </el-col>
             </el-row>
-            <!--<el-row>
-              <el-col :span="8">
-                <el-form-item prop="supervisor" label="验收监督人">
-                  <el-input :disabled="isEnabled" v-model="cardContCheckInfoForm.supervisor"
-                            placeholder="请输入验收监督人"></el-input>
-                </el-form-item>
-              </el-col>
-              <el-col :span="8">
-                <el-form-item prop="supervisorDept" label="验收监督人部门">
-                  <el-input :disabled="isEnabled" v-model="cardContCheckInfoForm.supervisorDept"
-                            placeholder="请输入验收监督人部门"></el-input>
-                </el-form-item>
-              </el-col>
-            </el-row>-->
             <el-button
               v-if="operateType!=='query'&&operateType!=='update'"
               @click="handleAddUnionCheck"
@@ -1393,15 +1206,6 @@
               添加
             </el-button>
             <i class="errorMsg">{{cardSealInfoForm.errorMsg}}</i>
-            <!--<el-button
-              type="primary"
-              @click="handleNewAgreenmentSealFile"
-              size="small"
-              icon="plus"
-              v-if="enabledInupdated"
-              class="mb20">
-              新增从协议
-            </el-button>-->
             <el-table v-if="cardSealInfoForm.contract&&cardSealInfoForm.contract.length"
                       :data="cardSealInfoForm.contract" class="mb20">
               <el-table-column type="expand"
@@ -1558,14 +1362,14 @@
                         </el-col>
                         <el-col :span="6">
                           <el-form-item label="打印份数" prop="printTime" class="el-form-item is-required">
-                            <el-input-number :disabled="!enabledUpdateInApprovePrint1" size="small" :max="10"
+                            <el-input-number :disabled="!enabledUpdateInApprovePrint1" size="small" :min="0" :max="10"
                                              v-model="props.row.printTime"
                                              @change="handleChangeValidateForms"></el-input-number>
                           </el-form-item>
                         </el-col>
                         <el-col :span="6">
                           <el-form-item label="留存份数" prop="remainTime" class="el-form-item is-required">
-                            <el-input-number :disabled="!enabledUpdateInApprovePrint1" size="small" :max="10"
+                            <el-input-number :disabled="!enabledUpdateInApprovePrint1" size="small" :min="0" :max="10"
                                              v-model="props.row.remainTime"
                                              @change="handleChangeValidateForms"></el-input-number>
                           </el-form-item>
@@ -1670,28 +1474,8 @@
                                :to="{path:'/ConCreate/querySlaveProtocol', query:{id:''+cardSealInfoForm.agreenments[scope.$index].fileId}}">
                     {{cardSealInfoForm.agreenments[scope.$index].fileName}}
                   </router-link>
-                  <!--<el-form-item v-else style="margin-left: -100px;margin-bottom:0" prop="slaveProtocolNo">
-                    <el-input
-                      :disabled="!enabledInupdated"
-                      icon="search"
-                      @keyup.enter.native="handleCodeBlur(cardSealInfoForm.agreenments[scope.$index],cardSealInfoForm.agreenments[scope.$index].slaveProtocolNo)"
-                      v-model="cardSealInfoForm.agreenments[scope.$index].slaveProtocolNo"
-                    ></el-input>
-                  </el-form-item>-->
                 </template>
               </el-table-column>
-              <!-- <el-table-column
-                 fixed="right"
-                 width="80"
-                 label="操作">
-                 <template scope="scope">
-                   <el-button
-                     v-if="cardSealInfoForm.agreenments[scope.$index].operate"
-                     @click="handleRemoveAgreenmentsItem(scope.$index, cardSealInfoForm.agreenments)"
-                     type="danger" size="small">移除
-                   </el-button>
-                 </template>
-               </el-table-column>-->
             </el-table>
           </el-form>
           <h4 v-else>请选择合同基本信息的模版名称！</h4>
@@ -1733,16 +1517,6 @@
                   {{cardRelatedInfoForm.contractList[scope.$index].endTime | formatDate}}
                 </template>
               </el-table-column>
-              <!--<el-table-column
-                fixed="right"
-                label="操作"
-                width="100">
-                <template scope="scope">
-                  <el-button @click="handleContractDetail(scope.$index, scope.row)" type="text"
-                             size="small">详情
-                  </el-button>
-                </template>
-              </el-table-column>-->
             </el-table>
           </el-form>
           <div class="mt20">
@@ -1997,15 +1771,6 @@
     </el-dialog>
     <Process :extraFn="callback.bind(this)"></Process>
     <el-row class="mt20">
-      <!--<el-col :span="4" :offset="4">
-        <el-button v-if="operateType!=='query'" :disabled="!btnSaveStatus" type="primary" @click="handleSave('')">保存
-        </el-button>
-      </el-col>-->
-      <!--<el-col :span="6">
-        <el-button type="primary" @click="handlePreview" style="margin-left:33px"
-                   v-if="operateType!=='query'&&baseInfoForm.contractTextType===1">预览
-        </el-button>
-      </el-col>-->
       <el-col :span="24" style="text-align:center">
         <el-button v-if="operateType!=='query'" :disabled="!btnSubmitStatus" type="primary" @click="handleSubmit">提交
         </el-button>
@@ -2198,24 +1963,8 @@
           ],
           totalAmount: 0,
           depositFlag: true, // 是否收取保证金
-          jiaBillingInfo: {
-            companyName: '红星美凯龙家居集团股份有限公司',
-            creditCode: '913100006624816751',
-            registerAddress: '上海市浦东新区临御路518号6楼F801室',
-            managementAddress: '上海市普陀区怒江北路598号10楼',
-            contactNumber: '021-22300563',
-            bankAccount: '0210 0141 7000 7578',
-            openBank: '中国民生银行上海市南支行'
-          },
-          yiBillingInfo: {
-            companyName: '上海史泰博股份有限公司',
-            contact: 'echo',
-            bankAccount: '0210 0141 7000 7578',
-            openBank: '中国民生银行上海市南支行',
-            address: '上海市浦东新区临御路518号6楼F801室',
-            contactNumber: '021-22300563',
-            email: '134656343@qq.com'
-          },
+          jiaBillingInfo: [],
+          yiBillingInfo: [],
           paymentErrorMSG: '',
           errorCount: 0,
           paymentMethods: {
@@ -2730,14 +2479,6 @@
         }
         return result;
       },
-      enaledMoneyInvolved() {
-        let enabled = true;
-        const contractType = this.baseInfoForm.contractType;
-        if (contractType === 2 || contractType === 4) {
-          enabled = false;
-        }
-        return enabled;
-      },
       earnestPaymentAmount() {
         const items = this.cardFinanceInfoForm.paymentMethods.earnest[0].subItem;
         let sum = 0;
@@ -2793,13 +2534,6 @@
         this.cardFinanceInfoForm.paymentMethods.deposit[0].paymentAmount = sum;
         return sum;
       },
-      enabledFianceBtn() {
-        let enabled = true;
-        if (parseInt(this.baseInfoForm.contractType, 10) === 3 && !this.baseInfoForm.prFlag) {
-          enabled = false;
-        }
-        return enabled;
-      },
       ifRole() {
         const reg = /印章保管人/g;
         return reg.test(this.users.roleName);
@@ -2834,13 +2568,53 @@
         }
         return enabled;
       },
-      enabledContractSum() {
-        let enabled = false;
-        if (this.operateType !== 'query') {
-          enabled = this.baseInfoForm.contractType === 3;
+
+      /**if disabled element**/
+      /**cardFinanceInfoForm*/
+      moneyInvolvedDisabled() {
+        if (this.operateType === 'query') {
+          return true;
+        } else if ([2, 4].indexOf(this.baseInfoForm.contractType) > -1) {
+          return true;
+        } else if (parseInt(this.baseInfoForm.contractType, 10) === 3 && !this.baseInfoForm.prFlag) {
+          return true;
         }
-        return enabled;
+        return false;
+      },
+      oneOffPayDisabled() {
+        if (this.operateType === 'query' || this.baseInfoForm.contractType === 3) {
+          return true;
+        }
+        return false;
+      },
+      totalAmountDisabled() {
+        if (this.operateType !== 'query') {
+          if (this.baseInfoForm.contractType === 3) {
+            return false;
+          }
+        }
+        return true;
+      },
+      invoiceTypeDisabled() {
+        if (this.operateType === 'query') {
+          return true;
+        }
+        return false;
+      },
+      currencyDisabled() {
+        if (this.operateType === 'query') {
+          return true;
+        }
+        return false;
+      },
+      paymentTimePeriodDisabled() {
+        if (this.operateType === 'query') {
+          return true;
+        }
+        return false;
       }
+      /**cardFinanceInfoForm*/
+      /**if disabled element**/
     },
     filters: {
       formatDate
@@ -2983,6 +2757,12 @@
           this.baseInfoForm.contractType = parseInt(params.contractType, 10);
           if (params.folio) {
             this.baseInfoForm.prFlag = 1;
+          }
+          if (this.cardContentInfoForm.conStandard.length) {
+            const exist = this.cardContentInfoForm.conStandard.some(item => item.taxCode !== 'J0');
+            if (exist) {
+              this.cardFinanceInfoForm.invoiceType = this.cardFinanceInfoForm.invoiceTypeOptions[0].value;
+            }
           }
         }
       },
@@ -3802,9 +3582,9 @@
           haveSale: true, // 是否用章
           remark: '',
           saleTime: 1, // 用章次数
-          printTime: '', // 打印份数
-          remainTime: '', // 我方留存份数
-          saleInfos: [], // 当前选中的张
+          printTime: 4, // 打印份数
+          remainTime: 2, // 我方留存份数
+          saleInfos: ['1'], // 当前选中的章
           useSeals: [
             {
               id: '1',
@@ -4259,6 +4039,9 @@
       },
       OrderTable: (resolve) => {
         require(['./orderTable'], resolve);
+      },
+      BothInfo: (resolve) => {
+        require(['./BothInfo'], resolve);
       }
     },
     watch: {

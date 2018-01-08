@@ -115,7 +115,7 @@ export const prTypeMap = {
 
 export const contractPatternMap = {
   1: '单一合同',
-  2: '简易合同',
+  2: '固定格式合同',
   3: '框架合同',
   4: '意向合同'
 };

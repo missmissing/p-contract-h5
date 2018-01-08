@@ -67,10 +67,6 @@
                   {{scope.row.createTime | formatDate}}
                 </template>
               </el-table-column>
-              <!--<el-table-column-->
-              <!--prop="processViewUrl"-->
-              <!--label="PR申请链接">-->
-              <!--</el-table-column>-->
               <el-table-column
                 label="操作"
                 width="80">

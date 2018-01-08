@@ -48,6 +48,23 @@
                 </el-form-item>
               </el-col>
             </el-row>
+            <el-row v-if="showText">
+              <el-col :span="8">
+                <el-form-item label="业务经办人">
+                  {{form.businessOperatorName}}
+                </el-form-item>
+              </el-col>
+              <el-col :span="8">
+                <el-form-item label="金额">
+                  {{form.amount}}元
+                </el-form-item>
+              </el-col>
+              <el-col :span="8">
+                <el-form-item label="合同类型">
+                  {{form.contractType}}
+                </el-form-item>
+              </el-col>
+            </el-row>
             <el-row>
               <el-col :span="8">
                 <el-form-item label="生效时间">
@@ -142,7 +159,6 @@
 </template>
 
 <script>
-  import _ from 'lodash';
   import Tmpl from './tmpl.vue';
   import Upload from '../../components/upload.vue';
   import Process from '../../components/process.vue';
@@ -153,38 +169,38 @@
   import {tplMap} from '../../core/consts';
   import {downloadUrl} from '../../api/consts';
 
-  const defaultData = {
-    procTitle: '',
-    procInstId: '',
-    form: {
-      templateCode: '',
-      templateName: '',
-      templateType: 'TEMPLATE',
-      templateStatus: '',
-      startDate: '',
-      endDate: '',
-      description: '',
-      abolishReason: '',
-      files: [],
-      busiTypeText: '',
-      operatorName: '',
-      creatorName: '',
-      version: ''
-    },
-    versions: [],
-    tplInfo: {},
-    fileList: []
-  };
-
   export default {
     mixins: [comLoading],
     data() {
-      return Object.assign({
+      return {
+        processData: {},
+        procTitle: '',
+        procInstId: '',
+        form: {
+          templateCode: '',
+          templateName: '',
+          templateType: 'TEMPLATE',
+          templateStatus: '',
+          startDate: '',
+          endDate: '',
+          description: '',
+          abolishReason: '',
+          files: [],
+          busiTypeText: '',
+          operatorName: '',
+          creatorName: '',
+          version: '',
+          contractType: null,
+          businessOperatorName: null,
+          amount: null
+        },
+        versions: [],
+        tplInfo: {},
+        fileList: [],
         showTmpl: false,
         templateId: this.$route.query.id,
-        showAbolish: false,
         download: downloadUrl
-      }, _.cloneDeep(defaultData));
+      };
     },
     methods: {
       setData(tplInfo) {
@@ -254,8 +270,8 @@
       const {id, processData} = this.$route.query;
       this.getTplData(id);
       if (processData) {
-        const {procCode, procInstId, procTitle} = JSON.parse(processData);
-        this.showAbolish = procCode === tplMap[2];
+        this.processData = JSON.parse(processData);
+        const {procCode, procInstId, procTitle} = this.processData;
         this.procInstId = procInstId;
         this.procTitle = procTitle;
       }
@@ -267,6 +283,12 @@
     computed: {
       tplTypeShow() {
         return this.form.templateType === 'TEXT';
+      },
+      showAbolish() {
+        return this.processData.procCode === tplMap[2];
+      },
+      showText() {
+        return this.form.templateType === 'TEXT' && this.processData.procCode === tplMap[0];
       }
     },
     watch: {

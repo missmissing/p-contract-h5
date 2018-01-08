@@ -135,7 +135,7 @@
       </el-table-column>
       <el-table-column prop="id" label="流程id" width="100px">
         <template scope="scope">
-          <div v-if="[2,4].indexOf(scope.row.contractType)>-1||!scope.row.procInstId">自动创建</div>
+          <div v-if="[2,4].indexOf(scope.row.contractType)>-1||!scope.row.procCode">自动创建</div>
           <div class="router-link" @click="goToProcess(scope.row)" v-else>
             {{scope.row.procInstId}}
           </div>
