@@ -6,8 +6,9 @@
   <el-table :show-header="showHeader" :data="items" row-key="type" :expand-row-keys="expandkeys" class="wp100">
     <el-table-column type="expand" v-if="items.length&&items[0].seriousPayments">
       <template scope="scope">
-        <div v-if="items.length&&items[0].seriousPayments">
+        <div class="pt20 pb20" v-if="items.length&&items[0].seriousPayments">
           <el-button
+            v-if="!disabledTable"
             size="small"
             icon="plus"
             type="primary"
@@ -24,7 +25,9 @@
               label="付款金额">
               <template scope="scope1">
                 <el-input
-                  v-model="scope1.row.paymentAmount" @change="inputChange(scope1.row,$event)"></el-input>
+                  :disabled="disabledTable"
+                  v-model="scope1.row.paymentAmount"
+                  @blur="inputChange(scope1.row,$event)"></el-input>
               </template>
             </el-table-column>
             <el-table-column
@@ -33,11 +36,12 @@
               width="200px">
               <template scope="scope1">
                 <el-select
+                  :disabled="disabledTable"
                   v-model="scope1.row.paymentTimePeriod"
                   placeholder="请选择付款条件"
                 >
                   <el-option
-                    v-for="item in datas.paymentTimePeriods"
+                    v-for="item in moreDatas.paymentTimePeriods"
                     :key="item.id"
                     :value="item.id"
                     :label="item.name"
@@ -52,6 +56,7 @@
               width="200px">
               <template scope="scope1">
                 <el-input
+                  :disabled="disabledTable"
                   type="textarea"
                   :rows="2"
                   v-model="scope1.row.remark"></el-input>
@@ -63,6 +68,7 @@
               </template>
             </el-table-column>
             <el-table-column
+              v-if="!disabledTable"
               fixed="right"
               label="操作"
               width="100">
@@ -81,7 +87,7 @@
     <el-table-column prop="seriousPayments" label="多次付款" width="130px">
       <template scope="scope">
         <el-checkbox
-          :disabled="disabledSeriousPayments"
+          :disabled="payTimesDisabled"
           :checked="scope.row.seriousPayments"
           @change="handleSeriousPaymentsChange(scope.row,$event)"
         ></el-checkbox>
@@ -91,7 +97,8 @@
       <template scope="scope">
         <el-input
           v-if="!scope.row.seriousPayments"
-          v-model="scope.row.paymentAmount" @change="inputChange(scope.row,$event)"></el-input>
+          :disabled="disabledTable"
+          v-model="scope.row.paymentAmount" @blur="inputChange(scope.row,$event)"></el-input>
         <template v-else>{{totalPaymentAmount}}</template>
       </template>
     </el-table-column>
@@ -101,11 +108,11 @@
       width="200px">
       <template scope="scope">
         <el-select
-          :disabled="scope.row.seriousPayments"
+          :disabled="disabledTable||scope.row.seriousPayments"
           v-model="scope.row.paymentTimePeriod"
           placeholder="请选择付款条件">
           <el-option
-            v-for="item in datas.paymentTimePeriods"
+            v-for="item in moreDatas.paymentTimePeriods"
             :key="item.id"
             :value="item.id"
             :label="item.name"
@@ -119,7 +126,7 @@
       label="付款节点说明">
       <template scope="scope">
         <el-input
-          :disabled="scope.row.seriousPayments"
+          :disabled="disabledTable||scope.row.seriousPayments"
           type="textarea"
           :rows="2"
           v-model="scope.row.remark"></el-input>
@@ -135,7 +142,6 @@
 
 <script>
   import {nonNegative} from '../../util/reg';
-  import {paymentType} from '../../core/consts';
 
   export default {
     props: {
@@ -149,7 +155,7 @@
           return [];
         }
       },
-      datas: {
+      moreDatas: {
         type: Object,
         default() {
           return {};
@@ -158,22 +164,21 @@
     },
     data() {
       return {
-        expandkeys: []
+        expandkeys: [],
+        paymentType: {
+          1: '定金',
+          2: '预付款',
+          3: '进度款',
+          4: '尾款',
+          5: '保证金'
+        },
+        isCreate: false,
+        isSee: false,
+        isModify: false,
+        isProcess: false
       };
     },
     computed: {
-      disabledSeriousPayments() {
-        const item = this.items[0];
-        const {type} = item;
-        if ([paymentType[1], paymentType[5]].indexOf(type) > -1) {
-          return true;
-        }
-        const {operateType} = this.$store.state.contract;
-        if (['create', 'update'].indexOf(operateType) < 0) {
-          return true;
-        }
-        return false;
-      },
       totalPaymentAmount() {
         let total = 0;
         if (this.items.length) {
@@ -184,13 +189,39 @@
           });
         }
         return total;
+      },
+      disabledTable() {
+        if (this.isSee) {
+          return true;
+        }
+        return false;
+      },
+      payTimesDisabled() {
+        const item = this.items[0];
+        const {type} = item;
+        if (this.disabledTable) {
+          return true;
+        } else if ([this.paymentType[1], this.paymentType[5]].indexOf(type) > -1) {
+          return true;
+        }
+        return false;
+      }
+    },
+    created() {
+      const {operateType} = this.moreDatas;
+      if (operateType === 'create') {
+        this.isCreate = true;
+      } else if (operateType === 'query') {
+        this.isSee = true;
+      } else if (operateType === 'update') {
+        this.isModify = true;
+      } else if (operateType === 'update') {
+        this.isProcess = true;
       }
     },
     methods: {
-      ifFind(columns, column) {
-        return columns.indexOf(column) > -1;
-      },
-      inputChange(item, val) {
+      inputChange(item, event) {
+        const val = event.target.value;
         if (val && !nonNegative(val)) {
           this.$message.warning('请输入数值！');
           this.$nextTick(() => {
@@ -203,8 +234,8 @@
       calcPercent(item, val) {
         let result = 0;
         if (val) {
-          if (this.datas.totalAmount) {
-            result = ((val / this.datas.totalAmount) * 100).toFixed(2);
+          if (this.moreDatas.totalAmount) {
+            result = ((val / this.moreDatas.totalAmount) * 100).toFixed(2);
           }
           item.ratio = result;
         }
@@ -212,9 +243,9 @@
       },
       handleSeriousPaymentsChange(item, event) {
         item.seriousPayments = event.target.checked;
-        item.paymentAmount = '';
-        item.paymentTimePeriod = '';
-        item.remark = '';
+        item.paymentAmount = null;
+        item.paymentTimePeriod = null;
+        item.remark = null;
         item.subItem = [];
         this.expandkeys = [];
       },
