@@ -84,49 +84,26 @@
       </el-table-column>
       <el-table-column
         prop="category"
-        min-width="100"
+        width="100"
         label="订单类型"
         :formatter="formatType">
       </el-table-column>
       <el-table-column
-        prop="sapItemNo"
-        width="80"
-        label="行项目">
+        prop="poMaterialsTotalAmount"
+        width="150"
+        label="总金额">
       </el-table-column>
       <el-table-column
-        prop="materialCode"
-        width="130"
-        label="物料编码">
+        prop="btwbtext"
+        min-width="200"
+        label="订单描述">
         <template scope="scope">
-          {{scope.row.materialCode | cutZero}}
-        </template>
-      </el-table-column>
-      <el-table-column
-        prop="materialName"
-        min-width="300"
-        label="物料描述">
-      </el-table-column>
-      <el-table-column
-        prop="total"
-        width="80"
-        label="数量">
-      </el-table-column>
-      <el-table-column
-        prop="price"
-        width="100"
-        label="含税单价">
-      </el-table-column>
-      <el-table-column
-        prop="taxRate"
-        width="70"
-        label="税率">
-        <template scope="scope">
-          {{scope.row.taxRate !== null ? `${scope.row.taxRate}%` : '0%'}}
+          {{scope.row.btwbtext || scope.row.purOrderMaterials[0].materialName}}
         </template>
       </el-table-column>
       <el-table-column
         prop="creatorName"
-        width="80"
+        width="100"
         label="发起人">
       </el-table-column>
       <el-table-column

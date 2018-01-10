@@ -612,7 +612,8 @@
                 availableTotal,
                 materialCode,
                 contVos,
-                category
+                category,
+                price
               } = item;
               if (prItemNo === row.mapKey) {
                 if (contVos && contVos.length) {
@@ -626,7 +627,7 @@
                         prItemNo,
                         materialName,
                         materialCode,
-                        price: cont.price,
+                        price: 1,
                         total,
                         availableTotal,
                         taxRate: cont.taxRate,
