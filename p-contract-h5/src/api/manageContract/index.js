@@ -114,6 +114,9 @@ export default {
   /** ***合同列表****/
   getConList(params) {
     return Http.post(`${contract}/contract-web/contract/query`, params);
-  }
+  },
   /** ***合同列表****/
+  updateFinanceByContractId(params) { //流程中修改财务信息
+    return Http.post(`${contract}/contract-web/contract/updateFinanceByContractId`, params);
+  }
 };

@@ -1214,7 +1214,7 @@
       </footer>
     </el-dialog>
     <Process :extraFn="callback.bind(this)"></Process>
-    <el-row class="mt20">
+    <el-row class="mt20 mb20">
       <el-col :span="24" style="text-align:center">
         <el-button v-if="operateType!=='query'" :disabled="!btnSubmitStatus" type="primary" @click="handleSubmit">提交
         </el-button>
@@ -1230,7 +1230,7 @@
   import comLoading from '../../mixins/comLoading';
   import {downloadUrl, uploadUrl} from '../../api/consts';
   import {formatDate} from '../../filters/moment';
-  import {routerNames, contractMap} from '../../core/consts';
+  import {routerNames, contractMap, processListMap} from '../../core/consts';
   import toPage from '../../assets/js/toPage';
 
   const user = store.get('user');
@@ -1272,6 +1272,7 @@
       });
 
       return {
+        processData: null,
         procCode: '', //流程code
         procInstId: '', //流程id
         procTitle: '', //流程名称
@@ -1408,7 +1409,6 @@
             }
           ],
           totalAmount: 0,
-          depositFlag: true, // 是否收取保证金
           jiaBillingInfo: [],
           yiBillingInfo: [],
           paymentErrorMSG: '',
@@ -1869,9 +1869,6 @@
       isModify() { //变更
         return this.operateType === 'update';
       },
-      isProcess() { //流程
-        return !!this.$route.query.processData;
-      },
       /**判断当前页面类型**/
 
       /**if disabled element**/
@@ -1901,18 +1898,27 @@
         return true;
       },
       invoiceTypeDisabled() {
+        if (this.backLogFA()) {
+          return false;
+        }
         if (this.isSee) {
           return true;
         }
         return false;
       },
       currencyDisabled() {
+        if (this.backLogFA()) {
+          return false;
+        }
         if (this.isSee) {
           return true;
         }
         return false;
       },
       paymentTimePeriodDisabled() {
+        if (this.backLogFA()) {
+          return false;
+        }
         if (this.isSee) {
           return true;
         }
@@ -1927,10 +1933,11 @@
     created() {
       const query = this.$route.query;
       if (query.processData) {
-        this.procCode = JSON.parse(query.processData).procCode;
-        this.procInstId = JSON.parse(query.processData).procInstId;
-        this.procTitle = JSON.parse(query.processData).procTitle;
-        this.users.roleName = JSON.parse(query.processData).roleName;
+        this.processData = JSON.parse(query.processData);
+        this.procCode = this.processData.procCode;
+        this.procInstId = this.processData.procInstId;
+        this.procTitle = this.processData.procTitle;
+        this.users.roleName = this.processData.roleName;
       }
       if (JSON.stringify(query) !== '{}') {
         if (query.operateType) {
@@ -1967,12 +1974,11 @@
         } else { //使用No查询
           this.comLoading();
           Api.getUpdateInfo(query.contractNo).then((data) => {
-            this.comLoading(false);
             const dataMap = data.data.dataMap;
             if (dataMap) {
               this.initData(dataMap);
             }
-          }).catch(() => {
+          }).finally(() => {
             this.comLoading(false);
           });
         }
@@ -2501,6 +2507,11 @@
               }
               console.log('errors.cardFinanceInfoForm.errorCount', errors.cardFinanceInfoForm.errorCount);
             }
+            if (this.checkPayCondition()) { //判断付款条件是否选择
+              errors.cardFinanceInfoForm.errorCount += 1;
+            }
+            reject();
+            return;
           });
           this.$refs.cardRemarkInfoForm.validate((valid) => {
             const cardRemarkInfoForm = this.cardRemarkInfoForm;
@@ -2731,7 +2742,6 @@
         }
       },
       handleSubmit() {
-        console.log(this.cardFinanceInfoForm);
         this.btnSubmitStatus = false;
         this.isSubmit = true;
         this.validateForms().then(() => {
@@ -3237,6 +3247,45 @@
               .catch(() => {
                 reject();
               });
+          } else if (this.backLogFA()) {
+            const {
+              currency,
+              invoiceType,
+              paymentTimePeriod,
+              paymentMethods
+            } = this.cardFinanceInfoForm;
+            const finances = Object.keys(paymentMethods).map((key) => {
+              const item = paymentMethods[key][0];
+              let payType = 1;
+              if (key === 'advance') {
+                payType = 1;
+              } else if (key === 'progress') {
+                payType = 2;
+              } else if (key === '_final') {
+                payType = 3;
+              } else if (key === 'earnest') {
+                payType = 4;
+              } else if (key === 'deposit') {
+                payType = 5;
+              }
+              return Object.assign({}, item, {payType, finances: item.subItem});
+            });
+            if (this.cardFinanceInfoForm.paymentErrorMSG || this.checkPayCondition()) {
+              this.$message.warning('财务信息不完整');
+              reject();
+              return;
+            }
+            Api.updateFinanceByContractId({
+              contractId: this.$route.query.contractId,
+              currency,
+              invoiceType,
+              paymentTimePeriod,
+              finances
+            }).then(() => {
+              resolve();
+            }).catch(() => {
+              reject();
+            });
           } else {
             resolve();
           }
@@ -3291,6 +3340,36 @@
       },
       goToProcess(row) {
         toPage.call(this, row);
+      },
+      backLogFA() {
+        let isBackLog = false;
+        let isFA = false;
+        if (this.processData) {
+          isBackLog = this.processData.dataType === processListMap[0];
+          isFA = isBackLog ? this.processData.roleName.indexOf('FA') > -1 : false;
+        }
+
+        return isBackLog && isFA;
+      },
+      conditionLoop(items) {
+        return items.some((item) => {
+          const {subItem, seriousPayments, paymentAmount} = item;
+          if (seriousPayments) {
+            if (subItem.length) {
+              return this.conditionLoop(subItem);
+            }
+            return false;
+          }
+          if (paymentAmount) {
+            return !item.paymentTimePeriod;
+          }
+          return false;
+        });
+      },
+      checkPayCondition() {
+        const {paymentMethods} = this.cardFinanceInfoForm;
+        const items = Object.keys(paymentMethods).map(key => paymentMethods[key][0]);
+        return this.conditionLoop(items);
       }
     },
     components: {
@@ -3354,18 +3433,10 @@
         }
       },
       totalConMoney(val) {
-        if (this.operateType === 'create') {
-          let total = 0;
-          if (val) {
-            total = parseFloat(val);
-            if (this.baseInfoForm.contractType !== 3 && this.baseInfoForm.contractType !== 4 && this.cardFinanceInfoForm.moneyInvolved) {
-              if (total !== this.cardFinanceInfoForm.totalAmount) {
-                this.cardFinanceInfoForm.paymentErrorMSG = '您添加的付款金额必须等于合同总金额';
-              } else {
-                this.cardFinanceInfoForm.paymentErrorMSG = '';
-              }
-            }
-          }
+        if (val !== this.cardFinanceInfoForm.totalAmount) {
+          this.cardFinanceInfoForm.paymentErrorMSG = '您添加的付款金额必须等于合同总金额';
+        } else {
+          this.cardFinanceInfoForm.paymentErrorMSG = '';
         }
       }
     }

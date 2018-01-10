@@ -223,7 +223,7 @@
                     </el-form-item>
                   </el-col>
                   <el-col :span="8">
-                    <el-form-item label="合同类型">
+                    <el-form-item label="业务类型">
                       <el-input :value="contractForm.contractBusinessTypeThirdName" disabled></el-input>
                     </el-form-item>
                   </el-col>
@@ -647,15 +647,6 @@
       },
       formatDate(row, value) {
         row.deliveryTime = formatDate(value);
-      },
-      selectTaxRate(row) {
-        this.taxRates.some((item) => {
-          if (item.value === row.taxRate) {
-            row.taxCode = item.code;
-            return true;
-          }
-          return false;
-        });
       },
       srChange(row) {
         if (this.prData[0].category !== 2) {

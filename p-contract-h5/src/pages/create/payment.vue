@@ -142,6 +142,7 @@
 
 <script>
   import {nonNegative} from '../../util/reg';
+  import {processListMap} from '../../core/consts';
 
   export default {
     props: {
@@ -171,14 +172,19 @@
           3: '进度款',
           4: '尾款',
           5: '保证金'
-        },
-        isCreate: false,
-        isSee: false,
-        isModify: false,
-        isProcess: false
+        }
       };
     },
     computed: {
+      isCreate() { //创建
+        return this.moreDatas.operateType === 'create';
+      },
+      isSee() { //查看
+        return this.moreDatas.operateType === 'query';
+      },
+      isModify() { //变更
+        return this.moreDatas.operateType === 'update';
+      },
       totalPaymentAmount() {
         let total = 0;
         if (this.items.length) {
@@ -187,10 +193,14 @@
               total += Number(item.paymentAmount, 10);
             }
           });
+          this.items[0].paymentAmount = total;
         }
         return total;
       },
       disabledTable() {
+        if (this.backLogFA()) {
+          return false;
+        }
         if (this.isSee) {
           return true;
         }
@@ -199,24 +209,12 @@
       payTimesDisabled() {
         const item = this.items[0];
         const {type} = item;
-        if (this.disabledTable) {
+        if ([this.paymentType[1], this.paymentType[5]].indexOf(type) > -1) {
           return true;
-        } else if ([this.paymentType[1], this.paymentType[5]].indexOf(type) > -1) {
+        } else if (this.disabledTable) {
           return true;
         }
         return false;
-      }
-    },
-    created() {
-      const {operateType} = this.moreDatas;
-      if (operateType === 'create') {
-        this.isCreate = true;
-      } else if (operateType === 'query') {
-        this.isSee = true;
-      } else if (operateType === 'update') {
-        this.isModify = true;
-      } else if (operateType === 'update') {
-        this.isProcess = true;
       }
     },
     methods: {
@@ -260,6 +258,18 @@
       },
       handleRemove(index, rows) {
         rows.splice(index, 1);
+      },
+      backLogFA() {
+        let processData = this.$route.query.processData;
+        let isBackLog = false;
+        let isFA = false;
+        if (processData) {
+          processData = JSON.parse(processData);
+          isBackLog = processData.dataType === processListMap[0];
+          isFA = isBackLog ? processData.roleName.indexOf('FA') > -1 : false;
+        }
+
+        return isBackLog && isFA;
       }
     }
   };
