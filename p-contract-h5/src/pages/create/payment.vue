@@ -142,7 +142,6 @@
 
 <script>
   import {nonNegative} from '../../util/reg';
-  import {processListMap} from '../../core/consts';
 
   export default {
     props: {
@@ -176,15 +175,6 @@
       };
     },
     computed: {
-      isCreate() { //创建
-        return this.moreDatas.operateType === 'create';
-      },
-      isSee() { //查看
-        return this.moreDatas.operateType === 'query';
-      },
-      isModify() { //变更
-        return this.moreDatas.operateType === 'update';
-      },
       totalPaymentAmount() {
         let total = 0;
         if (this.items.length) {
@@ -198,10 +188,11 @@
         return total;
       },
       disabledTable() {
-        if (this.backLogFA()) {
+        const {isSee, backLogFA} = this.moreDatas;
+        if (backLogFA) {
           return false;
         }
-        if (this.isSee) {
+        if (isSee) {
           return true;
         }
         return false;
@@ -258,18 +249,6 @@
       },
       handleRemove(index, rows) {
         rows.splice(index, 1);
-      },
-      backLogFA() {
-        let processData = this.$route.query.processData;
-        let isBackLog = false;
-        let isFA = false;
-        if (processData) {
-          processData = JSON.parse(processData);
-          isBackLog = processData.dataType === processListMap[0];
-          isFA = isBackLog ? processData.roleName.indexOf('FA') > -1 : false;
-        }
-
-        return isBackLog && isFA;
       }
     }
   };

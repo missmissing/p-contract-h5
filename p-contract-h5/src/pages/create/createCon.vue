@@ -24,15 +24,6 @@
     margin-left: 20px;
   }
 
-  .createCon .select-money {
-    padding-top: 5px;
-    padding-bottom: 5px;
-  }
-
-  .createCon .select-curTime {
-    margin-bottom: 5px;
-  }
-
   .createCon table {
     width: 100% !important;
   }
@@ -58,7 +49,7 @@
       <div class="fr">流程编号 {{procInstId}}</div>
       <div class="fl" style="font-weight: bolder">{{procTitle}}</div>
     </div>
-    <el-card v-if="operateType==='update'||updated">
+    <el-card v-if="operateType==='update'">
       <el-form ref="updateForm" :model="updateForm" label-width="100px" :rules="updateForm.rules">
         <el-row>
           <el-col :span="8">
@@ -248,7 +239,7 @@
                   <template scope="scope">
                     <el-button
                       v-if="cardContentInfoForm.tableSupplierInfo[scope.$index].type"
-                      @click="handleRemoveSupplier(scope.$index, cardContentInfoForm.tableSupplierInfo)"
+                      @click="handleRemove(scope.$index, cardContentInfoForm.tableSupplierInfo)"
                       type="danger"
                       size="small">移除
                     </el-button>
@@ -282,7 +273,7 @@
                   <template scope="scope">
                     <el-button
                       v-if="cardContentInfoForm.conSubjctName[scope.$index].type"
-                      @click="handleRemoveSubect(scope.$index, cardContentInfoForm.conSubjctName)"
+                      @click="handleRemove(scope.$index, cardContentInfoForm.conSubjctName)"
                       type="danger" size="small">移除
                     </el-button>
                   </template>
@@ -309,7 +300,7 @@
                   <template scope="scope">
                     <el-button
                       v-if="cardContentInfoForm.thirdPartyInfo[scope.$index].type"
-                      @click="handleRemoveThirdPartyInfo(scope.$index, cardContentInfoForm.thirdPartyInfo)"
+                      @click="handleRemove(scope.$index, cardContentInfoForm.thirdPartyInfo)"
                       type="danger" size="small">移除
                     </el-button>
                   </template>
@@ -352,7 +343,7 @@
                   <template scope="scope">
                     <el-button
                       v-if="cardContentInfoForm.conStandard[scope.$index].operate"
-                      @click="handleRemoveConStandard(scope.$index,cardContentInfoForm.conStandard)"
+                      @click="handleRemove(scope.$index,cardContentInfoForm.conStandard)"
                       type="danger" size="small">移除
                     </el-button>
                   </template>
@@ -574,7 +565,7 @@
                 <template scope="scope">
                   <el-button
                     v-if="cardContCheckInfoForm.unionCheckPersons[scope.$index].operate"
-                    @click="handleRemoveUnionCheckPerson(scope.$index,cardContCheckInfoForm.unionCheckPersons)"
+                    @click="handleRemove(scope.$index,cardContCheckInfoForm.unionCheckPersons)"
                     type="danger" size="small">移除
                   </el-button>
                 </template>
@@ -626,7 +617,7 @@
                   <template scope="scope">
                     <el-button
                       v-if="cardContCheckInfoForm.serviceMatters[scope.$index].type"
-                      @click="handleRemoveServiceMatter(scope.$index, cardContCheckInfoForm.serviceMatters)"
+                      @click="handleRemove(scope.$index, cardContCheckInfoForm.serviceMatters)"
                       type="danger" size="small">移除
                     </el-button>
                   </template>
@@ -645,266 +636,27 @@
               @click="handleNewOtherSealFile"
               size="small"
               icon="plus"
-              v-if="enabledInupdated1"
+              v-if="addOtherSealFileDisabled"
               class="mb20">
               添加
             </el-button>
             <i class="errorMsg">{{cardSealInfoForm.errorMsg}}</i>
-            <el-table v-if="cardSealInfoForm.contract&&cardSealInfoForm.contract.length"
-                      :data="cardSealInfoForm.contract" class="mb20">
-              <el-table-column type="expand"
-                               v-if="cardSealInfoForm.contract&&cardSealInfoForm.contract.length&&cardSealInfoForm.contract[0].haveSale">
-                <template scope="props">
-                  <div
-                    v-if="cardSealInfoForm.contract&&cardSealInfoForm.contract.length&&cardSealInfoForm.contract[0].haveSale"
-                    v-bind:class="{tdPd:cardSealInfoForm.contract&&cardSealInfoForm.contract.length&&cardSealInfoForm.contract[0].haveSale}">
-                    <el-table :data="props.row.filesSealed" class="mb20"
-                              v-if="props.row.filesSealed&&props.row.filesSealed.length">
-                      <el-table-column label="文件名" prop="sealFileName">
-                        <template scope="scope">
-                          <a
-                            :href="props.row.filesSealed[scope.$index].sealFileUrl"
-                            target="_blank">{{props.row.filesSealed[scope.$index].sealFileName}}</a>
-                        </template>
-                      </el-table-column>
-                      <el-table-column label="上传人" prop="sealFileCreatorName"></el-table-column>
-                      <el-table-column label="上传时间" prop="sealFileCreateTime">
-                        <template scope="scope">
-                          {{props.row.filesSealed[scope.$index].sealFileCreateTime | formatDate}}
-                        </template>
-                      </el-table-column>
-                      <el-table-column
-                        fixed="right"
-                        label="操作"
-                        v-if="props.row.filesSealed[0].operate"
-                      >
-                        <template scope="scope">
-                          <el-button @click="handleRemoveFilesSealedItem(index, props.row.filesSealed)"
-                                     type="danger" size="small">移除
-                          </el-button>
-                        </template>
-                      </el-table-column>
-                    </el-table>
-                    <el-row>
-                      <el-col :span="6">
-                        <el-form-item label="用章次数" prop="saleTime">
-                          <el-input-number :disabled="true" size="small"
-                                           v-model="props.row.saleTime">
-                          </el-input-number>
-                        </el-form-item>
-                      </el-col>
-                      <el-col :span="6">
-                        <el-form-item label="打印份数" prop="printTime" class="el-form-item is-required">
-                          <el-input-number :disabled="!enabledUpdateInApprovePrint" size="small" :max="100"
-                                           v-model="props.row.printTime"
-                                           @change="handleChangeValidateForms"></el-input-number>
-                        </el-form-item>
-                      </el-col>
-                      <el-col :span="6">
-                        <el-form-item label="留存份数" prop="remainTime" class="el-form-item is-required">
-                          <el-input-number :disabled="!enabledUpdateInApprovePrint" size="small" :max="100"
-                                           v-model="props.row.remainTime"
-                                           @change="handleChangeValidateForms"></el-input-number>
-                        </el-form-item>
-                      </el-col>
-                      <el-col :span="6">
-                        <el-form-item label="用印后上传" v-if="enabledUpdateInApprove">
-                          <el-upload
-                            ref="uploadFileAfterSeal"
-                            :data="{userId:users.userId}"
-                            :show-file-list="false"
-                            :action="uploadUrl"
-                            :with-credentials="true"
-                            :on-success="handleUploadFileAfterSealSuccess"
-                            :on-error="handleUploadFileAfterSealError"
-                          >
-                            <el-button :disabled="!enabledUpdateInApprove||getEnabledUploadBtn(props.row.filesSealed)"
-                                       size="small"
-                                       type="primary" @click="handleUpload(cardSealInfoForm.contract[0].attachType)">上传
-                            </el-button>
-                          </el-upload>
-                        </el-form-item>
-                      </el-col>
-                    </el-row>
-                    <el-row>
-                      <el-col :span="12">
-                        <el-form-item label="选择用章" prop="saleInfos" class="is-required">
-                          <el-checkbox-group v-model="props.row.saleInfos" @change="handleChangeValidateForms">
-                            <el-checkbox label="1" name="sealInfo" :disabled="!enabledInupdated">公章</el-checkbox>
-                            <el-checkbox label="2" name="sealInfo" :disabled="!enabledInupdated">法人章</el-checkbox>
-                          </el-checkbox-group>
-                        </el-form-item>
-                      </el-col>
-                    </el-row>
-                  </div>
-                </template>
-              </el-table-column>
-              <el-table-column prop="attachType" label="附件类型" width="150px">
-                <template scope="scope">
-                  {{getContractAgreenmentName(cardSealInfoForm.contract[scope.$index].attachType)}}
-                </template>
-              </el-table-column>
-              <el-table-column prop="fileName" label="文件名称" width="200px">
-                <template scope="scope">
-                  <el-input v-if="baseInfoForm.contractTextType===1"
-                            :disabled="true"
-                            v-model="cardSealInfoForm.contract[scope.$index].fileName"></el-input>
-                  <a v-else :href="cardSealInfoForm.contract[scope.$index].fileUrl"
-                     target="_blank">{{cardSealInfoForm.contract[scope.$index].fileName}}</a>
-                </template>
-              </el-table-column>
-              <el-table-column prop="haveSale" label="是否盖章" width="70px">
-                <template scope="scope">
-                  <el-checkbox
-                    :disabled="true"
-                    v-model="cardSealInfoForm.contract[scope.$index].haveSale"></el-checkbox>
-                </template>
-              </el-table-column>
-              <el-table-column prop="remark" label="备注" width="200px">
-                <template scope="scope">
-                  <el-input
-                    :disabled="true"
-                    v-model="cardSealInfoForm.contract[scope.$index].remark"></el-input>
-                </template>
-              </el-table-column>
-            </el-table>
+            <SealTable
+              v-if="cardSealInfoForm.contract&&cardSealInfoForm.contract.length"
+              :items="cardSealInfoForm.contract"
+              :show-header="true"
+              :removeColumns="['upload','handleBtns']"
+              :moreDatas="{type:1,isSealRole,isPurchaseRole,isCreate,isSee,isModify,backLogCreator,tplType:baseInfoForm.contractTextType}"
+              @validateForms="validateForms"
+              class="mb20"></SealTable>
             <template v-if="cardSealInfoForm.others.length" v-for="(item,index) in cardSealInfoForm.others">
-              <el-table :data="item" :show-header="index===0">
-                <el-table-column type="expand" v-if="item[0].haveSale">
-                  <template scope="props" v-if="item[0].haveSale">
-                    <div v-if="item[0].haveSale" v-bind:class="{tdPd:item[0].haveSale}">
-                      <el-table :data="props.row.filesSealed" class="mb20"
-                                v-if="props.row.filesSealed&&props.row.filesSealed.length">
-                        <el-table-column label="文件名" prop="sealFileName">
-                          <template scope="scope">
-                            <a
-                              :href="props.row.filesSealed[scope.$index].sealFileUrl"
-                              target="_blank">{{props.row.filesSealed[scope.$index].sealFileName}}</a>
-                          </template>
-                        </el-table-column>
-                        <el-table-column label="上传人" prop="sealFileCreatorName"></el-table-column>
-                        <el-table-column label="上传时间" prop="sealFileCreateTime">
-                          <template scope="scope">
-                            {{props.row.filesSealed[scope.$index].sealFileCreateTime | formatDate}}
-                          </template>
-                        </el-table-column>
-                        <el-table-column fixed="right" label="操作"
-                                         v-if="props.row.filesSealed[0].operate||enabledUpdateInApprove">
-                          <template scope="scope">
-                            <el-button @click="handleRemoveFilesSealedItem(index, props.row.filesSealed)"
-                                       type="danger" size="small">移除
-                            </el-button>
-                          </template>
-                        </el-table-column>
-                      </el-table>
-                      <el-row>
-                        <el-col :span="6">
-                          <el-form-item label="用章次数" prop="saleTime">
-                            <el-input-number size="small" :disabled="true" v-model="props.row.saleTime">
-                            </el-input-number>
-                          </el-form-item>
-                        </el-col>
-                        <el-col :span="6">
-                          <el-form-item label="打印份数" prop="printTime" class="el-form-item is-required">
-                            <el-input-number :disabled="!enabledUpdateInApprovePrint1" size="small" :min="0" :max="10"
-                                             v-model="props.row.printTime"
-                                             @change="handleChangeValidateForms"></el-input-number>
-                          </el-form-item>
-                        </el-col>
-                        <el-col :span="6">
-                          <el-form-item label="留存份数" prop="remainTime" class="el-form-item is-required">
-                            <el-input-number :disabled="!enabledUpdateInApprovePrint1" size="small" :min="0" :max="10"
-                                             v-model="props.row.remainTime"
-                                             @change="handleChangeValidateForms"></el-input-number>
-                          </el-form-item>
-                        </el-col>
-                        <el-col :span="6">
-                          <el-form-item label="用印后上传" v-if="enabledUpdateInApprove">
-                            <el-upload
-                              ref="uploadFileAfterSeal"
-                              :data="{userId:users.userId}"
-                              :show-file-list="false"
-                              :action="uploadUrl"
-                              :with-credentials="true"
-                              :on-success="handleUploadFileAfterSealSuccess"
-                              :on-error="handleUploadFileAfterSealError"
-                            >
-                              <el-button
-                                :disabled="!enabledUpdateInApprove||getEnabledUploadBtn(props.row.filesSealed)"
-                                size="small"
-                                type="primary" @click="handleUpload(item[props.$index].attachType,index)">上传
-                              </el-button>
-                            </el-upload>
-                          </el-form-item>
-                        </el-col>
-                      </el-row>
-                      <el-row>
-                        <el-col :span="12">
-                          <el-form-item label="选择用章" prop="saleInfos" class="is-required">
-                            <el-checkbox-group v-model="props.row.saleInfos" @change="handleChangeValidateForms">
-                              <el-checkbox label="1" name="sealInfo" :disabled="!enabledInupdated1">公章</el-checkbox>
-                              <el-checkbox label="2" name="sealInfo" :disabled="!enabledInupdated1">法人章</el-checkbox>
-                            </el-checkbox-group>
-                          </el-form-item>
-                        </el-col>
-                      </el-row>
-                    </div>
-                  </template>
-                </el-table-column>
-                <el-table-column prop="attachType" label="附件类型" width="150px">
-                  <template scope="scope">
-                    {{getContractAgreenmentName(item[scope.$index].attachType)}}
-                  </template>
-                </el-table-column>
-                <el-table-column prop="fileName" label="文件名称" width="200px">
-                  <template scope="scope">
-                    <a :href="item[scope.$index].fileUrl" target="_blank">{{item[scope.$index].fileName}}</a>
-                  </template>
-                </el-table-column>
-                <el-table-column prop="upload" label="上传" width="100px">
-                  <template scope="scope">
-                    <el-upload
-                      :data="{userId:users.userId}"
-                      :show-file-list="false"
-                      :action="uploadUrl"
-                      ref="uploadSealFile"
-                      :with-credentials="true"
-                      :on-success="handleUploadSealFileSuccess"
-                      :on-error="handleUploadSealFileError"
-                    >
-                      <el-button :disabled="!enabledInupdated1||!getEnabledUploadBtnOuter(item[scope.$index].fileName)"
-                                 size="small" type="primary" @click="handleUploadOuter(index)">上传
-                      </el-button>
-                    </el-upload>
-                  </template>
-                </el-table-column>
-                <el-table-column prop="haveSale" label="是否盖章" width="70px">
-                  <template scope="scope">
-                    <el-checkbox
-                      @change="handleChangeValidateForms"
-                      :disabled="!enabledInupdated1"
-                      v-model="item[scope.$index].haveSale"></el-checkbox>
-                  </template>
-                </el-table-column>
-                <el-table-column prop="remark" :disabled="!enabledInupdated1" label="备注" width="200px">
-                  <template scope="scope">
-                    <el-input
-                      :disabled="operateType==='query'"
-                      v-model="item[scope.$index].remark"></el-input>
-                  </template>
-                </el-table-column>
-                <el-table-column
-                  fixed="right"
-                  label="操作"
-                  v-if="operateType!=='query'&&item[0].attachStatus!==1">
-                  <template scope="scope">
-                    <el-button v-if="item[scope.$index].operate"
-                               @click="handleRemoveOthersItem(index, cardSealInfoForm.others)"
-                               type="danger" size="small">移除
-                    </el-button>
-                  </template>
-                </el-table-column>
-              </el-table>
+              <SealTable
+                v-if="item&&item.length"
+                :items="item"
+                :show-header="index===0"
+                :moreDatas="{type:2,isSealRole,isPurchaseRole,isCreate,isSee,isModify,backLogCreator}"
+                @handleRemove="handleRemove(index,cardSealInfoForm.others)"
+                @validateForms="validateForms"></SealTable>
             </template>
             <el-table v-if="cardSealInfoForm.agreenments.length" :data="cardSealInfoForm.agreenments" class="mt20">
               <el-table-column prop="attachType" label="附件类型" width="150px">
@@ -1233,8 +985,6 @@
   import {routerNames, contractMap, processListMap} from '../../core/consts';
   import toPage from '../../assets/js/toPage';
 
-  const user = store.get('user');
-
   export default {
     mixins: [comLoading],
     data() {
@@ -1254,7 +1004,7 @@
       };
       const validateEndDate = (rule, value, callback) => {
         const startTime = this.cardContentInfoForm.startTime;
-        if (this.operateType === 'create' || (this.operateType === 'update' && this.updateForm.updateMode === 2)) {
+        if (this.operateType === 'create') {
           /*if (formatDate(new Date(value)) < formatDate(new Date())) {
             callback(new Error('合同终止日期必须大于等于今天'));
           }*/
@@ -1276,10 +1026,8 @@
         procCode: '', //流程code
         procInstId: '', //流程id
         procTitle: '', //流程名称
-        updated: false, // 在变更合同提交后是否显示变更原因
         previewData: {}, // 预览数据
         visible: false, // 预览
-        users: user,
         downloadUrl,
         uploadUrl,
         operateType: '', // create:创建，update:变更，query:查询
@@ -1287,17 +1035,6 @@
           visible: false, // 在变更合同中控制合同页面数据的显示与否
           code: '',
           updateMode: 1,
-          updateModes: [
-            {
-              id: 1,
-              name: '原合同有效'
-            } /*,
-            {
-              id: 2,
-              name: '原合同作废'
-            }*/
-          ],
-          newCode: '',
           remark: '',
           rules: {
             code: [{required: true, message: '请输入合同编号', trigger: 'blur'}],
@@ -1663,14 +1400,13 @@
         },
         isSubmit: false,
         btnSubmitStatus: true, // 提交按钮状态
-        btnSaveStatus: true, // 保存按钮状态,
         historyDatas: []
       };
     },
     computed: {
       ifRequest() { //在创建合同或变更合同的变更方式为原合同作废时，不请求除初始化以外的接口
         let request = false;
-        if (this.operateType === 'create' || this.updateForm.updateMode === 2) {
+        if (this.operateType === 'create') {
           request = true;
         }
         return request;
@@ -1772,22 +1508,6 @@
         }
         return type;
       },
-      jia() {
-        const jiaBillingInfo = this.cardFinanceInfoForm.jiaBillingInfo;
-        let result = {};
-        if (jiaBillingInfo.length === 1) {
-          result = jiaBillingInfo[0] || {};
-        }
-        return result;
-      },
-      yi() {
-        const yiBillingInfo = this.cardFinanceInfoForm.yiBillingInfo;
-        let result = {};
-        if (yiBillingInfo.length === 1) {
-          result = yiBillingInfo[0] || {};
-        }
-        return result;
-      },
       depositRatio() {
         const val = this.getProportion(this.cardFinanceInfoForm.deposit);
         this.cardFinanceInfoForm.depositRatio = val.replace(/%$/g, '');
@@ -1804,58 +1524,27 @@
         }
         return result;
       },
-      enabledInupdated1() { // 在各种操作类型下，控制元素的是否可见和是否可用
-        let result = false;
-        if (this.operateType === 'query') {
-          result = false;
-        } else if (this.operateType === 'create') {
-          result = true;
-        } else if (this.operateType === 'update') {
-          // result = this.updateForm.updateMode === 1;
-          result = true;
-        }
-        return result;
-      },
-      ifRole() {
+
+      isSealRole() {
         const reg = /印章保管人/g;
-        return reg.test(this.users.roleName);
+        return this.processData ? reg.test(this.processData.roleName) : false;
       },
-      ifRole1() {
+      isPurchaseRole() {
         const reg = /采购合同上传/g;
-        return reg.test(this.users.roleName);
+        return this.processData ? reg.test(this.processData.roleName) : false;
       },
-      enabledUpdateInApprove() { //在审批阶段修改附件时，上传盖章合同控件的上传按钮状态（仅用章保管人，采购合同上传可用）
-        let enabled = false;
-        if (this.operateType === 'query') {
-          enabled = this.ifRole || this.ifRole1;
-        }
-        return enabled;
-      },
-      enabledUpdateInApprovePrint() { //创建和变更阶段可用，审批阶段且角色是用章保管人可用
-        let enabled = true;
-        if (this.operateType === 'query') {
-          enabled = !!this.ifRole;
-        } else if (this.operateType === 'update') {
-          enabled = this.updateForm.updateMode !== 1;
-        }
-        return enabled;
-      },
-      enabledUpdateInApprovePrint1() { //创建和变更阶段可用，审批阶段且角色是用章保管人可用
-        let enabled = true;
-        if (this.operateType === 'query') {
-          enabled = !!this.ifRole;
-        } else if (this.operateType === 'update') {
-          // enabled = this.updateForm.updateMode === 1;
-          enabled = true;
-        }
-        return enabled;
+      isFARole() {
+        return this.processData ? this.processData.roleName.indexOf('FA') > -1 : false;
       },
 
       finaceMoreDatas() {
         return {
-          operateType: this.operateType,
           paymentTimePeriods: this.cardFinanceInfoForm.paymentTimePeriods,
-          totalAmount: this.cardFinanceInfoForm.totalAmount
+          totalAmount: this.cardFinanceInfoForm.totalAmount,
+          isCreate: this.isCreate,
+          isSee: this.isSee,
+          isModify: this.isModify,
+          backLogFA: this.backLogFA
         };
       },
 
@@ -1869,10 +1558,41 @@
       isModify() { //变更
         return this.operateType === 'update';
       },
+      backLogFA() {
+        let isBackLog = false;
+        let isFA = false;
+        if (this.processData) {
+          isBackLog = this.processData.dataType === processListMap[0];
+          isFA = isBackLog ? this.isFARole : false;
+        }
+
+        return isBackLog && isFA;
+      },
+      backLogCreator() {
+        let isBackLog = false;
+        let isCreator = false;
+        if (this.processData) {
+          isBackLog = this.processData.dataType === processListMap[0];
+          const user = store.get('user');
+          isCreator = isBackLog ? this.baseInfoForm.creatorId === user.userId : false;
+        }
+
+        return isBackLog && isCreator;
+      },
       /**判断当前页面类型**/
+      addOtherSealFileDisabled() {
+        if (this.backLogCreator) {
+          return true;
+        }
+        if (!this.isSee) {
+          return true;
+        }
+        return false;
+      },
 
       /**if disabled element**/
-      /**cardFinanceInfoForm*/
+      //cardSealInfoForm
+      //cardFinanceInfoForm
       moneyInvolvedDisabled() {
         if (this.isSee) {
           return true;
@@ -1898,7 +1618,7 @@
         return true;
       },
       invoiceTypeDisabled() {
-        if (this.backLogFA()) {
+        if (this.backLogFA) {
           return false;
         }
         if (this.isSee) {
@@ -1907,7 +1627,7 @@
         return false;
       },
       currencyDisabled() {
-        if (this.backLogFA()) {
+        if (this.backLogFA) {
           return false;
         }
         if (this.isSee) {
@@ -1916,7 +1636,7 @@
         return false;
       },
       paymentTimePeriodDisabled() {
-        if (this.backLogFA()) {
+        if (this.backLogFA) {
           return false;
         }
         if (this.isSee) {
@@ -1924,7 +1644,7 @@
         }
         return false;
       }
-      /**cardFinanceInfoForm*/
+
       /**if disabled element**/
     },
     filters: {
@@ -1937,7 +1657,6 @@
         this.procCode = this.processData.procCode;
         this.procInstId = this.processData.procInstId;
         this.procTitle = this.processData.procTitle;
-        this.users.roleName = this.processData.roleName;
       }
       if (JSON.stringify(query) !== '{}') {
         if (query.operateType) {
@@ -2077,14 +1796,6 @@
           }
         }
       },
-      getEnabledUploadBtn(items) {
-        return (items && items.length > 0);
-      },
-      setRatio(item, val) {
-        const result = this.getProportion(val);
-        item.ratio = result ? result.replace(/%$/g, '') : null;
-        return result;
-      },
       getContractModelName(id) {
         switch (id) {
           case 1:
@@ -2165,7 +1876,6 @@
           }
         });
       },
-
       handleCancelAddUnionCheck(formName) {
         this.$refs[formName].resetFields();
         this.cardContCheckInfoForm.dialogAddUnionCheckVisible = false;
@@ -2199,9 +1909,6 @@
       handleCancelAddServiceCheck(formName) {
         this.$refs[formName].resetFields();
         this.cardContCheckInfoForm.dialogAddServiceVisible = false;
-      },
-      handleContractDetail(index, row) {
-        this.$router.push({name: routerNames.con_Check, query: {contractNo: row.contractNo}});
       },
       handleAddNewSubject(formName) {
         const curForm = this.$refs[formName];
@@ -2291,9 +1998,6 @@
         this.$refs[formName].resetFields();
         this.cardContentInfoForm.dialogAddContractSupplier = false;
       },
-      handleRemoveSupplier(index, rows) {
-        rows.splice(index, 1);
-      },
       getRemoteSubjectsByKeyWord(query) {
         if (query !== '') {
           this.formNewSubject.loading = true;
@@ -2306,14 +2010,8 @@
           this.formNewSubject.subjects = [];
         }
       },
-      handleRemoveSubect(index, rows) {
-        rows.splice(index, 1);
-      },
       handleNewthirdPartyInfo() {
         this.cardContentInfoForm.dialogNewThirdPartyVisible = true;
-      },
-      handleRemoveThirdPartyInfo(index, rows) {
-        rows.splice(index, 1);
       },
       getRemoteThirdPartiesByKeyWord(query) {
         if (query !== '') {
@@ -2361,9 +2059,6 @@
         this.$refs[formName].resetFields();
         this.cardContentInfoForm.dialogNewThirdPartyVisible = false;
       },
-      handleRemoveAdvanceItem(index, rows) {
-        rows.splice(index, 1);
-      },
       getProportion(money) {
         let result = 0,
           totalAmount = 0;
@@ -2384,25 +2079,6 @@
         }
         return `${result.toFixed(2)}%`;
       },
-      handleRemoveServiceMatter(index, rows) {
-        rows.splice(index, 1);
-      },
-      handleUploadSealFileSuccess(res) {
-        const dataMap = res.dataMap;
-        if (dataMap.fileId) {
-          const index = this.cardSealInfoForm.current;
-          const curentFile = this.cardSealInfoForm.others[index];
-          curentFile[0].fileId = dataMap.fileId;
-          curentFile[0].fileName = dataMap.fileName;
-          curentFile[0].fileUrl = downloadUrl + dataMap.fileId;
-          this.$message.success('文件上传成功');
-        }
-      },
-      handleUploadSealFileError(err, file, fileList) {
-        console.log('error', err);
-        console.log('file', file);
-        console.log('fileList', fileList);
-      },
       getAgreenmentFieldName(id) {
         switch (id) {
           case 1:
@@ -2414,31 +2090,6 @@
           default:
             return '';
         }
-      },
-      handleUploadFileAfterSealSuccess(res) {
-        const dataMap = res.dataMap;
-        if (dataMap.fileId) {
-          const type = parseInt(this.cardSealInfoForm.type, 10);
-          const index = this.cardSealInfoForm.current;
-          let curentFile = this.cardSealInfoForm[this.getAgreenmentFieldName(type)];
-          type === 1 ? curentFile = curentFile[index][0] : curentFile = curentFile[index];
-          curentFile.filesSealed = [{
-            sealFileId: dataMap.fileId,
-            sealFileName: dataMap.fileName,
-            sealFileUrl: downloadUrl + dataMap.fileId,
-            sealFileCreatorName: dataMap.userName,
-            sealFileCreatorId: dataMap.userId,
-            sealFileCreateTime: formatDate(dataMap.createTime),
-            operate: 'add'
-          }];
-          console.log('this.cardSealInfoForm', this.cardSealInfoForm);
-          this.$message.success('文件上传成功');
-        }
-      },
-      handleUploadFileAfterSealError(err, file, fileList) {
-        console.log('error', err);
-        console.log('file', file);
-        console.log('fileList', fileList);
       },
       validateForms() {
         return new Promise((resolve, reject) => {
@@ -2510,8 +2161,6 @@
             if (this.checkPayCondition()) { //判断付款条件是否选择
               errors.cardFinanceInfoForm.errorCount += 1;
             }
-            reject();
-            return;
           });
           this.$refs.cardRemarkInfoForm.validate((valid) => {
             const cardRemarkInfoForm = this.cardRemarkInfoForm;
@@ -2695,34 +2344,6 @@
         sealOthers.length ? sealAttachments = sealAttachments.concat(sealOthers) : null;
         return sealAttachments;
       },
-      handleSave() {
-        this.btnSaveStatus = false;
-        this.isSubmit = true;
-        this.validateForms().then(() => {
-          this.btnSaveStatus = true;
-          this.cardSealInfoForm.sealAttachments = this.combineSealsInfo();
-          this.formatTime(this.cardContentInfoForm, this.cardFinanceInfoForm);
-          const paras = {};
-          paras.baseInfoForm = this.baseInfoForm;
-          paras.cardContentInfoForm = this.cardContentInfoForm;
-          paras.cardFinanceInfoForm = this.cardFinanceInfoForm;
-          paras.cardContCheckInfoForm = this.cardContCheckInfoForm;
-          paras.cardSealInfoForm = this.cardSealInfoForm;
-          paras.cardRemarkInfoForm = this.cardRemarkInfoForm;
-          paras.cardOtherInfo = this.cardOtherInfo;
-          this.comLoading();
-          Api.saveContract(paras).then((data) => {
-            if (data.data.dataMap.id) {
-              this.$message.success('保存成功！');
-            }
-            this.comLoading(false);
-          });
-        }).catch(() => {
-          this.btnSaveStatus = true;
-          this.$message.error('请填写完合同信息再保存！');
-          this.comLoading(false);
-        });
-      },
       formatTime(content, finance) {
         content.startTime = formatDate(content.startTime);
         content.endTime = formatDate(content.endTime);
@@ -2780,9 +2401,6 @@
             this.comLoading();
             Api.updatedSubmit(updateParams).then((data) => {
               if (data.data.dataMap.id) {
-                if (this.operateType === 'update') {
-                  this.updated = true;
-                }
                 this.$message.success('提交成功！');
                 this.operateType = 'query';
                 this.$router.push({name: routerNames.con_index});
@@ -2798,73 +2416,12 @@
             this.btnSubmitStatus = true;
           });
       },
-
-      handleNewSealFile() {
-        const file = {
-          operate: 'add',
-          id: '',
-          fileName: '',
-          fileUrl: '', // 合同文本类型为非模版合同时，附件类型的合同的文件下载地址
-          attachType: 1, // 附件类型
-          slaveProtocolNo: '0011001', // 从协议编号
-          types: [
-            {
-              id: 1,
-              name: '其他'
-            },
-            {
-              id: 2,
-              name: '从协议'
-            }
-          ], // 附件类型集合
-          haveSale: true, // 是否用章
-          remark: '',
-          saleTime: 1, // 用章次数
-          printTime: '', // 打印份数
-          remainTime: '', // 我方留存份数
-          saleInfos: [], // 当前选中的张
-          useSeals: [
-            {
-              id: '1',
-              name: '公章'
-            },
-            {
-              id: '2',
-              name: '法人章'
-            }
-          ], // 章列表
-          filesSealed: [] // 上传的盖章后的文件信息
-        };
-        const sealAttachments = this.cardSealInfoForm.sealAttachments;
-
-        if (sealAttachments.length) {
-          for (let i = sealAttachments.length - 1; i >= 0; i--) {
-            const item = sealAttachments[i];
-            if (item[0].attachType !== 2) {
-              sealAttachments.splice(i + 1, 0, [file]);
-              return;
-            }
-          }
-        }
-      },
       handleNewOtherSealFile() {
         const file = [{
-          operate: 'add',
-          id: '',
+          addNew: true,
           fileName: '',
           fileUrl: '', // 合同文本类型为非模版合同时，附件类型的合同的文件下载地址
           attachType: 1, // 附件类型
-          slaveProtocolNo: '0011001', // 从协议编号
-          types: [
-            {
-              id: 1,
-              name: '其他'
-            },
-            {
-              id: 2,
-              name: '从协议'
-            }
-          ], // 附件类型集合
           haveSale: true, // 是否用章
           remark: '',
           saleTime: 1, // 用章次数
@@ -2885,45 +2442,6 @@
         }];
         this.cardSealInfoForm.others.push(file);
       },
-      /*handleNewAgreenmentSealFile() {
-       const file = {
-       operate: 'add',
-       agreementId: '',
-       id: '',
-       fileName: '',
-       fileUrl: '', // 合同文本类型为非模版合同时，附件类型的合同的文件下载地址
-       attachType: 2, // 附件类型
-       slaveProtocolNo: '', // 从协议编号
-       types: [
-       {
-       id: 1,
-       name: '其他'
-       },
-       {
-       id: 2,
-       name: '从协议'
-       }
-       ], // 附件类型集合
-       haveSale: true, // 是否用章
-       remark: '',
-       saleTime: 1, // 用章次数
-       printTime: '', // 打印份数
-       remainTime: '', // 我方留存份数
-       saleInfos: [], // 当前选中的张
-       useSeals: [
-       {
-       id: '1',
-       name: '公章'
-       },
-       {
-       id: '2',
-       name: '法人章'
-       }
-       ], // 章列表
-       filesSealed: []// 上传的盖章后的文件信息
-       }
-       this.cardSealInfoForm.agreenments.push(file)
-       },*/
       handleQuery(code) {
         const params = {};
         params.code = code;
@@ -2936,31 +2454,6 @@
             this.updateForm.visible = true;
           }
         });
-      },
-      handleChangeType(index, row) {
-        const currentType = row.attachType;
-        currentType === 2 ? (row.haveSale = false) : (row.haveSale = true);
-        // const file = [row];
-        //        rows.splice(index, 1)
-        // const sealAttachments = this.cardSealInfoForm.sealAttachments;
-        // sealAttachments.splice(index,1)
-
-        /* if(currentType===2){
-         sealAttachments.push(file);
-         }else{
-         for(let i=sealAttachments.length;i>0;i--){
-         const item=sealAttachments[i]
-         if(item[0].attachType!==2){
-         sealAttachments.splice(i,0,file)
-         return
-         }
-         }
-         } */
-      },
-      handleRemoveSealItem(index, rows) {
-        console.log('index', index);
-        console.log('rows', rows);
-        rows.splice(index, 1);
       },
       getRemotebusinessOperatorsByKeyWord(query) {
         if (this.ifRequest && query) {
@@ -2975,18 +2468,6 @@
           this.baseInfoForm.businessOperatorId = '';
           this.baseInfoForm.businessOperatorName = '';
           this.baseInfoForm.businessOperators = [];
-        }
-      },
-      getRemoteResponsiblesByKeyWord(query) {
-        if (this.ifRequest && query) {
-          this.cardContCheckInfoForm.loading = true;
-          Api.getRemoteCreatePersonsByKeyWord({keyword: query})
-            .then((data) => {
-              this.cardContCheckInfoForm.loading = false;
-              this.cardContCheckInfoForm.responsibles = data.data.dataMap;
-            });
-        } else {
-          this.cardContCheckInfoForm.responsibles = [];
         }
       },
       handleContractTextTypeChange(val) {
@@ -3022,17 +2503,6 @@
                   this.cardContCheckInfoForm.responsibleDeptId = '';
                 }
               });
-            }
-          }
-        }
-      },
-      handleResponsibleChange(val) {
-        const responsibles = this.cardContCheckInfoForm.responsibles;
-        if (responsibles.length) {
-          for (let i = 0, len = responsibles.length; i < len; i++) {
-            if (val === responsibles[i].userId) {
-              this.cardContCheckInfoForm.responsibleDeptName = responsibles[i].deptName;
-              this.cardContCheckInfoForm.responsibleDeptId = responsibles[i].deptCode;
             }
           }
         }
@@ -3098,40 +2568,6 @@
           });
         }
       },
-      handleCodeBlur(item, val) {
-        if (val) {
-          Api.getAgreenmentDetailByAgreenmentNo(val).then((data) => {
-            const dataMap = data.data.dataMap;
-            if (dataMap && dataMap.id) {
-              const agreenments = this.cardSealInfoForm.agreenments;
-              if (agreenments && agreenments.length) {
-                const index = _.findIndex(agreenments, (chr) => chr.id === dataMap.id);
-                if (index > -1) {
-                  this.$message.error('这条数据已存在咯！');
-                  return;
-                }
-              }
-              item.id = dataMap.id;
-            }
-          })
-            .catch(() => {
-              item.slaveProtocolNo = '';
-            });
-        }
-      },
-      handleRemoveFilesSealedItem(index, rows) {
-        rows.splice(index, 1);
-      },
-      handleUpload(type, index) {
-        this.cardSealInfoForm.type = type;
-        this.cardSealInfoForm.current = index || 0;
-      },
-      handleUploadOuter(index) {
-        this.cardSealInfoForm.current = index;
-      },
-      handleRemoveUnionCheckPerson(index, rows) {
-        rows.splice(index, 1);
-      },
       handleAddConStandard() {
         this.cardContentInfoForm.dialogAddConStandard = true;
       },
@@ -3193,9 +2629,6 @@
           }
         }
       },
-      handleRemoveConStandard(index, rows) {
-        rows.splice(index, 1);
-      },
       getContractAgreenmentName(id) {
         switch (id) {
           case 1:
@@ -3207,15 +2640,6 @@
           default:
             return '';
         }
-      },
-      handleRemoveOthersItem(index, rows) {
-        rows.splice(index, 1);
-      },
-      handleRemoveAgreenmentsItem(index, rows) {
-        rows.splice(index, 1);
-      },
-      getEnabledUploadBtnOuter(fileName) {
-        return !fileName;
       },
       getPerson(keyword, callback) {
         Api.getRemoteCreatePersonsByKeyWord({keyword}).then((res) => {
@@ -3229,67 +2653,6 @@
           enabled = true;
         }
         return enabled;
-      },
-      callback(params) { //isSign:是否是加签人 isAgree:审批操作类型是否是同意
-        const t = this;
-        return new Promise((resolve, reject) => {
-          const {isSign, isAgree} = params;
-          if (!isSign && isAgree && (t.ifRole || t.ifRole1)) {
-            const para = {};
-            para.sealAttachments = t.combineSealsInfoWithoudAgreenments();
-            para.id = t.baseInfoForm.id;
-            para.type = 1;
-            para.uploadPerson = t.ifRole1;
-            Api.uploadSealAttachments(para)
-              .then(() => {
-                resolve();
-              })
-              .catch(() => {
-                reject();
-              });
-          } else if (this.backLogFA()) {
-            const {
-              currency,
-              invoiceType,
-              paymentTimePeriod,
-              paymentMethods
-            } = this.cardFinanceInfoForm;
-            const finances = Object.keys(paymentMethods).map((key) => {
-              const item = paymentMethods[key][0];
-              let payType = 1;
-              if (key === 'advance') {
-                payType = 1;
-              } else if (key === 'progress') {
-                payType = 2;
-              } else if (key === '_final') {
-                payType = 3;
-              } else if (key === 'earnest') {
-                payType = 4;
-              } else if (key === 'deposit') {
-                payType = 5;
-              }
-              return Object.assign({}, item, {payType, finances: item.subItem});
-            });
-            if (this.cardFinanceInfoForm.paymentErrorMSG || this.checkPayCondition()) {
-              this.$message.warning('财务信息不完整');
-              reject();
-              return;
-            }
-            Api.updateFinanceByContractId({
-              contractId: this.$route.query.contractId,
-              currency,
-              invoiceType,
-              paymentTimePeriod,
-              finances
-            }).then(() => {
-              resolve();
-            }).catch(() => {
-              reject();
-            });
-          } else {
-            resolve();
-          }
-        });
       },
       handleChangeValidateForms() {
         if (this.isSubmit) {
@@ -3333,23 +2696,73 @@
             return '';
         }
       },
-      handleChangeUpdateMode(val) {
-        if (val === 2) {
-          this.handleContractTextTypeChange(this.baseInfoForm.contractTextType);
-        }
-      },
       goToProcess(row) {
         toPage.call(this, row);
       },
-      backLogFA() {
-        let isBackLog = false;
-        let isFA = false;
-        if (this.processData) {
-          isBackLog = this.processData.dataType === processListMap[0];
-          isFA = isBackLog ? this.processData.roleName.indexOf('FA') > -1 : false;
-        }
 
-        return isBackLog && isFA;
+      callback(params) { //isSign:是否是加签人 isAgree:审批操作类型是否是同意
+        const t = this;
+        const promises = [];
+        const {isSign, isAgree} = params;
+        if (!isSign && isAgree && (t.isSealRole || t.isPurchaseRole)) {
+          promises.push(t.modifyAddNewFiles());
+        } else if (t.backLogFA) {
+          promises.push(t.modifyFA());
+        } else {
+          return Promise.resolve();
+        }
+        return Promise.all(promises);
+      },
+      modifyAddNewFiles() {
+        const t = this;
+        const para = {};
+        para.sealAttachments = t.combineSealsInfoWithoudAgreenments();
+        para.id = t.baseInfoForm.id;
+        para.type = 1;
+        para.uploadPerson = t.isPurchaseRole;
+        return Api.uploadSealAttachments(para);
+      },
+      modifyFA() {
+        const {
+          currency,
+          invoiceType,
+          paymentTimePeriod,
+          paymentMethods
+        } = this.cardFinanceInfoForm;
+        const finances = Object.keys(paymentMethods).map((key) => {
+          const item = paymentMethods[key][0];
+          let payType = 1;
+          if (key === 'advance') {
+            payType = 1;
+          } else if (key === 'progress') {
+            payType = 2;
+          } else if (key === '_final') {
+            payType = 3;
+          } else if (key === 'earnest') {
+            payType = 4;
+          } else if (key === 'deposit') {
+            payType = 5;
+          }
+          return Object.assign({}, item, {payType, finances: item.subItem});
+        });
+        if (this.cardFinanceInfoForm.paymentErrorMSG || !this.checkPayCondition()) {
+          this.$message.warning('合同财务信息不完整');
+          return Promise.reject();
+        }
+        return Api.updateFinanceByContractId({
+          contractId: this.$route.query.contractId,
+          currency,
+          invoiceType,
+          paymentTimePeriod,
+          finances
+        });
+      },
+      modifyFiles() {
+        const contractAttachments = [...this.cardSealInfoForm.contract, ...this.cardSealInfoForm.others].map(item => item);
+        return Api.updateAttach({
+          contractId: this.$route.query.contractId,
+          contractAttachments
+        });
       },
       conditionLoop(items) {
         return items.some((item) => {
@@ -3369,33 +2782,10 @@
       checkPayCondition() {
         const {paymentMethods} = this.cardFinanceInfoForm;
         const items = Object.keys(paymentMethods).map(key => paymentMethods[key][0]);
-        return this.conditionLoop(items);
-      }
-    },
-    components: {
-      Preview: (resolve) => {
-        require(['./Preview'], resolve);
+        return !this.conditionLoop(items);
       },
-      Process: (resolve) => {
-        require(['../../components/process.vue'], resolve);
-      },
-      Payment: (resolve) => {
-        require(['./Payment.vue'], resolve);
-      },
-      PrTable: (resolve) => {
-        require(['./prTable'], resolve);
-      },
-      PriceTable: (resolve) => {
-        require(['./priceTable'], resolve);
-      },
-      ContractTable: (resolve) => {
-        require(['./contractTable'], resolve);
-      },
-      OrderTable: (resolve) => {
-        require(['./orderTable'], resolve);
-      },
-      BothInfo: (resolve) => {
-        require(['./BothInfo'], resolve);
+      handleRemove(index, rows) {
+        rows.splice(index, 1);
       }
     },
     watch: {
@@ -3438,6 +2828,35 @@
         } else {
           this.cardFinanceInfoForm.paymentErrorMSG = '';
         }
+      }
+    },
+    components: {
+      Preview: (resolve) => {
+        require(['./Preview'], resolve);
+      },
+      Process: (resolve) => {
+        require(['../../components/process.vue'], resolve);
+      },
+      Payment: (resolve) => {
+        require(['./Payment.vue'], resolve);
+      },
+      PrTable: (resolve) => {
+        require(['./prTable'], resolve);
+      },
+      PriceTable: (resolve) => {
+        require(['./priceTable'], resolve);
+      },
+      ContractTable: (resolve) => {
+        require(['./contractTable'], resolve);
+      },
+      OrderTable: (resolve) => {
+        require(['./orderTable'], resolve);
+      },
+      BothInfo: (resolve) => {
+        require(['./BothInfo'], resolve);
+      },
+      SealTable: (resolve) => {
+        require(['./sealTable'], resolve);
       }
     }
   };

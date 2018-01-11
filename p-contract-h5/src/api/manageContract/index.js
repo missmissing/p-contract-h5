@@ -116,7 +116,13 @@ export default {
     return Http.post(`${contract}/contract-web/contract/query`, params);
   },
   /** ***合同列表****/
-  updateFinanceByContractId(params) { //流程中修改财务信息
+
+  //流程中修改财务信息
+  updateFinanceByContractId(params) {
     return Http.post(`${contract}/contract-web/contract/updateFinanceByContractId`, params);
+  },
+  //流程中发起人修改合同附件及盖章信息
+  updateAttach(params) {
+    return Http.post(`${contract}/contract-web/contract/updateAttach`, params);
   }
 };
