@@ -4,6 +4,11 @@
   padding: 0;
 }
 
+html, body {
+  height: 100%;
+  overflow: hidden;
+}
+
 body {
   padding-top: constant(safe-area-inset-top); //为导航栏+状态栏的高度 88px
   padding-left: constant(safe-area-inset-left); //如果未竖屏时为0
@@ -40,6 +45,10 @@ a:hover {
 }
 
 /**custom css**/
+.main {
+  overflow-y: auto;
+}
+
 .container {
   width: 100%;
   -webkit-overflow-scrolling: touch;
