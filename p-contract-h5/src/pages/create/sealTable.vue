@@ -102,7 +102,7 @@
           :with-credentials="true"
           :on-success="coverUploadUploadSealFileSuccess.bind(this,scope.row)"
         >
-          <el-button size="small" type="primary">上传</el-button>
+          <el-button size="small" type="primary">替换</el-button>
         </el-upload>
       </template>
     </el-table-column>
@@ -243,25 +243,26 @@
       },
       //上传按钮
       uploadFileDisabled() {
-        const {isSee} = this.moreDatas;
-        if (isSee) {
+        const {isSee, backLogCreator} = this.moreDatas;
+        const {addNew} = this.items[0];
+        if (!addNew) {
           return true;
         }
-        if (this.items[0].fileName) {
+        if (backLogCreator) {
+          return false;
+        }
+        if (isSee) {
           return true;
         }
         return false;
       },
       //是否盖章
       sealDisabled() {
-        const {type, isSee} = this.moreDatas;
+        const {type} = this.moreDatas;
         if (type === 1) {
           return true;
         }
-        if (isSee) {
-          return true;
-        }
-        return false;
+        return this.uploadFileDisabled;
       },
       //备注
       remarkDisabled() {
@@ -296,7 +297,7 @@
         const {fileId} = dataMap;
         row.fileId = dataMap.fileId;
         row.fileName = dataMap.fileName;
-        row.fileUrl = `${this.download}${fileId}`;
+        row.fileUrl = `${this.downloadUrl}${fileId}`;
         this.$message.success('文件上传成功');
       },
       coverUploadUploadSealFileSuccess(row, response) {
@@ -308,7 +309,7 @@
         const {fileId} = dataMap;
         row.fileId = dataMap.fileId;
         row.fileName = dataMap.fileName;
-        row.fileUrl = `${this.download}${fileId}`;
+        row.fileUrl = `${this.downloadUrl}${fileId}`;
         row.id && delete row.id;
         this.$message.success('文件上传成功');
       },
@@ -328,7 +329,7 @@
         const filesSealed = [{
           sealFileId: fileId,
           sealFileName: fileName,
-          sealFileUrl: `${this.download}${fileId}`,
+          sealFileUrl: `${this.downloadUrl}${fileId}`,
           sealFileCreatorName: userName,
           sealFileCreatorId: userId,
           sealFileCreateTime: formatDate(createTime),

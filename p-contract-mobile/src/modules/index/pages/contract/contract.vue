@@ -5,65 +5,68 @@
     &::-webkit-scrollbar {
       display: none;
     }
+    > div {
+      padding: 17px 0;
+      display: inline-block;
+    }
   }
+
 </style>
 
 <template>
   <div class="main">
     <div class="container">
       <ContractBaseInfo :info="baseInfoForm"></ContractBaseInfo>
-      <div class="navbar">
-        <mt-navbar v-model="selected" class="mt20 mb20">
-          <mt-tab-item :id="0">审批意见</mt-tab-item>
-          <mt-tab-item :id="1">合同内容信息</mt-tab-item>
-          <mt-tab-item :id="2">合同财务信息</mt-tab-item>
-          <mt-tab-item :id="3">合同验收与样品信息</mt-tab-item>
-          <mt-tab-item :id="4">合同附件及盖章信息</mt-tab-item>
-          <mt-tab-item :id="5" v-if="cardRemarkInfoForm.otherInstruction">备注</mt-tab-item>
-          <mt-tab-item :id="6">相关数据</mt-tab-item>
-          <mt-tab-item :id="7">其他</mt-tab-item>
-        </mt-navbar>
-      </div>
-      <div>
-        <div v-show="selected===0">
+      <rs-tabs v-model="selected" class="mt20">
+        <rs-item :id="0">审批意见</rs-item>
+        <rs-item :id="1">合同内容信息</rs-item>
+        <rs-item :id="2">合同财务信息</rs-item>
+        <rs-item :id="3">合同验收与样品信息</rs-item>
+        <rs-item :id="4">合同附件及盖章信息</rs-item>
+        <rs-item :id="5">备注</rs-item>
+        <rs-item :id="6">相关数据</rs-item>
+        <rs-item :id="7">其他</rs-item>
+      </rs-tabs>
+      <!--<div>-->
+      <!--<div v-show="selected===0">-->
+      <!--<Comments></Comments>-->
+      <!--</div>-->
+      <!--<div v-show="selected===1">-->
+      <!--<ContractContentInfo :info="cardContentInfoForm" :moreData="{baseInfoForm}"></ContractContentInfo>-->
+      <!--</div>-->
+      <!--<div v-show="selected===2">-->
+      <!--<CardFinanceInfo :info="cardFinanceInfoForm"></CardFinanceInfo>-->
+      <!--</div>-->
+      <!--<div v-show="selected===3">-->
+      <!--<CardContCheckInfo :info="cardContCheckInfoForm" :moreData="{baseInfoForm}"></CardContCheckInfo>-->
+      <!--</div>-->
+      <!--</div>-->
+      <mt-tab-container v-model="selected">
+        <mt-tab-container-item :id="0">
           <Comments></Comments>
-        </div>
-        <div v-show="selected===1">
+        </mt-tab-container-item>
+        <mt-tab-container-item :id="1">
           <ContractContentInfo :info="cardContentInfoForm" :moreData="{baseInfoForm}"></ContractContentInfo>
-        </div>
-        <div v-show="selected===2">
+        </mt-tab-container-item>
+        <mt-tab-container-item :id="2">
           <CardFinanceInfo :info="cardFinanceInfoForm"></CardFinanceInfo>
-        </div>
-        <div v-show="selected===3">
+        </mt-tab-container-item>
+        <mt-tab-container-item :id="3">
           <CardContCheckInfo :info="cardContCheckInfoForm" :moreData="{baseInfoForm}"></CardContCheckInfo>
-        </div>
-      </div>
-      <!--<mt-tab-container v-model="selected">-->
-        <!--<mt-tab-container-item :id="0">-->
-          <!--<Comments></Comments>-->
-        <!--</mt-tab-container-item>-->
-        <!--<mt-tab-container-item :id="1">-->
-          <!--<ContractContentInfo :info="cardContentInfoForm" :moreData="{baseInfoForm}"></ContractContentInfo>-->
-        <!--</mt-tab-container-item>-->
-        <!--<mt-tab-container-item :id="2">-->
-          <!--<CardFinanceInfo :info="cardFinanceInfoForm"></CardFinanceInfo>-->
-        <!--</mt-tab-container-item>-->
-        <!--<mt-tab-container-item :id="3">-->
-          <!--<CardContCheckInfo :info="cardContCheckInfoForm" :moreData="{baseInfoForm}"></CardContCheckInfo>-->
-        <!--</mt-tab-container-item>-->
-        <!--<mt-tab-container-item :id="4">-->
-          <!--<SealInfo :info="cardSealInfoForm" :moreData="{baseInfoForm}"></SealInfo>-->
-        <!--</mt-tab-container-item>-->
-        <!--<mt-tab-container-item :id="5">-->
-          <!--<mt-cell :value="cardRemarkInfoForm.otherInstruction"></mt-cell>-->
-        <!--</mt-tab-container-item>-->
-        <!--<mt-tab-container-item :id="6">-->
-          <!--<CardRelatedInfo :moreData="{cardContentInfoForm}"></CardRelatedInfo>-->
-        <!--</mt-tab-container-item>-->
-        <!--<mt-tab-container-item :id="7">-->
-          <!--<OtherInfo :info="baseInfoForm"></OtherInfo>-->
-        <!--</mt-tab-container-item>-->
-      <!--</mt-tab-container>-->
+        </mt-tab-container-item>
+        <mt-tab-container-item :id="4">
+          <SealInfo :info="cardSealInfoForm" :moreData="{baseInfoForm}"></SealInfo>
+        </mt-tab-container-item>
+        <mt-tab-container-item :id="5">
+          <mt-cell :value="cardRemarkInfoForm.otherInstruction"></mt-cell>
+        </mt-tab-container-item>
+        <mt-tab-container-item :id="6">
+          <CardRelatedInfo :moreData="{cardContentInfoForm}"></CardRelatedInfo>
+        </mt-tab-container-item>
+        <mt-tab-container-item :id="7">
+          <OtherInfo :info="baseInfoForm"></OtherInfo>
+        </mt-tab-container-item>
+      </mt-tab-container>
     </div>
     <ActionSumit></ActionSumit>
   </div>
@@ -121,9 +124,9 @@
       window._____processCenterPageAction('pageloaded');
       if (this.$store.state.processData.type === '1') {
         if (this.pcApprove) {
-          document.querySelector('.container').style.paddingBottom = '51px';
+          document.querySelector('.container').style.height = 'calc(100vh - 51px)';
         } else {
-          document.querySelector('.container').style.paddingBottom = '101px';
+          document.querySelector('.container').style.height = 'calc(100vh - 101px)';
         }
       }
     },

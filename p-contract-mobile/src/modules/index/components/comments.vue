@@ -1,5 +1,5 @@
 <style type="text/scss" lang="scss" scoped>
-  .main {
+  .items {
     padding: 10px;
   }
 
@@ -21,7 +21,7 @@
 
 <template>
   <div v-if="lists.length">
-    <div class="main">
+    <div class="items">
       <div class="item" v-for="list in lists" :key="list.commentId">
         <div class="header">
           <span>{{list.activityName}}</span>

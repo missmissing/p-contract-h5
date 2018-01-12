@@ -1232,15 +1232,7 @@
           contract: [],
           others: [],
           agreenments: [],
-          current: null, // 为上传功能保存当前所在附件列表的索引
-          type: null, // 为上传功能保存当前附件类型
-          errorMsg: '',
-          rules: {
-            slaveProtocolNo: [{
-              required: true,
-              message: '请输入从协议编号'
-            }]
-          }
+          errorMsg: ''
         },
         cardRemarkInfoForm: {
           otherInstruction: '',
@@ -2158,8 +2150,10 @@
               }
               console.log('errors.cardFinanceInfoForm.errorCount', errors.cardFinanceInfoForm.errorCount);
             }
-            if (this.checkPayCondition()) { //判断付款条件是否选择
-              errors.cardFinanceInfoForm.errorCount += 1;
+            if (cardFinanceInfoForm.moneyInvolved && !cardFinanceInfoForm.oneOffPay) {
+              if (this.checkPayCondition()) { //判断付款条件是否选择
+                errors.cardFinanceInfoForm.errorCount += 1;
+              }
             }
           });
           this.$refs.cardRemarkInfoForm.validate((valid) => {
@@ -2417,7 +2411,7 @@
           });
       },
       handleNewOtherSealFile() {
-        const file = [{
+        let file = [{
           addNew: true,
           fileName: '',
           fileUrl: '', // 合同文本类型为非模版合同时，附件类型的合同的文件下载地址
@@ -2440,6 +2434,9 @@
           ], // 章列表
           filesSealed: [] // 上传的盖章后的文件信息
         }];
+        if (this.backLogCreator) {
+          file = this.copyPrevSealData(file);
+        }
         this.cardSealInfoForm.others.push(file);
       },
       handleQuery(code) {
@@ -2708,6 +2705,8 @@
           promises.push(t.modifyAddNewFiles());
         } else if (t.backLogFA) {
           promises.push(t.modifyFA());
+        } else if (t.backLogCreator) {
+          promises.push(t.modifyFiles());
         } else {
           return Promise.resolve();
         }
@@ -2758,7 +2757,11 @@
         });
       },
       modifyFiles() {
-        const contractAttachments = [...this.cardSealInfoForm.contract, ...this.cardSealInfoForm.others].map(item => item);
+        const contractAttachments = [];
+        contractAttachments.push(this.cardSealInfoForm.contract[0]);
+        this.cardSealInfoForm.others.forEach((item) => {
+          contractAttachments.push(item[0]);
+        });
         return Api.updateAttach({
           contractId: this.$route.query.contractId,
           contractAttachments
@@ -2786,6 +2789,17 @@
       },
       handleRemove(index, rows) {
         rows.splice(index, 1);
+      },
+      copyPrevSealData(file) {
+        const {contract, others} = this.cardSealInfoForm;
+        let prev;
+        if (others.length) {
+          prev = others[others.length - 1][0];
+        } else {
+          prev = contract[0];
+        }
+        file[0].saleInfos = prev.saleInfos.slice(0);
+        return file;
       }
     },
     watch: {
