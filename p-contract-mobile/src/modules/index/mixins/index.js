@@ -2,9 +2,9 @@ export default {
   mounted() {
     if (this.$store.state.processData.type === '1') {
       if (this.pcApprove) {
-        document.querySelector('.container').style.height = 'calc(100vh - 51px)';
+        document.querySelector('.container').style.height = `${document.documentElement.clientHeight - 51}px`;
       } else {
-        document.querySelector('.container').style.height = 'calc(100vh - 101px)';
+        document.querySelector('.container').style.height = `${document.documentElement.clientHeight - 101}px`;
       }
     }
   },
