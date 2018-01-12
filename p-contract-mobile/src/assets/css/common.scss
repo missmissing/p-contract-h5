@@ -107,19 +107,6 @@ a:hover {
   z-index: 9999;
 }
 
-.mint-tab-container {
-  position: inherit;
-}
-
-.mint-navbar {
-  padding-bottom: 3px;
-  .mint-tab-item {
-    padding-left: 15px;
-    padding-right: 15px;
-    flex: none;
-  }
-}
-
 .mint-searchbar {
   [type=search] {
     padding-left: 10px;

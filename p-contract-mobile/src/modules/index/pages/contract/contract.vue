@@ -124,9 +124,9 @@
       window._____processCenterPageAction('pageloaded');
       if (this.$store.state.processData.type === '1') {
         if (this.pcApprove) {
-          document.querySelector('.container').style.height = 'calc(100vh - 51px)';
+          document.querySelector('.container').style.height = 'calc(100vh - 52px)';
         } else {
-          document.querySelector('.container').style.height = 'calc(100vh - 101px)';
+          document.querySelector('.container').style.height = 'calc(100vh - 102px)';
         }
       }
     },

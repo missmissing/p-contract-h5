@@ -1,7 +1,7 @@
 <style type="text/scss" lang="scss" scoped>
   .fixed {
     width: 100%;
-    position: fixed;
+    position: absolute;
     bottom: 0;
     z-index: 10;
   }
