@@ -1,9 +1,10 @@
 <style type="text/scss" lang="scss" scoped>
   .fixed {
-    width: 100%;
-    position: absolute;
+    right: 0;
     bottom: 0;
-    z-index: 10;
+    left: 0;
+    position: fixed;
+    z-index: 1;
   }
 
   .submit {

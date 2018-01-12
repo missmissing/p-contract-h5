@@ -1,5 +1,6 @@
 <style type="text/scss" lang="scss" scoped>
   .tabs-container {
+    width: 100%;
     overflow-x: auto;
     white-space: nowrap;
     margin-bottom: 15px;
