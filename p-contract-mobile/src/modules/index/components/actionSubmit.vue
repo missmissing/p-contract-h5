@@ -1,11 +1,4 @@
 <style type="text/scss" lang="scss" scoped>
-  .fixed {
-    right: 0;
-    bottom: 0;
-    left: 0;
-    //position: fixed;
-  }
-
   .submit {
     margin-top: 20px;
     width: 90%;
@@ -32,7 +25,7 @@
 </style>
 
 <template>
-  <div id="actionSumit" class="fixed" v-if="true">
+  <div v-if="true">
     <div v-if="pcApprove">
       <div style="color:#b45349;text-align: center;background-color:#f19ca1;height:40px;line-height:40px;">
         该环节需要您进行表单操作，请在电脑上审批
