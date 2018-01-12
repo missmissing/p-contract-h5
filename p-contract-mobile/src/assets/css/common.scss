@@ -46,11 +46,12 @@ a:hover {
 
 /**custom css**/
 .main {
-  overflow-y: auto;
+  height: 100%;
 }
 
 .container {
   width: 100%;
+  overflow-y: scroll;
   -webkit-overflow-scrolling: touch;
 }
 

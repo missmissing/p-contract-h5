@@ -3,7 +3,7 @@
 </style>
 
 <template>
-  <div>
+  <div class="main">
     <div class="container">
       <mt-cell title="采购订单号" :value="orderNo"></mt-cell>
       <mt-cell title="业务经办人" :value="basicForm.businessOperatorName"></mt-cell>

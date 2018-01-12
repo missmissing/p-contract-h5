@@ -3,7 +3,7 @@
 </style>
 
 <template>
-  <div>
+  <div class="main">
     <div class="container">
       <TplBase :info="info"></TplBase>
       <mt-navbar v-model="selected" class="mt20">
