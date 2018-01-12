@@ -17,9 +17,6 @@ import {
   Actionsheet
 } from 'mint-ui';
 
-import RsTabs from './rs-tabs.vue';
-import RsTabItem from './rs-tab-item.vue';
-
 export default (Vue) => {
   //element-ui
   Vue.use(Table);
@@ -37,7 +34,4 @@ export default (Vue) => {
   Vue.component(Popup.name, Popup);
   Vue.component(Search.name, Search);
   Vue.component(Actionsheet.name, Actionsheet);
-
-  Vue.component(RsTabs.name, RsTabs);
-  Vue.component(RsTabItem.name, RsTabItem);
 };

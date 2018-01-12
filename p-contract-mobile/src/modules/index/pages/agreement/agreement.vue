@@ -66,8 +66,10 @@
   import ActionSumit from '../../components/actionSubmit.vue';
   import SealTable from '../../components/sealTable.vue';
   import Comments from '../../components/comments.vue';
+  import commonMixin from '../../mixins';
 
   export default {
+    mixins: [commonMixin],
     data() {
       return {
         selected: 1,

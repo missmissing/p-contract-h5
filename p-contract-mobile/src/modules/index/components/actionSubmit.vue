@@ -83,8 +83,10 @@
   import Api from '../../../api/process';
   import Actions from '../components/actions.vue';
   import SelectPerson from '../components/selectPerson.vue';
+  import commonMixin from '../mixins';
 
   export default {
+    mixins: [commonMixin],
     data() {
       return {
         disabled: false,

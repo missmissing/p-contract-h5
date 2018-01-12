@@ -49,6 +49,12 @@ a:hover {
 
 /**custom css**/
 
+.container {
+  width: 100%;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
 .title {
   padding: 10px;
 }
@@ -94,6 +100,12 @@ a:hover {
 
 .mint-indicator-wrapper, .mint-indicator-mask {
   z-index: 9999;
+}
+
+.mint-navbar {
+  overflow-x: auto;
+  overflow-y: hidden;
+  padding-bottom: 3px;
 }
 
 .mint-searchbar {
