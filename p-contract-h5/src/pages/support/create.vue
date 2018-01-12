@@ -86,7 +86,8 @@
                       :remote-method="remoteMethod"
                       :loading="selectLoading"
                       @clear="businessOperatorClear"
-                      @change="selectChange">
+                      @change="selectChange"
+                      class="wp100">
                       <el-option
                         v-for="item in businessOperators"
                         :key="item.userId"
