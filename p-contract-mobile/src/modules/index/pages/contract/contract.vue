@@ -31,15 +31,13 @@
           <ContractContentInfo :info="cardContentInfoForm" :moreData="{baseInfoForm}"></ContractContentInfo>
         </mt-tab-container-item>
         <mt-tab-container-item :id="2">
-          <div>
-            <CardFinanceInfo :info="cardFinanceInfoForm"></CardFinanceInfo>
-          </div>
+          <!--<CardFinanceInfo :info="cardFinanceInfoForm"></CardFinanceInfo>-->
         </mt-tab-container-item>
         <mt-tab-container-item :id="3">
           <CardContCheckInfo :info="cardContCheckInfoForm" :moreData="{baseInfoForm}"></CardContCheckInfo>
         </mt-tab-container-item>
         <mt-tab-container-item :id="4">
-          <SealInfo :info="cardSealInfoForm" :moreData="{baseInfoForm}"></SealInfo>
+          <!--<SealInfo :info="cardSealInfoForm" :moreData="{baseInfoForm}"></SealInfo>-->
         </mt-tab-container-item>
         <mt-tab-container-item :id="5">
           <mt-cell :value="cardRemarkInfoForm.otherInstruction"></mt-cell>
