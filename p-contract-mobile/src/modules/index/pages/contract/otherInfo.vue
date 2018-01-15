@@ -72,6 +72,15 @@
         return type;
       }
     },
+    watch: {
+      sheetVisible(val) {
+        if (val) {
+          document.querySelector('.container').style.overflow = 'visible';
+        } else {
+          document.querySelector('.container').style.overflow = 'auto';
+        }
+      }
+    },
     components: {
       PriceTable: () => import('./priceTable.vue'),
       ContractTable: () => import('./contractTable.vue'),

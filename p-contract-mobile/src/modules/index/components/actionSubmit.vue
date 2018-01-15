@@ -25,7 +25,7 @@
 </style>
 
 <template>
-  <div v-if="true">
+  <div v-if="show">
     <div v-if="pcApprove">
       <div style="color:#b45349;text-align: center;background-color:#f19ca1;height:40px;line-height:40px;">
         该环节需要您进行表单操作，请在电脑上审批
@@ -75,10 +75,8 @@
   import Api from '../../../api/process';
   import Actions from '../components/actions.vue';
   import SelectPerson from '../components/selectPerson.vue';
-  import commonMixin from '../mixins';
 
   export default {
-    mixins: [commonMixin],
     data() {
       return {
         disabled: false,
