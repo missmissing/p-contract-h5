@@ -218,7 +218,10 @@
           operatorName,
           creatorName,
           description,
-          files
+          files,
+          amount,
+          businessOperatorName,
+          contractType
         } = tplInfo;
         this.tplInfo = tplInfo;
         this.form.templateCode = templateCode;
@@ -234,6 +237,9 @@
         this.form.operatorName = operatorName;
         this.form.creatorName = creatorName;
         this.form.description = description;
+        this.form.amount = amount;
+        this.form.businessOperatorName = businessOperatorName;
+        this.form.contractType = contractType;
         this.fileList = files || [];
       },
       getTplData(id) {
