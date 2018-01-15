@@ -75,9 +75,9 @@
     watch: {
       sheetVisible(val) {
         if (val) {
-          document.querySelector('.container').style.overflow = 'visible';
+          document.querySelector('#action-submit-container').style.display = 'none';
         } else {
-          document.querySelector('.container').style.overflow = 'auto';
+          document.querySelector('#action-submit-container').style.display = 'block';
         }
       }
     },
