@@ -6,7 +6,7 @@
   <div class="main">
     <div class="container">
       <TplBase :info="info"></TplBase>
-      <mt-navbar v-model="selected" class="mt20">
+      <mt-navbar v-model="selected" class="mt20 mb20">
         <mt-tab-item :id="1">审批意见</mt-tab-item>
         <mt-tab-item :id="2">模板信息</mt-tab-item>
       </mt-navbar>

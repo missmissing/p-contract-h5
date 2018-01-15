@@ -15,7 +15,7 @@
       <mt-cell title="涉及赔付" :value="compensateStatus | yesOrNo"></mt-cell>
       <mt-cell title="赔付类型" :value="compensateType | sateType"></mt-cell>
       <mt-cell title="赔付金额" :value="compensateMoney"></mt-cell>
-      <mt-navbar v-model="selected" class="mb20">
+      <mt-navbar v-model="selected" class="mt20 mb20">
         <mt-tab-item :id="1">审批意见</mt-tab-item>
         <mt-tab-item :id="2">处理结论</mt-tab-item>
       </mt-navbar>

@@ -10,7 +10,7 @@
       <mt-cell title="供应商名称" :value="orderForm.supplierName"></mt-cell>
       <mt-cell title="订单类型" :value="orderForm.type"></mt-cell>
       <mt-cell title="公司编码" :value="orderForm.companyCode"></mt-cell>
-      <mt-navbar v-model="selected" class="mb20">
+      <mt-navbar v-model="selected" class="mt20 mb20">
         <mt-tab-item :id="1">审批意见</mt-tab-item>
         <mt-tab-item :id="2">订单信息</mt-tab-item>
         <mt-tab-item :id="3">合同信息</mt-tab-item>

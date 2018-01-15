@@ -15,7 +15,7 @@
       <mt-cell title="验收责任人" :value="basicForm.responsibleName"></mt-cell>
       <mt-cell title="合同生效日期" :value="basicForm.startTime | formatDate"></mt-cell>
       <mt-cell title="合同验收日期" :value="contractCheckDate | formatDate"></mt-cell>
-      <mt-navbar v-model="selected" class="mb20">
+      <mt-navbar v-model="selected" class="mt20 mb20">
         <mt-tab-item :id="0">审批意见</mt-tab-item>
         <mt-tab-item :id="1">验收信息</mt-tab-item>
         <mt-tab-item :id="2">处理结论</mt-tab-item>

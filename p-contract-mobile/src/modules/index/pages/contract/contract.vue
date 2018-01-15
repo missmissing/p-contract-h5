@@ -1,19 +1,8 @@
-<style type="text/scss" lang="scss" scoped>
-  .navbar {
-    margin: 20px 0;
-    .mint-tab-item {
-      flex: none;
-      padding-left: 10px;
-      padding-right: 10px;
-    }
-  }
-</style>
-
 <template>
   <div class="main">
     <div class="container">
       <ContractBaseInfo :info="baseInfoForm"></ContractBaseInfo>
-      <mt-navbar v-model="selected" class="navbar">
+      <mt-navbar v-model="selected" class="mt20 mb20">
         <mt-tab-item :id="0">审批意见</mt-tab-item>
         <mt-tab-item :id="1">合同内容信息</mt-tab-item>
         <mt-tab-item :id="2">合同财务信息</mt-tab-item>
