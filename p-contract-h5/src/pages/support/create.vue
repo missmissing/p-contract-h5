@@ -105,7 +105,7 @@
                 </el-col>
                 <el-col :span="8">
                   <el-form-item label="金额" prop="amount">
-                    <el-input v-model.number="form.amount" class="wp100"></el-input>
+                    <el-input v-model="form.amount" class="wp100"></el-input>
                   </el-form-item>
                 </el-col>
                 <el-col :span="8">
@@ -188,7 +188,6 @@
     data() {
       const contractTypes = [];
       Object.keys(contractPatternMap).forEach((item) => {
-        console.log(item);
         if (item === '2') {
           return;
         }
@@ -198,6 +197,7 @@
         if (!nonNegative(value)) {
           callback(new Error('格式错误'));
         } else {
+          console.log(111);
           callback();
         }
       };
@@ -235,7 +235,7 @@
           }],
           description: [{max: 300, message: '长度不超过300个字符', trigger: 'change'}],
           businessOperatorId: [{required: true, message: '请选择业务经办人'}],
-          amount: [{required: true, message: '请输入金额'}, {validator: validatorNum, trigger: 'blur'}],
+          amount: [{required: true, message: '请输入金额'}, {validator: validatorNum}],
           contractType: [{required: true, message: '请选择合同类型'}]
         }
       };

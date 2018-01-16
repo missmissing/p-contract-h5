@@ -966,12 +966,9 @@
       </footer>
     </el-dialog>
     <Process :extraFn="callback.bind(this)"></Process>
-    <el-row class="mt20 mb20">
-      <el-col :span="24" style="text-align:center">
-        <el-button v-if="operateType!=='query'" :disabled="!btnSubmitStatus" type="primary" @click="handleSubmit">提交
-        </el-button>
-      </el-col>
-    </el-row>
+    <div class="mt20 mb20 tc">
+      <el-button v-if="operateType!=='query'" :disabled="!btnSubmitStatus" type="primary" @click="handleSubmit">提交</el-button>
+    </div>
     <Preview :visible.sync="visible" :datas="previewData"></Preview>
   </div>
 </template>
@@ -2381,11 +2378,10 @@
                 this.$router.push({name: routerNames.con_index});
               }
               this.comLoading(false);
-            })
-              .catch(() => {
-                this.btnSubmitStatus = true;
-                this.comLoading(false);
-              });
+            }).catch(() => {
+              this.btnSubmitStatus = true;
+              this.comLoading(false);
+            });
           } else {
             const updateForm = this.updateForm;
             const updateParams = {};
