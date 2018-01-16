@@ -2846,7 +2846,7 @@
     },
     components: {
       Preview: (resolve) => {
-        require(['./Preview'], resolve);
+        require(['./preview.vue'], resolve);
       },
       Process: (resolve) => {
         require(['../../components/process.vue'], resolve);
@@ -2855,22 +2855,22 @@
         require(['./Payment.vue'], resolve);
       },
       PrTable: (resolve) => {
-        require(['./prTable'], resolve);
+        require(['./prTable.vue'], resolve);
       },
       PriceTable: (resolve) => {
-        require(['./priceTable'], resolve);
+        require(['./priceTable.vue'], resolve);
       },
       ContractTable: (resolve) => {
-        require(['./contractTable'], resolve);
+        require(['./contractTable.vue'], resolve);
       },
       OrderTable: (resolve) => {
-        require(['./orderTable'], resolve);
+        require(['./orderTable.vue'], resolve);
       },
       BothInfo: (resolve) => {
-        require(['./BothInfo'], resolve);
+        require(['./bothInfo.vue'], resolve);
       },
       SealTable: (resolve) => {
-        require(['./sealTable'], resolve);
+        require(['./sealTable.vue'], resolve);
       }
     }
   };
