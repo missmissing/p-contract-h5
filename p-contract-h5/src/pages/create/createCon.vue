@@ -1077,6 +1077,7 @@
           contractNo: '', // 合同编号
           dialogNewSubjectVisible: false,
           rules: {
+            contractName: [{required: true, message: '请输入合同名称', trigger: 'blur'}],
             businessOperatorId: [{required: true, message: '请输入业务业务申请人', trigger: 'blur'}],
             templateId: [{required: true, message: '请选择模版名称'}]
           }
