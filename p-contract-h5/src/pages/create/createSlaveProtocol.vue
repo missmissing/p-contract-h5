@@ -1,4 +1,4 @@
-<style scope>
+<style scoped>
   .createSlaveProtocal .errorMsg {
     color: red;
     font-style: normal;
@@ -21,7 +21,6 @@
       <div class="fl" style="font-weight: bolder">{{procTitle}}</div>
     </div>
     <el-card v-if="operateType==='create'">
-      <!--<header slot="header">合同查询</header>-->
       <el-form rel="queryContractForm" :model="queryContractForm" label-width="100px" :rules="queryContractForm.rules">
         <el-row>
           <el-col :span="8">
@@ -35,21 +34,6 @@
             </el-button>
           </el-col>
         </el-row>
-        <!--<el-row>
-          <el-button @click="handleTest">添加cks</el-button>
-        </el-row>
-        <el-row>
-          <el-col :span="12">
-            <el-form-item label="活动性质" prop="testtype" :rules="[{ type: 'array', required: true, message: '请选择活动性质', trigger: 'change' }]">
-              <el-checkbox-group  v-model="queryContractForm.testtype">
-                <el-checkbox label="美食/餐厅线上活动" name="type"></el-checkbox>
-                <el-checkbox label="地推活动" name="type"></el-checkbox>
-                <el-checkbox label="线下主题活动" name="type"></el-checkbox>
-                <el-checkbox label="单纯品牌曝光" name="type"></el-checkbox>
-              </el-checkbox-group>
-            </el-form-item>
-          </el-col>
-        </el-row>-->
       </el-form>
     </el-card>
     <el-card v-if="contentVisible">
@@ -70,52 +54,17 @@
         </el-row>
         <el-card class="mb20">
           <header slot="header">合同供应商信息<i class="errorMsg">{{baseInfoForm.supplierErrorMsg}}</i></header>
-          <!--<el-button
-            size="small"
-            v-if="baseInfoForm.tableSupplierInfo.length<=0&&enabledInupdated"
-            @click="handleAddContractSupplier" icon="plus"
-            type="primary" class="mb20">新增
-          </el-button>-->
           <el-table :data="baseInfoForm.tableSupplierInfo">
             <el-table-column type="index" label="序号" width="80"></el-table-column>
             <el-table-column prop="code" label="供应商编号"></el-table-column>
             <el-table-column prop="name" label="供应商名称"></el-table-column>
-            <!--<el-table-column
-              v-if="enabledInupdated"
-              fixed="right"
-              label="操作"
-              width="100">
-              <template scope="scope">
-                <el-button
-                  v-if="baseInfoForm.tableSupplierInfo[scope.$index].type"
-                  @click="handleRemoveItem(scope.$index, baseInfoForm.tableSupplierInfo)"
-                  type="danger" size="small">移除
-                </el-button>
-              </template>
-            </el-table-column>-->
           </el-table>
         </el-card>
         <el-card class="mb20">
           <header slot="header">我方主体名称<i class="errorMsg">{{baseInfoForm.subjectErrorMsg}}</i></header>
-          <!--<el-button size="small" type="primary" @click="handleNewSubjectName" icon="plus" v-if="enabledInupdated"
-                     class="mb20">新增
-          </el-button>-->
           <el-table :data="baseInfoForm.conSubjctName">
             <el-table-column prop="code" label="公司代码"></el-table-column>
             <el-table-column prop="name" label="公司名称"></el-table-column>
-            <!--<el-table-column
-              v-if="enabledInupdated"
-              fixed="right"
-              label="操作"
-              width="100">
-              <template scope="scope">
-                <el-button
-                  v-if="baseInfoForm.conSubjctName[scope.$index].type"
-                  @click="handleRemoveItem(scope.$index, baseInfoForm.conSubjctName)"
-                  type="danger" size="small">移除
-                </el-button>
-              </template>
-            </el-table-column>-->
           </el-table>
         </el-card>
         <el-row>
@@ -146,7 +95,7 @@
         </el-button>
         <template v-if="cardSealInfoForm.sealAttachments.length"
                   v-for="(item,index) in cardSealInfoForm.sealAttachments">
-          <el-table :data="item" :show-header="index===0?true:false" style="width:100%">
+          <el-table :data="item" :show-header="index===0" style="width:100%">
             <el-table-column type="expand" v-if="item[0].haveSale">
               <template scope="props" v-if="item[0].haveSale">
                 <div v-if="item[0].haveSale" v-bind:class="{tdPd:item[0].haveSale}">
@@ -155,7 +104,8 @@
                     <el-table-column label="文件名" prop="sealFileName">
                       <template scope="scope">
                         <a
-                          :href="props.row.filesSealed[scope.$index].sealFileUrl" target="_blank">{{props.row.filesSealed[scope.$index].sealFileName}}</a>
+                          :href="props.row.filesSealed[scope.$index].sealFileUrl"
+                          target="_blank">{{props.row.filesSealed[scope.$index].sealFileName}}</a>
                       </template>
                     </el-table-column>
                     <el-table-column label="上传人" prop="sealFileCreatorName"></el-table-column>
@@ -235,7 +185,7 @@
             </el-table-column>
             <el-table-column prop="attachType" label="附件类型" width="150px">
               <template scope="scope">
-                {{getContractAgreenmentName(item[scope.$index].attachType)}}
+                {{item[scope.$index].attachType | attachmentType}}
               </template>
             </el-table-column>
             <el-table-column prop="fileName" label="文件名称" width="200px">
@@ -266,7 +216,7 @@
                              @change="handleChangeValidateForms"></el-checkbox>
               </template>
             </el-table-column>
-            <el-table-column prop="remark" :disabled="!enabledInupdated" label="备注" width="200px">
+            <el-table-column prop="remark" :disabled="!enabledInupdated" label="备注">
               <template scope="scope">
                 <el-input
                   :disabled="!enabledInupdated"
@@ -314,25 +264,14 @@
           <el-table-column prop="status" label="状态"></el-table-column>
           <el-table-column prop="company" label="公司"></el-table-column>
           <el-table-column prop="startTime" label="开始时间"></el-table-column>
-          <el-table-column
-            fixed="right"
-            label="操作"
-            width="100">
-            <template scope="scope">
-              <el-button @click="handleContractDetail(scope.$index, scope.row)" type="text"
-                         size="small">详情
-              </el-button>
-            </template>
-          </el-table-column>
         </el-table>
       </el-form>
     </el-card>
     <Process :extraFn="callback.bind(this)"></Process>
     <el-row v-if="contentVisible">
-      <el-col style="text-align: center" class="mt20">
+      <el-col class="mt20 mb20 tc">
         <el-button v-if="enabledInupdated" type="primary" :disabled="!enabledInupdated||!btnStatus"
-                   @click="handleSubmit"
-                   style="display:inline-block">提交
+                   @click="handleSubmit">提交
         </el-button>
       </el-col>
     </el-row>
@@ -401,6 +340,7 @@
   import _ from 'lodash';
   import Api from '../../api/manageContract';
   import {formatDate} from '../../filters/moment';
+  import attachmentType from '../../filters/attachmentType';
   import {downloadUrl, uploadUrl} from '../../api/consts';
   import Process from '../../components/process.vue';
   import {routerNames} from '../../core/consts';
@@ -441,60 +381,17 @@
           rules: {}
         },
         cardSealInfoForm: {
-          sealAttachments: [
-            /* [{
-              testtype:['地推活动'],////??delte
-              operate: 'add',
-              id: '',
-              fileName: '',
-              fileUrl: '', // 合同文本类型为非模版合同时，附件类型的合同的文件下载地址
-              attachType: 1, // 附件类型
-              slaveProtocolNo: '0011001', // 从协议编号
-              types: [
-                {
-                  id: 1,
-                  name: '其他'
-                }
-              ], // 附件类型集合
-              haveSale: true, // 是否用章
-              remark: '',
-              saleTime: 1, // 用章次数
-              printTime: '', // 打印份数
-              remainTime: '', // 我方留存份数
-              saleInfos: [1], // 当前选中的章
-              useSeals: [
-                {
-                  id: 1,
-                  name: '公章'
-                },
-                {
-                  id: 2,
-                  name: '法人章'
-                }
-              ], // 章列表
-              filesSealed: []// 上传的盖章后的文件信息
-            }]*/
-          ],
+          sealAttachments: [],
           attachmentErrorMsg: '',
           current: null, // 为上传功能保存当前所在附件列表的索引
           type: null, // 为上传功能保存当前附件类型
-          rules: {
-            //testtype:[{ type: 'array', required: true, message: '请选择活动性质', trigger: 'change' }]
-          }
+          rules: {}
         },
         cardRemarkInfoForm: {
           otherInstruction: ''
         },
         cardRelatedInfoForm: {
-          contractList: [
-            /* {
-              contractCode: '0001001',
-              type: '类型',
-              status: '状态',
-              company: '公司',
-              startTime: '2018-09-11'
-            } */
-          ]
+          contractList: []
         },
         formContractSupplier: {
           rules: {
@@ -750,9 +647,6 @@
         console.log('file', file);
         console.log('fileList', fileList);
       },
-      /* handleSave() {
-        console.log('save')
-      }, */
       // 验证
       /*
       * 1.供应商有且仅有一个
@@ -844,9 +738,6 @@
         }
         return sealAttachment;
       },
-      handleContractDetail(index, row) {
-        console.log('详情', index, row);
-      },
       handleChangeType(index, row) {
         row.isSeal = index !== 2;
       },
@@ -884,20 +775,7 @@
         }];
         this.cardSealInfoForm.sealAttachments.push(file);
         if (this.isSubmit) {
-          this.validateForms().catch(() => {
-          });
-        }
-      },
-      getContractAgreenmentName(id) {
-        switch (id) {
-          case 1:
-            return '其他';
-          case 2:
-            return '从协议';
-          case 3:
-            return '合同';
-          default:
-            return '';
+          this.validateForms();
         }
       },
       getEnabledUploadBtn(items) {
@@ -931,9 +809,7 @@
       },
       handleChangeValidateForms() {
         if (this.isSubmit) {
-          this.validateForms().catch(() => {
-            console.log('handleChangeValidateForms-fail');
-          });
+          this.validateForms();
         }
       },
       callback(params) { //isSign:是否是加签人 isAgree:审批操作类型是否是同意
@@ -960,7 +836,8 @@
       }
     },
     filters: {
-      formatDate
+      formatDate,
+      attachmentType
     },
     watch: {
       $route() {
@@ -1000,15 +877,7 @@
               otherInstruction: ''
             },
             cardRelatedInfoForm: {
-              contractList: [
-                /* {
-                 contractCode: '0001001',
-                 type: '类型',
-                 status: '状态',
-                 company: '公司',
-                 startTime: '2018-09-11'
-                 } */
-              ]
+              contractList: []
             },
             formContractSupplier: {
               rules: {

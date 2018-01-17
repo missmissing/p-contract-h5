@@ -270,11 +270,8 @@
       },
       //流程覆盖上传按钮
       coverUploadDisabled() {
-        const {type, backLogCreator} = this.moreDatas;
-        if (type === 1) {
-          return backLogCreator;
-        }
-        return false;
+        const {type, tplType, backLogCreator} = this.moreDatas;
+        return (type === 1 && tplType === 2 && backLogCreator);
       }
     },
     methods: {
