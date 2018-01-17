@@ -1240,7 +1240,7 @@
           rules: {
             otherInstruction: [{
               validator: (rule, value, callback) => {
-                if (this.cardContentInfoForm.effectiveCondition === 1 && this.cardContentInfoForm.startTime && formatDate(this.cardContentInfoForm.startTime) < formatDate(new Date())) {
+                if (this.cardContentInfoForm.effectiveCondition === 1 && this.cardContentInfoForm.startTime && formatDate(this.cardContentInfoForm.startTime) < formatDate(new Date()) && !this.isSee) {
                   if (!value) {
                     callback(new Error('合同生效日期小于今天，请输入倒签原因'));
                   }
