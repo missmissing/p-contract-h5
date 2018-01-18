@@ -239,8 +239,8 @@
         conModels: [
           {id: '1', name: '单一合同'},
           {id: '2', name: '固定格式合同'},
-          {id: '3', name: '框架合同'},
-          {id: '4', name: '框架意向合同'}
+          {id: '3', name: '框架意向合同'},
+          {id: '4', name: '意向合同'}
         ],
         conTypeName: '', // 业务类型名
         daterange: [],
@@ -286,9 +286,9 @@
           case 2:
             return '固定格式合同';
           case 3:
-            return '框架合同';
-          case 4:
             return '框架意向合同';
+          case 4:
+            return '意向合同';
           default:
             return '';
         }

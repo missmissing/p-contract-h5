@@ -47,7 +47,7 @@ export const routerNames = {
   con_querySlaveProtocol: '查看从协议',
   con_agreementList: '从协议查询',
   con_update: '合同变更',
-  con_createFrameContract: '框架合同创建',
+  con_createFrameContract: '框架意向合同创建',
   con_createIntentionContract: '意向合同创建',
   con_createSingleContract: '单一合同创建',
   con_createSimpleContract: '固定格式合同创建',
@@ -116,7 +116,7 @@ export const prTypeMap = {
 export const contractPatternMap = {
   1: '单一合同',
   2: '固定格式合同',
-  3: '框架合同',
+  3: '框架意向合同',
   4: '意向合同'
 };
 
