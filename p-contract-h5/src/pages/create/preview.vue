@@ -296,6 +296,9 @@
         const priceTable = [];
         if (data.length) {
           data.forEach((item) => {
+            if(!item.paymentAmount){
+              return;
+            }
             const {seriousPayments} = item;
             if (seriousPayments) {
               const {subItem} = item;
