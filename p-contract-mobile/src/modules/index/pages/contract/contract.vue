@@ -1,7 +1,7 @@
 <template>
   <div class="main">
     <div class="container">
-      <ContractBaseInfo :info="baseInfoForm" :moreDatas="{datas}"></ContractBaseInfo>
+      <ContractBaseInfo :info="baseInfoForm" :moreData="{datas}"></ContractBaseInfo>
       <mt-navbar v-model="selected" class="mt20 mb20">
         <mt-tab-item :id="0">审批意见</mt-tab-item>
         <mt-tab-item :id="1">合同内容信息</mt-tab-item>
@@ -60,7 +60,6 @@
   import commonMixin from '../../mixins';
 
   export default {
-    mixins: [commonMixin],
     data() {
       return {
         selected: 0,

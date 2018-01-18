@@ -56,6 +56,29 @@
         };
       }
     },
+    watch: {
+      info(val) {
+        const {paymentMethods} = val;
+        if (paymentMethods) {
+          const {earnest, advance, progress, _final, deposit} = paymentMethods;
+          if (earnest && earnest.length) {
+            earnest[0].type = '定金';
+          }
+          if (advance && advance.length) {
+            advance[0].type = '预付款';
+          }
+          if (progress && progress.length) {
+            progress[0].type = '进度款';
+          }
+          if (_final && _final.length) {
+            _final[0].type = '尾款';
+          }
+          if (deposit && deposit.length) {
+            deposit[0].type = '保证金';
+          }
+        }
+      }
+    },
     filters: {
       yesOrNo,
       invoiceType,

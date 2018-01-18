@@ -53,6 +53,9 @@
       prop="paymentTimePeriod"
       label="付款条件"
       width="200px">
+      <template scope="scope">
+        {{scope.row.paymentTimePeriod | paymentTimePeriods}}
+      </template>
     </el-table-column>
     <el-table-column
       prop="remark"
@@ -68,7 +71,7 @@
 
 <script>
   import {nonNegative} from '../../../util/reg';
-  import {paymentType, paymentTimePeriods} from '../../../core/consts';
+  import paymentTimePeriods from '../../../filters/paymentTimePeriods';
 
   export default {
     props: {
@@ -119,6 +122,9 @@
         }
         return `${result}%`;
       }
+    },
+    filters: {
+      paymentTimePeriods
     }
   };
 </script>

@@ -19,7 +19,7 @@
       title="废除原因"
       :value="info.ourSealOpinion">
     </mt-cell>
-    <Preview :visible.sync="visible" :info="moreDatas"></Preview>
+    <Preview :visible.sync="visible" :info="moreData"></Preview>
   </div>
 </template>
 
@@ -37,7 +37,7 @@
           return {};
         }
       },
-      moreDatas: {
+      moreData: {
         type: Object,
         default() {
           return {};

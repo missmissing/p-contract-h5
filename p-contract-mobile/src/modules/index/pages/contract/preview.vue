@@ -1,6 +1,24 @@
 <style type="text/scss" lang="scss" scoped>
   .preview-container {
-    padding-top: 62px;
+    padding: 62px 10px 20px 10px;
+    height: 100%;
+    overflow-y: auto;
+    .title {
+      text-align: center;
+      font-size: 16px;
+      margin-bottom: 20px;
+    }
+    table {
+      th, td {
+        border: 1px solid;
+        border-collapse: collapse;
+      }
+      &.no-border {
+        th, td {
+          border: none;
+        }
+      }
+    }
   }
 </style>
 
@@ -11,7 +29,7 @@
     :closeOnClickModal="false"
     position="bottom"
     class="popup">
-    <div>
+    <div style="height:100%;">
       <mt-header fixed title="合同预览">
         <mt-button icon="back" slot="left" @click="back"></mt-button>
       </mt-header>
@@ -20,8 +38,8 @@
           <span>{{contractNo}}</span>
         </div>
         <div>
-          <div class="mb20">{{title}}</div>
-          <table>
+          <div class="title">{{title}}</div>
+          <table class="no-border mb20">
             <tbody>
             <tr>
               <td>甲方：</td>
@@ -37,10 +55,10 @@
             </tr>
             </tbody>
           </table>
-          <div v-if="materialTable&&materialTable.length">
+          <div v-if="materialTable&&materialTable.length" class="mb20">
             <p>合同标的：</p>
             <div>
-              <template v-if="[1,2,3].indexOf(info.contractType)>-1&&info.contractBusinessTypeFirst===2">
+              <template v-if="[1,2,3].indexOf(contractType)>-1&&contractBusinessTypeFirst===2">
                 <table>
                   <thead>
                   <tr>
@@ -50,7 +68,7 @@
                   </tr>
                   </thead>
                   <tbody>
-                  <tr v-for="item in info.materialTable">
+                  <tr v-for="item in materialTable">
                     <td>{{item.materialName}}</td>
                     <td>{{item.price}}</td>
                     <td>{{item.taxRate}}%</td>
@@ -58,7 +76,7 @@
                   </tbody>
                 </table>
               </template>
-              <template v-if="[1,2].indexOf(info.contractType)>-1&&[1,3].indexOf(info.contractBusinessTypeFirst)>-1">
+              <template v-if="[1,2].indexOf(contractType)>-1&&[1,3].indexOf(contractBusinessTypeFirst)>-1">
                 <table>
                   <thead>
                   <tr>
@@ -70,7 +88,7 @@
                   </tr>
                   </thead>
                   <tbody>
-                  <tr v-for="item in info.materialTable">
+                  <tr v-for="item in materialTable">
                     <td>{{item.materialCode}}</td>
                     <td>{{item.materialName}}</td>
                     <td>{{item.total}}</td>
@@ -80,7 +98,7 @@
                   </tbody>
                 </table>
               </template>
-              <template v-if="info.contractType===3&&[1,3].indexOf(info.contractBusinessTypeFirst)>-1">
+              <template v-if="contractType===3&&[1,3].indexOf(contractBusinessTypeFirst)>-1">
                 <table>
                   <thead>
                   <tr>
@@ -91,7 +109,7 @@
                   </tr>
                   </thead>
                   <tbody>
-                  <tr v-for="item in info.materialTable">
+                  <tr v-for="item in materialTable">
                     <td>{{item.materialCode}}</td>
                     <td>{{item.materialName}}</td>
                     <td>{{item.price}}</td>
@@ -100,13 +118,13 @@
                   </tbody>
                 </table>
               </template>
-              <div class="mt20 mb20" v-if="info.corporeRemark">
+              <div class="mt20 mb20" v-if="corporeRemark">
                 <div>合同标的备注：</div>
-                <div>{{info.corporeRemark}}</div>
+                <div>{{corporeRemark}}</div>
               </div>
             </div>
           </div>
-          <div v-if="moneyInvolved">
+          <div v-if="moneyInvolved" class="mb20">
             <div v-if="!oneOffPay">
               <p>付款方式：</p>
               <table>
@@ -120,7 +138,7 @@
                 </tr>
                 </thead>
                 <tbody>
-                <tr v-for="item in info.priceTable">
+                <tr v-for="item in priceTable">
                   <td>{{item.type}}</td>
                   <td>{{item.paymentAmount}}</td>
                   <td>{{item.paymentTimePeriod}}</td>
@@ -136,15 +154,15 @@
             </div>
             <div>合同含税总金额为{{totalAmount | numToChinese}} （CNY {{totalAmount}}元）</div>
           </div>
-          <div class="mb20" v-html="currentTpl"></div>
+          <div class="mt20 mb20" v-html="currentTpl"></div>
           <div class="mb20" v-if="effectiveCondition===1">
-            <span>合同起止日期：{{startTime}} ~ {{endTime}}</span>
+            <span>合同起止日期：{{startTime | formatDate}} ~ {{endTime | formatDate}}</span>
           </div>
-          <div class="mt20" v-if="effectiveCondition===2">
+          <div class="mb20" v-if="effectiveCondition===2">
             <p>生效备注：</p>
             <div>{{conditionDesc}}</div>
           </div>
-          <table>
+          <table class="no-border mb20">
             <tbody>
             <tr>
               <td>甲方：</td>
@@ -185,6 +203,8 @@
 <script>
   import Api from '../../../../api/support';
   import numToChinese from '../../../../filters/numToChinese';
+  import {formatDate} from '../../../../filters/moment';
+  import paymentTimePeriods from '../../../../filters/paymentTimePeriods';
 
   export default {
     props: {
@@ -207,14 +227,13 @@
         contractBusinessTypeFirst: null,
         materialTable: [],
         priceTable: [],
-        paymentTimePeriods: [],
         partAName: [],
         partBName: [],
         effectiveCondition: null,
         conditionDesc: '',
         startTime: '',
         endTime: '',
-        totalAmount: '',
+        totalAmount: 0,
         depositRatio: '',
         moneyInvolved: false,
         oneOffPay: false,
@@ -243,7 +262,7 @@
                 priceTable.push({
                   type,
                   paymentAmount,
-                  paymentTimePeriod: this.getPaymentTimePeriodName(paymentTimePeriod),
+                  paymentTimePeriod: paymentTimePeriods(paymentTimePeriod),
                   remark,
                   ratio: `${ratio}%`
                 });
@@ -253,25 +272,12 @@
             priceTable.push({
               ...item,
               type: item.type === '进度款' ? '' : item.type,
-              paymentTimePeriod: this.getPaymentTimePeriodName(item.paymentTimePeriod),
+              paymentTimePeriod: paymentTimePeriods(item.paymentTimePeriod),
               ratio: `${item.ratio}%`
             });
           });
         }
         return priceTable;
-      },
-      getPaymentTimePeriodName(id) {
-        const paymentTimePeriods = this.paymentTimePeriods;
-        let name = '';
-        paymentTimePeriods.some((item) => {
-          if (item.id === id) {
-            name = item.name;
-            return true;
-          }
-          return false;
-        });
-
-        return name;
       },
       getTplData(templateId) {
         const tplData = this.tplData[templateId];
@@ -294,36 +300,17 @@
     watch: {
       info(val) {
         const {
-          contractNo,
-          contractBusinessTypeFirst,
-          contractBusinessTypeThirdName,
-          materialTable,
-          endTime,
-          startTime,
-          conditionDesc,
-          effectiveCondition,
-          templateId,
-          contractType,
-          corporeRemark,
-          paymentRemark,
-          jiaBillingInfo,
-          yiBillingInfo,
-          moneyInvolved,
-          totalAmount,
-          oneOffPay,
-          paymentMethods
+          baseInfoForm,
+          cardContentInfoForm,
+          cardFinanceInfoForm
         } = val.datas;
-        const {
-          earnest,
-          advance,
-          progress,
-          _final,
-          deposit
-        } = paymentMethods;
-        this.paymentTimePeriods = paymentTimePeriods;
+        const {contractNo, templateId, contractType, contractBusinessTypeFirst, contractBusinessTypeThirdName} = baseInfoForm;
+        const {startTime, endTime, conStandard, effectiveCondition, conditionDesc, corporeRemark} = cardContentInfoForm;
+        const {paymentMethods, paymentRemark, jiaBillingInfo, yiBillingInfo, moneyInvolved, totalAmount, oneOffPay} = cardFinanceInfoForm;
+        const {earnest, advance, progress, _final, deposit} = paymentMethods;
         this.contractType = contractType;
         this.contractBusinessTypeFirst = contractBusinessTypeFirst;
-        this.materialTable = materialTable;
+        this.materialTable = conStandard;
         this.startTime = startTime;
         this.endTime = endTime;
         this.conditionDesc = conditionDesc;
@@ -350,7 +337,8 @@
       }
     },
     filters: {
-      numToChinese
+      numToChinese,
+      formatDate
     }
   };
 </script>

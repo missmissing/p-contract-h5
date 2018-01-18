@@ -92,7 +92,7 @@
     },
     methods: {
       getInfo() {
-        const {actions, sign} = this.$store.state.processData;
+        const {actions = [], sign} = this.$store.state.processData;
         if (sign === 1) {
           this.commonBtns = [];
         }
