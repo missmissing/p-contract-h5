@@ -2611,7 +2611,7 @@
           } else if (key === 'deposit') {
             payType = 5;
           }
-          return Object.assign({}, item, {payType, finances: item.subItem});
+          return Object.assign({}, item, {payType, financeMores: item.subItem});
         });
         if (this.cardFinanceInfoForm.paymentErrorMSG || this.checkPayCondition()) {
           this.$message.warning('合同财务信息不完整');
