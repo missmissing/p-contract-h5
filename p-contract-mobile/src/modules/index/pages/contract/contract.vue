@@ -1,7 +1,7 @@
 <template>
   <div class="main">
     <div class="container">
-      <ContractBaseInfo :info="baseInfoForm"></ContractBaseInfo>
+      <ContractBaseInfo :info="baseInfoForm" :moreDatas="{datas}"></ContractBaseInfo>
       <mt-navbar v-model="selected" class="mt20 mb20">
         <mt-tab-item :id="0">审批意见</mt-tab-item>
         <mt-tab-item :id="1">合同内容信息</mt-tab-item>
@@ -64,6 +64,7 @@
     data() {
       return {
         selected: 0,
+        datas: {},
         baseInfoForm: {},
         cardContentInfoForm: {},
         cardFinanceInfoForm: {},
@@ -85,6 +86,7 @@
       },
       initData(data) {
         const {baseInfoForm, cardContentInfoForm, cardFinanceInfoForm, cardContCheckInfoForm, cardSealInfoForm} = data;
+        this.datas = data;
         this.baseInfoForm = baseInfoForm;
         this.cardContentInfoForm = cardContentInfoForm;
         this.cardFinanceInfoForm = cardFinanceInfoForm;

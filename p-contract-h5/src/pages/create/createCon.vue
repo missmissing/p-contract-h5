@@ -409,8 +409,10 @@
               <el-row>
                 <el-col :span="8">
                   <el-form-item label="是否涉及金额">
-                    <el-radio-group v-model="cardFinanceInfoForm.moneyInvolved"
-                                    :disabled="moneyInvolvedDisabled">
+                    <el-radio-group
+                      v-model="cardFinanceInfoForm.moneyInvolved"
+                      :disabled="moneyInvolvedDisabled"
+                      @change="validateForms">
                       <el-radio :label="true">是</el-radio>
                       <el-radio :label="false">否</el-radio>
                     </el-radio-group>
@@ -418,8 +420,10 @@
                 </el-col>
                 <el-col :span="8" v-if="cardFinanceInfoForm.moneyInvolved">
                   <el-form-item label="是否一次性付款">
-                    <el-radio-group v-model="cardFinanceInfoForm.oneOffPay"
-                                    :disabled="oneOffPayDisabled">
+                    <el-radio-group
+                      v-model="cardFinanceInfoForm.oneOffPay"
+                      :disabled="oneOffPayDisabled"
+                      @change="validateForms">
                       <el-radio :label="true">是</el-radio>
                       <el-radio :label="false">否</el-radio>
                     </el-radio-group>
@@ -2011,7 +2015,6 @@
         this.cardContentInfoForm.dialogNewThirdPartyVisible = false;
       },
       validateForms() {
-        console.log(222);
         return new Promise((resolve, reject) => {
           const errors = {
             cardContentInfoForm: {
@@ -2049,10 +2052,6 @@
               errors.cardContentInfoForm.subjectsErrorMsg = '我方主体信息不能为空';
             }
             if (!valid) {
-              /*effectiveCondition:1,//生效条件
-               startTime: '',
-               endTime: '',
-               conditionDesc:'',//期限生效*/
               if (this.cardContentInfoForm.effectiveCondition === 1) {
                 errors.cardContentInfoForm.errorCount += 2;
               } else if (this.cardContentInfoForm.effectiveCondition === 2) {
@@ -2317,6 +2316,8 @@
               this.comLoading(false);
             });
           }
+        }).catch(() => {
+          this.$message.warning('表单填写不完整！');
         }).finally(() => {
           this.btnSubmitStatus = true;
         });
@@ -2612,7 +2613,7 @@
           }
           return Object.assign({}, item, {payType, finances: item.subItem});
         });
-        if (this.cardFinanceInfoForm.paymentErrorMSG || !this.checkPayCondition()) {
+        if (this.cardFinanceInfoForm.paymentErrorMSG || this.checkPayCondition()) {
           this.$message.warning('合同财务信息不完整');
           return Promise.reject();
         }
@@ -2653,7 +2654,7 @@
       checkPayCondition() {
         const {paymentMethods} = this.cardFinanceInfoForm;
         const items = Object.keys(paymentMethods).map(key => paymentMethods[key][0]);
-        return !this.conditionLoop(items);
+        return this.conditionLoop(items);
       },
       handleRemove(index, rows) {
         rows.splice(index, 1);

@@ -4,7 +4,7 @@
 
 <template>
   <div>
-    <mt-cell title="合同名称" :value="info.contractName"></mt-cell>
+    <mt-cell title="合同名称" :value="info.contractName" is-link @click.native="visible=true"></mt-cell>
     <mt-cell title="业务申请人" :value="info.businessOperatorId"></mt-cell>
     <mt-cell title="业务部门" :value="info.businessDeptName"></mt-cell>
     <mt-cell title="合同模式" :value="info.contractType | contractPattern"></mt-cell>
@@ -19,6 +19,7 @@
       title="废除原因"
       :value="info.ourSealOpinion">
     </mt-cell>
+    <Preview :visible.sync="visible" :info="moreDatas"></Preview>
   </div>
 </template>
 
@@ -26,6 +27,7 @@
   import contractPattern from '../../../../filters/contractPattern';
   import tplType from '../../../../filters/tplType';
   import printOpts from '../../../../filters/printOpts';
+  import Preview from './preview.vue';
 
   export default {
     props: {
@@ -34,10 +36,21 @@
         default() {
           return {};
         }
+      },
+      moreDatas: {
+        type: Object,
+        default() {
+          return {};
+        }
       }
     },
     data() {
-      return {};
+      return {
+        visible: false
+      };
+    },
+    components: {
+      Preview
     },
     filters: {
       contractPattern,

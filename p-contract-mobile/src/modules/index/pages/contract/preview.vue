@@ -1,84 +1,46 @@
 <style type="text/scss" lang="scss" scoped>
-  table {
-    border-collapse: collapse;
-    th, td {
-      border: 1px solid;
-      text-align: center;
-    }
-  }
-
-  pre {
-    white-space: pre-wrap;
-    word-wrap: break-word;
-  }
-
-  .default-table {
-    th, td {
-      border: none;
-      text-align: left;
-    }
-  }
-
-  .preViewTitle input {
-    border: 0
+  .preview-container {
+    padding-top: 62px;
   }
 </style>
 
 <template>
-  <el-dialog
-    title="合同预览"
-    :visible.sync="visible"
-    size="large"
-    @close="ok">
+  <mt-popup
+    v-model="visible"
+    :modal="false"
+    :closeOnClickModal="false"
+    position="bottom"
+    class="popup">
     <div>
-      <form action="/api-contract/contract-web/contract/download/pdf" method="post" id="pdf-form">
-        <input type="hidden" name="content" value="" id="pdf-content"/>
-        <input type="hidden" name="supplierName" :value="supplierName"/>
-        <input type="hidden" v-if="title" name="title" :value="title"/>
-        <input type="hidden" name="contractNo" :value="contractNo"/>
-        <el-row class="previewTitle">
-          <el-button style="float:right" native-type="submit" @click.prevent="toPdf" type="primary"
-                     size="small">导出pdf
-          </el-button>
-        </el-row>
-        <el-row class="preViewTitle mb20 mt20" style="border-bottom: 1px solid #000;padding-bottom: 10px">
-          <el-col :span="8">
-            <span v-if="supplierName">{{supplierName}}</span>
-          </el-col>
-          <el-col :span="8" style="text-align: center">
-            <span v-if="title">{{title}}合同</span>
-          </el-col>
-          <el-col :span="8" style="text-align: right">
-            <span v-if="contractNo">{{contractNo}}</span>
-          </el-col>
-        </el-row>
-      </form>
-      <div id="pdf-wrap">
+      <mt-header fixed title="合同预览">
+        <mt-button icon="back" slot="left" @click="back"></mt-button>
+      </mt-header>
+      <div class="preview-container">
+        <div class="tr">
+          <span>{{contractNo}}</span>
+        </div>
         <div>
-          <div style="text-align: center;font-size:18px;font-weight:bold;padding-bottom: 10px;" class="mb20 f18 fb">{{title}}合同</div>
-          <div class="mb20">
-            <table class="default-table mb20">
-              <tbody>
-              <tr style="margin-bottom: 10px">
-                <td width="45" valign="top" class="w45">甲方：</td>
-                <td valign="top">
-                  <div v-for="item in partAName" class="mb10">{{item}}</div>
-                </td>
-              </tr>
-              <tr class="trH"></tr>
-              <tr>
-                <td width="45" valign="top" class="w45">乙方：</td>
-                <td valign="top">
-                  <div v-for="item in partBName" class="mb10">{{item}}</div>
-                </td>
-              </tr>
-              </tbody>
-            </table>
-          </div>
-          <div v-if="materialTable.length">
+          <div class="mb20">{{title}}</div>
+          <table>
+            <tbody>
+            <tr>
+              <td>甲方：</td>
+              <td>
+                <div v-for="item in partAName">{{item}}</div>
+              </td>
+            </tr>
+            <tr>
+              <td>乙方：</td>
+              <td>
+                <div v-for="item in partBName">{{item}}</div>
+              </td>
+            </tr>
+            </tbody>
+          </table>
+          <div v-if="materialTable&&materialTable.length">
             <p>合同标的：</p>
             <div>
-              <template v-if="[1,2,3].indexOf(contractType)>-1&&contractBusinessTypeFirst===2">
+              <template v-if="[1,2,3].indexOf(info.contractType)>-1&&info.contractBusinessTypeFirst===2">
                 <table>
                   <thead>
                   <tr>
@@ -88,7 +50,7 @@
                   </tr>
                   </thead>
                   <tbody>
-                  <tr v-for="item in materialTable">
+                  <tr v-for="item in info.materialTable">
                     <td>{{item.materialName}}</td>
                     <td>{{item.price}}</td>
                     <td>{{item.taxRate}}%</td>
@@ -96,7 +58,7 @@
                   </tbody>
                 </table>
               </template>
-              <template v-if="[1,2].indexOf(contractType)>-1&&[1,3].indexOf(contractBusinessTypeFirst)>-1">
+              <template v-if="[1,2].indexOf(info.contractType)>-1&&[1,3].indexOf(info.contractBusinessTypeFirst)>-1">
                 <table>
                   <thead>
                   <tr>
@@ -108,7 +70,7 @@
                   </tr>
                   </thead>
                   <tbody>
-                  <tr v-for="item in materialTable">
+                  <tr v-for="item in info.materialTable">
                     <td>{{item.materialCode}}</td>
                     <td>{{item.materialName}}</td>
                     <td>{{item.total}}</td>
@@ -118,7 +80,7 @@
                   </tbody>
                 </table>
               </template>
-              <template v-if="contractType===3&&[1,3].indexOf(contractBusinessTypeFirst)>-1">
+              <template v-if="info.contractType===3&&[1,3].indexOf(info.contractBusinessTypeFirst)>-1">
                 <table>
                   <thead>
                   <tr>
@@ -129,7 +91,7 @@
                   </tr>
                   </thead>
                   <tbody>
-                  <tr v-for="item in materialTable">
+                  <tr v-for="item in info.materialTable">
                     <td>{{item.materialCode}}</td>
                     <td>{{item.materialName}}</td>
                     <td>{{item.price}}</td>
@@ -138,9 +100,9 @@
                   </tbody>
                 </table>
               </template>
-              <div class="mt20 mb20" v-if="corporeRemark">
+              <div class="mt20 mb20" v-if="info.corporeRemark">
                 <div>合同标的备注：</div>
-                <div>{{corporeRemark}}</div>
+                <div>{{info.corporeRemark}}</div>
               </div>
             </div>
           </div>
@@ -158,7 +120,7 @@
                 </tr>
                 </thead>
                 <tbody>
-                <tr v-for="item in priceTable">
+                <tr v-for="item in info.priceTable">
                   <td>{{item.type}}</td>
                   <td>{{item.paymentAmount}}</td>
                   <td>{{item.paymentTimePeriod}}</td>
@@ -172,70 +134,43 @@
               <div>付款方式备注：</div>
               <div>{{paymentRemark}}</div>
             </div>
-            <p>合同含税总金额为{{totalAmount | numToChinese}} （CNY {{totalAmount}}元）</p>
-            <!--<div class="mt20 mb20">
-              <div class="mb20">
-                <div v-show="partA.length===1">
-                  <p>甲方增值税专用开票信息：</p>
-                  <p>公司名称：{{partA.company}}</p>
-                  <p>统一社会信用代码：{{partA.unifiedSocialCreditCode}}</p>
-                  <p>注册地址：{{partA.registeredAddress}}</p>
-                  <p>经营地址：{{partA.businessAddress}}</p>
-                  <p>联系电话：{{partA.contactNumber}}</p>
-                  <p>银行账号：{{partA.bankAccount}}</p>
-                  <p>开 户 行：{{partA.depositBank}}</p>
-                </div>
-                <div v-show="partA.length>1">具体开票信息以采购提供为准</div>
-              </div>
-              <div>
-                <p>乙方指定甲方汇款的账户为：</p>
-                <p>乙方：{{partB.name}}</p>
-                <p>银行账号：{{partB.bankAccount}}</p>
-                <p>开户行：{{partB.depositBank}}</p>
-                <p>联系人：{{partB.contacts}}</p>
-                <p>联系地址：{{partB.contractAddress}}</p>
-                <p>联系电话：{{partB.contractNumber}}</p>
-                <p>E-mail:{{partB.email}}</p>
-              </div>
-            </div>-->
+            <div>合同含税总金额为{{totalAmount | numToChinese}} （CNY {{totalAmount}}元）</div>
           </div>
-          <!--<el-row class="mt20">-->
-          <!--生效条件:-->
-          <!--<span v-if="effectiveCondition===1">附期限生效</span>-->
-          <!--<span v-if="effectiveCondition===2">附条件生效</span>-->
-          <!--<span v-if="effectiveCondition===3">签订生效</span>-->
-          <!--</el-row>-->
           <div class="mb20" v-html="currentTpl"></div>
-          <el-row class="mt20" v-if="effectiveCondition===1">
-            <el-col :span="5">合同生效日期：{{startTime}}</el-col>
-            <el-col :span="5">合同终止日期：{{endTime}}</el-col>
-          </el-row>
-          <el-row class="mt20" v-if="effectiveCondition===2">
-            <el-col :span="3">生效备注：</el-col>
-            <el-col :span="21">{{conditionDesc}}</el-col>
-          </el-row>
-          <p></p>
-          <table class="default-table" style="width:100%;">
+          <div class="mb20" v-if="effectiveCondition===1">
+            <span>合同起止日期：{{startTime}} ~ {{endTime}}</span>
+          </div>
+          <div class="mt20" v-if="effectiveCondition===2">
+            <p>生效备注：</p>
+            <div>{{conditionDesc}}</div>
+          </div>
+          <table>
             <tbody>
             <tr>
-              <td width="100" valign="top" class="w100">甲方：</td>
-              <td valign="top">
-                <div v-for="item in partAName">{{item}}</div>
-              </td>
-              <td width="100" valign="top" class="w100">乙方：</td>
-              <td valign="top">
-                <div v-for="item in partBName">{{item}}</div>
+              <td>甲方：</td>
+              <td>
+                <div v-for="item in partAName" class="mb10">{{item}}</div>
               </td>
             </tr>
             <tr>
-              <td>法定代表人：</td>
-              <td></td>
               <td>法定代表人：</td>
               <td></td>
             </tr>
             <tr>
               <td>日期：</td>
               <td></td>
+            </tr>
+            <tr>
+              <td>乙方：</td>
+              <td>
+                <div v-for="item in partBName" class="mb10">{{item}}</div>
+              </td>
+            </tr>
+            <tr>
+              <td>法定代表人：</td>
+              <td></td>
+            </tr>
+            <tr>
               <td>日期：</td>
               <td></td>
             </tr>
@@ -244,20 +179,21 @@
         </div>
       </div>
     </div>
-    <div slot="footer">
-      <el-button type="primary" @click="ok">确 定</el-button>
-    </div>
-  </el-dialog>
+  </mt-popup>
 </template>
 
 <script>
-  import Api from '../../api/support/index';
-  import numToChinese from '../../util/numToChinese';
+  import Api from '../../../../api/support';
+  import numToChinese from '../../../../filters/numToChinese';
 
   export default {
     props: {
-      visible: Boolean,
-      datas: {
+      visible: {
+        type: Boolean,
+        default: false
+      },
+      info: {
+        type: Object,
         default() {
           return {};
         }
@@ -266,16 +202,13 @@
     data() {
       return {
         contractNo: '',
-        supplierName: '',
         title: '',
         contractType: null,
         contractBusinessTypeFirst: null,
         materialTable: [],
         priceTable: [],
         paymentTimePeriods: [],
-        partA: [],
         partAName: [],
-        partB: [],
         partBName: [],
         effectiveCondition: null,
         conditionDesc: '',
@@ -285,13 +218,16 @@
         depositRatio: '',
         moneyInvolved: false,
         oneOffPay: false,
-        tplData: {},
-        currentTpl: null,
+        currentTpl: '',
         corporeRemark: '',
-        paymentRemark: ''
+        paymentRemark: '',
+        tplData: {}
       };
     },
     methods: {
+      back() {
+        this.$emit('update:visible', false)
+      },
       transformData(data, name) {
         const priceTable = [];
         if (data.length) {
@@ -353,37 +289,41 @@
           this.currentTpl = content;
           this.tplData[templateId] = data;
         });
-      },
-      ok() {
-        this.$emit('update:visible', false);
-      },
-      toPdf() {
-        document.getElementById('pdf-content').value = document.getElementById('pdf-wrap').innerHTML;
-        document.getElementById('pdf-form').submit();
       }
     },
     watch: {
-      datas() {
-        if (!Object.keys(this.datas).length) {
-          return;
-        }
+      info(val) {
         const {
-          contractNo, contractBusinessTypeThirdName, conStandard, cardFinanceInfoForm, endTime, startTime, conditionDesc, effectiveCondition, templateId, contractType, contractBusinessTypeFirst, corporeRemark, paymentRemark
-        } = this.datas;
-        const {
-          jiaBillingInfo, yiBillingInfo, moneyInvolved, totalAmount, paymentMethods, oneOffPay, paymentTimePeriods
-        } = cardFinanceInfoForm;
+          contractNo,
+          contractBusinessTypeFirst,
+          contractBusinessTypeThirdName,
+          materialTable,
+          endTime,
+          startTime,
+          conditionDesc,
+          effectiveCondition,
+          templateId,
+          contractType,
+          corporeRemark,
+          paymentRemark,
+          jiaBillingInfo,
+          yiBillingInfo,
+          moneyInvolved,
+          totalAmount,
+          oneOffPay,
+          paymentMethods
+        } = val.datas;
         const {
           earnest,
           advance,
           progress,
-          _final, // eslint-disable-line
+          _final,
           deposit
         } = paymentMethods;
         this.paymentTimePeriods = paymentTimePeriods;
         this.contractType = contractType;
         this.contractBusinessTypeFirst = contractBusinessTypeFirst;
-        this.materialTable = conStandard;
+        this.materialTable = materialTable;
         this.startTime = startTime;
         this.endTime = endTime;
         this.conditionDesc = conditionDesc;
@@ -398,8 +338,6 @@
         if (moneyInvolved) {
           this.moneyInvolved = moneyInvolved;
           this.totalAmount = totalAmount;
-          this.partA = jiaBillingInfo;
-          this.partB = yiBillingInfo[0] || {};
 
           if (oneOffPay) {
             this.oneOffPay = true;
