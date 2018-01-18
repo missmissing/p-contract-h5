@@ -30,10 +30,8 @@
   import TplContent from './tplContent.vue';
   import Comments from '../../components/comments.vue';
   import ActionSumit from '../../components/actionSubmit.vue';
-  import commonMixin from '../../mixins';
 
   export default {
-    mixins: [commonMixin],
     data() {
       return {
         selected: 1,

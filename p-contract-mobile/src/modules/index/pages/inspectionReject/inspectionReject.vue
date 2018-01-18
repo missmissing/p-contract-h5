@@ -75,10 +75,8 @@
   import routerNames from '../../router/consts';
   import handleResult from '../../../../filters/handleResult';
   import {formatDate} from '../../../../filters/moment';
-  import commonMixin from '../../mixins';
 
   export default {
-    mixins: [commonMixin],
     data() {
       return {
         procTitle: '',

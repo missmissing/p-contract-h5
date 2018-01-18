@@ -173,10 +173,8 @@
   import contractType from '../../../../filters/contractType';
   import {prTypeMap, contractPatternMap} from '../../../../core/consts';
   import cutZero from '../../../../util/cutZero';
-  import commonMixin from '../../mixins';
 
   export default {
-    mixins: [commonMixin],
     data() {
       return {
         selected: 1,

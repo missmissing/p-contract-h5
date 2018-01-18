@@ -45,10 +45,8 @@
   import yesOrNo from '../../../../filters/yesOrNo';
   import handleResult from '../../../../filters/handleResult';
   import routerNames from '../../router/consts';
-  import commonMixin from '../../mixins';
 
   export default {
-    mixins: [commonMixin],
     data() {
       return {
         procTitle: '',
