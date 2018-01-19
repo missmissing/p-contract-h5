@@ -183,7 +183,7 @@ const router = new Router({
           }
         },
         {
-          path: '/ConCreate/CreateFrameContract', // 创建框架意向合同
+          path: '/ConCreate/CreateFrameContract', // 创建框架协议
           meta: {
             auth: true,
             hidden: true
@@ -194,7 +194,7 @@ const router = new Router({
           name: routerNames.con_createFrameContract
         },
         {
-          path: '/ConCreate/CreateIntentionContract', // 创建意向合同
+          path: '/ConCreate/CreateIntentionContract', // 创建框架意向合同
           meta: {
             auth: true,
             hidden: true
@@ -216,7 +216,7 @@ const router = new Router({
           name: routerNames.con_createSingleContract
         },
         {
-          path: '/ConCreate/CreateSimpleContract', // 创建简易合同
+          path: '/ConCreate/CreateSimpleContract', // 创建固定格式合同
           meta: {
             auth: true,
             hidden: true
