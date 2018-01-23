@@ -1,5 +1,9 @@
 <style type="text/scss" lang="scss" scoped>
-
+  .select-person {
+    .el-select-dropdown__item {
+      height: auto
+    }
+  }
 </style>
 
 <template>
@@ -69,6 +73,60 @@
                   </el-form-item>
                 </el-col>
               </el-row>
+              <el-row v-if="form.templateType ==='TEXT'">
+                <el-col :span="8">
+                  <el-form-item label="业务经办人" prop="businessOperatorId">
+                    <el-select
+                      v-model="form.businessOperatorId"
+                      clearable
+                      filterable
+                      remote
+                      placeholder="请输入关键词"
+                      popper-class="select-person"
+                      :remote-method="remoteMethod"
+                      :loading="selectLoading"
+                      @clear="businessOperatorClear"
+                      @change="selectChange"
+                      class="wp100">
+                      <el-option
+                        v-for="item in businessOperators"
+                        :key="item.userId"
+                        :label="item.userName"
+                        :value="item.userId">
+                        <div>
+                          <div>
+                            <span>{{item.userName}}</span><span>({{item.userId}})</span>
+                          </div>
+                          <div>{{item.deptName}}</div>
+                        </div>
+                      </el-option>
+                    </el-select>
+                  </el-form-item>
+                </el-col>
+                <el-col :span="8">
+                  <el-form-item label="金额" prop="amount">
+                    <el-input v-model="form.amount" class="wp100"></el-input>
+                  </el-form-item>
+                </el-col>
+                <el-col :span="8">
+                  <el-form-item label="合同类型" prop="contractType">
+                    <el-select
+                      v-model="form.contractType"
+                      placeholder="请选择合同模式"
+                      class="wp100"
+                    >
+                      <el-option
+                        v-for="item in contractTypes"
+                        :key="item.id"
+                        :value="item.id"
+                        :label="item.name"
+                        :disabled="item.disabled"
+                      >
+                      </el-option>
+                    </el-select>
+                  </el-form-item>
+                </el-col>
+              </el-row>
               <el-form-item label="申请原因" prop="description">
                 <el-input
                   type="textarea"
@@ -113,33 +171,51 @@
 </template>
 
 <script>
-  import _ from 'lodash';
   import Tmpl from './tmpl.vue';
   import Upload from '../../components/upload.vue';
   import TreeModal from '../../components/treeModal.vue';
+  import Api from '../../api/manageContract/index';
   import supportModel from '../../api/support';
   import getBusiType from '../../mixins/getBusiType';
   import comLoading from '../../mixins/comLoading';
   import createUpdate from '../../mixins/createUpdate';
   import {formatTimeStamp} from '../../filters/moment';
-
-  const defaultData = {
-    form: {
-      templateName: '',
-      templateType: null,
-      startDate: '',
-      description: '',
-      bizTypes: [],
-      busiTypeText: '',
-      files: []
-    },
-    fileList: []
-  };
+  import {contractPatternMap} from '../../core/consts';
+  import {nonNegative} from '../../util/reg';
 
   export default {
     mixins: [getBusiType, comLoading, createUpdate],
     data() {
-      return Object.assign({
+      const contractTypes = [];
+      Object.keys(contractPatternMap).forEach((item) => {
+        if (item === '2') {
+          return;
+        }
+        contractTypes.push({id: item, name: contractPatternMap[item]});
+      });
+      const validatorNum = (rule, value, callback) => {
+        if (!nonNegative(value)) {
+          callback(new Error('格式错误'));
+        } else {
+          console.log(111);
+          callback();
+        }
+      };
+      return {
+        form: {
+          templateName: '',
+          templateType: null,
+          startDate: '',
+          description: '',
+          bizTypes: [],
+          busiTypeText: '',
+          files: [],
+          contractType: null,
+          businessOperatorId: null,
+          businessOperatorName: null,
+          amount: null
+        },
+        fileList: [],
         endDate: '9999-12-31',
         defaultProps: {
           children: 'children',
@@ -147,6 +223,9 @@
         },
         visible: false,
         showTmpl: false,
+        contractTypes,
+        businessOperators: [],
+        selectLoading: false,
         rules: {
           templateName: [{required: true, message: '请输入模板/文本名称'}],
           templateType: [{required: true, message: '请选择文本类型'}],
@@ -154,9 +233,12 @@
           startDate: [{
             type: 'date', required: true, message: '请选择生效时间', trigger: 'change'
           }],
-          description: [{max: 300, message: '长度不超过300个字符', trigger: 'change'}]
+          description: [{max: 300, message: '长度不超过300个字符', trigger: 'change'}],
+          businessOperatorId: [{required: true, message: '请选择业务经办人'}],
+          amount: [{required: true, message: '请输入金额'}, {validator: validatorNum}],
+          contractType: [{required: true, message: '请选择合同类型'}]
         }
-      }, _.cloneDeep(defaultData));
+      };
     },
     methods: {
       setBusiType(value, tree) {
@@ -171,17 +253,54 @@
         this.form.busiTypeText = busiTypeText.join(',');
         this.visible = false;
       },
+      remoteMethod(query) {
+        if (query !== '') {
+          this.selectLoading = true;
+          Api.getRemoteCreatePersonsByKeyWord({keyword: query}).then(res => {
+            this.selectLoading = false;
+            this.businessOperators = res.data.dataMap;
+          }, () => {
+            this.businessOperators = [];
+          });
+        } else {
+          this.businessOperators = [];
+        }
+      },
+      selectChange(value) {
+        this.businessOperators.some((item) => {
+          if (item.userId === value) {
+            this.form.businessOperatorName = item.userName;
+            return true;
+          }
+          return false;
+        });
+      },
+      businessOperatorClear() {
+        this.form.businessOperatorName = null;
+      },
       getResult() {
         const {info} = this.$store.state.support.create;
         const {
-          templateName, templateType, startDate, description, bizTypes
+          templateName,
+          templateType,
+          startDate,
+          description,
+          bizTypes,
+          businessOperatorId,
+          businessOperatorName,
+          amount,
+          contractType
         } = this.form;
         const result = Object.assign({
           templateName,
           templateType,
           startDate: formatTimeStamp(startDate),
           description,
-          bizTypes
+          bizTypes,
+          businessOperatorId,
+          businessOperatorName,
+          amount,
+          contractType
         }, info);
         const files = [];
         this.fileList.forEach((file) => {

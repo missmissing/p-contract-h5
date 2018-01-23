@@ -125,13 +125,13 @@
               width="160">
               <template scope="scope">
                 <el-button
-                  v-if="scope.row.edit"
-                  @click.native.prevent="editRow(scope.row)"
+                  @click.native.prevent="editRow(scope.$index,scope.row)"
                   type="primary"
                   size="small">
                   编辑
                 </el-button>
                 <el-button
+                  v-if="!scope.row.static"
                   @click.native.prevent="deleteRow(scope.$index, checkItems)"
                   type="danger"
                   size="small">
@@ -197,6 +197,7 @@
         label-width="80px">
         <el-form-item label="验收要求" prop="serviceName">
           <el-input
+            :disabled="addNotQualityDialogForm.static"
             type="textarea"
             :autosize="{ minRows: 2,maxRows:4 }"
             resize="none"
@@ -205,6 +206,7 @@
         </el-form-item>
         <el-form-item label="参考标准" prop="serviceRequire">
           <el-input
+            :disabled="addNotQualityDialogForm.static"
             type="textarea"
             :autosize="{ minRows: 2,maxRows:4 }"
             resize="none"
@@ -229,7 +231,7 @@
         </el-form-item>
       </el-form>
       <div slot="footer">
-        <el-button @click="addNotQualityDialogVisible=false">取 消</el-button>
+        <el-button @click="addNotQualityDialogCancel">取 消</el-button>
         <el-button type="primary" @click="addNotQualityDialogOk">确 定</el-button>
       </div>
     </el-dialog>
@@ -258,8 +260,10 @@
           serviceName: '',
           serviceRequire: '',
           checkResult: '',
-          remark: ''
+          remark: '',
+          editIndex: null
         },
+        editIndex: null,
         addNotQualityDialogVisible: false,
         qualityRules: {
           serviceName: [{
@@ -337,15 +341,12 @@
         this.comLoading();
         Api.getUnqualifiedByOrderNo({orderNo: this.basicForm.orderNo}).then((res) => {
           const data = res.data.dataMap;
-          console.log(data);
           const {purchaseOrderId, checkItems} = data;
           this.toDetail.query.id = purchaseOrderId;
           this.info = data;
           if (checkItems && checkItems.length) {
             this.checkItems = checkItems.map((item) => {
-              item.edit = true;
-              delete item.checkResult;
-              delete item.remark;
+              item.static = true;
               return item;
             });
           }
@@ -372,24 +373,43 @@
           contractNo
         });
       },
+      addNotQualityDialogReset() {
+        this.addNotQualityDialogForm = {
+          serviceName: '',
+          serviceRequire: '',
+          checkResult: '',
+          remark: '',
+          editIndex: null
+        };
+      },
       addNotQualityDialogOk() {
         const form = this.$refs.addNotQualityDialogForm;
         form.validate((valid) => {
           if (valid) {
-            this.checkItems.push({...this.addNotQualityDialogForm});
-            form.resetFields();
+            const item = {...this.addNotQualityDialogForm};
+            if (this.addNotQualityDialogForm.editIndex === null) {
+              this.checkItems.push(item);
+            } else {
+              this.checkItems.splice(this.editIndex, 1, item);
+            }
+            this.addNotQualityDialogReset();
             this.addNotQualityDialogVisible = false;
           } else {
             console.log('error submit!!');
           }
         });
       },
+      addNotQualityDialogCancel() {
+        this.addNotQualityDialogReset();
+        this.addNotQualityDialogVisible = false;
+      },
       addItem() {
         this.addNotQualityDialogVisible = true;
       },
-      editRow(row) {
-        this.addItem();
+      editRow(index, row) {
+        this.addNotQualityDialogForm.editIndex = index;
         Object.assign(this.addNotQualityDialogForm, row);
+        this.addNotQualityDialogVisible = true;
       },
       deleteRow(index, rows) {
         rows.splice(index, 1);

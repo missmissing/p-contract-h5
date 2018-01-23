@@ -129,12 +129,12 @@
             <el-row>
               <el-col :span="8">
                 <el-form-item label="合同模式">
-                  <el-input :value="contractForm.contractBusinessTypeThirdName" disabled></el-input>
+                  <el-input :value="contractForm.contractType" disabled></el-input>
                 </el-form-item>
               </el-col>
               <el-col :span="8">
-                <el-form-item label="合同类型">
-                  <el-input :value="contractForm.contractType" disabled></el-input>
+                <el-form-item label="业务类型">
+                  <el-input :value="contractForm.contractBusinessTypeThirdName" disabled></el-input>
                 </el-form-item>
               </el-col>
               <el-col :span="8">
@@ -168,11 +168,11 @@
               width="80">
             </el-table-column>
             <el-table-column
-              prop="serverName"
+              prop="serviceName"
               label="服务名称">
             </el-table-column>
             <el-table-column
-              prop="acceptRequire"
+              prop="serviceRequire"
               label="验收要求">
             </el-table-column>
             <el-table-column
@@ -300,11 +300,11 @@
       },
       setServerData() {
         const {orderCheckItems} = this.info;
-        this.serverData = orderCheckItems;
+        this.serverData = orderCheckItems || [];
       },
       setReceiveData() {
-        const {poReceiveInfo = []} = this.info;
-        this.receiveInfo = poReceiveInfo;
+        const {poReceiveInfo} = this.info;
+        this.receiveInfo = poReceiveInfo || [];
       },
       formatType(row, column, cellValue) {
         return prTypeMap[cellValue];

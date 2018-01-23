@@ -84,49 +84,26 @@
       </el-table-column>
       <el-table-column
         prop="category"
-        min-width="100"
+        width="100"
         label="订单类型"
         :formatter="formatType">
       </el-table-column>
       <el-table-column
-        prop="sapItemNo"
-        width="80"
-        label="行项目">
+        prop="poMaterialsTotalAmount"
+        width="150"
+        label="总金额">
       </el-table-column>
       <el-table-column
-        prop="materialCode"
-        width="130"
-        label="物料编码">
+        prop="btwbtext"
+        min-width="200"
+        label="订单描述">
         <template scope="scope">
-          {{scope.row.materialCode | cutZero}}
-        </template>
-      </el-table-column>
-      <el-table-column
-        prop="materialName"
-        min-width="300"
-        label="物料描述">
-      </el-table-column>
-      <el-table-column
-        prop="total"
-        width="80"
-        label="数量">
-      </el-table-column>
-      <el-table-column
-        prop="price"
-        width="100"
-        label="含税单价">
-      </el-table-column>
-      <el-table-column
-        prop="taxRate"
-        width="70"
-        label="税率">
-        <template scope="scope">
-          {{scope.row.taxRate ? `${scope.row.taxRate}%` : ''}}
+          {{scope.row.btwbtext || scope.row.purOrderMaterials[0].materialName}}
         </template>
       </el-table-column>
       <el-table-column
         prop="creatorName"
-        width="80"
+        width="100"
         label="发起人">
       </el-table-column>
       <el-table-column
@@ -138,7 +115,7 @@
         </template>
       </el-table-column>
     </el-table>
-    <div class="mt20">
+    <div class="clearfix mt20 mb20">
       <el-pagination
         class="fr"
         @size-change="handleSizeChange"
@@ -156,9 +133,9 @@
 <script>
   import Api from '../../api/sign';
   import ContractApi from '../../api/manageContract';
-  import { routerNames, prTypeMap } from '../../core/consts';
+  import {routerNames, prTypeMap} from '../../core/consts';
   import comLoading from '../../mixins/comLoading';
-  import { formatDate } from '../../filters/moment';
+  import {formatDate} from '../../filters/moment';
   import SelectPerson from '../../components/selectPerson.vue';
   import cutZero from '../../util/cutZero';
 
@@ -210,7 +187,7 @@
         Api.query(this.form).then((res) => {
           console.log(res);
           this.comLoading(false);
-          const { total, data } = res.data.dataMap;
+          const {total, data} = res.data.dataMap;
           this.tableData = data;
           this.totalPage = total;
         }).catch(() => {
@@ -221,7 +198,7 @@
         const id = row.purchaseOrderId;
         return {
           name: routerNames.con_purchase_see,
-          query: { id }
+          query: {id}
         };
       },
       formatDateRange(value) {
@@ -244,7 +221,7 @@
         console.log(row, val);
       },
       createFilter(result) {
-        return result.map((item) => ({ value: item.companyCode, label: `${item.companyCode} ${item.company}` }));
+        return result.map((item) => ({value: item.companyCode, label: `${item.companyCode} ${item.company}`}));
       },
       querySearch(queryString, cb) {
         if (!queryString) {

@@ -94,7 +94,7 @@
         <el-button type="text" @click="logout">注销</el-button>
       </div>
     </div>
-    <div class="main">
+    <div class="main" id="main">
       <div :class="leftClass" id="left">
         <div>
           <el-menu :default-active="$route.path" unique-opened router>
@@ -104,7 +104,9 @@
                   <span>{{item.name}}</span>
                 </template>
                 <template v-for="(child,childIndex) in item.children" v-if="!child.meta.hidden">
-                  <el-menu-item :index="child.path">{{child.name}}</el-menu-item>
+                  <el-menu-item :index="child.path"><a :href="`#${child.path}`"
+                                                       style="color:inherit;">{{child.name}}</a>
+                  </el-menu-item>
                 </template>
               </el-submenu>
             </template>
@@ -206,6 +208,9 @@
       showRoute(routeName) {
         const defaultRoutes = this.$router.options.routes;
         this.findRoute(routeName, defaultRoutes);
+      },
+      noDirect() {
+        return false;
       }
     },
     created() {
@@ -215,14 +220,6 @@
         const defaultRoutes = this.$router.options.routes;
         this.allRoutesHiddenTrue(defaultRoutes);
         this.filterRoutes(powers);
-      }
-    },
-    mounted() {
-      if (this.$route.query.from === 'out') {
-        document.getElementById('header').style.display = 'none';
-        document.getElementById('left').style.display = 'none';
-        document.getElementById('right').style.left = '0px';
-        document.getElementById('breadcrumb').style.display = 'none';
       }
     }
   };

@@ -112,6 +112,18 @@ a {
 
 .router-link {
   color: #20a0ff;
+  cursor: pointer;
+}
+
+.disabledInput input[readonly] {
+  background-color: #eef1f6;
+  border-color: #d1dbe5;
+  color: #bbb;
+  cursor: not-allowed;
+  &:hover, &:focus {
+    outline: none;
+    border-color: #d1dbe5;
+  }
 }
 
 /**

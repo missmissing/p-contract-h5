@@ -149,7 +149,7 @@
           this.options = res.data.dataMap;
         });
       },
-      onEditorChange({editor, html, text}) {
+      onEditorChange({html}) {
         console.log(html);
         this.form.content = html;
       },

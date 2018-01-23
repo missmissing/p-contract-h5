@@ -125,7 +125,7 @@
       border
       highlight-current-row
       class="wp100">
-      <el-table-column prop="id" label="合同编号" min-width="200px">
+      <el-table-column prop="id" label="合同编号" width="140px">
         <template scope="scope">
           <router-link class="router-link"
                        :to="{path:'/ConCreate/conCheck', query:{contractNo:''+tableData[scope.$index].contractNo}}">
@@ -133,35 +133,43 @@
           </router-link>
         </template>
       </el-table-column>
+      <el-table-column prop="id" label="流程id" width="100px">
+        <template scope="scope">
+          <div v-if="[2,4].indexOf(scope.row.contractType)>-1||!scope.row.procCode">自动创建</div>
+          <div class="router-link" @click="goToProcess(scope.row)" v-else>
+            {{scope.row.procInstId}}
+          </div>
+        </template>
+      </el-table-column>
       <el-table-column prop="contractTextType" label="文本类型" width="100px">
         <template scope="scope">
           {{getContractTextType(tableData[scope.$index].contractTextType)}}
         </template>
       </el-table-column>
-      <el-table-column prop="contractType" label="合同模式" width="100px">
+      <el-table-column prop="contractType" label="合同模式" width="130px">
         <template scope="scope">
           {{getContractModel(tableData[scope.$index].contractType)}}
         </template>
       </el-table-column>
       <el-table-column prop="creator" label="发起人" width="100"></el-table-column>
       <el-table-column prop="businessOperatorName" label="经办人" width="100"></el-table-column>
-      <el-table-column prop="businessDeptName" label="业务部门" width="100"></el-table-column>
-      <el-table-column prop="approvalDate" label="创建日期" width="130">
+      <el-table-column prop="businessDeptName" label="业务部门" min-width="180"></el-table-column>
+      <el-table-column prop="approvalDate" label="创建日期" width="120">
         <template scope="scope">
           {{scope.row.approvalDate | formatDate}}
         </template>
       </el-table-column>
-      <el-table-column prop="startTime" label="生效日期" width="130">
+      <el-table-column prop="startTime" label="生效日期" width="120">
         <template scope="scope">
           {{scope.row.startTime | formatDate}}
         </template>
       </el-table-column>
-      <el-table-column prop="endTime" label="终止日期" width="130">
+      <el-table-column prop="endTime" label="终止日期" width="120">
         <template scope="scope">
           {{scope.row.endTime | formatDate}}
         </template>
       </el-table-column>
-      <el-table-column prop="totalAmount" label="合同总金额" width="150"></el-table-column>
+      <el-table-column prop="totalAmount" label="合同总金额" width="110"></el-table-column>
       <el-table-column prop="contractStatusName" label="合同状态" width="120"></el-table-column>
       <el-table-column prop="haveProtocol" label="从协议" width="80">
         <template scope="scope">
@@ -169,7 +177,7 @@
         </template>
       </el-table-column>
     </el-table>
-    <div class="mt20">
+    <div class="clearfix mt20 mb20">
       <el-pagination
         class="fr"
         @size-change="handleSizeChange"
@@ -198,6 +206,7 @@
   import TreeModal from '../../components/treeModal.vue';
   import getBusiType from '../../mixins/getBusiType';
   import {formatDate} from '../../filters/moment';
+  import toPage from '../../assets/js/toPage';
 
   export default {
     mixins: [getBusiType],
@@ -230,7 +239,7 @@
         conModels: [
           {id: '1', name: '单一合同'},
           {id: '2', name: '固定格式合同'},
-          {id: '3', name: '框架合同'},
+          {id: '3', name: '框架协议'},
           {id: '4', name: '框架意向合同'}
         ],
         conTypeName: '', // 业务类型名
@@ -277,7 +286,7 @@
           case 2:
             return '固定格式合同';
           case 3:
-            return '框架合同';
+            return '框架协议';
           case 4:
             return '框架意向合同';
           default:
@@ -325,6 +334,9 @@
         } else {
           this.form.suppliers = [];
         }
+      },
+      goToProcess(row) {
+        toPage.call(this, row);
       }
     },
     components: {

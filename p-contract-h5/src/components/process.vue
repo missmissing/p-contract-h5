@@ -77,7 +77,7 @@
   import SelectPerson from './selectPerson.vue';
   import {routerNames, processListMap} from '../core/consts';
   import comLoading from '../mixins/comLoading';
-  import env from '../util/env';
+  import getEnv from '../util/getEnv';
 
   export default {
     mixins: [comLoading],
@@ -143,11 +143,17 @@
         return true;
       },
       submit() {
-        const {procInstId, procCode, serialNumber} = this.processData;
+        const {
+          procInstId,
+          procCode,
+          serialNumber,
+          roleName
+        } = this.processData;
         const result = {
           procInstId,
           procCode,
           serialNumber,
+          actName: roleName,
           actionName: this.actionName,
           redirectApproverId: this.receiver,
           approveRemark: this.approveRemark
@@ -159,10 +165,9 @@
           text: '正在提交中'
         });
         Api.submitProcess(result).then(() => {
-          this.comLoading(false);
           this.$message.success('提交成功！');
           if (this.$route.query.from === 'out') {
-            if (env === 'prd') {
+            if (getEnv() === 'prd') {
               window.location.href = 'http://a.oa.chinaredstar.com/tip/success?t=1';
             } else {
               window.location.href = 'http://10.11.25.157:81/tip/success?t=1 ';
@@ -170,7 +175,7 @@
             return;
           }
           this.$router.push({name: routerNames.con_index});
-        }, () => {
+        }).finally(() => {
           this.comLoading(false);
         });
       }

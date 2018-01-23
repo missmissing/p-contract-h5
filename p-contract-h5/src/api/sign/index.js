@@ -14,7 +14,7 @@ export default {
     return Http.post(`${contract}/contract-web/purchaseOrder/submit`, params);
   },
   query(params) {
-    return Http.post(`${contract}/contract-web/purchaseOrder/query`, params);
+    return Http.post(`${contract}/contract-web/purchaseOrder/queryPo`, params);
   },
   detailByPoId(params) {
     const { id } = params;

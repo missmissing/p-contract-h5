@@ -75,7 +75,6 @@
               </tbody>
             </table>
           </div>
-          <div class="mb20" v-html="currentTpl"></div>
           <div v-if="materialTable.length">
             <p>合同标的：</p>
             <div>
@@ -206,6 +205,7 @@
           <!--<span v-if="effectiveCondition===2">附条件生效</span>-->
           <!--<span v-if="effectiveCondition===3">签订生效</span>-->
           <!--</el-row>-->
+          <div class="mb20" v-html="currentTpl"></div>
           <el-row class="mt20" v-if="effectiveCondition===1">
             <el-col :span="5">合同生效日期：{{startTime}}</el-col>
             <el-col :span="5">合同终止日期：{{endTime}}</el-col>
@@ -215,7 +215,7 @@
             <el-col :span="21">{{conditionDesc}}</el-col>
           </el-row>
           <p></p>
-          <table class="default-table">
+          <table class="default-table" style="width:100%;">
             <tbody>
             <tr>
               <td width="100" valign="top" class="w100">甲方：</td>
@@ -296,6 +296,9 @@
         const priceTable = [];
         if (data.length) {
           data.forEach((item) => {
+            if(!item.paymentAmount){
+              return;
+            }
             const {seriousPayments} = item;
             if (seriousPayments) {
               const {subItem} = item;
@@ -374,7 +377,11 @@
           jiaBillingInfo, yiBillingInfo, moneyInvolved, totalAmount, paymentMethods, oneOffPay, paymentTimePeriods
         } = cardFinanceInfoForm;
         const {
-          earnest, advance, progress, _final, deposit
+          earnest,
+          advance,
+          progress,
+          _final, // eslint-disable-line
+          deposit
         } = paymentMethods;
         this.paymentTimePeriods = paymentTimePeriods;
         this.contractType = contractType;

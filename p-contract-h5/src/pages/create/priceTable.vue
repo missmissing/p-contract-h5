@@ -7,6 +7,9 @@
       <el-table-column
         prop="folio"
         label="比价单编码">
+        <template scope="scope">
+          <a class="router-link" :href="scope.row.processViewUrl" target="_blank">{{scope.row.folio}}</a>
+        </template>
       </el-table-column>
       <el-table-column
         prop="originatorName"
@@ -22,7 +25,7 @@
         label="发起时间"
         width="120">
         <template scope="scope">
-          {{scope.row.startTime|formatDate}}
+          {{scope.row.startTime | formatDate}}
         </template>
       </el-table-column>
       <el-table-column
@@ -30,7 +33,7 @@
         label="结束时间"
         width="120">
         <template scope="scope">
-          {{scope.row.finishTime|formatDate}}
+          {{scope.row.finishTime | formatDate}}
         </template>
       </el-table-column>
     </el-table>
@@ -39,7 +42,7 @@
 
 <script>
   import Api from '../../api/manageContract/index';
-  import { formatDate } from '../../filters/moment';
+  import {formatDate} from '../../filters/moment';
   import comLoading from '../../mixins/comLoading';
 
   export default {
@@ -58,7 +61,7 @@
     methods: {
       getData() {
         this.comLoading();
-        Api.getQrDetail({ folio: this.prNo }).then((data) => {
+        Api.getQrDetail({folio: this.prNo}).then((data) => {
           if (data.data.dataMap) {
             this.tableData = [data.data.dataMap];
           }

@@ -137,7 +137,7 @@
         </template>
       </el-table-column>
     </el-table>
-    <div class="mt20">
+    <div class="clearfix mt20 mb20">
       <el-pagination
         class="fr"
         @size-change="handleSizeChange"

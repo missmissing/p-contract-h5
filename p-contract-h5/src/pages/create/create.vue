@@ -228,7 +228,7 @@
           conModel: [
             {id: '1', name: '单一合同'},
             /*{id: '2', name: '固定格式合同'},*/
-            {id: '3', name: '框架合同'},
+            {id: '3', name: '框架协议'},
             {id: '4', name: '框架意向合同'}
           ],
           conType: '',
@@ -370,37 +370,56 @@
               return;
             }
 
-            let name;
-            switch (this.conForm.curConModelId) {
-              case '4':
-                name = routerNames.con_createIntentionContract;
-                break;
-              case '3':
-                name = routerNames.con_createFrameContract;
-                break;
-              case '1':
-                name = routerNames.con_createSingleContract;
-                break;
-              case '2':
-                name = routerNames.con_createSimpleContract;
-                break;
-              default:
-                name = '';
-            }
-            this.$router.push({
-              name,
-              query: {
-                currentFolio: this.currentPr ? this.currentPr.folio : '',
-                curConModelId: this.conForm.curConModelId,
-                curConTypeId: this.conForm.conType,
-                operateType: 'create'
+            const query = {
+              currentFolio: this.currentPr ? this.currentPr.folio : '',
+              curConModelId: this.conForm.curConModelId,
+              curConTypeId: this.conForm.conType
+            };
+
+            const params = {};
+            const types = query.curConTypeId.split('-');
+            params.folio = query.currentFolio;
+            params.contractType = query.curConModelId;// 合同模式
+            params.contractBusinessTypeFirst = types[0];
+            params.contractBusinessTypeSecond = types[1];
+            params.contractBusinessTypeThird = types[2];
+            this.comLoading();
+            Api.getContractBaseInfo(params).then(() => {
+              this.comLoading(false);
+              let name;
+              switch (this.conForm.curConModelId) {
+                case '4':
+                  name = routerNames.con_createIntentionContract;
+                  break;
+                case '3':
+                  name = routerNames.con_createFrameContract;
+                  break;
+                case '1':
+                  name = routerNames.con_createSingleContract;
+                  break;
+                case '2':
+                  name = routerNames.con_createSimpleContract;
+                  break;
+                default:
+                  name = '';
               }
+              this.$router.push({
+                name,
+                query: {
+                  currentFolio: this.currentPr ? this.currentPr.folio : '',
+                  curConModelId: this.conForm.curConModelId,
+                  curConTypeId: this.conForm.conType,
+                  operateType: 'create'
+                }
+              });
+              if (this.curPriceList.length) {
+                this.curPriceList = [];
+                this.currentPr = null;
+              }
+              this.$refs[formName].resetFields();
+            }).catch(() => {
+              this.comLoading(false);
             });
-            if (this.curPriceList.length) {
-              this.curPriceList = [];
-              this.currentPr = null;
-            }
-            this.$refs[formName].resetFields();
           }
         });
       },

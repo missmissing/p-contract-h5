@@ -17,7 +17,8 @@
       <slot name="tip"></slot>
     </el-upload>
     <ul class="el-upload-list el-upload-list--text">
-      <li class="el-upload-list__item is-success" v-for="(file,index) in uploadFiles">
+      <li :class="{'el-upload-list__item':true, 'is-success':file.status==='success'}"
+          v-for="(file,index) in uploadFiles">
         <a class="el-upload-list__item-name" :href="file.url">
           <i class="el-icon-document"></i>{{file.name}}
         </a>

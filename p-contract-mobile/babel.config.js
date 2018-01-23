@@ -1,10 +1,16 @@
-module.exports = function (config) {
+module.exports = (config) => {
   config.plugins.push(['component',
-    {
-      libraryName: 'element-ui',
-      styleLibraryName: 'theme-default'
-    }
-  ]);
+    [
+      {
+        libraryName: 'element-ui',
+        styleLibraryName: 'theme-default'
+      },
+      {
+        libraryName: 'mint-ui',
+        style: true
+      }
+    ]
+  ], 'lodash', 'syntax-dynamic-import');
   return config;
 };
 

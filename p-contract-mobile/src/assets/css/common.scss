@@ -1,3 +1,137 @@
-body {
-  background: #fff;
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
 }
+
+html, body {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+
+body {
+  padding-top: constant(safe-area-inset-top); //为导航栏+状态栏的高度 88px
+  padding-left: constant(safe-area-inset-left); //如果未竖屏时为0
+  padding-right: constant(safe-area-inset-right); //如果未竖屏时为0
+  padding-bottom: constant(safe-area-inset-bottom); //为底下圆弧的高度 34px
+}
+
+a:hover {
+  text-decoration: none;
+}
+
+.mt20 {
+  margin-top: 20px;
+}
+
+.mb20 {
+  margin-bottom: 20px;
+}
+
+.wp100 {
+  width: 100%;
+}
+
+.fl {
+  float: left;
+}
+
+.fr {
+  float: right;
+}
+
+.tc {
+  text-align: center;
+}
+
+.tr {
+  text-align: right;
+}
+
+/**custom css**/
+.main {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.container {
+  width: 100%;
+  flex: 1;
+  overflow: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.title {
+  padding: 10px;
+}
+
+.file-item { //附件
+  color: #26a2ff;
+}
+
+.popup {
+  width: 100%;
+  height: 100%;
+  background-color: #FFF;
+}
+
+.router-link {
+  color: #20a0ff;
+}
+
+/*cover element-ui css*/
+.el-table {
+  font-size: inherit;
+}
+
+/*cover mint-ui css*/
+.mint-header.is-fixed {
+  z-index: 10;
+  padding-top: 22px;
+  height: 62px;
+}
+
+.mint-button--default {
+  background-color: #FFFFFF;
+}
+
+.mint-cell-wrapper {
+  font-size: inherit;
+}
+
+.mint-cell-title {
+  white-space: nowrap;
+  margin-right: 20px;
+}
+
+.mint-indicator-wrapper, .mint-indicator-mask {
+  z-index: 9999;
+}
+
+.mint-navbar {
+  overflow-x: auto;
+  overflow-y: hidden;
+  padding-bottom: 3px;
+  white-space: nowrap;
+  .mint-tab-item {
+    flex-shrink: 0;
+    flex-basis: auto;
+    padding-left: 10px;
+    padding-right: 10px;
+  }
+}
+
+.mint-searchbar {
+  [type=search] {
+    padding-left: 10px;
+  }
+}
+
+.mint-tab-container {
+  min-height: 100px;
+  position: static;
+}
+

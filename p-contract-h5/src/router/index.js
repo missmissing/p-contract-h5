@@ -5,7 +5,7 @@ import 'nprogress/nprogress.css';
 import store from '../store/index';
 import * as types from '../store/consts';
 import {routerNames} from '../core/consts';
-import env from '../util/env';
+import getEnv from '../util/getEnv';
 
 Vue.use(Router);
 
@@ -183,7 +183,7 @@ const router = new Router({
           }
         },
         {
-          path: '/ConCreate/CreateFrameContract', // 创建框架合同
+          path: '/ConCreate/CreateFrameContract', // 创建框架协议
           meta: {
             auth: true,
             hidden: true
@@ -194,7 +194,7 @@ const router = new Router({
           name: routerNames.con_createFrameContract
         },
         {
-          path: '/ConCreate/CreateIntentionContract', // 创建意向合同
+          path: '/ConCreate/CreateIntentionContract', // 创建框架意向合同
           meta: {
             auth: true,
             hidden: true
@@ -216,7 +216,7 @@ const router = new Router({
           name: routerNames.con_createSingleContract
         },
         {
-          path: '/ConCreate/CreateSimpleContract', // 创建简易合同
+          path: '/ConCreate/CreateSimpleContract', // 创建固定格式合同
           meta: {
             auth: true,
             hidden: true
@@ -327,7 +327,7 @@ const router = new Router({
             dev: 'http://192.168.122.218:1001/purchase/receivepo.html',
             prd: 'http://fp.oa.chinaredstar.com/purchase/receivepo.html'
           };
-          if (env === 'prd') {
+          if (getEnv() === 'prd') {
             window.open(target.prd);
           } else {
             window.open(target.dev);
@@ -348,7 +348,7 @@ const router = new Router({
             prd: 'http://172.16.9.151:8081/Purchase/FWLCGSHQR/Start.aspx',
             dev: 'http://192.168.122.214:8081/Purchase/FWLCGSHQR/Start.aspx'
           };
-          if (env === 'prd') {
+          if (getEnv() === 'prd') {
             window.open(target.prd);
           } else {
             window.open(target.dev);

@@ -67,10 +67,6 @@
                   {{scope.row.createTime | formatDate}}
                 </template>
               </el-table-column>
-              <!--<el-table-column-->
-              <!--prop="processViewUrl"-->
-              <!--label="PR申请链接">-->
-              <!--</el-table-column>-->
               <el-table-column
                 label="操作"
                 width="80">
@@ -227,7 +223,7 @@
                     </el-form-item>
                   </el-col>
                   <el-col :span="8">
-                    <el-form-item label="合同类型">
+                    <el-form-item label="业务类型">
                       <el-input :value="contractForm.contractBusinessTypeThirdName" disabled></el-input>
                     </el-form-item>
                   </el-col>
@@ -616,11 +612,11 @@
                 availableTotal,
                 materialCode,
                 contVos,
-                category
+                category,
+                price
               } = item;
               if (prItemNo === row.mapKey) {
                 if (contVos && contVos.length) {
-                  debugger
                   contVos.forEach((cont) => {
                     const {itemNo} = cont;
                     if (itemNo === row.itemNo) {
@@ -631,7 +627,7 @@
                         prItemNo,
                         materialName,
                         materialCode,
-                        price: cont.price,
+                        price: 1,
                         total,
                         availableTotal,
                         taxRate: cont.taxRate,
@@ -652,15 +648,6 @@
       },
       formatDate(row, value) {
         row.deliveryTime = formatDate(value);
-      },
-      selectTaxRate(row) {
-        this.taxRates.some((item) => {
-          if (item.value === row.taxRate) {
-            row.taxCode = item.code;
-            return true;
-          }
-          return false;
-        });
       },
       srChange(row) {
         if (this.prData[0].category !== 2) {
