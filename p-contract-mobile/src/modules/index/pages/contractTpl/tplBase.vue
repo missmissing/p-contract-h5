@@ -4,7 +4,7 @@
 
 <template>
   <div>
-    <mt-cell title="模板编号" :value="templateId"></mt-cell>
+    <mt-cell title="模板编号" :value="form.templateCode"></mt-cell>
     <mt-cell title="文本名称" :value="form.templateName"></mt-cell>
     <mt-cell title="类型" :value="form.templateType | tplType"></mt-cell>
     <mt-cell title="状态" :value="form.templateStatus | tplStatus"></mt-cell>

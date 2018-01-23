@@ -140,7 +140,8 @@
           actName: this.$store.state.processData.roleName,
           actionName: this.actionName,
           redirectApproverId: this.redirectApproverId,
-          approveRemark: this.approveRemark
+          approveRemark: this.approveRemark,
+          source:'Mobile'
         };
         if (!this.check(result)) {
           return;
