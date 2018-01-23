@@ -141,7 +141,7 @@
           actionName: this.actionName,
           redirectApproverId: this.redirectApproverId,
           approveRemark: this.approveRemark,
-          source:'Mobile'
+          fromType:'Mobile'
         };
         if (!this.check(result)) {
           return;
