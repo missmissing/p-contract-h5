@@ -321,6 +321,9 @@
               return;
             }
             result.templateStatus = templateStatus;
+            if (!result.amount) {
+              result.amount = 0;
+            }
             this.comLoading({
               text: '正在提交中'
             });
