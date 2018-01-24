@@ -469,7 +469,7 @@
                   <el-form-item
                     label="付款条件"
                     prop="paymentTimePeriod"
-                    :rules="{required: true, message: '请输入付款条件'}">
+                  >
                     <el-select
                       @change="validateForms"
                       v-model="cardFinanceInfoForm.paymentTimePeriod"
@@ -1199,7 +1199,8 @@
             }],
             totalAmount: [{type: 'number', message: '合同总金额必须为数字值'}],
             payTime: [{required: true, message: '请输入付款时间'}],
-            invoiceType: [{required: true, message: '请选择开票类型'}]
+            invoiceType: [{required: true, message: '请选择开票类型'}],
+            paymentTimePeriod: [{required: true, message: '请输入付款条件'}]
           }
         },
         cardContCheckInfoForm: {
@@ -1245,7 +1246,7 @@
           rules: {
             otherInstruction: [{
               validator: (rule, value, callback) => {
-                if (this.cardContentInfoForm.effectiveCondition === 1 && this.cardContentInfoForm.startTime && formatDate(this.cardContentInfoForm.startTime) < formatDate(new Date()) && !this.isSee) {
+                if (this.cardContentInfoForm.effectiveCondition === 1 && this.cardContentInfoForm.startTime && formatDate(this.cardContentInfoForm.startTime) < formatDate(new Date())) {
                   if (!value) {
                     callback(new Error('合同生效日期小于今天，请输入倒签原因'));
                   }
@@ -1399,242 +1400,6 @@
         historyDatas: []
       };
     },
-    computed: {
-      conVersion() {
-        const id = this.baseInfoForm.templateId;
-        const templateOptions = this.baseInfoForm.templateOptions;
-        let result = '';
-        if (templateOptions && templateOptions.length > 0) {
-          for (let i = 0, len = templateOptions.length; i < len; i += 1) {
-            if (id === templateOptions[i].id) {
-              result = `V-${templateOptions[i].version}`;
-            }
-          }
-        }
-        return result;
-      },
-      totalConMoney() {
-        if (this.cardFinanceInfoForm.oneOffPay) {
-          return this.cardFinanceInfoForm.totalAmount;
-        }
-        const paymentMethods = this.cardFinanceInfoForm.paymentMethods;
-        const earnest = parseFloat(paymentMethods.earnest[0].paymentAmount ? paymentMethods.earnest[0].paymentAmount : 0);
-        const advance = parseFloat(paymentMethods.advance[0].paymentAmount ? paymentMethods.advance[0].paymentAmount : 0);
-        const progress = parseFloat(paymentMethods.progress[0].paymentAmount ? paymentMethods.progress[0].paymentAmount : 0);
-        const final = parseFloat(paymentMethods._final[0].paymentAmount ? paymentMethods._final[0].paymentAmount : 0);
-        const deposit = parseFloat(paymentMethods.deposit[0].paymentAmount ? paymentMethods.deposit[0].paymentAmount : 0);
-        return earnest + advance + progress + final + deposit;
-      },
-      showMaterialItems() {
-        let result = false;
-        const arrConStandard = this.cardContentInfoForm.conStandard;
-        if (arrConStandard && arrConStandard.length > 0) {
-          for (let i = 0, len = arrConStandard.length; i < len; i += 1) {
-            if (arrConStandard[i].materialCode) {
-              result = true;
-            }
-          }
-        }
-        return result;
-      },
-      contentVisible() {
-        let visible = false;
-        if (this.operateType !== 'update') {
-          visible = true;
-        } else if (this.updateForm.visible) {
-          visible = true;
-        }
-        return visible;
-      },
-      // 查询及创建操作时不可用，变更操作选择原合同作废时可用，选择原合同有效时不可用，否则都是可用的状态
-      isEnabled() {
-        let enabled = false;
-        if (this.operateType === 'update') {
-          enabled = this.updateForm.updateMode === 1;
-        } else if (this.operateType === 'query' || this.operateType === 'create') {
-          enabled = true;
-        }
-        return enabled;
-      },
-      // 查询操作不可用，创建操作可用，变更操作选择原合同作废时可用，选择原合同有效时不可用，否则都是可用的状态
-      isEnabled1() {
-        let enabled = false;
-        if (this.operateType === 'update') {
-          enabled = this.updateForm.updateMode === 1;
-        } else if (this.operateType === 'query') {
-          enabled = true;
-        } else if (this.operateType === 'create') {
-          enabled = false;
-        }
-        return enabled;
-      },
-      isVisibleNewSupplierBtn() {
-        let visible = false;
-        if (this.operateType === 'query') {
-          visible = false;
-        } else if (this.cardContentInfoForm.tableSupplierInfo.length <= 0) {
-          visible = true;
-        }
-        return visible;
-      },
-      tabs() {
-        let type;
-        switch (this.cardOtherInfo.condition) {
-          case 1:
-            type = 'PrTable';
-            break;
-          case 2:
-            type = 'PriceTable';
-            break;
-          case 3:
-            type = 'ContractTable';
-            break;
-          case 4:
-            type = 'OrderTable';
-            break;
-          default:
-            type = '';
-        }
-        return type;
-      },
-      enabledInupdated() { // 在各种操作类型下，控制元素的是否可见和是否可用
-        let result = false;
-        if (this.operateType === 'query') {
-          result = false;
-        } else if (this.operateType === 'create') {
-          result = true;
-        } else if (this.operateType === 'update') {
-          result = this.updateForm.updateMode !== 1;
-        }
-        return result;
-      },
-
-      isSealRole() {
-        const reg = /印章保管人/g;
-        return this.processData ? reg.test(this.processData.roleName) : false;
-      },
-      isPurchaseRole() {
-        const reg = /采购合同上传/g;
-        return this.processData ? reg.test(this.processData.roleName) : false;
-      },
-      isFARole() {
-        return this.processData ? this.processData.roleName.indexOf('FA') > -1 : false;
-      },
-
-      finaceMoreDatas() {
-        return {
-          paymentTimePeriods: this.cardFinanceInfoForm.paymentTimePeriods,
-          totalAmount: this.cardFinanceInfoForm.totalAmount,
-          isCreate: this.isCreate,
-          isSee: this.isSee,
-          isModify: this.isModify,
-          backLogFA: this.backLogFA
-        };
-      },
-
-      /**判断当前页面类型**/
-      isCreate() { //创建
-        return this.operateType === 'create';
-      },
-      isSee() { //查看
-        return this.operateType === 'query';
-      },
-      isModify() { //变更
-        return this.operateType === 'update';
-      },
-      backLogFA() {
-        let isBackLog = false;
-        let isFA = false;
-        if (this.processData) {
-          isBackLog = this.processData.dataType === processListMap[0];
-          isFA = isBackLog ? this.isFARole : false;
-        }
-
-        return isBackLog && isFA;
-      },
-      backLogCreator() {
-        let isBackLog = false;
-        let isCreator = false;
-        if (this.processData) {
-          isBackLog = this.processData.dataType === processListMap[0];
-          const user = store.get('user');
-          isCreator = isBackLog ? this.baseInfoForm.creatorId === user.userId : false;
-        }
-
-        return isBackLog && isCreator;
-      },
-      /**判断当前页面类型**/
-      addOtherSealFileDisabled() {
-        if (this.backLogCreator) {
-          return true;
-        }
-        if (!this.isSee) {
-          return true;
-        }
-        return false;
-      },
-
-      /**if disabled element**/
-      //cardSealInfoForm
-      //cardFinanceInfoForm
-      moneyInvolvedDisabled() {
-        if (this.isSee) {
-          return true;
-        } else if ([2, 4].indexOf(this.baseInfoForm.contractType) > -1) {
-          return true;
-        } else if (this.baseInfoForm.contractType === 3 && !this.baseInfoForm.prFlag) {
-          return true;
-        }
-        return false;
-      },
-      oneOffPayDisabled() {
-        if (this.isSee || this.baseInfoForm.contractType === 3) {
-          return true;
-        }
-        return false;
-      },
-      totalAmountDisabled() {
-        if (!this.isSee) {
-          if (this.baseInfoForm.contractType === 3) {
-            return false;
-          }
-        }
-        return true;
-      },
-      invoiceTypeDisabled() {
-        if (this.backLogFA) {
-          return false;
-        }
-        if (this.isSee) {
-          return true;
-        }
-        return false;
-      },
-      currencyDisabled() {
-        if (this.backLogFA) {
-          return false;
-        }
-        if (this.isSee) {
-          return true;
-        }
-        return false;
-      },
-      paymentTimePeriodDisabled() {
-        if (this.backLogFA) {
-          return false;
-        }
-        if (this.isSee) {
-          return true;
-        }
-        return false;
-      }
-
-      /**if disabled element**/
-    },
-    filters: {
-      formatDate,
-      contractType
-    },
     created() {
       const query = this.$route.query;
       if (query.processData) {
@@ -1686,6 +1451,8 @@
             this.comLoading(false);
           });
         }
+
+        this.noValidate();
       }
       if (this.$route.path && this.$route.path === '/conperf/conupdate') {
         this.operateType = 'update';
@@ -2015,6 +1782,9 @@
         this.cardContentInfoForm.dialogNewThirdPartyVisible = false;
       },
       validateForms() {
+        if (this.isSee) {
+          return false;
+        }
         return new Promise((resolve, reject) => {
           const errors = {
             cardContentInfoForm: {
@@ -2698,7 +2468,250 @@
           file = this.copyPrevSealData(file);
         }
         this.cardSealInfoForm.others.push(file);
+      },
+      noValidate() {
+        this.baseInfoForm.rules = {};
+        this.cardContentInfoForm.rules = {};
+        this.cardFinanceInfoForm.rules = {};
+        this.cardSealInfoForm.rules = {};
+        this.cardRemarkInfoForm.rules = {};
       }
+    },
+    computed: {
+      conVersion() {
+        const id = this.baseInfoForm.templateId;
+        const templateOptions = this.baseInfoForm.templateOptions;
+        let result = '';
+        if (templateOptions && templateOptions.length > 0) {
+          for (let i = 0, len = templateOptions.length; i < len; i += 1) {
+            if (id === templateOptions[i].id) {
+              result = `V-${templateOptions[i].version}`;
+            }
+          }
+        }
+        return result;
+      },
+      totalConMoney() {
+        if (this.cardFinanceInfoForm.oneOffPay) {
+          return this.cardFinanceInfoForm.totalAmount;
+        }
+        const paymentMethods = this.cardFinanceInfoForm.paymentMethods;
+        const earnest = parseFloat(paymentMethods.earnest[0].paymentAmount ? paymentMethods.earnest[0].paymentAmount : 0);
+        const advance = parseFloat(paymentMethods.advance[0].paymentAmount ? paymentMethods.advance[0].paymentAmount : 0);
+        const progress = parseFloat(paymentMethods.progress[0].paymentAmount ? paymentMethods.progress[0].paymentAmount : 0);
+        const final = parseFloat(paymentMethods._final[0].paymentAmount ? paymentMethods._final[0].paymentAmount : 0);
+        const deposit = parseFloat(paymentMethods.deposit[0].paymentAmount ? paymentMethods.deposit[0].paymentAmount : 0);
+        return earnest + advance + progress + final + deposit;
+      },
+      showMaterialItems() {
+        let result = false;
+        const arrConStandard = this.cardContentInfoForm.conStandard;
+        if (arrConStandard && arrConStandard.length > 0) {
+          for (let i = 0, len = arrConStandard.length; i < len; i += 1) {
+            if (arrConStandard[i].materialCode) {
+              result = true;
+            }
+          }
+        }
+        return result;
+      },
+      contentVisible() {
+        let visible = false;
+        if (this.operateType !== 'update') {
+          visible = true;
+        } else if (this.updateForm.visible) {
+          visible = true;
+        }
+        return visible;
+      },
+      // 查询及创建操作时不可用，变更操作选择原合同作废时可用，选择原合同有效时不可用，否则都是可用的状态
+      isEnabled() {
+        let enabled = false;
+        if (this.operateType === 'update') {
+          enabled = this.updateForm.updateMode === 1;
+        } else if (this.operateType === 'query' || this.operateType === 'create') {
+          enabled = true;
+        }
+        return enabled;
+      },
+      // 查询操作不可用，创建操作可用，变更操作选择原合同作废时可用，选择原合同有效时不可用，否则都是可用的状态
+      isEnabled1() {
+        let enabled = false;
+        if (this.operateType === 'update') {
+          enabled = this.updateForm.updateMode === 1;
+        } else if (this.operateType === 'query') {
+          enabled = true;
+        } else if (this.operateType === 'create') {
+          enabled = false;
+        }
+        return enabled;
+      },
+      isVisibleNewSupplierBtn() {
+        let visible = false;
+        if (this.operateType === 'query') {
+          visible = false;
+        } else if (this.cardContentInfoForm.tableSupplierInfo.length <= 0) {
+          visible = true;
+        }
+        return visible;
+      },
+      tabs() {
+        let type;
+        switch (this.cardOtherInfo.condition) {
+          case 1:
+            type = 'PrTable';
+            break;
+          case 2:
+            type = 'PriceTable';
+            break;
+          case 3:
+            type = 'ContractTable';
+            break;
+          case 4:
+            type = 'OrderTable';
+            break;
+          default:
+            type = '';
+        }
+        return type;
+      },
+      enabledInupdated() { // 在各种操作类型下，控制元素的是否可见和是否可用
+        let result = false;
+        if (this.operateType === 'query') {
+          result = false;
+        } else if (this.operateType === 'create') {
+          result = true;
+        } else if (this.operateType === 'update') {
+          result = this.updateForm.updateMode !== 1;
+        }
+        return result;
+      },
+
+      isSealRole() {
+        const reg = /印章保管人/g;
+        return this.processData ? reg.test(this.processData.roleName) : false;
+      },
+      isPurchaseRole() {
+        const reg = /采购合同上传/g;
+        return this.processData ? reg.test(this.processData.roleName) : false;
+      },
+      isFARole() {
+        return this.processData ? this.processData.roleName.indexOf('FA') > -1 : false;
+      },
+
+      finaceMoreDatas() {
+        return {
+          paymentTimePeriods: this.cardFinanceInfoForm.paymentTimePeriods,
+          totalAmount: this.cardFinanceInfoForm.totalAmount,
+          isCreate: this.isCreate,
+          isSee: this.isSee,
+          isModify: this.isModify,
+          backLogFA: this.backLogFA
+        };
+      },
+
+      /**判断当前页面类型**/
+      isCreate() { //创建
+        return this.operateType === 'create';
+      },
+      isSee() { //查看
+        return this.operateType === 'query';
+      },
+      isModify() { //变更
+        return this.operateType === 'update';
+      },
+      backLogFA() {
+        let isBackLog = false;
+        let isFA = false;
+        if (this.processData) {
+          isBackLog = this.processData.dataType === processListMap[0];
+          isFA = isBackLog ? this.isFARole : false;
+        }
+
+        return isBackLog && isFA;
+      },
+      backLogCreator() {
+        let isBackLog = false;
+        let isCreator = false;
+        if (this.processData) {
+          isBackLog = this.processData.dataType === processListMap[0];
+          const user = store.get('user');
+          isCreator = isBackLog ? this.baseInfoForm.creatorId === user.userId : false;
+        }
+
+        return isBackLog && isCreator;
+      },
+      /**判断当前页面类型**/
+      addOtherSealFileDisabled() {
+        if (this.backLogCreator) {
+          return true;
+        }
+        if (!this.isSee) {
+          return true;
+        }
+        return false;
+      },
+
+      /**if disabled element**/
+      //cardSealInfoForm
+      //cardFinanceInfoForm
+      moneyInvolvedDisabled() {
+        if (this.isSee) {
+          return true;
+        } else if ([2, 4].indexOf(this.baseInfoForm.contractType) > -1) {
+          return true;
+        } else if (this.baseInfoForm.contractType === 3 && !this.baseInfoForm.prFlag) {
+          return true;
+        }
+        return false;
+      },
+      oneOffPayDisabled() {
+        if (this.isSee || this.baseInfoForm.contractType === 3) {
+          return true;
+        }
+        return false;
+      },
+      totalAmountDisabled() {
+        if (!this.isSee) {
+          if (this.baseInfoForm.contractType === 3) {
+            return false;
+          }
+        }
+        return true;
+      },
+      invoiceTypeDisabled() {
+        if (this.backLogFA) {
+          return false;
+        }
+        if (this.isSee) {
+          return true;
+        }
+        return false;
+      },
+      currencyDisabled() {
+        if (this.backLogFA) {
+          return false;
+        }
+        if (this.isSee) {
+          return true;
+        }
+        return false;
+      },
+      paymentTimePeriodDisabled() {
+        if (this.backLogFA) {
+          return false;
+        }
+        if (this.isSee) {
+          return true;
+        }
+        return false;
+      }
+
+      /**if disabled element**/
+    },
+    filters: {
+      formatDate,
+      contractType
     },
     watch: {
       $route() {

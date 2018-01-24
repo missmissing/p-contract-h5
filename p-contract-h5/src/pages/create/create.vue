@@ -57,7 +57,7 @@
           prop="folio"
           label="比价单编码">
           <template scope="scope">
-            <a href="###" @click.stop="handleDetailPR(scope.$index,scope.row)">{{scope.row.folio}}</a>
+            <a href=";;" class="router-link" @click.stop="handleDetailPR(scope.$index,scope.row)">{{scope.row.folio}}</a>
           </template>
         </el-table-column>
         <el-table-column
@@ -155,7 +155,7 @@
         </el-table-column>
         <el-table-column prop="folio" label="比价单编码" width="200">
           <template scope="scope">
-            <a href="javascript:void(0)" @click.stop="handleDetailPR(scope.row)">{{scope.row.folio}}</a>
+            <a href=";;" class="router-link" @click.stop="handleDetailPR(scope.row)">{{scope.row.folio}}</a>
           </template>
         </el-table-column>
         <el-table-column
@@ -181,15 +181,6 @@
           </template>
         </el-table-column>
       </el-table>
-      <!--<el-row class="mt20">
-        <el-col :span="8" :offset="8">
-          <el-pagination
-            @current-change="handleCurrentChange"
-            layout="prev, pager, next,jumper"
-            :total="total">
-          </el-pagination>
-        </el-col>
-      </el-row>-->
       <template slot="footer">
         <el-button @click="handleCloseDialog">取消</el-button>
         <el-button type="primary" @click="handleOKDialog">确定</el-button>
@@ -542,10 +533,6 @@
           this.prForm.createPerson = '';
         }
       },
-      handleCurrentChange(page) {
-        this.prForm.pageNo = page;
-        this.handleQueryPriceList();
-      }
     }
   };
 </script>
