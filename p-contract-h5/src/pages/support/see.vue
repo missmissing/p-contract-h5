@@ -277,7 +277,7 @@
       this.getTplData(id);
       if (processData) {
         this.processData = JSON.parse(processData);
-        const {procCode, procInstId, procTitle} = this.processData;
+        const {procInstId, procTitle} = this.processData;
         this.procInstId = procInstId;
         this.procTitle = procTitle;
       }

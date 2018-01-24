@@ -612,8 +612,7 @@
                 availableTotal,
                 materialCode,
                 contVos,
-                category,
-                price
+                category
               } = item;
               if (prItemNo === row.mapKey) {
                 if (contVos && contVos.length) {

@@ -532,7 +532,7 @@
           this.prForm.createPersons = [];
           this.prForm.createPerson = '';
         }
-      },
+      }
     }
   };
 </script>
