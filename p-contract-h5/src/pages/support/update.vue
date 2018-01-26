@@ -135,7 +135,7 @@
       </div>
     </transition>
     <transition name="component-fade" mode="out-in">
-      <Tmpl v-show="showTmpl" :tplInfo="tplInfo" :showTmpl.sync="showTmpl"></Tmpl>
+      <Tmpl v-show="showTmpl" :tplInfo="tplInfo" :showTmpl.sync="showTmpl" @getData="getTmplData"/>
     </transition>
     <TreeModal
       nodeKey="id"
@@ -151,7 +151,6 @@
 </template>
 
 <script>
-  import _ from 'lodash';
   import Tmpl from './tmpl.vue';
   import Upload from '../../components/upload.vue';
   import TreeModal from '../../components/treeModal.vue';
@@ -162,30 +161,29 @@
   import {formatTimeStamp, formatToDate} from '../../filters/moment';
   import {tplTypeMap} from '../../core/consts';
 
-  const defaultData = {
-    form: {
-      id: '',
-      templateCode: '',
-      templateName: '',
-      templateType: null,
-      startDate: '',
-      bizTypes: [],
-      busiTypeText: '',
-      description: '',
-      files: [],
-      operatorName: '',
-      creatorName: '',
-      version: ''
-    },
-    tplInfo: {},
-    fileList: []
-  };
-
   export default {
     mixins: [getBusiType, comLoading, createUpdate],
     data() {
-      return Object.assign({
+      return {
+        form: {
+          id: '',
+          templateCode: '',
+          templateName: '',
+          templateType: null,
+          startDate: '',
+          bizTypes: [],
+          busiTypeText: '',
+          description: '',
+          files: [],
+          operatorName: '',
+          creatorName: '',
+          version: '',
+          contentModule: [],
+          content: ''
+        },
         endDate: '9999-12-31',
+        tplInfo: {},
+        fileList: [],
         defaultProps: {
           children: 'children',
           label: 'businessName'
@@ -200,7 +198,7 @@
           }],
           description: [{max: 300, message: '长度不超过300个字符', trigger: 'change'}]
         }
-      }, _.cloneDeep(defaultData));
+      };
     },
     methods: {
       createFilter(result) {
@@ -288,14 +286,21 @@
       },
       getResult() {
         const {id} = this.tplInfo;
-        const {info} = this.$store.state.support.create;
-        const {startDate, description, bizTypes} = this.form;
+        const {
+          startDate,
+          description,
+          bizTypes,
+          contentModule,
+          content
+        } = this.form;
         const result = Object.assign({
           id,
           startDate: formatTimeStamp(startDate),
           description,
-          bizTypes
-        }, info);
+          bizTypes,
+          contentModule,
+          content
+        });
         const files = [];
         this.fileList.forEach((file) => {
           if (file.status === 'success') {

@@ -1,4 +1,4 @@
-<style type="text/scss" lang="scss" scope>
+<style type="text/scss" lang="scss" scoped>
   .tmpl-container {
     .pre-title {
       height: 36px;
@@ -28,16 +28,6 @@
       }
       .content {
         white-space: pre-wrap;
-        .ql-align-right {
-          text-align: right;
-        }
-        .ql-align-justify {
-          text-align: justify;
-          text-align-last: justify;
-        }
-        .ql-align-center {
-          text-align: center;
-        }
       }
       .footer {
         margin-top: 20px;
@@ -71,19 +61,24 @@
             <div class="mb20">
               <!--<el-transfer
                 :titles="['可选模块', '已选模块']"
-                v-model="form.contentModule"
+                v-model="contentModule"
                 :props="{key: 'id',label: 'moduleName'}"
                 :data="modulesData | setItemDisabled(this)">
               </el-transfer>-->
             </div>
             <div>
-              <quill-editor
-                :disabled="disabled"
-                :content="form.content"
-                @change="onEditorChange"
-                ref="myQuillEditor"
-                :options="editorOption">
-              </quill-editor>
+              <el-tabs v-model="editableTabsValue" type="card" addable @edit="handleTabsEdit">
+                <el-tab-pane
+                  :key="item.name"
+                  v-for="(item, index) in editableTabs"
+                  :label="item.title"
+                  :name="item.name"
+                  :closable="index!==0"
+                >
+                  <span class="drag-elements" slot="label" v-if="index!==0">{{item.title}}</span>
+                  <Editor :editorId="index" :content="item.content" @onChange="onEditorChange"></Editor>
+                </el-tab-pane>
+              </el-tabs>
             </div>
           </el-col>
           <el-col :span="12" :offset="1">
@@ -91,7 +86,7 @@
             <div class="preview">
               <div class="title">合同</div>
               <div v-html="header" class="header"></div>
-              <div v-html="form.content" class="content"></div>
+              <div v-html="previewContent" class="content"></div>
               <div v-html="footer" class="footer"></div>
             </div>
           </el-col>
@@ -104,37 +99,34 @@
 
 <script>
   import _ from 'lodash';
-  import {mapMutations} from 'vuex';
-  import {quillEditor} from 'vue-quill-editor';
+  import Sortable from 'sortablejs';
   import {routerNames} from '../../core/consts';
-  import * as types from '../../store/consts';
   import getModules from '../../mixins/getModules';
   import Api from '../../api/support';
 
+  import Editor from '../../components/editor.vue';
+
   export default {
+    components: {
+      Editor
+    },
     mixins: [getModules],
     data() {
       return {
-        form: {
-          contentModule: [],
-          content: ''
-        },
+        contentModule: [],
         header: '',
         footer: '',
         tplType: '',
         options: [],
-        editorOption: {
-          placeholder: '请输入内容...',
-          modules: {
-            toolbar: [
-              [
-                {header: [1, 2, 3, 4, 5, 6, false]},
-                {align: ['', 'right', 'center']}
-              ]
-            ]
+        editableTabsValue: '0',
+        editableTabs: [
+          {
+            title: '正文',
+            name: '0',
+            content: ''
           }
-        },
-        previewContent: ''
+        ],
+        Sortable: null
       };
     },
     props: {
@@ -149,26 +141,86 @@
           this.options = res.data.dataMap;
         });
       },
-      onEditorChange({html}) {
-        console.log(html);
-        this.form.content = html;
+      onEditorChange(html, editor) {
+        const id = editor.$textContainerElem[0].id;
+        const index = id.split('-')[1];
+        this.editableTabs.some((item, i) => {
+          if (i === +index) {
+            const obj = Object.assign({}, item);
+            obj.content = html;
+            this.editableTabs.splice(i, 1, obj);
+            return true;
+          }
+          return false;
+        });
+      },
+      handleTabsEdit(targetName, action) {
+        if (action === 'add') {
+          const len = `${this.editableTabs.length}`;
+          this.editableTabs.push({
+            title: '附件',
+            name: len,
+            content: ''
+          });
+          this.editableTabsValue = len;
+        }
+        if (action === 'remove') {
+          const tabs = this.editableTabs;
+          let activeName = this.editableTabsValue;
+          if (activeName === targetName) {
+            tabs.some((tab, index) => {
+              if (tab.name === targetName) {
+                const nextTab = tabs[index + 1] || tabs[index - 1];
+                if (nextTab) {
+                  activeName = nextTab.name;
+                }
+                return true;
+              }
+              return false;
+            });
+          }
+
+          this.editableTabsValue = activeName;
+          this.editableTabs = tabs.filter(tab => tab.name !== targetName);
+        }
+        this.$nextTick(() => {
+          this.dragulaInit();
+        });
       },
       save() {
         if (!this.disabled) {
-          console.log(this.form.content);
-          const form = {...this.form, content: this.form.content.replace(/\s/g, '&nbsp;')};
-          this[types.SET_INFO]({
-            info: form
-          });
+          const content = this.editableTabs.map(item => item.content.replace(/\s/g, '&nbsp;'));
+          const form = {...this.form, content};
+          this.$emit('getData', form);
         }
         this.back();
       },
       back() {
         this.$emit('update:showTmpl', false);
       },
-      ...mapMutations([
-        types.SET_INFO
-      ])
+      dragulaInit() {
+        const t = this;
+        if (this.Sortable) {
+          this.Sortable.destroy();
+        }
+        const container = document.querySelector('.el-tabs__nav');
+        const ignoreElem = container.firstChild;
+        this.Sortable = Sortable.create(container, {
+          handle: '.drag-elements',
+          onEnd(evt) {
+            const {newIndex, oldIndex} = evt;
+            if (newIndex !== oldIndex) {
+              const editableTabs = t.editableTabs.slice(0);
+              const item = editableTabs.splice(oldIndex, 1);
+              editableTabs.splice(newIndex, 0, item[0]);
+              t.editableTabs = editableTabs;
+            }
+          },
+          onMove(evt) {
+            return ignoreElem !== evt.related;
+          }
+        });
+      }
     },
     watch: {
       modulesData() {
@@ -183,7 +235,7 @@
           return;
         }
         const option = _.find(options, (o) => o.id === this.tplType);
-        this.form.contentModule = option.moduleIds;
+        this.contentModule = option.moduleIds;
       },
       tplInfo() {
         const tplInfo = this.tplInfo;
@@ -193,15 +245,14 @@
         this.form.contentModule = tplInfo.contentModule.map(item => item.id);
         this.form.content = tplInfo.content;
       },
-      'form.contentModule': function () {
-        const value = this.form.contentModule;
+      contentModule(val) {
         const modulesData = this.modulesData;
-        if (!value.length || !modulesData.length) {
+        if (!val.length || !modulesData.length) {
           return;
         }
         const header = [];
         const footer = [];
-        value.forEach((key) => {
+        val.forEach((key) => {
           const module = _.find(modulesData, (o) => o.id === key);
           const content = module.moduleContent;
           if (module.moduleType === 1) {
@@ -217,10 +268,10 @@
     computed: {
       disabled() {
         return [routerNames.con_tpl_see, routerNames.con_tpl_abolish].indexOf(this.$route.name) > -1;
+      },
+      previewContent() {
+        return this.editableTabs.map(item => item.content).join('');
       }
-    },
-    components: {
-      quillEditor
     },
     filters: {
       setItemDisabled(items, self) {
@@ -233,6 +284,11 @@
         }
         return items;
       }
+    },
+    mounted() {
+      this.$nextTick(() => {
+        this.dragulaInit();
+      });
     }
   };
 </script>

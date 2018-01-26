@@ -1,5 +1,5 @@
 import _ from 'lodash';
-import { routerNames } from '../core/consts';
+import {routerNames} from '../core/consts';
 
 export default {
   methods: {
@@ -7,6 +7,9 @@ export default {
       this.$router.push({
         name: routerNames.con_index
       });
+    },
+    getTmplData(form) {
+      Object.assign(this.form, form);
     },
     check(result) {
       if (result.templateType === 'TEXT') {

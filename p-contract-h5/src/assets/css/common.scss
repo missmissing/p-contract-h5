@@ -11,6 +11,10 @@ body {
   font-size: 12px;
 }
 
+pre {
+  white-space: pre-wrap;
+}
+
 .fl {
   float: left;
 }
@@ -143,9 +147,10 @@ vuejs
 }
 
 /**
-vue-quill-editor
+wangeditor
  */
-.ql-editor {
+.w-e-text {
   min-height: 280px;
   max-height: 500px;
 }
+

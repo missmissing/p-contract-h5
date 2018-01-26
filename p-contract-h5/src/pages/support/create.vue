@@ -155,7 +155,7 @@
       </div>
     </transition>
     <transition name="component-fade" mode="out-in">
-      <Tmpl v-show="showTmpl" :showTmpl.sync="showTmpl"></Tmpl>
+      <Tmpl v-show="showTmpl" :showTmpl.sync="showTmpl" @getData="getTmplData"/>
     </transition>
     <TreeModal
       nodeKey="id"
@@ -171,9 +171,6 @@
 </template>
 
 <script>
-  import Tmpl from './tmpl.vue';
-  import Upload from '../../components/upload.vue';
-  import TreeModal from '../../components/treeModal.vue';
   import Api from '../../api/manageContract/index';
   import supportModel from '../../api/support';
   import getBusiType from '../../mixins/getBusiType';
@@ -182,6 +179,10 @@
   import {formatTimeStamp} from '../../filters/moment';
   import {contractPatternMap} from '../../core/consts';
   import {nonNegative} from '../../util/reg';
+
+  import Tmpl from './tmpl.vue';
+  import Upload from '../../components/upload.vue';
+  import TreeModal from '../../components/treeModal.vue';
 
   export default {
     mixins: [getBusiType, comLoading, createUpdate],
@@ -213,7 +214,9 @@
           contractType: null,
           businessOperatorId: null,
           businessOperatorName: null,
-          amount: null
+          amount: null,
+          contentModule: [],
+          content: ''
         },
         fileList: [],
         endDate: '9999-12-31',
@@ -279,7 +282,6 @@
         this.form.businessOperatorName = null;
       },
       getResult() {
-        const {info} = this.$store.state.support.create;
         const {
           templateName,
           templateType,
@@ -289,9 +291,11 @@
           businessOperatorId,
           businessOperatorName,
           amount,
-          contractType
+          contractType,
+          contentModule,
+          content
         } = this.form;
-        const result = Object.assign({
+        const result = {
           templateName,
           templateType,
           startDate: formatTimeStamp(startDate),
@@ -300,8 +304,10 @@
           businessOperatorId,
           businessOperatorName,
           amount,
-          contractType
-        }, info);
+          contractType,
+          contentModule,
+          content
+        };
         const files = [];
         this.fileList.forEach((file) => {
           if (file.status === 'success') {
