@@ -11,7 +11,7 @@
       <el-table-column
         prop="purchaseOrderNo"
         label="采购订单">
-        <template scope="scope">
+        <template slot-scope="scope">
           <router-link class="router-link" :to="see(scope.row)">
             {{scope.row.purchaseOrderNo}}
           </router-link>
@@ -25,7 +25,7 @@
         prop="initiateTime"
         label="发起时间"
         width="120">
-        <template scope="scope">
+        <template slot-scope="scope">
           {{scope.row.initiateTime | formatDate}}
         </template>
       </el-table-column>
@@ -33,7 +33,7 @@
         prop="orderTime"
         label="下单时间"
         width="150">
-        <template scope="scope">
+        <template slot-scope="scope">
           {{scope.row.orderTime | formatDate}}
         </template>
       </el-table-column>

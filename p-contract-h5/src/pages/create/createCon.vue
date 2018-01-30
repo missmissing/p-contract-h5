@@ -228,7 +228,7 @@
                 </el-button>
                 <el-table :data="cardContentInfoForm.tableSupplierInfo">
                   <el-table-column type="index" label="序号" width="80">
-                    <template scope="scope">
+                    <template slot-scope="scope">
                       {{scope.$index + 1}}
                     </template>
                   </el-table-column>
@@ -238,7 +238,7 @@
                     label="操作"
                     width="100"
                     v-if="this.operateType!=='query'">
-                    <template scope="scope">
+                    <template slot-scope="scope">
                       <el-button
                         v-if="cardContentInfoForm.tableSupplierInfo[scope.$index].type"
                         @click="handleRemove(scope.$index, cardContentInfoForm.tableSupplierInfo)"
@@ -262,7 +262,7 @@
                   <el-table-column prop="code" label="公司代码"></el-table-column>
                   <el-table-column prop="name" label="公司名称"></el-table-column>
                   <el-table-column prop="applyAll" label="全公司适用">
-                    <template scope="scope">
+                    <template slot-scope="scope">
                       <el-checkbox :disabled="!enabledAllApply(cardContentInfoForm.conSubjctName[scope.$index].code)"
                                    v-model="cardContentInfoForm.conSubjctName[scope.$index].applyAll"></el-checkbox>
                     </template>
@@ -271,7 +271,7 @@
                     label="操作"
                     width="100"
                     v-if="this.operateType!=='query'">
-                    <template scope="scope">
+                    <template slot-scope="scope">
                       <el-button
                         v-if="cardContentInfoForm.conSubjctName[scope.$index].type"
                         @click="handleRemove(scope.$index, cardContentInfoForm.conSubjctName)"
@@ -297,7 +297,7 @@
                     label="操作"
                     width="100"
                     v-if="this.operateType!=='query'">
-                    <template scope="scope">
+                    <template slot-scope="scope">
                       <el-button
                         v-if="cardContentInfoForm.thirdPartyInfo[scope.$index].type"
                         @click="handleRemove(scope.$index, cardContentInfoForm.thirdPartyInfo)"
@@ -319,7 +319,7 @@
                 </el-button>
                 <el-table :data="cardContentInfoForm.conStandard" border>
                   <el-table-column type="index" label="序号" width="80">
-                    <template scope="scope">
+                    <template slot-scope="scope">
                       {{scope.$index + 1}}
                     </template>
                   </el-table-column>
@@ -331,7 +331,7 @@
                                    width="100"></el-table-column>
                   <el-table-column prop="price" label="价格" width="100"></el-table-column>
                   <el-table-column prop="taxRate" label="税率" width="100">
-                    <template scope="scope">
+                    <template slot-scope="scope">
                       {{cardContentInfoForm.conStandard[scope.$index].taxRate}}%
                     </template>
                   </el-table-column>
@@ -340,7 +340,7 @@
                     label="操作"
                     width="100"
                     v-if="this.operateType!=='query'">
-                    <template scope="scope">
+                    <template slot-scope="scope">
                       <el-button
                         v-if="cardContentInfoForm.conStandard[scope.$index].operate"
                         @click="handleRemove(scope.$index,cardContentInfoForm.conStandard)"
@@ -567,7 +567,7 @@
                   label="操作"
                   width="100"
                   v-if="this.operateType!=='query'">
-                  <template scope="scope">
+                  <template slot-scope="scope">
                     <el-button
                       v-if="cardContCheckInfoForm.unionCheckPersons[scope.$index].operate"
                       @click="handleRemove(scope.$index,cardContCheckInfoForm.unionCheckPersons)"
@@ -586,7 +586,7 @@
                 <header slot="header">物资验收事项</header>
                 <el-table :data="cardContCheckInfoForm.materialMatters">
                   <el-table-column type="index" label="序号" width="80">
-                    <template scope="scope">
+                    <template slot-scope="scope">
                       {{scope.$index + 1}}
                     </template>
                   </el-table-column>
@@ -607,7 +607,7 @@
                 </el-button>
                 <el-table :data="cardContCheckInfoForm.serviceMatters">
                   <el-table-column type="index" label="序号" width="80">
-                    <template scope="scope">
+                    <template slot-scope="scope">
                       {{scope.$index + 1}}
                     </template>
                   </el-table-column>
@@ -619,7 +619,7 @@
                     label="操作"
                     width="100"
                     v-if="this.operateType!=='query'">
-                    <template scope="scope">
+                    <template slot-scope="scope">
                       <el-button
                         v-if="cardContCheckInfoForm.serviceMatters[scope.$index].type"
                         @click="handleRemove(scope.$index, cardContCheckInfoForm.serviceMatters)"
@@ -665,12 +665,12 @@
               </template>
               <el-table v-if="cardSealInfoForm.agreenments.length" :data="cardSealInfoForm.agreenments" class="mt20">
                 <el-table-column prop="attachType" label="附件类型" width="150px">
-                  <template scope="scope">
+                  <template slot-scope="scope">
                     {{getContractAgreenmentName(cardSealInfoForm.agreenments[scope.$index].attachType)}}
                   </template>
                 </el-table-column>
                 <el-table-column prop="fileName" label="从协议编号" width="150px">
-                  <template scope="scope">
+                  <template slot-scope="scope">
                     <router-link v-if="cardSealInfoForm.agreenments[scope.$index].fileId"
                                  :to="{path:'/ConCreate/querySlaveProtocol', query:{id:''+cardSealInfoForm.agreenments[scope.$index].fileId}}">
                       {{cardSealInfoForm.agreenments[scope.$index].fileName}}
@@ -697,24 +697,24 @@
             <el-form rel="cardRelatedInfoForm" :model="cardRelatedInfoForm" label-width="100px">
               <el-table :data="cardRelatedInfoForm.contractList" border>
                 <el-table-column type="index" label="序号" width="80">
-                  <template scope="scope">
+                  <template slot-scope="scope">
                     {{scope.$index + 1}}
                   </template>
                 </el-table-column>
                 <el-table-column prop="contractNo" label="合同号"></el-table-column>
                 <el-table-column prop="contractType" label="类型">
-                  <template scope="scope">
+                  <template slot-scope="scope">
                     {{cardRelatedInfoForm.contractList[scope.$index].contractType | contractType}}
                   </template>
                 </el-table-column>
                 <el-table-column prop="contractStatusName" label="状态"></el-table-column>
                 <el-table-column prop="startTime" label="开始时间">
-                  <template scope="scope">
+                  <template slot-scope="scope">
                     {{cardRelatedInfoForm.contractList[scope.$index].startTime | formatDate}}
                   </template>
                 </el-table-column>
                 <el-table-column prop="endTime" label="终止时间">
-                  <template scope="scope">
+                  <template slot-scope="scope">
                     {{cardRelatedInfoForm.contractList[scope.$index].endTime | formatDate}}
                   </template>
                 </el-table-column>
@@ -754,7 +754,7 @@
           <el-tab-pane label="历史信息" name="conHistory" v-if="operateType==='query'&&!procInstId">
             <el-table :data="historyDatas">
               <el-table-column prop="procInstId" label="流程id">
-                <template scope="scope">
+                <template slot-scope="scope">
                   <div v-if="[2,4].indexOf(scope.row.contractType)>-1||!scope.row.procInstId">自动创建</div>
                   <div class="router-link" @click="goToProcess(scope.row)" v-else>
                     {{scope.row.procInstId}}
@@ -763,7 +763,7 @@
               </el-table-column>
               <el-table-column prop="operatorName" label="操作者"></el-table-column>
               <el-table-column prop="operateTime" label="操作时间">
-                <template scope="scope">{{scope.row.operateTime | formatDate}}</template>
+                <template slot-scope="scope">{{scope.row.operateTime | formatDate}}</template>
               </el-table-column>
               <el-table-column prop="operateType" label="操作类型"></el-table-column>
             </el-table>
@@ -771,7 +771,7 @@
         </el-tabs>
       </el-card>
     </div>
-    <el-dialog title="新增合同供应商信息" :visible.sync="cardContentInfoForm.dialogAddContractSupplier" size="small">
+    <el-dialog title="新增合同供应商信息" :visible.sync="cardContentInfoForm.dialogAddContractSupplier">
       <el-form :model="formContractSupplier" label-width="100px" ref="formContractSupplier"
                :rules="formContractSupplier.rules">
         <el-form-item label="供应商名称/编码" prop="search" label-width="150px">
@@ -800,7 +800,7 @@
         <el-button type="primary" @click="handleNewContractSupplier('formContractSupplier')">确定</el-button>
       </footer>
     </el-dialog>
-    <el-dialog title="新增合同我方主体" :visible.sync="baseInfoForm.dialogNewSubjectVisible" size="small">
+    <el-dialog title="新增合同我方主体" :visible.sync="baseInfoForm.dialogNewSubjectVisible">
       <el-form :model="formNewSubject" label-width="100px" ref="formNewSubject"
                :rules="formNewSubject.rules">
         <el-form-item label="公司名称/编码" prop="search" label-width="150px">
@@ -829,7 +829,7 @@
         <el-button type="primary" @click="handleAddNewSubject('formNewSubject')">确定</el-button>
       </footer>
     </el-dialog>
-    <el-dialog title="第三方信息" :visible.sync="cardContentInfoForm.dialogNewThirdPartyVisible" size="small">
+    <el-dialog title="第三方信息" :visible.sync="cardContentInfoForm.dialogNewThirdPartyVisible">
       <el-form :model="formNewThirdParty" label-width="100px" ref="formNewThirdParty"
                :rules="formNewThirdParty.rules">
         <el-form-item label="供应商名称／编号" prop="search" label-width="150px">

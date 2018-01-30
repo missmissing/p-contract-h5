@@ -11,7 +11,8 @@
   export default {
     name: 'editor',
     props: {
-      editorId: [String, Number]
+      editorId: [String, Number],
+      content: String
     },
     data() {
       return {
@@ -28,10 +29,16 @@
         'justify'
       ];
       editor.customConfig.pasteFilterStyle = false;
+      editor.customConfig.zIndex = 100;
       editor.customConfig.onchangeTimeout = 1;
       editor.customConfig.onchange = this.onChange;
       editor.create();
       this.editor = editor;
+    },
+    watch: {
+      content(val) {
+        this.editor.txt.html(val);
+      }
     },
     methods: {
       onChange(html) {

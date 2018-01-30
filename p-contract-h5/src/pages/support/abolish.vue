@@ -50,9 +50,7 @@
                     <el-input
                       disabled
                       type="textarea"
-                      v-model="form.busiTypeText"
-                      resize="none"
-                      :autosize="{maxRows:6}">
+                      v-model.trim="form.busiTypeText">
                     </el-input>
                   </el-form-item>
                 </el-col>
@@ -108,8 +106,6 @@
                   disabled
                   type="textarea"
                   :maxlength="300"
-                  :autosize="{ minRows: 2 }"
-                  resize="none"
                   v-model="form.description">
                 </el-input>
               </el-form-item>
@@ -122,7 +118,7 @@
                   <el-table-column
                     prop="fileName"
                     label="文件名">
-                    <template scope="scope">
+                    <template slot-scope="scope">
                       <a class="router-link" :href="`${download}${scope.row.fileId}`" target="_blank">{{scope.row.fileName}}</a>
                     </template>
                   </el-table-column>
@@ -135,7 +131,7 @@
                     prop="createTime"
                     width="150"
                     label="上传时间">
-                    <template scope="scope">
+                    <template slot-scope="scope">
                       {{scope.row.createTime | formatDate}}
                     </template>
                   </el-table-column>
@@ -160,8 +156,6 @@
                   <el-form-item label="停用原因" prop="abolishReason">
                     <el-input
                       type="textarea"
-                      :autosize="{ minRows: 2 }"
-                      resize="none"
                       v-model="form.abolishReason">
                     </el-input>
                   </el-form-item>

@@ -47,8 +47,9 @@
               style="width:100%;"
               v-model="daterange"
               type="daterange"
-              placeholder="选择日期范围"
-              @change="formatDateRange"
+              :editable="false"
+              start-placeholder="开始日期"
+              end-placeholder="结束日期"
               :picker-options="pickerOptions">
             </el-date-picker>
           </el-form-item>
@@ -69,7 +70,7 @@
         prop="templateCode"
         width="150"
         label="模板编号">
-        <template scope="scope">
+        <template slot-scope="scope">
           <router-link class="router-link" :to="see(scope.row)">
             {{scope.row.templateCode}}
           </router-link>
@@ -84,7 +85,7 @@
         prop="templateType"
         width="100"
         label="文本类型">
-        <template scope="scope">
+        <template slot-scope="scope">
           {{scope.row.templateType === 'TEXT' ? '合同文本' : '合同模板'}}
         </template>
       </el-table-column>
@@ -103,7 +104,7 @@
         prop="createTime"
         width="120"
         label="创建日期">
-        <template scope="scope">
+        <template slot-scope="scope">
           {{scope.row.createTime | formatDate}}
         </template>
       </el-table-column>
@@ -111,7 +112,7 @@
         prop="startDate"
         width="120"
         label="生效日期">
-        <template scope="scope">
+        <template slot-scope="scope">
           {{scope.row.startDate | formatDate}}
         </template>
       </el-table-column>
@@ -119,7 +120,7 @@
         prop="endDate"
         width="120"
         label="终止日期">
-        <template scope="scope">
+        <template slot-scope="scope">
           {{scope.row.endDate | formatDate}}
         </template>
       </el-table-column>
@@ -132,7 +133,7 @@
         prop="templateStatus"
         width="130"
         label="状态">
-        <template scope="scope">
+        <template slot-scope="scope">
           {{scope.row.templateStatus | tplStatus}}
         </template>
       </el-table-column>
@@ -153,10 +154,10 @@
 </template>
 
 <script>
-  import { routerNames } from '../../core/consts';
+  import {routerNames} from '../../core/consts';
   import supportModel from '../../api/support';
   import comLoading from '../../mixins/comLoading';
-  import { formatTime, formatDate, formatTimeStamp } from '../../filters/moment';
+  import {formatTime, formatDate, formatTimeStamp} from '../../filters/moment';
   import tplStatus from '../../filters/tplStatus';
 
   export default {
@@ -190,13 +191,14 @@
       },
       getList() {
         this.comLoading();
+        this.form.startTime = formatTimeStamp(this.daterange[0]);
+        this.form.endTime = formatTimeStamp(this.daterange[1]);
         supportModel.getList(this.form).then((res) => {
           console.log(res);
-          this.comLoading(false);
-
-          const { total, data } = res.data.dataMap;
+          const {total, data} = res.data.dataMap;
           this.tableData = data;
           this.totalPage = total;
+          this.comLoading(false);
         }, () => {
           this.comLoading(false);
         });
@@ -218,12 +220,6 @@
             id: row.id
           }
         };
-      },
-      formatDateRange(value) {
-        const daterange = value.split(' ');
-        this.daterange = [daterange[0], daterange[2]];
-        this.form.startTime = formatTimeStamp(daterange[0]);
-        this.form.endTime = formatTimeStamp(daterange[2]);
       }
     },
     filters: {

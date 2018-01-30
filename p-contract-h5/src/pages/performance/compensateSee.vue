@@ -108,8 +108,6 @@
               <el-input
                 type="textarea"
                 :maxlength="300"
-                :autosize="{ minRows: 2 }"
-                resize="none"
                 v-model="handleForm.violateReason"
                 disabled>
               </el-input>
@@ -118,9 +116,7 @@
               <el-input
                 type="textarea"
                 :maxlength="300"
-                :autosize="{ minRows: 2 }"
-                resize="none"
-                v-model="handleForm.treatmentScheme"
+                v-model.trim="handleForm.treatmentScheme"
                 disabled>
               </el-input>
             </el-form-item>
@@ -133,7 +129,7 @@
                 <el-table-column
                   prop="fileName"
                   label="文件名">
-                  <template scope="scope">
+                  <template slot-scope="scope">
                     <a class="router-link" :href="`${download}${scope.row.fileId}`" target="_blank">{{scope.row.fileName}}</a>
                   </template>
                 </el-table-column>
@@ -146,7 +142,7 @@
                   prop="createTime"
                   width="150"
                   label="上传时间">
-                  <template scope="scope">
+                  <template slot-scope="scope">
                     {{scope.row.createTime | formatDate}}
                   </template>
                 </el-table-column>

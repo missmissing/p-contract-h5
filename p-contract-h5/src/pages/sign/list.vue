@@ -40,8 +40,9 @@
               style="width:100%;"
               v-model="daterange"
               type="daterange"
-              placeholder="选择日期范围"
-              @change="formatDateRange"
+              :editable="false"
+              start-placeholder="开始日期"
+              end-placeholder="结束日期"
               :picker-options="pickerOptions">
             </el-date-picker>
           </el-form-item>
@@ -76,7 +77,7 @@
         prop="pr"
         width="130"
         label="采购订单号">
-        <template scope="scope">
+        <template slot-scope="scope">
           <router-link class="router-link" :to="see(scope.row)">
             {{scope.row.purchaseOrderNo}}
           </router-link>
@@ -97,7 +98,7 @@
         prop="btwbtext"
         min-width="200"
         label="订单描述">
-        <template scope="scope">
+        <template slot-scope="scope">
           {{scope.row.btwbtext || scope.row.purOrderMaterials[0].materialName}}
         </template>
       </el-table-column>
@@ -110,7 +111,7 @@
         prop="createTime"
         width="120"
         label="创建日期">
-        <template scope="scope">
+        <template slot-scope="scope">
           {{scope.row.createTime | formatDate}}
         </template>
       </el-table-column>
@@ -184,6 +185,8 @@
       },
       getList() {
         this.comLoading();
+        this.form.createDateStart = formatDate(this.daterange[0]);
+        this.form.createDateEnd = formatDate(this.daterange[1]);
         Api.query(this.form).then((res) => {
           console.log(res);
           this.comLoading(false);
@@ -201,12 +204,6 @@
           query: {id}
         };
       },
-      formatDateRange(value) {
-        const daterange = value.split(' ');
-        this.daterange = [daterange[0], daterange[2]];
-        this.form.createDateStart = daterange[0];
-        this.form.createDateEnd = daterange[2];
-      },
       handleSizeChange(val) {
         console.log(`每页 ${val} 条`);
         this.form.pageSize = val;
@@ -216,9 +213,6 @@
         console.log(`当前页: ${val}`);
         this.form.pageNo = val;
         this.getList();
-      },
-      select(row, val) {
-        console.log(row, val);
       },
       createFilter(result) {
         return result.map((item) => ({value: item.companyCode, label: `${item.companyCode} ${item.company}`}));

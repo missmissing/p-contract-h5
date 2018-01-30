@@ -45,8 +45,9 @@
       <div>
         <el-row>
           <el-col :span="11">
-            <div class="mb20">
+            <el-row>
               <el-select
+                class="mr10"
                 :disabled="disabled"
                 v-model="tplType"
                 placeholder="请选择">
@@ -57,7 +58,16 @@
                   :value="item.id">
                 </el-option>
               </el-select>
-            </div>
+              <Dropdown class="mr10" :datas="staticLabels" @command="chooseStaticLabel">
+                <el-button type="primary">
+                  固定标签<i class="el-icon-arrow-down ml10"></i>
+                </el-button>
+              </Dropdown>
+              <Dropdown splitButton type="primary" :datas="customLabels" @click="dialogVisible=true"
+                        @command="chooseCustomLabel">
+                <i class="el-icon-plus mr10"></i>自定义标签
+              </Dropdown>
+            </el-row>
             <div class="mb20">
               <!--<el-transfer
                 :titles="['可选模块', '已选模块']"
@@ -76,7 +86,8 @@
                   :closable="index!==0"
                 >
                   <span class="drag-elements" slot="label" v-if="index!==0">{{item.title}}</span>
-                  <Editor :editorId="index" :content="item.content" @onChange="onEditorChange"></Editor>
+                  <Editor :editorId="item.name" :content="item.content" @onChange="onEditorChange"
+                          :ref="`editor-${item.name}`"></Editor>
                 </el-tab-pane>
               </el-tabs>
             </div>
@@ -94,6 +105,23 @@
       </div>
     </el-card>
     <el-button class="mt20 ml20" type="primary" @click="save">返 回</el-button>
+    <el-dialog
+      title="添加自定义标签"
+      :visible.sync="dialogVisible"
+      size="tiny">
+      <el-form :model="customLabelForm" :rules="customLabelRules" ref="customLabelForm" label-width="100px">
+        <el-form-item label="标签名称" prop="name">
+          <el-input v-model="customLabelForm.name"></el-input>
+        </el-form-item>
+        <el-form-item label="标签描述" prop="description">
+          <el-input type="textarea" v-model="customLabelForm.description"></el-input>
+        </el-form-item>
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="dialogVisible = false">取 消</el-button>
+        <el-button type="primary" @click="addCustomLabel">确 定</el-button>
+      </div>
+    </el-dialog>
   </div>
 </template>
 
@@ -105,10 +133,12 @@
   import Api from '../../api/support';
 
   import Editor from '../../components/editor.vue';
+  import Dropdown from '../../components/dropdown.vue';
 
   export default {
     components: {
-      Editor
+      Editor,
+      Dropdown
     },
     mixins: [getModules],
     data() {
@@ -126,7 +156,17 @@
             content: ''
           }
         ],
-        Sortable: null
+        Sortable: null,
+        dialogVisible: false,
+        staticLabels: [],
+        customLabels: [],
+        customLabelForm: {
+          name: '',
+          description: ''
+        },
+        customLabelRules: {
+          name: [{required: true, message: '请填写标签名称'}]
+        }
       };
     },
     props: {
@@ -184,7 +224,7 @@
           this.editableTabs = tabs.filter(tab => tab.name !== targetName);
         }
         this.$nextTick(() => {
-          this.dragulaInit();
+          this.sortInit();
         });
       },
       save() {
@@ -198,7 +238,7 @@
       back() {
         this.$emit('update:showTmpl', false);
       },
-      dragulaInit() {
+      sortInit() {
         const t = this;
         if (this.Sortable) {
           this.Sortable.destroy();
@@ -220,6 +260,27 @@
             return ignoreElem !== evt.related;
           }
         });
+      },
+      chooseStaticLabel(item) {
+        console.log('选中固定标签', item);
+      },
+      addCustomLabel() {
+        const form = this.$refs.customLabelForm;
+        form.validate((valid) => {
+          if (!valid) {
+            return;
+          }
+          this.customLabels.unshift({
+            label: this.customLabelForm.name
+          });
+          form.resetFields();
+          this.dialogVisible = false;
+        });
+      },
+      chooseCustomLabel(item) {
+        console.log('选中自定义标签', item);
+        const currentEditor = this.$refs[`editor-${this.editableTabsValue}`][0];
+        currentEditor.editor.cmd.do('insertHTML', item.label);
       }
     },
     watch: {
@@ -239,11 +300,11 @@
       },
       tplInfo() {
         const tplInfo = this.tplInfo;
-        if (!tplInfo) {
+        if (!Object.keys(tplInfo).length) {
           return;
         }
-        this.form.contentModule = tplInfo.contentModule.map(item => item.id);
-        this.form.content = tplInfo.content;
+        this.contentModule = tplInfo.contentModule.map(item => item.id);
+        this.editableTabs[0].content = tplInfo.content;
       },
       contentModule(val) {
         const modulesData = this.modulesData;
@@ -287,7 +348,7 @@
     },
     mounted() {
       this.$nextTick(() => {
-        this.dragulaInit();
+        this.sortInit();
       });
     }
   };

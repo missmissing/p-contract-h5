@@ -12,7 +12,7 @@
       <el-table-column
         prop="procName"
         label="流程名称">
-        <template scope="scope">
+        <template slot-scope="scope">
           <el-button type="text" @click.native.prevent="toPage(scope.row)">{{scope.row.procName}}</el-button>
         </template>
       </el-table-column>
@@ -35,7 +35,7 @@
       <el-table-column
         prop="startTime"
         label="创建时间">
-        <template scope="scope">
+        <template slot-scope="scope">
           {{ scope.row.startTime | formatTime }}
         </template>
       </el-table-column>

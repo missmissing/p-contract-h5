@@ -55,9 +55,7 @@
               :required="required">
               <el-input
                 type="textarea"
-                :autosize="{ minRows: 2 }"
                 :maxlength="300"
-                resize="none"
                 v-model.trim="approveRemark">
               </el-input>
             </el-form-item>

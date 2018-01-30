@@ -5,23 +5,23 @@
 <template>
   <el-table :data="items" :show-header="showHeader" row-key="attachType" :expand-row-keys="expandkeys">
     <el-table-column type="expand" v-if="items[0].haveSale">
-      <template scope="scope">
+      <template slot-scope="scope">
         <div v-if="items[0].haveSale" class="pt20">
           <el-table :data="scope.row.filesSealed" class="mb20"
                     v-if="scope.row.filesSealed&&scope.row.filesSealed.length">
             <el-table-column label="文件名" prop="sealFileName">
-              <template scope="scope1">
+              <template slot-scope="scope1">
                 <a class="router-link" :href="scope1.row.sealFileUrl" target="_blank">{{scope1.row.sealFileName}}</a>
               </template>
             </el-table-column>
             <el-table-column label="上传人" prop="sealFileCreatorName" width="130"></el-table-column>
             <el-table-column label="上传时间" prop="sealFileCreateTime" width="130">
-              <template scope="scope1">
+              <template slot-scope="scope1">
                 {{scope1.row.sealFileCreateTime | formatDate}}
               </template>
             </el-table-column>
             <el-table-column label="操作" v-if="scope.row.filesSealed[0].addNew" width="100">
-              <template scope="scope1">
+              <template slot-scope="scope1">
                 <el-button
                   @click="handleRemove(scope1.$index, scope.row.filesSealed)"
                   type="danger"
@@ -87,12 +87,12 @@
       </template>
     </el-table-column>
     <el-table-column prop="attachType" label="附件类型" width="150px">
-      <template scope="scope">
+      <template slot-scope="scope">
         {{scope.row.attachType | attachmentType}}
       </template>
     </el-table-column>
     <el-table-column prop="fileName" label="文件名称" width="200px">
-      <template scope="scope">
+      <template slot-scope="scope">
         <a class="router-link" :href="scope.row.fileUrl" target="_blank">{{scope.row.fileName}}</a>
         <el-upload
           v-if="coverUploadDisabled"
@@ -107,7 +107,7 @@
       </template>
     </el-table-column>
     <el-table-column prop="upload" label="上传" width="100px" v-if="!ifFind(removeColumns,'upload')">
-      <template scope="scope">
+      <template slot-scope="scope">
         <el-upload
           ref="uploadSealFile"
           :show-file-list="false"
@@ -120,7 +120,7 @@
       </template>
     </el-table-column>
     <el-table-column prop="haveSale" label="是否盖章" width="150px">
-      <template scope="scope">
+      <template slot-scope="scope">
         <el-checkbox
           :disabled="sealDisabled"
           :checked="scope.row.haveSale"
@@ -129,7 +129,7 @@
       </template>
     </el-table-column>
     <el-table-column prop="remark" label="备注">
-      <template scope="scope">
+      <template slot-scope="scope">
         <el-input v-model="scope.row.remark" :disabled="remarkDisabled"></el-input>
       </template>
     </el-table-column>
@@ -137,7 +137,7 @@
       v-if="!ifFind(removeColumns,'handleBtns')"
       label="操作"
       width="100">
-      <template scope="scope">
+      <template slot-scope="scope">
         <el-button
           v-if="scope.row.addNew"
           @click="del"

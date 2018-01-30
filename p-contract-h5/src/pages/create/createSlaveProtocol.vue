@@ -97,12 +97,12 @@
                   v-for="(item,index) in cardSealInfoForm.sealAttachments">
           <el-table :data="item" :show-header="index===0" style="width:100%">
             <el-table-column type="expand" v-if="item[0].haveSale">
-              <template scope="props" v-if="item[0].haveSale">
+              <template slot-scope="props" v-if="item[0].haveSale">
                 <div v-if="item[0].haveSale" v-bind:class="{tdPd:item[0].haveSale}">
                   <el-table :data="props.row.filesSealed" class="mb20"
                             v-if="props.row.filesSealed&&props.row.filesSealed.length">
                     <el-table-column label="文件名" prop="sealFileName">
-                      <template scope="scope">
+                      <template slot-scope="scope">
                         <a
                           :href="props.row.filesSealed[scope.$index].sealFileUrl"
                           target="_blank">{{props.row.filesSealed[scope.$index].sealFileName}}</a>
@@ -110,13 +110,13 @@
                     </el-table-column>
                     <el-table-column label="上传人" prop="sealFileCreatorName"></el-table-column>
                     <el-table-column label="上传时间" prop="sealFileCreateTime">
-                      <template scope="scope">
+                      <template slot-scope="scope">
                         {{props.row.filesSealed[scope.$index].sealFileCreateTime | formatDate}}
                       </template>
                     </el-table-column>
                     <el-table-column fixed="right" label="操作"
                                      v-if="props.row.filesSealed[0].operate||enabledUpdateInApprove">
-                      <template scope="scope">
+                      <template slot-scope="scope">
                         <el-button @click="handleRemoveItem(index, props.row.filesSealed)"
                                    type="danger" size="small">移除
                         </el-button>
@@ -184,17 +184,17 @@
               </template>
             </el-table-column>
             <el-table-column prop="attachType" label="附件类型" width="150px">
-              <template scope="scope">
+              <template slot-scope="scope">
                 {{item[scope.$index].attachType | attachmentType}}
               </template>
             </el-table-column>
             <el-table-column prop="fileName" label="文件名称" width="200px">
-              <template scope="scope">
+              <template slot-scope="scope">
                 <a :href="item[scope.$index].fileUrl" target="_blank">{{item[scope.$index].fileName}}</a>
               </template>
             </el-table-column>
             <el-table-column prop="upload" label="上传" width="100px">
-              <template scope="scope">
+              <template slot-scope="scope">
                 <el-upload
                   :data="{userId:users.userId}"
                   :show-file-list="false"
@@ -211,13 +211,13 @@
               </template>
             </el-table-column>
             <el-table-column prop="haveSale" label="是否盖章" width="100px">
-              <template scope="scope">
+              <template slot-scope="scope">
                 <el-checkbox :disabled="!enabledInupdated" v-model="item[scope.$index].haveSale"
                              @change="handleChangeValidateForms"></el-checkbox>
               </template>
             </el-table-column>
             <el-table-column prop="remark" :disabled="!enabledInupdated" label="备注">
-              <template scope="scope">
+              <template slot-scope="scope">
                 <el-input
                   :disabled="!enabledInupdated"
                   v-model="item[scope.$index].remark"></el-input>
@@ -228,7 +228,7 @@
               label="操作"
               width="80"
               v-if="enabledInupdated">
-              <template scope="scope">
+              <template slot-scope="scope">
                 <el-button
                   v-if="item[scope.$index].operate"
                   @click="handleRemoveItem(index, cardSealInfoForm.sealAttachments)"
@@ -275,7 +275,7 @@
         </el-button>
       </el-col>
     </el-row>
-    <el-dialog title="新增合同供应商信息" :visible.sync="baseInfoForm.dialogAddContractSupplier" size="small">
+    <el-dialog title="新增合同供应商信息" :visible.sync="baseInfoForm.dialogAddContractSupplier">
       <el-form :model="formContractSupplier" label-width="100px" ref="formContractSupplier"
                :rules="formContractSupplier.rules">
         <el-form-item label="供应商名称/编码" prop="search" label-width="150px">
@@ -304,7 +304,7 @@
         <el-button type="primary" @click="handleNewContractSupplier('formContractSupplier')">确定</el-button>
       </footer>
     </el-dialog>
-    <el-dialog title="新增合同我方主体" :visible.sync="baseInfoForm.dialogNewSubjectVisible" size="small">
+    <el-dialog title="新增合同我方主体" :visible.sync="baseInfoForm.dialogNewSubjectVisible">
       <el-form :model="formNewSubject" label-width="100px" ref="formNewSubject"
                :rules="formNewSubject.rules">
         <el-form-item label="公司名称/编码" prop="search" label-width="150px">

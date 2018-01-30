@@ -29,7 +29,7 @@
         prop="createTime"
         label="发起时间"
         width="120">
-        <template scope="scope">
+        <template slot-scope="scope">
           {{scope.row.createTime|formatDate}}
         </template>
       </el-table-column>

@@ -1,4 +1,4 @@
-<style type="text/scss" lang="scss" scope>
+<style type="text/scss" lang="scss" scoped>
   .basic-info {
 
   }
@@ -90,8 +90,6 @@
           <el-form-item label="原因说明" prop="suspendRemark">
             <el-input
               type="textarea"
-              :autosize="{ minRows: 2 }"
-              resize="none"
               v-model.trim="form.suspendRemark">
             </el-input>
           </el-form-item>
@@ -102,7 +100,7 @@
           <template v-if="form.sealAttachments.length" v-for="(item,index) in form.sealAttachments">
             <el-table :data="item" :show-header="index===0?true:false">
               <el-table-column type="expand" v-if="item[0].haveSale">
-                <template scope="props" v-if="item[0].haveSale">
+                <template slot-scope="props" v-if="item[0].haveSale">
                   <div v-if="item[0].haveSale" v-bind:class="{tdPd:item[0].haveSale}">
                     <el-row>
                       <el-col :span="6">
@@ -140,17 +138,17 @@
                 </template>
               </el-table-column>
               <el-table-column prop="attachType" label="附件类型" width="150px">
-                <template scope="scope">
+                <template slot-scope="scope">
                   其他
                 </template>
               </el-table-column>
               <el-table-column prop="fileName" label="文件名称" width="200px">
-                <template scope="scope">
+                <template slot-scope="scope">
                   <a :href="item[scope.$index].fileUrl" target="_blank">{{item[scope.$index].fileName}}</a>
                 </template>
               </el-table-column>
               <el-table-column prop="upload" label="上传" width="100px">
-                <template scope="scope">
+                <template slot-scope="scope">
                   <el-upload
                     :data="{userId:users.userId}"
                     :show-file-list="false"
@@ -167,14 +165,14 @@
                 </template>
               </el-table-column>
               <el-table-column prop="haveSale" label="是否盖章" width="70px">
-                <template scope="scope">
+                <template slot-scope="scope">
                   <el-checkbox
                     @change="handleChangeValidateForms"
                     v-model="item[scope.$index].haveSale"></el-checkbox>
                 </template>
               </el-table-column>
               <el-table-column prop="remark" label="备注" width="200px">
-                <template scope="scope">
+                <template slot-scope="scope">
                   <el-input
                     v-model="item[scope.$index].remark"></el-input>
                 </template>
@@ -182,7 +180,7 @@
               <el-table-column
                 fixed="right"
                 label="操作">
-                <template scope="scope">
+                <template slot-scope="scope">
                   <el-button v-if="item[scope.$index].operate"
                              @click="handleRemoveAttachmentsItem(index, form.sealAttachments)"
                              type="danger" size="small">移除

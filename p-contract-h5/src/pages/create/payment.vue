@@ -5,7 +5,7 @@
 <template>
   <el-table :show-header="showHeader" :data="items" row-key="type" :expand-row-keys="expandkeys" class="wp100">
     <el-table-column type="expand" v-if="items.length&&items[0].seriousPayments">
-      <template scope="scope">
+      <template slot-scope="scope">
         <div class="pt20 pb20" v-if="items.length&&items[0].seriousPayments">
           <el-button
             v-if="!disabledTable"
@@ -18,12 +18,12 @@
           </el-button>
           <el-table :data="scope.row.subItem">
             <el-table-column width="100px" prop="name" label="名称">
-              <template scope="scope1">{{`${scope.row.type}${scope1.$index + 1}`}}</template>
+              <template slot-scope="scope1">{{`${scope.row.type}${scope1.$index + 1}`}}</template>
             </el-table-column>
             <el-table-column
               prop="paymentAmount"
               label="付款金额">
-              <template scope="scope1">
+              <template slot-scope="scope1">
                 <el-input
                   :disabled="disabledTable"
                   v-model="scope1.row.paymentAmount"
@@ -34,7 +34,7 @@
               prop="paymentTimePeriod"
               label="付款条件"
               width="200px">
-              <template scope="scope1">
+              <template slot-scope="scope1">
                 <el-select
                   :disabled="disabledTable"
                   v-model="scope1.row.paymentTimePeriod"
@@ -54,7 +54,7 @@
               prop="remark"
               label="付款节点说明"
               width="200px">
-              <template scope="scope1">
+              <template slot-scope="scope1">
                 <el-input
                   :disabled="disabledTable"
                   type="textarea"
@@ -63,7 +63,7 @@
               </template>
             </el-table-column>
             <el-table-column prop="ratio" label="占比" width="100px">
-              <template scope="scope1">
+              <template slot-scope="scope1">
                 {{calcPercent(scope1.row, scope1.row.paymentAmount)}}
               </template>
             </el-table-column>
@@ -72,7 +72,7 @@
               fixed="right"
               label="操作"
               width="100">
-              <template scope="scope1">
+              <template slot-scope="scope1">
                 <el-button
                   @click="handleRemove(scope1.$index, scope.row.subItem)"
                   type="danger" size="small">移除
@@ -85,7 +85,7 @@
     </el-table-column>
     <el-table-column prop="type" label="类型" width="100px"></el-table-column>
     <el-table-column prop="seriousPayments" label="多次付款" width="130px">
-      <template scope="scope">
+      <template slot-scope="scope">
         <el-checkbox
           :disabled="payTimesDisabled"
           :checked="scope.row.seriousPayments"
@@ -94,7 +94,7 @@
       </template>
     </el-table-column>
     <el-table-column prop="paymentAmount" label="付款金额" width="150px">
-      <template scope="scope">
+      <template slot-scope="scope">
         <el-input
           v-if="!scope.row.seriousPayments"
           :disabled="disabledTable"
@@ -106,7 +106,7 @@
       prop="paymentTimePeriod"
       label="付款条件"
       width="200px">
-      <template scope="scope">
+      <template slot-scope="scope">
         <el-select
           :disabled="disabledTable||scope.row.seriousPayments"
           v-model="scope.row.paymentTimePeriod"
@@ -124,7 +124,7 @@
     <el-table-column
       prop="remark"
       label="付款节点说明">
-      <template scope="scope">
+      <template slot-scope="scope">
         <el-input
           :disabled="disabledTable||scope.row.seriousPayments"
           type="textarea"
@@ -133,7 +133,7 @@
       </template>
     </el-table-column>
     <el-table-column prop="ratio" label="占比" width="100px">
-      <template scope="scope">
+      <template slot-scope="scope">
         {{calcPercent(scope.row, scope.row.paymentAmount)}}
       </template>
     </el-table-column>

@@ -7,7 +7,7 @@
       <el-table-column
         prop="folio"
         label="比价单编码">
-        <template scope="scope">
+        <template slot-scope="scope">
           <a class="router-link" :href="scope.row.processViewUrl" target="_blank">{{scope.row.folio}}</a>
         </template>
       </el-table-column>
@@ -24,7 +24,7 @@
         prop="startTime"
         label="发起时间"
         width="120">
-        <template scope="scope">
+        <template slot-scope="scope">
           {{scope.row.startTime | formatDate}}
         </template>
       </el-table-column>
@@ -32,7 +32,7 @@
         prop="finishTime"
         label="结束时间"
         width="120">
-        <template scope="scope">
+        <template slot-scope="scope">
           {{scope.row.finishTime | formatDate}}
         </template>
       </el-table-column>

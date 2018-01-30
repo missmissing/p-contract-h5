@@ -67,7 +67,7 @@
               prop="materialCode"
               label="物料编码"
               width="130">
-              <template scope="scope">
+              <template slot-scope="scope">
                 {{scope.row.materialCode | cutZero}}
               </template>
             </el-table-column>
@@ -90,7 +90,7 @@
               prop="taxRate"
               label="税率"
               width="80">
-              <template scope="scope">
+              <template slot-scope="scope">
                 {{scope.row.taxRate ? `${scope.row.taxRate}%` : ''}}
               </template>
             </el-table-column>
@@ -185,7 +185,7 @@
       <el-tab-pane label="收货信息" v-if="receiveInfo.length">
         <el-table :data="receiveInfo" border class="wp100">
           <el-table-column type="expand">
-            <template scope="scope">
+            <template slot-scope="scope">
               <el-table :data="scope.row.poReceiveBindVoList" v-if="scope.row.poReceiveBindVoList.length" border
                         class="wp100 mb20">
                 <el-table-column prop="itemNo" label="行项目号"></el-table-column>
@@ -211,12 +211,12 @@
           <el-table-column prop="totalAmount" label="收货总金额"></el-table-column>
           <el-table-column prop="initiator" label="发起人" width="130"></el-table-column>
           <el-table-column prop="epoCreateTime" label="凭证创建日期" width="130">
-            <template scope="scope">{{scope.row.epoCreateTime | formatDate}}</template>
+            <template slot-scope="scope">{{scope.row.epoCreateTime | formatDate}}</template>
           </el-table-column>
           <el-table-column prop="checkResult" label="验收结论"></el-table-column>
           <el-table-column prop="checkRemark" label="验收备注"></el-table-column>
           <el-table-column prop="checkDate" label="验收日期" width="130">
-            <template scope="scope">{{scope.row.checkDate | formatDate}}</template>
+            <template slot-scope="scope">{{scope.row.checkDate | formatDate}}</template>
           </el-table-column>
         </el-table>
       </el-tab-pane>

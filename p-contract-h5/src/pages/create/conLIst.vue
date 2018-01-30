@@ -1,7 +1,5 @@
-<style scope>
-  .supplierInput input {
-    height: 35px !important;
-  }
+<style scoped>
+
 </style>
 <template>
   <div class="pt20 pb20" v-loading="loading" element-loading-text="拼命加载中">
@@ -35,9 +33,8 @@
             <el-input readonly
                       placeholder="请选择业务类型"
                       @focus="visible=true"
-                      v-model="conTypeName"
-                      icon="close"
-                      :on-icon-click="handleConTypeName">
+                      v-model="conTypeName">
+              <i class="el-icon-error" @click="handleConTypeName" slot="suffix"></i>
             </el-input>
           </el-form-item>
         </el-col>
@@ -66,8 +63,9 @@
               style="width:100%;"
               v-model="daterange"
               type="daterange"
-              placeholder="选择日期范围"
-              @change="formatDateRange">
+              :editable="false"
+              start-placeholder="开始日期"
+              end-placeholder="结束日期">
             </el-date-picker>
           </el-form-item>
         </el-col>
@@ -91,10 +89,8 @@
         <el-col :span="8">
           <el-form-item label="供应商名称/编码" prop="supplierCode" label-width="150px">
             <el-select
-              class="supplierInput"
+              class="wp100"
               clearable
-              style="width:100%"
-              size="small"
               v-model="form.supplierCode"
               filterable
               remote
@@ -126,7 +122,7 @@
       highlight-current-row
       class="wp100">
       <el-table-column prop="id" label="合同编号" width="140px">
-        <template scope="scope">
+        <template slot-scope="scope">
           <router-link class="router-link"
                        :to="{path:'/ConCreate/conCheck', query:{contractNo:''+tableData[scope.$index].contractNo}}">
             {{tableData[scope.$index].contractNo}}
@@ -134,7 +130,7 @@
         </template>
       </el-table-column>
       <el-table-column prop="id" label="流程id" width="100px">
-        <template scope="scope">
+        <template slot-scope="scope">
           <div v-if="[2,4].indexOf(scope.row.contractType)>-1||!scope.row.procCode">自动创建</div>
           <div class="router-link" @click="goToProcess(scope.row)" v-else>
             {{scope.row.procInstId}}
@@ -142,12 +138,12 @@
         </template>
       </el-table-column>
       <el-table-column prop="contractTextType" label="文本类型" width="100px">
-        <template scope="scope">
+        <template slot-scope="scope">
           {{getContractTextType(tableData[scope.$index].contractTextType)}}
         </template>
       </el-table-column>
       <el-table-column prop="contractType" label="合同模式" width="130px">
-        <template scope="scope">
+        <template slot-scope="scope">
           {{getContractModel(tableData[scope.$index].contractType)}}
         </template>
       </el-table-column>
@@ -155,24 +151,24 @@
       <el-table-column prop="businessOperatorName" label="经办人" width="100"></el-table-column>
       <el-table-column prop="businessDeptName" label="业务部门" min-width="180"></el-table-column>
       <el-table-column prop="approvalDate" label="创建日期" width="120">
-        <template scope="scope">
+        <template slot-scope="scope">
           {{scope.row.approvalDate | formatDate}}
         </template>
       </el-table-column>
       <el-table-column prop="startTime" label="生效日期" width="120">
-        <template scope="scope">
+        <template slot-scope="scope">
           {{scope.row.startTime | formatDate}}
         </template>
       </el-table-column>
       <el-table-column prop="endTime" label="终止日期" width="120">
-        <template scope="scope">
+        <template slot-scope="scope">
           {{scope.row.endTime | formatDate}}
         </template>
       </el-table-column>
       <el-table-column prop="totalAmount" label="合同总金额" width="110"></el-table-column>
       <el-table-column prop="contractStatusName" label="合同状态" width="120"></el-table-column>
       <el-table-column prop="haveProtocol" label="从协议" width="80">
-        <template scope="scope">
+        <template slot-scope="scope">
           {{scope.row.haveProtocol ? '有' : ''}}
         </template>
       </el-table-column>
@@ -254,6 +250,8 @@
     methods: {
       search() {
         this.loading = true;
+        this.form.createStart = formatDate(this.daterange[0]);
+        this.form.createEnd = formatDate(this.daterange[1]);
         Api.getConList(this.form).then((data) => {
           const dataMap = data.data.dataMap;
           if (dataMap) {
@@ -292,11 +290,6 @@
           default:
             return '';
         }
-      },
-      formatDateRange(value) {
-        const daterange = value.split(' ');
-        this.form.createStart = daterange[0];
-        this.form.createEnd = daterange[2];
       },
       handleSizeChange(val) {
         this.form.pageSize = val;

@@ -5,8 +5,8 @@
 <template>
   <el-dialog
     :title="title"
+    width="40%"
     :visible.sync="visible"
-    size="tiny"
     @close="close">
     <div>
       <el-tree

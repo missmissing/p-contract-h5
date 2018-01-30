@@ -69,8 +69,6 @@
           <el-input
             disabled
             type="textarea"
-            :autosize="{ minRows: 2 }"
-            resize="none"
             v-model.trim="form.suspendRemark">
           </el-input>
         </el-form-item>
@@ -78,25 +76,25 @@
         <template v-if="form.sealAttachments.length" v-for="(item,index) in form.sealAttachments">
           <el-table :data="item" :show-header="index===0?true:false">
             <el-table-column type="expand" v-if="item[0].haveSale">
-              <template scope="props" v-if="item[0].haveSale">
+              <template slot-scope="props" v-if="item[0].haveSale">
                 <div v-if="item[0].haveSale" v-bind:class="{tdPd:item[0].haveSale}">
                   <el-table :data="props.row.filesSealed" class="mb20"
                             v-if="props.row.filesSealed&&props.row.filesSealed.length">
                     <el-table-column label="文件名" prop="sealFileName">
-                      <template scope="scope">
+                      <template slot-scope="scope">
                         <a
                           :href="props.row.filesSealed[scope.$index].sealFileUrl" target="_blank">{{props.row.filesSealed[scope.$index].sealFileName}}</a>
                       </template>
                     </el-table-column>
                     <el-table-column label="上传人" prop="sealFileCreatorName"></el-table-column>
                     <el-table-column label="上传时间" prop="sealFileCreateTime">
-                      <template scope="scope">
+                      <template slot-scope="scope">
                         {{props.row.filesSealed[scope.$index].sealFileCreateTime | formatDate}}
                       </template>
                     </el-table-column>
                     <el-table-column fixed="right" label="操作"
                                      v-if="props.row.filesSealed[0].operate||enabledUpdateInApprove">
-                      <template scope="scope">
+                      <template slot-scope="scope">
                         <el-button @click="handleRemoveFilesSealedItem(index, props.row.filesSealed)"
                                    type="danger" size="small">移除
                         </el-button>
@@ -158,24 +156,24 @@
               </template>
             </el-table-column>
             <el-table-column prop="attachType" label="附件类型" width="150px">
-              <template scope="scope">
+              <template slot-scope="scope">
                 其他
               </template>
             </el-table-column>
             <el-table-column prop="fileName" label="文件名称">
-              <template scope="scope">
+              <template slot-scope="scope">
                 <a :href="item[scope.$index].fileUrl" target="_blank">{{item[scope.$index].fileName}}</a>
               </template>
             </el-table-column>
             <el-table-column prop="upload" label="上传" width="100px">
-              <template scope="scope">
+              <template slot-scope="scope">
                 <el-button :disabled="true"
                            size="small" type="primary" @click="handleUploadOuter(index)">上传
                 </el-button>
               </template>
             </el-table-column>
             <el-table-column prop="haveSale" label="是否盖章" width="70px">
-              <template scope="scope">
+              <template slot-scope="scope">
                 <el-checkbox
                   @change="handleChangeValidateForms"
                   :disabled="true"
@@ -183,7 +181,7 @@
               </template>
             </el-table-column>
             <el-table-column prop="remark" :disabled="true" label="备注">
-              <template scope="scope">
+              <template slot-scope="scope">
                 <el-input
                   :disabled="true"
                   v-model="item[scope.$index].remark"></el-input>

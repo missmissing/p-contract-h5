@@ -104,8 +104,6 @@
               <el-input
                 type="textarea"
                 :maxlength="300"
-                :autosize="{ minRows: 2 }"
-                resize="none"
                 v-model="handleForm.violateReason">
               </el-input>
             </el-form-item>
@@ -113,9 +111,7 @@
               <el-input
                 type="textarea"
                 :maxlength="300"
-                :autosize="{ minRows: 2 }"
-                resize="none"
-                v-model="handleForm.treatmentScheme">
+                v-model.trim="handleForm.treatmentScheme">
               </el-input>
             </el-form-item>
             <el-form-item label="相关附件">

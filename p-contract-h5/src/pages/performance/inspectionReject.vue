@@ -123,7 +123,7 @@
               fixed="right"
               label="操作"
               width="160">
-              <template scope="scope">
+              <template slot-scope="scope">
                 <el-button
                   @click.native.prevent="editRow(scope.$index,scope.row)"
                   type="primary"
@@ -157,18 +157,14 @@
               <el-input
                 type="textarea"
                 :maxlength="300"
-                :autosize="{ minRows: 2 }"
-                resize="none"
-                v-model="handleForm.unqualifiedReason">
+                v-model.trim="handleForm.unqualifiedReason">
               </el-input>
             </el-form-item>
             <el-form-item label="处理方案" prop="treatmentScheme">
               <el-input
                 type="textarea"
                 :maxlength="300"
-                :autosize="{ minRows: 2 }"
-                resize="none"
-                v-model="handleForm.treatmentScheme">
+                v-model.trim="handleForm.treatmentScheme">
               </el-input>
             </el-form-item>
             <el-form-item label="相关附件">
@@ -199,34 +195,26 @@
           <el-input
             :disabled="addNotQualityDialogForm.static"
             type="textarea"
-            :autosize="{ minRows: 2,maxRows:4 }"
-            resize="none"
-            v-model="addNotQualityDialogForm.serviceName">
+            v-model.trim="addNotQualityDialogForm.serviceName">
           </el-input>
         </el-form-item>
         <el-form-item label="参考标准" prop="serviceRequire">
           <el-input
             :disabled="addNotQualityDialogForm.static"
             type="textarea"
-            :autosize="{ minRows: 2,maxRows:4 }"
-            resize="none"
-            v-model="addNotQualityDialogForm.serviceRequire">
+            v-model.trim="addNotQualityDialogForm.serviceRequire">
           </el-input>
         </el-form-item>
         <el-form-item label="检查结果" prop="checkResult">
           <el-input
             type="textarea"
-            :autosize="{ minRows: 2,maxRows:4 }"
-            resize="none"
-            v-model="addNotQualityDialogForm.checkResult">
+            v-model.trim="addNotQualityDialogForm.checkResult">
           </el-input>
         </el-form-item>
         <el-form-item label="备注" prop="remark">
           <el-input
             type="textarea"
-            :autosize="{ minRows: 2,maxRows:4 }"
-            resize="none"
-            v-model="addNotQualityDialogForm.remark">
+            v-model.trim="addNotQualityDialogForm.remark">
           </el-input>
         </el-form-item>
       </el-form>

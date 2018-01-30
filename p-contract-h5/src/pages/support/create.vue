@@ -44,8 +44,6 @@
                       type="textarea"
                       v-model="form.busiTypeText"
                       @focus="visible = true"
-                      resize="none"
-                      :autosize="{maxRows:6}"
                       readonly>
                     </el-input>
                   </el-form-item>
@@ -130,9 +128,7 @@
               <el-form-item label="申请原因" prop="description">
                 <el-input
                   type="textarea"
-                  :autosize="{ minRows: 2 }"
-                  resize="none"
-                  v-model="form.description">
+                  v-model.trim="form.description">
                 </el-input>
               </el-form-item>
               <el-form-item label="附件上传">

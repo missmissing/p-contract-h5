@@ -1,7 +1,6 @@
 import Vue from 'vue';
 import LocalStore from 'store';
-import ElementUI from 'element-ui';
-import 'element-ui/lib/theme-default/index.css';
+import Component from './components';
 import Api from './api/index';
 import App from './App.vue';
 import router from './router/index';
@@ -10,7 +9,7 @@ import errorHanding from './core/errorHanding';
 import queryString from './util/queryString';
 import './assets/css/common.scss';
 
-Vue.use(ElementUI);
+Vue.use(Component);
 
 new Vue({
   el: '#app',

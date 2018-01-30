@@ -22,7 +22,7 @@
         prop="submitTime"
         label="发起时间"
         width="120">
-        <template scope="scope">
+        <template slot-scope="scope">
           {{scope.row.submitTime | formatDate}}
         </template>
       </el-table-column>
@@ -30,7 +30,7 @@
         prop="sealTime"
         label="盖章时间"
         width="120">
-        <template scope="scope">
+        <template slot-scope="scope">
           {{scope.row.sealTime | formatDate}}
         </template>
       </el-table-column>

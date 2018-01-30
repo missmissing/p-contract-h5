@@ -1,4 +1,4 @@
-<style scope="scope">
+<style slot-scope="scope">
   /*.agreementList table{width:100%!important}*/
 </style>
 <template>
@@ -90,7 +90,7 @@
     </el-form>
     <el-table :data="agreementList" border highlight-current-row style="width:100%">
       <el-table-column prop="protocolNo" label="从协议编码" width="210">
-        <template scope="scope">
+        <template slot-scope="scope">
           <router-link class="router-link"
                        :to="{path:'/ConCreate/querySlaveProtocol', query:{id:''+agreementList[scope.$index].id}}">
             {{agreementList[scope.$index].protocolNo}}
@@ -103,7 +103,7 @@
       <el-table-column prop="creatorName" label="发起人" width="100"></el-table-column>
       <el-table-column prop="deptName" label="发起部门"></el-table-column>
       <el-table-column prop="createTime" label="发起时间" width="120">
-        <template scope="scope">
+        <template slot-scope="scope">
           {{scope.row.createTime | formatDate}}
         </template>
       </el-table-column>

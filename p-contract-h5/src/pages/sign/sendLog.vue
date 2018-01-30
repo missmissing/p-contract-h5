@@ -23,7 +23,7 @@
         prop="createTime"
         width="200"
         label="时间">
-        <template scope="scope">
+        <template slot-scope="scope">
           {{ scope.row.createTime | formatTime}}
         </template>
       </el-table-column>
@@ -35,7 +35,7 @@
       <el-table-column
         width="100"
         label="操作">
-        <template scope="scope">
+        <template slot-scope="scope">
           <el-button size="small" type="primary" @click="send(scope.row.id)">推 送</el-button>
         </template>
       </el-table-column>
