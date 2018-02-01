@@ -178,7 +178,6 @@
                 </template>
               </el-table-column>
               <el-table-column
-                fixed="right"
                 label="操作">
                 <template slot-scope="scope">
                   <el-button v-if="item[scope.$index].operate"

@@ -194,7 +194,6 @@
         if (!nonNegative(value)) {
           callback(new Error('格式错误'));
         } else {
-          console.log(111);
           callback();
         }
       };
@@ -210,11 +209,10 @@
           contractType: null,
           businessOperatorId: null,
           businessOperatorName: null,
-          amount: null,
-          contentModule: [],
-          content: ''
+          amount: null
         },
         fileList: [],
+        tmpl: {},
         endDate: '9999-12-31',
         defaultProps: {
           children: 'children',
@@ -289,7 +287,9 @@
           amount,
           contractType,
           contentModule,
-          content
+          content,
+          templateFileContents,
+          labels
         } = this.form;
         const result = {
           templateName,
@@ -302,7 +302,9 @@
           amount,
           contractType,
           contentModule,
-          content
+          content,
+          templateFileContents,
+          labels
         };
         const files = [];
         this.fileList.forEach((file) => {

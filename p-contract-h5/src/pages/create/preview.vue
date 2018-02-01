@@ -28,7 +28,7 @@
   <el-dialog
     title="合同预览"
     :visible.sync="visible"
-    size="large"
+    width="90%"
     @close="ok">
     <div>
       <form action="/api-contract/contract-web/contract/download/pdf" method="post" id="pdf-form">
@@ -55,7 +55,9 @@
       </form>
       <div id="pdf-wrap">
         <div>
-          <div style="text-align: center;font-size:18px;font-weight:bold;padding-bottom: 10px;" class="mb20 f18 fb">{{title}}合同</div>
+          <div style="text-align: center;font-size:18px;font-weight:bold;padding-bottom: 10px;" class="mb20 f18 fb">
+            {{title}}合同
+          </div>
           <div class="mb20">
             <table class="default-table mb20">
               <tbody>

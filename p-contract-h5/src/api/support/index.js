@@ -36,5 +36,8 @@ export default {
   },
   setTemplateAbolish(params) {
     return Http.get(`${contract}/contract-web/template/setTemplateAbolish`, params);
+  },
+  getTemplateLabels(params) {
+    return Http.get(`${contract}/contract-web/template/getTemplateLabels`, params);
   }
 };

@@ -1,15 +1,17 @@
 import Vue from 'vue';
+//import Ty from 'ty-client-core';
 import LocalStore from 'store';
 import Component from './components';
 import Api from './api/index';
 import App from './App.vue';
-import router from './router/index';
-import store from './store/index';
+import router from './router';
+import store from './store';
 import errorHanding from './core/errorHanding';
 import queryString from './util/queryString';
 import './assets/css/common.scss';
 
 Vue.use(Component);
+//Vue.use(Ty);
 
 new Vue({
   el: '#app',

@@ -90,14 +90,14 @@
       <el-button type="primary" @click="handleNext('conForm')">下一步</el-button>
     </div>
     <el-dialog title="查询比价单" :visible.sync="dialogVisible" width="90%">
-      <el-form ref="prForm" :model="prForm" label-width="100px">
-        <el-row>
-          <el-col :span="6">
+      <el-form ref="prForm" :model="prForm" label-width="80px">
+        <el-row :gutter="20">
+          <el-col :span="5">
             <el-form-item label="PR号" prop="prCode">
               <el-input v-model="prForm.prCode" placeholder="请输入PR号"></el-input>
             </el-form-item>
           </el-col>
-          <el-col :span="6">
+          <el-col :span="5">
             <el-form-item label="创建人" prop="createPerson">
               <el-select
                 class="wp100"
@@ -105,7 +105,7 @@
                 v-model="prForm.createPerson"
                 filterable
                 remote
-                placeholder="请输入关键词搜索"
+                placeholder="请输入关键词"
                 :remote-method="getRemoteCreatePersonsByKeyWord"
                 :loading="prForm.loading">
                 <el-option
@@ -119,7 +119,7 @@
               </el-select>
             </el-form-item>
           </el-col>
-          <el-col :span="12">
+          <el-col :span="14">
             <el-form-item label="创建时间">
               <el-date-picker
                 v-model="daterange"
@@ -130,11 +130,7 @@
                 end-placeholder="结束日期"
                 :picker-options="prForm.pickerOption">
               </el-date-picker>
-            </el-form-item>
-          </el-col>
-          <el-col>
-            <el-form-item>
-              <el-button type="primary" @click="handleQueryPriceList">查询</el-button>
+              <el-button class="ml20" type="primary" @click="handleQueryPriceList">查询</el-button>
             </el-form-item>
           </el-col>
         </el-row>
@@ -378,25 +374,8 @@
             this.comLoading();
             Api.getContractBaseInfo(params).then(() => {
               this.comLoading(false);
-              let name;
-              switch (this.conForm.curConModelId) {
-                case '4':
-                  name = routerNames.con_createIntentionContract;
-                  break;
-                case '3':
-                  name = routerNames.con_createFrameContract;
-                  break;
-                case '1':
-                  name = routerNames.con_createSingleContract;
-                  break;
-                case '2':
-                  name = routerNames.con_createSimpleContract;
-                  break;
-                default:
-                  name = '';
-              }
               this.$router.push({
-                name,
+                name: routerNames.con_contract_create,
                 query: {
                   currentFolio: this.currentPr ? this.currentPr.folio : '',
                   curConModelId: this.conForm.curConModelId,

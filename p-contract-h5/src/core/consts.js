@@ -47,11 +47,8 @@ export const routerNames = {
   con_querySlaveProtocol: '查看从协议',
   con_agreementList: '从协议查询',
   con_update: '合同变更',
-  con_createFrameContract: '框架协议创建',
-  con_createIntentionContract: '框架意向合同创建',
-  con_createSingleContract: '单一合同创建',
-  con_createSimpleContract: '固定格式合同创建',
-  con_Check: '查看合同',
+  con_contract_create: '合同创建信息',
+  con_Check: '合同查看',
   con_stop: '合同终止',
   con_stop_see: '合同终止查看',
 

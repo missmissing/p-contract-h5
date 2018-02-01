@@ -103,9 +103,9 @@
                 <template slot="title">
                   <span>{{item.name}}</span>
                 </template>
-                <template v-for="(child,childIndex) in item.children" v-if="!child.meta.hidden">
-                  <el-menu-item :index="child.path"><a :href="`#${child.path}`"
-                                                       style="color:inherit;">{{child.name}}</a>
+                <template v-for="(child) in item.children" v-if="!child.meta.hidden">
+                  <el-menu-item :index="child.path">
+                    <a :href="`#${child.path}`" style="color:inherit;">{{child.name}}</a>
                   </el-menu-item>
                 </template>
               </el-submenu>
@@ -208,9 +208,6 @@
       showRoute(routeName) {
         const defaultRoutes = this.$router.options.routes;
         this.findRoute(routeName, defaultRoutes);
-      },
-      noDirect() {
-        return false;
       }
     },
     created() {

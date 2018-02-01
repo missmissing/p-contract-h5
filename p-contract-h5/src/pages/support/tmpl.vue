@@ -8,7 +8,7 @@
     }
 
     .preview {
-      padding: 15px;
+      padding: 10px;
       border: 1px solid #ddd;
       min-height: 630px;
       word-wrap: break-word;
@@ -43,12 +43,11 @@
         <span class="common-title">模板信息</span>
       </div>
       <div>
-        <el-row>
-          <el-col :span="11">
-            <el-row>
+        <el-row :gutter="20">
+          <el-col :span="12">
+            <el-row v-if="!disabled">
               <el-select
                 class="mr10"
-                :disabled="disabled"
                 v-model="tplType"
                 placeholder="请选择">
                 <el-option
@@ -58,13 +57,13 @@
                   :value="item.id">
                 </el-option>
               </el-select>
-              <Dropdown class="mr10" :datas="staticLabels" @command="chooseStaticLabel">
+              <Dropdown class="mr10" :datas="staticLabels" :prop="dropdownProp" @command="chooseLabel">
                 <el-button type="primary">
                   固定标签<i class="el-icon-arrow-down ml10"></i>
                 </el-button>
               </Dropdown>
-              <Dropdown splitButton type="primary" :datas="customLabels" @click="dialogVisible=true"
-                        @command="chooseCustomLabel">
+              <Dropdown disabled splitButton type="primary" :datas="customLabels" @click="dialogVisible=true"
+                        :prop="dropdownProp" @command="chooseLabel">
                 <i class="el-icon-plus mr10"></i>自定义标签
               </Dropdown>
             </el-row>
@@ -77,22 +76,25 @@
               </el-transfer>-->
             </div>
             <div>
-              <el-tabs v-model="editableTabsValue" type="card" addable @edit="handleTabsEdit">
+              <el-tabs v-model="editableTabsValue" type="card" :addable="!disabled" @edit="handleTabsEdit">
                 <el-tab-pane
-                  :key="item.name"
+                  :key="index"
                   v-for="(item, index) in editableTabs"
                   :label="item.title"
                   :name="item.name"
-                  :closable="index!==0"
+                  :closable="index!==0&&!disabled"
                 >
                   <span class="drag-elements" slot="label" v-if="index!==0">{{item.title}}</span>
-                  <Editor :editorId="item.name" :content="item.content" @onChange="onEditorChange"
-                          :ref="`editor-${item.name}`"></Editor>
+                  <Editor v-model="item.content"
+                          :editorId="item.name"
+                          @onChange="onEditorChange"
+                          :ref="`editor-${item.name}`"
+                          :disabled="disabled"></Editor>
                 </el-tab-pane>
               </el-tabs>
             </div>
           </el-col>
-          <el-col :span="12" :offset="1">
+          <el-col :span="12">
             <div class="mb20 pre-title">预览</div>
             <div class="preview">
               <div class="title">合同</div>
@@ -107,8 +109,7 @@
     <el-button class="mt20 ml20" type="primary" @click="save">返 回</el-button>
     <el-dialog
       title="添加自定义标签"
-      :visible.sync="dialogVisible"
-      size="tiny">
+      :visible.sync="dialogVisible">
       <el-form :model="customLabelForm" :rules="customLabelRules" ref="customLabelForm" label-width="100px">
         <el-form-item label="标签名称" prop="name">
           <el-input v-model="customLabelForm.name"></el-input>
@@ -166,6 +167,10 @@
         },
         customLabelRules: {
           name: [{required: true, message: '请填写标签名称'}]
+        },
+        dropdownProp: {
+          label: 'labelName',
+          value: 'id'
         }
       };
     },
@@ -229,9 +234,19 @@
       },
       save() {
         if (!this.disabled) {
-          const content = this.editableTabs.map(item => item.content.replace(/\s/g, '&nbsp;'));
-          const form = {...this.form, content};
-          this.$emit('getData', form);
+          const templateFileContents = this.editableTabs.map((item) => {
+            const content = item.content.replace(/\s/g, '&nbsp;');
+            return {
+              content
+            };
+          });
+          const result = {
+            contentModule: this.contentModule,
+            content: templateFileContents[0].content,
+            templateFileContents: templateFileContents.slice(1),
+            labels: this.customLabels
+          };
+          this.$emit('getData', result);
         }
         this.back();
       },
@@ -261,26 +276,50 @@
           }
         });
       },
-      chooseStaticLabel(item) {
-        console.log('选中固定标签', item);
-      },
       addCustomLabel() {
         const form = this.$refs.customLabelForm;
         form.validate((valid) => {
           if (!valid) {
             return;
           }
-          this.customLabels.unshift({
-            label: this.customLabelForm.name
+          const {name, description} = this.customLabelForm;
+          const customLabels = this.customLabels;
+          const exist = customLabels.some(item => item.labelName === name);
+          if (exist) {
+            this.$message.warning('自定义标签已存在！');
+            return;
+          }
+          customLabels.unshift({
+            labelName: name,
+            labelKey: `{{${this.customLabelForm.name}}}`,
+            labelDesc: description
           });
           form.resetFields();
           this.dialogVisible = false;
         });
       },
-      chooseCustomLabel(item) {
-        console.log('选中自定义标签', item);
+      chooseLabel(item) {
+        console.log('选中标签', item);
         const currentEditor = this.$refs[`editor-${this.editableTabsValue}`][0];
-        currentEditor.editor.cmd.do('insertHTML', item.label);
+        currentEditor.editor.cmd.do('insertHTML', item.source.labelKey);
+      },
+      getTemplateLabels() {
+        Api.getTemplateLabels({
+          templateId: ''
+        }).then((res) => {
+          const data = res.data.dataMap;
+          const staticLabels = [];
+          const customLabels = [];
+          data.forEach((item) => {
+            if (item.labelType === 'FIXED') {
+              staticLabels.push(item);
+              return;
+            }
+            customLabels.push(item);
+          });
+          this.staticLabels = staticLabels;
+          this.customLabels = customLabels;
+        });
       }
     },
     watch: {
@@ -303,8 +342,19 @@
         if (!Object.keys(tplInfo).length) {
           return;
         }
-        this.contentModule = tplInfo.contentModule.map(item => item.id);
-        this.editableTabs[0].content = tplInfo.content;
+        const {content, contentModule, templateFileContents} = tplInfo;
+        this.contentModule = contentModule.map(item => item.id);
+        this.content = content;
+        this.editableTabs[0].content = content;
+        if (templateFileContents && templateFileContents.length) {
+          const contents = templateFileContents.map((item, index) => ({
+            name: `${index + 1}`,
+            title: '附件',
+            content: item.content
+          }));
+          this.editableTabs = this.editableTabs.concat(contents);
+        }
+        this.getTemplateLabels();
       },
       contentModule(val) {
         const modulesData = this.modulesData;
@@ -346,9 +396,14 @@
         return items;
       }
     },
+    created() {
+      if (routerNames.con_tpl_create === this.$route.name) {
+        this.getTemplateLabels();
+      }
+    },
     mounted() {
       this.$nextTick(() => {
-        this.sortInit();
+        !this.disabled && this.sortInit();
       });
     }
   };

@@ -12,7 +12,8 @@
     name: 'editor',
     props: {
       editorId: [String, Number],
-      content: String
+      value: String,
+      disabled: Boolean
     },
     data() {
       return {
@@ -34,15 +35,24 @@
       editor.customConfig.onchange = this.onChange;
       editor.create();
       this.editor = editor;
+      if (this.value) {
+        editor.txt.html(this.value);
+      }
+      if (this.disabled) {
+        editor.$textElem.attr('contenteditable', false);
+      }
     },
     watch: {
-      content(val) {
-        this.editor.txt.html(val);
+      value(val) {
+        if (val !== this.editorContent) {
+          this.editor.txt.html(val);
+        }
       }
     },
     methods: {
       onChange(html) {
         this.editorContent = html;
+        this.emit('input', html);
         this.emit('onChange', html);
       },
       emit(eventName, ...args) {
@@ -63,5 +73,6 @@
     border-style: solid;
     border-color: #ccc;
     border-top: none;
+    word-break: break-all;
   }
 </style>

@@ -131,6 +131,17 @@ const router = new Router({
           name: routerNames.con_createIndex
         },
         {
+          path: '/contract/create', // 合同创建
+          meta: {
+            auth: true,
+            hidden: true
+          },
+          component(resolve) {
+            require(['../pages/create/createCon.vue'], resolve);
+          },
+          name: routerNames.con_contract_create
+        },
+        {
           path: '/ConCreate/createSlaveProtocol',
           meta: {
             auth: true
@@ -181,50 +192,6 @@ const router = new Router({
             auth: true,
             hidden: true
           }
-        },
-        {
-          path: '/ConCreate/CreateFrameContract', // 创建框架协议
-          meta: {
-            auth: true,
-            hidden: true
-          },
-          component(resolve) {
-            require(['../pages/create/createCon.vue'], resolve);
-          },
-          name: routerNames.con_createFrameContract
-        },
-        {
-          path: '/ConCreate/CreateIntentionContract', // 创建框架意向合同
-          meta: {
-            auth: true,
-            hidden: true
-          },
-          component(resolve) {
-            require(['../pages/create/createCon.vue'], resolve);
-          },
-          name: routerNames.con_createIntentionContract
-        },
-        {
-          path: '/ConCreate/CreateSingleContract', // 创建单一合同
-          meta: {
-            auth: true,
-            hidden: true
-          },
-          component(resolve) {
-            require(['../pages/create/createCon.vue'], resolve);
-          },
-          name: routerNames.con_createSingleContract
-        },
-        {
-          path: '/ConCreate/CreateSimpleContract', // 创建固定格式合同
-          meta: {
-            auth: true,
-            hidden: true
-          },
-          component(resolve) {
-            require(['../pages/create/createCon.vue'], resolve);
-          },
-          name: routerNames.con_createSimpleContract
         },
         {
           path: '/ConCreate/conCheck', // 查看合同

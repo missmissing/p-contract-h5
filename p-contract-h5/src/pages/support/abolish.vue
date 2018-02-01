@@ -17,7 +17,6 @@
                   <el-form-item label="模板编号" prop="templateCode">
                     <el-autocomplete
                       class="wp100"
-                      icon="search"
                       :fetch-suggestions="querySearch"
                       @select="search"
                       v-model="form.templateCode">

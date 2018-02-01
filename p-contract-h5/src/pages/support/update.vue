@@ -17,7 +17,6 @@
                   <el-form-item label="模板编号" prop="templateCode">
                     <el-autocomplete
                       class="wp100"
-                      icon="search"
                       :fetch-suggestions="querySearch"
                       @select="search"
                       v-model="form.templateCode"
@@ -173,9 +172,7 @@
           files: [],
           operatorName: '',
           creatorName: '',
-          version: '',
-          contentModule: [],
-          content: ''
+          version: ''
         },
         endDate: '9999-12-31',
         tplInfo: {},
@@ -287,7 +284,9 @@
           description,
           bizTypes,
           contentModule,
-          content
+          content,
+          templateFileContents,
+          labels
         } = this.form;
         const result = Object.assign({
           id,
@@ -295,7 +294,9 @@
           description,
           bizTypes,
           contentModule,
-          content
+          content,
+          templateFileContents,
+          labels
         });
         const files = [];
         this.fileList.forEach((file) => {
