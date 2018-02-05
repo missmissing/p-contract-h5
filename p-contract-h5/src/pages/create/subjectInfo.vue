@@ -1,21 +1,21 @@
 <template>
   <div>
     <el-button
-      v-show="isVisibleNewSupplierBtn"
+      v-if="isVisibleAddBtn"
+      type="primary"
       size="small"
       @click="visible=true"
-      prefix-icon="plus"
-      class="mb10" type="primary">
-      新增
+      icon="plus" class="mb10">新增
     </el-button>
     <el-table :data="items">
-      <el-table-column type="index" label="序号" width="80">
+      <el-table-column prop="code" label="公司代码"></el-table-column>
+      <el-table-column prop="name" label="公司名称"></el-table-column>
+      <el-table-column prop="applyAll" label="全公司适用">
         <template slot-scope="scope">
-          {{scope.$index + 1}}
+          <el-checkbox :disabled="!enabledAllApply(scope.row.code)"
+                       v-model="scope.row.applyAll"></el-checkbox>
         </template>
       </el-table-column>
-      <el-table-column prop="code" label="供应商编号"></el-table-column>
-      <el-table-column prop="name" label="供应商名称"></el-table-column>
       <el-table-column
         label="操作"
         width="100"
@@ -24,16 +24,15 @@
           <el-button
             v-if="scope.row.addNew"
             @click="handleRemove(scope.$index, items)"
-            type="danger"
-            size="small">移除
+            type="danger" size="small">移除
           </el-button>
         </template>
       </el-table-column>
     </el-table>
-    <el-dialog title="新增合同供应商信息" :visible.sync="visible">
+    <el-dialog title="新增合同我方主体" :visible.sync="visible">
       <el-form :model="form" label-width="100px" ref="form"
                :rules="rules">
-        <el-form-item label="供应商名称/编码" prop="search" label-width="150px">
+        <el-form-item label="公司名称/编码" prop="search" label-width="150px">
           <el-select
             style="width:300px"
             size="small"
@@ -41,10 +40,10 @@
             filterable
             remote
             placeholder="请输入关键词搜索"
-            :remote-method="getRemoteSuppliersByKeyWord"
+            :remote-method="getRemoteSubjectsByKeyWord"
             :loading="loading">
             <el-option
-              v-for="item in suppliers"
+              v-for="item in subjects"
               :key="item.companyCode"
               :label="item.company"
               :value="item.companyCode">
@@ -55,8 +54,8 @@
         </el-form-item>
       </el-form>
       <footer slot="footer">
-        <el-button @click="handleNewContractSupplierCancel('form')">取消</el-button>
-        <el-button type="primary" @click="handleNewContractSupplier('form')">确定</el-button>
+        <el-button @click="handleCancelAddNewSubject('form')">取消</el-button>
+        <el-button type="primary" @click="handleAddNewSubject('form')">确定</el-button>
       </footer>
     </el-dialog>
   </div>
@@ -66,15 +65,15 @@
   import Api from '../../api/manageContract';
 
   export default {
-    name: 'supplier-info',
+    name: 'subject-info',
     props: {
-      items: Array
+      items: Array,
+      contractType: Number
     },
     data() {
       return {
         visible: false,
-        suppliers: [],
-        loading: false,
+        subjects: [],
         form: {
           search: ''
         },
@@ -82,13 +81,15 @@
           search: [
             {required: true, message: '请输入搜索关键字'}
           ]
-        }
+        },
+        loading: false
       };
     },
     computed: {
-      isVisibleNewSupplierBtn() {
+      isVisibleAddBtn() {
+        const {isCreate} = this.$store.getters;
         let visible = false;
-        if (!this.items.length) {
+        if (isCreate) {
           visible = true;
         }
         return visible;
@@ -99,34 +100,49 @@
       }
     },
     methods: {
+      enabledAllApply(code) {
+        let enabled = false;
+        const {isCreate} = this.$store.getters;
+        if (isCreate && code === '1001' && this.contractType >= 3) {
+          enabled = true;
+        }
+        return enabled;
+      },
       handleRemove(index, rows) {
         rows.splice(index, 1);
       },
-      getRemoteSuppliersByKeyWord(key) {
+      getRemoteSubjectsByKeyWord(key) {
         if (key !== '') {
           this.loading = true;
-          Api.getRemoteSuppliersByKeyWord({key})
+          Api.getRemoteSubjectsByKeyWord({key})
             .then((data) => {
               this.loading = false;
-              this.suppliers = data.data.dataMap;
+              this.subjects = data.data.dataMap || [];
             });
         } else {
-          this.suppliers = [];
+          this.subjects = [];
         }
       },
-      handleNewContractSupplier(formName) {
+      handleAddNewSubject(formName) {
         const curForm = this.$refs[formName];
         curForm.validate((valid) => {
           if (valid) {
+            const subjects = this.subjects;
             const key = this.form.search;
-            this.suppliers.some((item) => {
-              if (key === item.companyCode) {
+            const exist = this.items.some(chr => chr.code === key);
+            if (exist) {
+              this.$message.error('这条数据已存在咯！');
+              return;
+            }
+            subjects.some((item) => {
+              if (item.companyCode === key) {
                 this.items.push({
                   code: item.companyCode,
                   name: item.company,
+                  applyAll: false,
                   addNew: true
                 });
-                this.$emit('getYiBillingInfo', item);
+                this.$emit('getJiaBillingInfo', item);
                 return true;
               }
               return false;
@@ -137,7 +153,7 @@
           }
         });
       },
-      handleNewContractSupplierCancel(formName) {
+      handleCancelAddNewSubject(formName) {
         this.$refs[formName].resetFields();
         this.visible = false;
       }

@@ -5,7 +5,7 @@ export default {
   isCreate(state) {
     return state.currentStatus === 0;
   },
-  isUpdate(state) {
+  isModify(state) {
     return state.currentStatus === 1;
   },
   isSee(state) {
