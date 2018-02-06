@@ -90,7 +90,7 @@
     <el-card v-if="contentVisible&&ifShowNewSeals">
       <header slot="header">合同附件及盖章信息<i class="errorMsg">{{cardSealInfoForm.attachmentErrorMsg}}</i></header>
       <el-form rel="cardSealInfoForm" :model="cardSealInfoForm" label-width="100px" :rules="cardSealInfoForm.rules">
-        <el-button size="small" type="primary" @click="handleNewOtherSealFile" icon="plus" class="mb20"
+        <el-button size="small" type="primary" @click="handleNewOtherSealFile" prefix-icon="el-icon-plus" class="mb20"
                    v-if="enabledInupdated">新增
         </el-button>
         <template v-if="cardSealInfoForm.sealAttachments.length"

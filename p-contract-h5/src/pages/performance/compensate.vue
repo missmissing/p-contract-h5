@@ -18,9 +18,8 @@
                 <el-form-item label="合同编号" prop="contractNo">
                   <el-input
                     v-model="basicForm.contractNo"
-                    icon="search"
-                    :on-icon-click="search"
                     @keyup.enter.native="search">
+                    <i class="el-icon-search" slot="suffix" @click="search"></i>
                   </el-input>
                 </el-form-item>
               </el-col>

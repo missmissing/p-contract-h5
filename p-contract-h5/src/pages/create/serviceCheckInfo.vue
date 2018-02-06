@@ -5,7 +5,7 @@
       v-if="isVisible"
       type="primary"
       @click="visible=true"
-      icon="plus"
+      prefix-icon="el-icon-plus"
       class="mb10">
       添加
     </el-button>

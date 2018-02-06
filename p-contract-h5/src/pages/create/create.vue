@@ -146,8 +146,7 @@
         class="wp100">
         <el-table-column prop="ifSelect" label="选择" width="80">
           <template slot-scope="scope">
-            <el-checkbox v-model="scope.row.ifSelect"
-                         @change.stop.prevent="handleRowClick(priceList[scope.$index])"></el-checkbox>
+            <el-checkbox v-model="scope.row.ifSelect" @change="handleRowClick(priceList[scope.$index])"></el-checkbox>
           </template>
         </el-table-column>
         <el-table-column prop="folio" label="比价单编码" width="200">

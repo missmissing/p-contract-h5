@@ -1,6 +1,7 @@
 <template>
   <div>
     <el-upload
+      v-if="addVisible"
       :show-file-list="false"
       :action="uploadUrl"
       :with-credentials="true"
@@ -41,7 +42,8 @@
   export default {
     name: 'seal-files',
     props: {
-      items: Array
+      items: Array,
+      addVisible: Boolean
     },
     data() {
       return {

@@ -10,30 +10,31 @@
           <el-button
             v-if="!disabledTable"
             size="small"
-            icon="plus"
+            prefix-icon="el-icon-plus"
             type="primary"
             @click="handleAddItem(scope.row.type)"
             class="mb10">
             添加
           </el-button>
           <el-table :data="scope.row.subItem">
-            <el-table-column width="100px" prop="name" label="名称">
+            <el-table-column width="100" prop="name" label="名称">
               <template slot-scope="scope1">{{`${scope.row.type}${scope1.$index + 1}`}}</template>
             </el-table-column>
             <el-table-column
               prop="paymentAmount"
-              label="付款金额">
+              label="付款金额"
+              width="150">
               <template slot-scope="scope1">
                 <el-input
                   :disabled="disabledTable"
                   v-model="scope1.row.paymentAmount"
-                  @blur="inputChange(scope1.row,$event)"></el-input>
+                  @blur="inputChange(scope1.row)"></el-input>
               </template>
             </el-table-column>
             <el-table-column
               prop="paymentTimePeriod"
               label="付款条件"
-              width="200px">
+              width="200">
               <template slot-scope="scope1">
                 <el-select
                   :disabled="disabledTable"
@@ -41,7 +42,7 @@
                   placeholder="请选择付款条件"
                 >
                   <el-option
-                    v-for="item in moreDatas.paymentTimePeriods"
+                    v-for="item in paymentTimePeriods"
                     :key="item.id"
                     :value="item.id"
                     :label="item.name"
@@ -52,8 +53,7 @@
             </el-table-column>
             <el-table-column
               prop="remark"
-              label="付款节点说明"
-              width="200px">
+              label="付款节点说明">
               <template slot-scope="scope1">
                 <el-input
                   :disabled="disabledTable"
@@ -62,7 +62,7 @@
                   v-model="scope1.row.remark"></el-input>
               </template>
             </el-table-column>
-            <el-table-column prop="ratio" label="占比" width="100px">
+            <el-table-column prop="ratio" label="占比" width="100">
               <template slot-scope="scope1">
                 {{calcPercent(scope1.row, scope1.row.paymentAmount)}}
               </template>
@@ -83,22 +83,22 @@
         </div>
       </template>
     </el-table-column>
-    <el-table-column prop="type" label="类型" width="100px"></el-table-column>
-    <el-table-column prop="seriousPayments" label="多次付款" width="130px">
+    <el-table-column prop="type" label="类型" width="100"></el-table-column>
+    <el-table-column prop="seriousPayments" label="多次付款" width="130">
       <template slot-scope="scope">
         <el-checkbox
           :disabled="payTimesDisabled"
           :checked="scope.row.seriousPayments"
-          @change="handleSeriousPaymentsChange(scope.row,$event)"
+          @change="handleSeriousPaymentsChange(scope.row)"
         ></el-checkbox>
       </template>
     </el-table-column>
-    <el-table-column prop="paymentAmount" label="付款金额" width="150px">
+    <el-table-column prop="paymentAmount" label="付款金额" width="150">
       <template slot-scope="scope">
         <el-input
           v-if="!scope.row.seriousPayments"
           :disabled="disabledTable"
-          v-model="scope.row.paymentAmount" @blur="inputChange(scope.row,$event)"></el-input>
+          v-model="scope.row.paymentAmount" @blur="inputChange(scope.row)"></el-input>
         <template v-else>{{totalPaymentAmount}}</template>
       </template>
     </el-table-column>
@@ -112,7 +112,7 @@
           v-model="scope.row.paymentTimePeriod"
           placeholder="请选择付款条件">
           <el-option
-            v-for="item in moreDatas.paymentTimePeriods"
+            v-for="item in paymentTimePeriods"
             :key="item.id"
             :value="item.id"
             :label="item.name"
@@ -141,26 +141,16 @@
 </template>
 
 <script>
+  import {mapGetters} from 'vuex';
   import {nonNegative} from '../../util/reg';
 
   export default {
     props: {
-      showHeader: {
-        type: Boolean,
-        default: false
-      },
-      items: {
-        type: Array,
-        default() {
-          return [];
-        }
-      },
-      moreDatas: {
-        type: Object,
-        default() {
-          return {};
-        }
-      }
+      showHeader: Boolean,
+      items: Array,
+      paymentTimePeriods: Array,
+      totalAmount: Number,
+      backLogFA: Boolean
     },
     data() {
       return {
@@ -175,6 +165,12 @@
       };
     },
     computed: {
+      ...mapGetters([
+        'isCreate',
+        'isModify',
+        'isSee',
+        'isProcess'
+      ]),
       totalPaymentAmount() {
         let total = 0;
         if (this.items.length) {
@@ -188,11 +184,10 @@
         return total;
       },
       disabledTable() {
-        const {isSee, backLogFA} = this.moreDatas;
-        if (backLogFA) {
+        if (this.backLogFA) {
           return false;
         }
-        if (isSee) {
+        if (this.isSee || this.isProcess) {
           return true;
         }
         return false;
@@ -209,29 +204,27 @@
       }
     },
     methods: {
-      inputChange(item, event) {
-        const val = event.target.value;
+      inputChange(item) {
+        const val = item.paymentAmount;
         if (val && !nonNegative(val)) {
           this.$message.warning('请输入数值！');
           this.$nextTick(() => {
             item.paymentAmount = '';
           });
-          return;
         }
-        item.paymentAmount = val;
       },
       calcPercent(item, val) {
         let result = 0;
         if (val) {
-          if (this.moreDatas.totalAmount) {
-            result = ((val / this.moreDatas.totalAmount) * 100).toFixed(2);
+          if (this.totalAmount) {
+            result = ((val / this.totalAmount) * 100).toFixed(2);
           }
           item.ratio = result;
         }
         return `${result}%`;
       },
-      handleSeriousPaymentsChange(item, event) {
-        item.seriousPayments = event.target.checked;
+      handleSeriousPaymentsChange(item) {
+        item.seriousPayments = !item.seriousPayments;
         item.paymentAmount = null;
         item.paymentTimePeriod = null;
         item.remark = null;

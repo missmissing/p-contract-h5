@@ -5,7 +5,8 @@
       type="primary"
       size="small"
       @click="visible=true"
-      icon="plus" class="mb10">新增
+      prefix-icon="el-icon-plus"
+      class="mb10">新增
     </el-button>
     <el-table :data="items">
       <el-table-column prop="code" label="公司代码"></el-table-column>

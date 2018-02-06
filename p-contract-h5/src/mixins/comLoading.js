@@ -16,15 +16,12 @@ const defaultOpts = {
 class LoadingClass {
   static init(options = {}) {
     const loadingInstance = this.$loadingInstance;
+    loadingInstance && loadingInstance.close();
     if (!options) {
-      if (loadingInstance) {
-        loadingInstance.close();
-      }
-      return loadingInstance;
+      return;
     }
     const config = Object.assign({}, defaultOpts, options);
     this.$loadingInstance = this.$loading(config);
-    return loadingInstance;
   }
 }
 

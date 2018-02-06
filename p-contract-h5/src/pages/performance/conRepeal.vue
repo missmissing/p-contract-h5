@@ -1,17 +1,14 @@
 <style type="text/scss" lang="scss" scoped>
   .basic-info {
-
-  }
-
-  .basic-info .el-table__expanded-cell {
-    z-index: 1
-  }
-
-  .basic-info .errorMsg {
-    color: red;
-    font-style: normal;
-    font-size: 12px;
-    margin-left: 20px;
+    .el-table__expanded-cell {
+      z-index: 1
+    }
+    .errorMsg {
+      color: red;
+      font-style: normal;
+      font-size: 12px;
+      margin-left: 20px;
+    }
   }
 </style>
 
@@ -25,9 +22,8 @@
               <el-form-item label="合同编号">
                 <el-input
                   v-model="contractCode"
-                  icon="search"
-                  :on-icon-click="search"
                   @keyup.enter.native="search">
+                  <i slot="suffix" class="el-icon-search" @click="search"></i>
                 </el-input>
               </el-form-item>
             </el-col>
@@ -60,21 +56,6 @@
                 <el-input :value="endTime | formatDate" disabled></el-input>
               </el-form-item>
             </el-col>
-            <!--<el-col :span="8">
-              <el-form-item label="合同中止原因" prop="suspendReason">
-                <el-select
-                  class="wp100"
-                  v-model="form.suspendReason"
-                  placeholder="请选择">
-                  <el-option
-                    v-for="item in options"
-                    :key="item.value"
-                    :label="item.label"
-                    :value="item.value">
-                  </el-option>
-                </el-select>
-              </el-form-item>
-            </el-col>-->
             <el-col :span="8">
               <el-form-item label="实际中止日期" prop="suspendTime">
                 <el-date-picker
@@ -93,12 +74,12 @@
               v-model.trim="form.suspendRemark">
             </el-input>
           </el-form-item>
-          <el-button type="primary" @click="handleNewSealFile" size="small" icon="plus" class="mb20">
+          <el-button type="primary" @click="handleNewSealFile" size="small" prefix-icon="el-icon-plus" class="mb20">
             添加附件
           </el-button>
           <i class="errorMsg">{{form.errorMsg}}</i>
           <template v-if="form.sealAttachments.length" v-for="(item,index) in form.sealAttachments">
-            <el-table :data="item" :show-header="index===0?true:false">
+            <el-table :data="item" :show-header="index===0">
               <el-table-column type="expand" v-if="item[0].haveSale">
                 <template slot-scope="props" v-if="item[0].haveSale">
                   <div v-if="item[0].haveSale" v-bind:class="{tdPd:item[0].haveSale}">

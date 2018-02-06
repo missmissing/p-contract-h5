@@ -4,7 +4,7 @@
       v-show="isVisibleNewSupplierBtn"
       size="small"
       @click="visible=true"
-      prefix-icon="plus"
+      prefix-icon="el-icon-plus"
       class="mb10" type="primary">
       新增
     </el-button>

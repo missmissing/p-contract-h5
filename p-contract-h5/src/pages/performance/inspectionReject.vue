@@ -16,8 +16,10 @@
             <el-row>
               <el-col :span="8">
                 <el-form-item label="采购订单号" prop="orderNo">
-                  <el-input v-model="basicForm.orderNo" icon="search" :on-icon-click="search"
-                            @keyup.enter.native="search"></el-input>
+                  <el-input v-model="basicForm.orderNo"
+                            @keyup.enter.native="search">
+                    <i class="el-icon-search" slot="suffix" @click="search"></i>
+                  </el-input>
                 </el-form-item>
               </el-col>
               <el-button type="primary" class="ml20" v-show="toDetail.query.id">

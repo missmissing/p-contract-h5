@@ -10,7 +10,7 @@
       type="primary"
       @click="add"
       size="small"
-      prefix-icon="plus"
+      prefix-icon="el-icon-plus"
       v-if="addLoad"
       class="mb20">
       添加
@@ -54,7 +54,7 @@
               <el-button size="small" type="primary" :disabled="uploadFileDisabled(scope.row)">上传</el-button>
             </el-upload>
             <el-button
-              v-if="scope.row.addNew"
+              v-if="!scope.row.id"
               class="ml20"
               @click="handleRemove(scope.$index,items)"
               type="danger"
@@ -68,24 +68,16 @@
 </template>
 
 <script>
+  import {mapGetters} from 'vuex';
   import {uploadUrl, downloadUrl} from '../../api/consts';
   import {formatDate} from '../../filters/moment';
   import attachmentType from '../../filters/attachmentType';
 
   export default {
     props: {
-      items: {
-        type: Array,
-        default() {
-          return [];
-        }
-      },
-      moreDatas: {
-        type: Object,
-        default() {
-          return {};
-        }
-      }
+      items: Array,
+      backLogCreator: Boolean,
+      tplType: Number
     },
     data() {
       return {
@@ -94,74 +86,20 @@
       };
     },
     computed: {
+      ...mapGetters([
+        'isCreate',
+        'isModify',
+        'isSee',
+        'isProcess'
+      ]),
       addLoad() {
-        const {backLogCreator, isSee} = this.moreDatas;
-        if (backLogCreator) {
+        if (this.backLogCreator) {
           return true;
         }
-        if (!isSee) {
-          return true;
-        }
-        return false;
-      },
-      //打印份数，留存份数
-      timesDisabled() {
-        const {
-          type,
-          isSee,
-          isModify,
-          isSealRole,
-          backLogCreator
-        } = this.moreDatas;
-        if (backLogCreator) {
-          return false;
-        }
-        if (type === 1) {
-          if (isSee && !isSealRole) {
-            return true;
-          }
-          if (isModify) {
-            return true;
-          }
-        } else {
-          if (isSee && !isSealRole) {
-            return true;
-          }
-          if (isModify) {
-            return true;
-          }
-        }
-        return false;
-      },
-      //用印上传按钮
-      uploadSealDisabled() {
-        const {
-          isSee,
-          isSealRole,
-          isPurchaseRole
-        } = this.moreDatas;
-        if (isSee) {
-          if (this.items[0].filesSealed && this.items[0].filesSealed.length) {
-            return true;
-          }
-          if (isSealRole || isPurchaseRole) {
-            return false;
-          }
-        }
-        return true;
-      },
-      //选择用章
-      selectSealDisabled() {
-        const {isSee, isModify} = this.moreDatas;
-        if (isSee || isModify) {
+        if (!this.isSee && !this.isProcess) {
           return true;
         }
         return false;
-      },
-      //流程覆盖上传按钮
-      coverUploadDisabled() {
-        const {type, tplType, backLogCreator} = this.moreDatas;
-        return (type === 1 && tplType === 2 && backLogCreator);
       }
     },
     methods: {
@@ -169,43 +107,42 @@
         if (row.attachType === 3) {
           return true;
         }
-
-        if (!row.addNew) {
+        if (row.id) {
           return true;
         }
-
-        const {isSee, backLogCreator} = this.moreDatas;
-        if (backLogCreator) {
+        if (this.backLogCreator) {
           return false;
         }
-        if (isSee) {
+        if (this.isSee || this.isProcess) {
           return true;
         }
         return false;
       },
       uploadFileDisabled(row) {
-        const {isCreate, isSee, backLogCreator} = this.moreDatas;
-        const {attachType, addNew} = row;
+        const {attachType, id} = row;
         if (attachType === 3) {
-          if (isCreate) {
+          if (this.isCreate || this.isModify) {
             return true;
           }
-          if (backLogCreator) {
+          if (this.backLogCreator && this.tplType === 2) {
             return false;
           }
         }
 
-        if (!addNew) {
+        if (!id) {
+          return false;
+        }
+        if (this.isSee || this.isProcess) {
           return true;
         }
-        if (isSee) {
-          return true;
-        }
-        return false;
+        return true;
+      },
+      //流程覆盖上传按钮
+      coverUpload(row) {
+        return (row.attachType === 3 && this.tplType === 2 && this.backLogCreator);
       },
       add() {
         const file = {
-          addNew: true,
           fileName: '',
           fileUrl: '',
           attachType: 1,
@@ -227,7 +164,7 @@
         row.fileId = dataMap.fileId;
         row.fileName = dataMap.fileName;
         row.fileUrl = `${this.downloadUrl}${fileId}`;
-        if (this.coverUploadDisabled) {
+        if (this.coverUpload(row)) {
           row.id && delete row.id;
         }
         this.$message.success('文件上传成功');
