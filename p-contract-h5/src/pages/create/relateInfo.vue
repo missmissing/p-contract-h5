@@ -1,6 +1,6 @@
 <template>
   <div>
-    <el-table :data="items" border>
+    <el-table :data="items" ref="table" border>
       <el-table-column type="index" label="序号" width="80">
         <template slot-scope="scope">
           {{scope.$index + 1}}
@@ -66,13 +66,16 @@
       }
     },
     created() {
-      if (this.supplierCode) {
-        this.getList();
-      }
+      this.getList();
     },
     methods: {
       getList() {
-        this.comLoading();
+        if (!this.supplierCode) {
+          return;
+        }
+        this.comLoading({
+          target: this.$refs.table.$el
+        });
         Api.getConList({
           pageNo: this.pageNo,
           pageSize: this.pageSize,

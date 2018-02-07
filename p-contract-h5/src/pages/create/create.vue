@@ -86,7 +86,7 @@
         </el-table-column>
       </el-table>
     </el-card>
-    <div class="tc mt20">
+    <div class="mt20">
       <el-button type="primary" @click="handleNext('conForm')">下一步</el-button>
     </div>
     <el-dialog title="查询比价单" :visible.sync="dialogVisible" width="90%">
@@ -276,8 +276,6 @@
       };
     },
     created() {
-    },
-    mounted() {
       this.prForm.createPerson = user.userId;
       this.getRemoteCreatePersonsByKeyWord(user.userId);
     },
@@ -348,7 +346,6 @@
           this.comLoading(false);
         });
       },
-      // 当前比加单列表接口缺少数据导致无法取得当前合同的总价格，需接口调整
       handleNext(formName) {
         this.$refs[formName].validate((valid) => {
           if (valid) {
@@ -358,13 +355,19 @@
             }
 
             const query = {
-              currentFolio: this.currentPr ? this.currentPr.folio : '',
+              currentFolio: '',
               curConModelId: this.conForm.curConModelId,
               curConTypeId: this.conForm.conType
             };
 
-            const params = {};
+            if (this.conForm.isPr) {
+              if (this.currentPr) {
+                query.currentFolio = this.currentPr.folio;
+              }
+            }
+
             const types = query.curConTypeId.split('-');
+            const params = {};
             params.folio = query.currentFolio;
             params.contractType = query.curConModelId;// 合同模式
             params.contractBusinessTypeFirst = types[0];
@@ -372,22 +375,16 @@
             params.contractBusinessTypeThird = types[2];
             this.comLoading();
             Api.getContractBaseInfo(params).then(() => {
-              this.comLoading(false);
               this.$router.push({
                 name: routerNames.con_contract_create,
-                query: {
-                  currentFolio: this.currentPr ? this.currentPr.folio : '',
-                  curConModelId: this.conForm.curConModelId,
-                  curConTypeId: this.conForm.conType,
-                  operateType: 'create'
-                }
+                query
               });
               if (this.curPriceList.length) {
                 this.curPriceList = [];
                 this.currentPr = null;
               }
               this.$refs[formName].resetFields();
-            }).catch(() => {
+            }).finally(() => {
               this.comLoading(false);
             });
           }

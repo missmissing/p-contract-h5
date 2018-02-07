@@ -26,11 +26,11 @@
           <a class="router-link" :href="scope.row.fileUrl" target="_blank">{{scope.row.fileName}}</a>
         </template>
       </el-table-column>
-      <el-table-column prop="haveSale" label="是否盖章" width="150px">
+      <el-table-column prop="haveSeal" label="是否盖章" width="150px">
         <template slot-scope="scope">
           <el-checkbox
             :disabled="disabled(scope.row)"
-            v-model="scope.row.haveSale"
+            v-model="scope.row.haveSeal"
           ></el-checkbox>
         </template>
       </el-table-column>
@@ -45,13 +45,14 @@
         <template slot-scope="scope">
           <div class="btns">
             <el-upload
+              v-if="ifUploadFile(scope.row)"
               ref="uploadSealFile"
               :show-file-list="false"
               :action="uploadUrl"
               :with-credentials="true"
               :on-success="handleUploadSealFileSuccess.bind(this,scope.row)"
             >
-              <el-button size="small" type="primary" :disabled="uploadFileDisabled(scope.row)">上传</el-button>
+              <el-button size="small" type="primary">上传</el-button>
             </el-upload>
             <el-button
               v-if="!scope.row.id"
@@ -118,24 +119,24 @@
         }
         return false;
       },
-      uploadFileDisabled(row) {
+      ifUploadFile(row) {
         const {attachType, id} = row;
         if (attachType === 3) {
           if (this.isCreate || this.isModify) {
-            return true;
+            return false;
           }
           if (this.backLogCreator && this.tplType === 2) {
-            return false;
+            return true;
           }
         }
 
         if (!id) {
-          return false;
-        }
-        if (this.isSee || this.isProcess) {
           return true;
         }
-        return true;
+        if (this.isSee || this.isProcess) {
+          return false;
+        }
+        return false;
       },
       //流程覆盖上传按钮
       coverUpload(row) {
@@ -146,7 +147,7 @@
           fileName: '',
           fileUrl: '',
           attachType: 1,
-          haveSale: true,
+          haveSeal: true,
           remark: ''
         };
         this.items.push(file);

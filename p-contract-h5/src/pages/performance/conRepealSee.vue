@@ -249,8 +249,8 @@
     methods: {
       getInfo(id) {
         this.comLoading();
-        const paras = {contractId: id, operate: 'PROCESS'};
-        Api.getContractDetailByContractId(paras).then((res) => {
+        const paras = {id, operate: 'PROCESS'};
+        Api.getContractDetailById(paras).then((res) => {
           this.comLoading(false);
           const data = res.data.dataMap;
           this.setData(data);

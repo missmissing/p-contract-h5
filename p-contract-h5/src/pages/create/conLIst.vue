@@ -32,8 +32,9 @@
           <el-form-item label="业务类型" prop="conTypeName">
             <el-input readonly
                       placeholder="请选择业务类型"
-                      @focus="visible=true"
-                      v-model="conTypeName">
+                      v-model="conTypeName"
+                      clearable
+                      @focus="visible=true">
               <i class="el-icon-error" @click="handleConTypeName" slot="suffix"></i>
             </el-input>
           </el-form-item>

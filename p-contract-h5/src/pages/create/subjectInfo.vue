@@ -11,7 +11,7 @@
     <el-table :data="items">
       <el-table-column prop="code" label="公司代码"></el-table-column>
       <el-table-column prop="name" label="公司名称"></el-table-column>
-      <el-table-column prop="applyAll" label="全公司适用">
+      <el-table-column prop="applyAll" label="全公司适用" width="150" align="center">
         <template slot-scope="scope">
           <el-checkbox :disabled="!enabledAllApply(scope.row.code)"
                        v-model="scope.row.applyAll"></el-checkbox>

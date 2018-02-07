@@ -25,6 +25,7 @@ module.exports = {
     'spaced-comment': 0,
     'comma-dangle': ['error', 'never'],
     'object-curly-spacing': 0,
+    'object-curly-newline': 0,
     'no-param-reassign': ['error', {'props': false}],
     'no-restricted-properties': [2, {
       'object': 'disallowedObjectName',

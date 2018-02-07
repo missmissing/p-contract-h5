@@ -62,12 +62,8 @@ export default {
     return Http.get(`${contract}/contract-web/contract/no/${contractNo}`, params);
   },
   // 根据合同id查询合同详情
-  getContractDetailByContractId(params) {
-    const {contractId, operate} = params;
-    if (operate) {
-      return Http.get(`${contract}/contract-web/contract/id/${contractId}`, params);
-    }
-    return Http.get(`${contract}/contract-web/contract/id/${contractId}`);
+  getContractDetailById(params) {
+    return Http.get(`${contract}/contract-web/contract/getById`, params);
   },
   /** ***相关数据-订单页****/
   getOrderTableData(params) {
@@ -124,5 +120,9 @@ export default {
   //流程中发起人修改合同附件及盖章信息
   updateAttach(params) {
     return Http.post(`${contract}/contract-web/contract/updateAttach`, params);
+  },
+
+  getTplContent(params) {
+    return Http.post(`${contract}/contract-web/contract/getTemplateContent`, params);
   }
 };

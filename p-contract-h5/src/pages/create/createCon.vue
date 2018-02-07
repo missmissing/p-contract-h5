@@ -192,7 +192,7 @@
             </el-col>
             <el-col :span="8" v-if="!isCreate">
               <el-form-item label="合同编号">
-                <el-input v-model="baseInfoForm.contractNo" placeholder="请输入合同编号"
+                <el-input v-model="baseInfoForm.contractNo"
                           :readonly="true" :class="{disabledInput:true}"></el-input>
               </el-form-item>
             </el-col>
@@ -271,22 +271,28 @@
                 <el-row v-if="cardContentInfoForm.effectiveCondition===1">
                   <el-col :span="8">
                     <el-form-item label="合同生效日期" prop="startTime">
-                      <el-date-picker v-model="cardContentInfoForm.startTime"
-                                      format="yyyy-MM-dd"
-                                      @change="contentInfoValid"
-                                      :disabled="!isCreate"
-                                      placeholder="请输入合同生效期日期"
-                                      type="date"></el-date-picker>
+                      <el-date-picker
+                        v-model="cardContentInfoForm.startTime"
+                        format="yyyy-MM-dd"
+                        value-format="timestamp"
+                        @change="contentInfoValid"
+                        :disabled="!isCreate"
+                        placeholder="请输入合同生效期日期"
+                        type="date">
+                      </el-date-picker>
                     </el-form-item>
                   </el-col>
                   <el-col :span="8">
                     <el-form-item label="合同终止日期" prop="endTime">
-                      <el-date-picker v-model="cardContentInfoForm.endTime"
-                                      format="yyyy-MM-dd"
-                                      @change="contentInfoValid"
-                                      :disabled="!isCreate"
-                                      placeholder="请输入合同终止日期"
-                                      type="date"></el-date-picker>
+                      <el-date-picker
+                        v-model="cardContentInfoForm.endTime"
+                        format="yyyy-MM-dd"
+                        value-format="timestamp"
+                        @change="contentInfoValid"
+                        :disabled="!isCreate"
+                        placeholder="请输入合同终止日期"
+                        type="date">
+                      </el-date-picker>
                     </el-form-item>
                   </el-col>
                 </el-row>
@@ -476,52 +482,54 @@
               合同附件
             </span>
             <FileList v-if="cardSealInfoForm.others.length" :items="cardSealInfoForm.others" class="mb20"></FileList>
-            <el-form v-if="baseInfoForm.templateId" rel="cardSealInfoForm" :model="cardSealInfoForm" label-width="100px"
-                     :rules="cardSealInfoForm.rules">
-              <el-row>
-                <el-col :span="6">
-                  <el-form-item label="用章次数" prop="saleTime">
-                    <el-input-number
-                      size="small"
-                      :disabled="true"
-                      v-model="cardSealInfoForm.saleTime"
-                      :min="1"
-                      :max="10"
-                      class="wp100"></el-input-number>
-                  </el-form-item>
-                </el-col>
-                <el-col :span="6">
-                  <el-form-item label="打印份数" prop="printTime">
-                    <el-input-number
-                      :disabled="timesDisabled"
-                      size="small"
-                      :min="1"
-                      :max="10"
-                      v-model="cardSealInfoForm.printTime"
-                      class="wp100">
-                    </el-input-number>
-                  </el-form-item>
-                </el-col>
-                <el-col :span="6">
-                  <el-form-item label="留存份数" prop="remainTime">
-                    <el-input-number
-                      :disabled="timesDisabled"
-                      size="small"
-                      :min="1"
-                      :max="10"
-                      v-model="cardSealInfoForm.remainTime"
-                      class="wp100"></el-input-number>
-                  </el-form-item>
-                </el-col>
-                <el-col :span="6">
-                  <el-form-item label="选择用章" prop="saleInfos">
-                    <el-checkbox-group :disabled="!isCreate" v-model="cardSealInfoForm.saleInfos">
-                      <el-checkbox label="1" name="sealInfo">公章</el-checkbox>
-                      <el-checkbox label="2" name="sealInfo">法人章</el-checkbox>
-                    </el-checkbox-group>
-                  </el-form-item>
-                </el-col>
-              </el-row>
+            <div v-if="baseInfoForm.templateId">
+              <el-form rel="cardSealInfoForm" :model="cardSealInfoForm" label-width="100px"
+                       :rules="cardSealInfoForm.rules">
+                <el-row>
+                  <el-col :span="6">
+                    <el-form-item label="用章次数" prop="sealNumber">
+                      <el-input-number
+                        size="small"
+                        :disabled="true"
+                        v-model="cardSealInfoForm.sealNumber"
+                        :min="1"
+                        :max="10"
+                        class="wp100"></el-input-number>
+                    </el-form-item>
+                  </el-col>
+                  <el-col :span="6">
+                    <el-form-item label="打印份数" prop="printNumber">
+                      <el-input-number
+                        :disabled="timesDisabled"
+                        size="small"
+                        :min="1"
+                        :max="10"
+                        v-model="cardSealInfoForm.printNumber"
+                        class="wp100">
+                      </el-input-number>
+                    </el-form-item>
+                  </el-col>
+                  <el-col :span="6">
+                    <el-form-item label="留存份数" prop="remainNumber">
+                      <el-input-number
+                        :disabled="timesDisabled"
+                        size="small"
+                        :min="1"
+                        :max="10"
+                        v-model="cardSealInfoForm.remainNumber"
+                        class="wp100"></el-input-number>
+                    </el-form-item>
+                  </el-col>
+                  <el-col :span="6">
+                    <el-form-item label="选择用章" prop="sealUsedInfo">
+                      <el-checkbox-group :disabled="!isCreate" v-model="cardSealInfoForm.sealUsedInfo">
+                        <el-checkbox label="1" name="sealInfo">公章</el-checkbox>
+                        <el-checkbox label="2" name="sealInfo">法人章</el-checkbox>
+                      </el-checkbox-group>
+                    </el-form-item>
+                  </el-col>
+                </el-row>
+              </el-form>
               <SealTable
                 v-if="cardSealInfoForm.contract&&cardSealInfoForm.contract.length"
                 :items="cardSealInfoForm.contract"
@@ -529,12 +537,16 @@
                 :tplType="baseInfoForm.contractTextType"
                 class="mb20"></SealTable>
               <AgreementInfo :items="cardSealInfoForm.agreenments" class="mt20"></AgreementInfo>
-            </el-form>
+            </div>
             <h4 v-else>请选择合同基本信息的模板名称！</h4>
           </el-tab-pane>
           <el-tab-pane label="盖章附件" v-if="isSP">
+            <span slot="label" class="title">
+              <i v-if="cardSealFileForm.errorCount" class="errorCount">{{cardSealFileForm.errorCount}}</i>
+              盖章附件
+            </span>
             <SealFile
-              :items="cardSealFileForm.sealAttaches"
+              :items="cardSealInfoForm.sealAttaches"
               :addVisible="isSealRole||isPurchaseRole"
             ></SealFile>
           </el-tab-pane>
@@ -579,24 +591,28 @@
       </el-card>
     </div>
     <Process :extraFn="callback.bind(this)"></Process>
-    <div class="mt20 mb20 tc">
-      <el-button v-if="!isSP" :disabled="!btnSubmitStatus" type="primary" @click="handleSubmit">提交
+    <div class="mt20 mb20">
+      <el-button v-if="!isSP" :disabled="btnSubmitStatus" type="primary" @click="handleSubmit">提交
       </el-button>
     </div>
     <Preview :visible.sync="visible" :datas="previewData"></Preview>
   </div>
 </template>
 <script>
-  import _ from 'lodash';
   import store from 'store';
   import {mapGetters} from 'vuex';
   import Api from '../../api/manageContract';
   import comLoading from '../../mixins/comLoading';
-  import {downloadUrl, uploadUrl} from '../../api/consts';
   import {formatDate} from '../../filters/moment';
   import getContractType from '../../filters/contractType';
   import {routerNames, processListMap} from '../../core/consts';
   import getPageStatus from '../../util/pageStatus';
+  import getStructure from '../../util/getStructure';
+  import baseInfoStructure from '../../structure/create/baseInfo';
+  import contentInfoStructure from '../../structure/create/contentInfo';
+  import financeInfoStructure from '../../structure/create/financeInfo';
+  import checkInfoStructure from '../../structure/create/checkInfo';
+  import sealInfoStructure from '../../structure/create/sealInfo';
 
   import SupplierInfo from './supplierInfo.vue';
   import SubjectInfo from './subjectInfo.vue';
@@ -623,37 +639,6 @@
         }
         callback();
       };
-      const payment = {
-        paymentAmount: null,
-        paymentTime: null,
-        paymentTimePeriod: null,
-        ratio: null,
-        remark: null,
-        seriousPayments: null,
-        subItem: []
-      };
-      const paymentMethods = {
-        earnest: [{
-          type: '定金',
-          ..._.cloneDeep(payment)
-        }],
-        advance: [{
-          type: '预付款',
-          ..._.cloneDeep(payment)
-        }],
-        progress: [{
-          type: '进度款',
-          ..._.cloneDeep(payment)
-        }],
-        _final: [{
-          type: '尾款',
-          ..._.cloneDeep(payment)
-        }],
-        deposit: [{
-          type: '保证金',
-          ..._.cloneDeep(payment)
-        }]
-      };
 
       return {
         processData: null,
@@ -662,8 +647,7 @@
         procTitle: '', //流程名称
         previewData: {}, // 预览数据
         visible: false, // 预览
-        downloadUrl,
-        uploadUrl,
+        contractInfo: [], //合同信息
         updateForm: {
           visible: false, // 在变更合同中控制合同页面数据的显示与否
           code: '',
@@ -674,31 +658,11 @@
             remark: [{required: true, message: '请输入变更原因', trigger: 'blur'}]
           }
         },
-        contractInfo: [], //合同信息
         baseInfoForm: {
-          id: null,
-          creatorId: null,
-          contractName: '', //合同名称
-          businessOperatorId: '', // 业务申请人id
-          businessOperatorName: '', //业务申请人
-          businessDeptId: '',
-          businessDeptName: '',
-          contractType: '', // 合同模式id
-          contractTypeName: '', // 合同模式名称
-          businessOperators: [], // 业务操作人数组
-          contractTextType: 1,
-          sealOrder: 1, // 0：我方先盖章 1：对方先盖章
-          ourSealOpinion: '',
-          templateId: '', // 当前模版id
-          belongProject: '',
-          prFlag: 0, // 是否有比加单号 1：有 0：无
-          prNo: '', // pr号
-          contractNo: '', // 合同编号
-          contractBusinessTypeFirstName: '',
-          contractBusinessTypeSecondName: '',
-          contractBusinessTypeThirdName: '',
+          ...baseInfoStructure,
           loading: false, // 业务操作人
           templateOptions: [],
+          businessOperators: [], // 业务操作人数组
           contractTextTypeOptions: [
             {
               id: 1,
@@ -717,14 +681,7 @@
           }
         },
         cardContentInfoForm: {
-          effectiveCondition: 1, //生效条件
-          startTime: '',
-          endTime: '',
-          conditionDesc: '', //期限生效
-          tableSupplierInfo: [],
-          conSubjctName: [],
-          thirdPartyInfo: [],
-          conStandard: [],
+          ...contentInfoStructure,
           supplierErrorMsg: '',
           subjectsErrorMsg: '',
           errorCount: 0,
@@ -748,15 +705,7 @@
           }
         },
         cardFinanceInfoForm: {
-          moneyInvolved: true,
-          oneOffPay: true,
-          currency: 1, // 币种1：人民币；2：美元
-          invoiceType: 1, // 开票类型
-          totalAmount: 0,
-          jiaBillingInfo: [],
-          yiBillingInfo: [],
-          paymentMethods,
-          paymentTimePeriod: null,
+          ...financeInfoStructure,
           currencyOptions: [
             {
               value: 1,
@@ -828,15 +777,7 @@
           }
         },
         cardContCheckInfoForm: {
-          responsibleId: '',
-          responsibleName: '',
-          responsibleDeptId: '',
-          responsibleDeptName: '',
-          checkType: null,
-          haveSample: true,
-          unionCheckPersons: [],
-          materialMatters: [],
-          serviceMatters: [],
+          ...checkInfoStructure,
           responsibles: [],
           checkServiceMethods: [
             {
@@ -857,23 +798,17 @@
           }
         },
         cardSealInfoForm: {
+          ...sealInfoStructure,
           contract: [],
           others: [],
           agreenments: [],
-          saleTime: 1,
-          printTime: 4,
-          remainTime: 2,
-          saleInfos: ['1'],
-          attaches: [],
-          sealAttaches: [],
           errorMsg: '',
           errorCount: 0,
           rules: {
-            saleInfos: [{required: true, message: '请选择用章'}]
+            sealUsedInfo: [{required: true, message: '请选择用章'}]
           }
         },
         cardSealFileForm: {
-          sealAttaches: [],
           errorCount: 0
         },
         cardRemarkInfoForm: {
@@ -905,7 +840,9 @@
             }
           ]
         },
-        btnSubmitStatus: true, // 提交按钮状态
+        supplierCode: null,
+        contractLabels: [],
+        btnSubmitStatus: false,
         historyDatas: []
       };
     },
@@ -950,16 +887,17 @@
         return visible;
       },
       totalConMoney() {
-        if (this.cardFinanceInfoForm.oneOffPay) {
-          return this.cardFinanceInfoForm.totalAmount;
+        const {oneOffPay, totalAmount, paymentMethods} = this.cardFinanceInfoForm;
+        if (oneOffPay) {
+          return totalAmount;
         }
-        const paymentMethods = this.cardFinanceInfoForm.paymentMethods;
-        const earnest = parseFloat(paymentMethods.earnest[0].paymentAmount ? paymentMethods.earnest[0].paymentAmount : 0);
-        const advance = parseFloat(paymentMethods.advance[0].paymentAmount ? paymentMethods.advance[0].paymentAmount : 0);
-        const progress = parseFloat(paymentMethods.progress[0].paymentAmount ? paymentMethods.progress[0].paymentAmount : 0);
-        const final = parseFloat(paymentMethods._final[0].paymentAmount ? paymentMethods._final[0].paymentAmount : 0);
-        const deposit = parseFloat(paymentMethods.deposit[0].paymentAmount ? paymentMethods.deposit[0].paymentAmount : 0);
-        return earnest + advance + progress + final + deposit;
+        const {earnest, advance, progress, _final, deposit} = paymentMethods;
+        const m1 = parseFloat(earnest[0].paymentAmount ? earnest[0].paymentAmount : 0);
+        const m2 = parseFloat(advance[0].paymentAmount ? advance[0].paymentAmount : 0);
+        const m3 = parseFloat(progress[0].paymentAmount ? progress[0].paymentAmount : 0);
+        const m4 = parseFloat(_final[0].paymentAmount ? _final[0].paymentAmount : 0);
+        const m5 = parseFloat(deposit[0].paymentAmount ? deposit[0].paymentAmount : 0);
+        return m1 + m2 + m3 + m4 + m5;
       },
       showMaterialItems() {
         return this.cardContentInfoForm.conStandard.some(item => !!item.materialCode);
@@ -991,13 +929,6 @@
       },
       isFARole() {
         return this.processData ? this.processData.roleName.indexOf('FA') > -1 : false;
-      },
-      supplierCode() {
-        const items = this.cardContentInfoForm.tableSupplierInfo;
-        if (items.length) {
-          return items[0].code;
-        }
-        return null;
       },
       contractBusinessTypeName() {
         const {
@@ -1070,36 +1001,18 @@
       $route() {
         this.setCurrentStatus();
       },
-      'baseInfoForm.contractType': function (val) {
-        if (this.isCreate) {
-          if (val === 2) { // 固定格式合同
-            this.cardFinanceInfoForm.moneyInvolved = true;
-          }
-          if (val === 4) {
-            this.cardFinanceInfoForm.moneyInvolved = false;
-          }
+      'cardContentInfoForm.tableSupplierInfo': function (items) {
+        if (items.length <= 1) {
+          this.contentInfoValid();
         }
       },
-      'cardContentInfoForm.conStandard': function (conStandards) {
-        if (this.isCreate) {
-          const result = [];
-          if (conStandards && conStandards.length) {
-            for (let i = 0, len = conStandards.length; i < len; i++) {
-              const item = conStandards[i];
-              if (item.materialCode) {
-                result.push({
-                  sampleCode: item.materialCode,
-                  sampleDesc: item.materialName
-                });
-              }
-            }
-          }
-          this.cardContCheckInfoForm.materialMatters = result;
+      'cardContentInfoForm.conSubjctName': function (items) {
+        if (items.length <= 1) {
+          this.contentInfoValid();
         }
       },
       'cardContCheckInfoForm.serviceMatters': function (items) {
-        const len = items.length;
-        if (!this.showMaterialItems && len <= 1) {
+        if (!this.showMaterialItems && items.length <= 1) {
           this.checkInfoValid();
         }
       },
@@ -1134,8 +1047,8 @@
         this.procTitle = this.processData.procTitle;
 
         this.comLoading();
-        Api.getContractDetailByContractId({
-          contractId: query.contractId,
+        Api.getContractDetailById({
+          id: query.contractId,
           operate: 'PROCESS'
         }).then((res) => {
           const data = res.data.dataMap;
@@ -1153,21 +1066,7 @@
     },
     methods: {
       getPreviewData() {
-        const previewData = {};
-        previewData.conStandard = this.cardContentInfoForm.conStandard || [];
-        previewData.contractType = this.baseInfoForm.contractType;
-        previewData.contractBusinessTypeFirst = this.baseInfoForm.contractBusinessTypeFirst;
-        previewData.contractBusinessTypeThirdName = this.baseInfoForm.contractBusinessTypeThirdName;
-        previewData.contractNo = this.baseInfoForm.contractNo;
-        previewData.effectiveCondition = this.cardContentInfoForm.effectiveCondition;
-        previewData.startTime = formatDate(this.cardContentInfoForm.startTime);
-        previewData.endTime = formatDate(this.cardContentInfoForm.endTime);
-        previewData.conditionDesc = this.cardContentInfoForm.conditionDesc;
-        previewData.cardFinanceInfoForm = this.cardFinanceInfoForm;
-        previewData.templateId = this.baseInfoForm.templateId;
-        previewData.corporeRemark = this.cardContentInfoForm.corporeRemark;
-        previewData.paymentRemark = this.cardFinanceInfoForm.paymentRemark;
-        this.previewData = previewData;
+        this.previewData = this.getResult();
         this.visible = true;
       },
       handlePreview() {
@@ -1259,26 +1158,12 @@
             return false;
           });
           const params = {templateId: val, templateName, contractTextType};
-          Api.getSealAttachments(params).then((data) => {
-            if (data.data.dataMap) {
-              const dataMap = data.data.dataMap;
-
-              const contract = [];
-              const others = [];
-              if (dataMap && dataMap.length) {
-                for (let i = 0, len = dataMap.length; i < len; i++) { // 初始化附件类型
-                  const item = dataMap[i];
-                  if (parseInt(item.attachType, 10) === 3) {
-                    contract.push(item);
-                  }
-                  if (parseInt(item.attachType, 10) === 1) {
-                    others.push([item]);
-                  }
-                }
-                this.cardSealInfoForm.contract = contract;
-                this.cardSealInfoForm.others = others;
-              }
-            }
+          Api.getSealAttachments(params).then((res) => {
+            const data = res.data.dataMap;
+            const {contractAttaches, templateLabels} = data;
+            const allFiles = this.getDiviFiles(contractAttaches);
+            Object.assign(this.cardSealInfoForm, allFiles, {attaches: allFiles.contract});
+            this.contractLabels = templateLabels;
           });
         }
       },
@@ -1300,7 +1185,7 @@
       },
       modifyAddNewFiles() {
         const t = this;
-        const sealAttachments = t.cardSealFileForm.sealAttaches.filter((item => !item.id));
+        const sealAttachments = t.cardSealInfoForm.sealAttaches.filter((item => !item.id));
         return Api.uploadSealAttachments({
           id: t.baseInfoForm.id,
           type: 1,
@@ -1394,22 +1279,62 @@
       getJiaBillingInfo(info) {
         this.cardFinanceInfoForm.jiaBillingInfo.push(info);
       },
+      getDiviFiles(files) {
+        if (!files || !files.length) {
+          return {};
+        }
+        const contract = [];
+        const others = [];
+        const agreements = [];
+        files.forEach((item) => {
+          const attachType = +item.attachType;
+          if (attachType === 2) {
+            agreements.push(item);
+            return;
+          }
+          if (this.baseInfoForm.contractTextType === 1) {
+            if (attachType === 3) {
+              contract.push(item);
+            } else {
+              others.push(item);
+            }
+          } else {
+            contract.push(item);
+          }
+        });
+        return {
+          contract,
+          others,
+          agreements
+        };
+      },
+
       getCreateInfo() {
         const {query} = this.$route;
-        const types = query.curConTypeId.split('-');
-        this.baseInfoForm.contractBusinessTypeThird = types[2];
-        this.baseInfoForm.prNo = query.currentFolio;// 比加单号
-        this.baseInfoForm.contractTypeName = getContractType(query.curConModelId);// 初始化合同模式
-        this.baseInfoForm.contractType = +query.curConModelId;
-        if (query.currentFolio) {
-          this.baseInfoForm.prFlag = 1;
+        const {currentFolio, curConTypeId, curConModelId} = query;
+        const contractType = +curConModelId;
+        const types = curConTypeId.split('-');
+        Object.assign(this.baseInfoForm, {
+          contractBusinessTypeFirst: types[0],
+          contractBusinessTypeSecond: types[1],
+          contractBusinessTypeThird: types[2],
+          prNo: currentFolio,
+          prFlag: currentFolio ? 1 : null,
+          contractTypeName: getContractType(curConModelId),
+          contractType: +curConModelId
+        });
+
+        if (contractType === 4) {
+          this.cardFinanceInfoForm.moneyInvolved = false;
         }
-        const params = {};
-        params.folio = query.currentFolio;
-        params.contractType = query.curConModelId;// 合同模式
-        params.contractBusinessTypeFirst = types[0];
-        params.contractBusinessTypeSecond = types[1];
-        params.contractBusinessTypeThird = types[2];
+
+        const params = {
+          folio: currentFolio,
+          contractType: curConModelId,
+          contractBusinessTypeFirst: types[0],
+          contractBusinessTypeSecond: types[1],
+          contractBusinessTypeThird: types[2]
+        };
         Api.getContractBaseInfo(params).then((res) => {
           const data = res.data.dataMap;
           if (data) {
@@ -1426,165 +1351,39 @@
             });
 
             const {conStandard, conSubjctName, tableSupplierInfo} = cardContentInfoForm;
-            this.cardContentInfoForm.conSubjctName = conSubjctName;
-            this.cardContentInfoForm.tableSupplierInfo = tableSupplierInfo;
+            if (conSubjctName && conSubjctName.length) {
+              this.cardContentInfoForm.conSubjctName = conSubjctName;
+            }
+            if (tableSupplierInfo && tableSupplierInfo.length) {
+              this.cardContentInfoForm.tableSupplierInfo = tableSupplierInfo;
+            }
+            const materialMatters = [];
+            conStandard.forEach((item) => {
+              const {materialCode, materialName} = item;
+              if (materialCode) {
+                materialMatters.push({
+                  sampleCode: materialCode,
+                  sampleDesc: materialName
+                });
+              }
+            });
+            if (!materialMatters.length) {
+              return;
+            }
+            this.cardContCheckInfoForm.materialMatters = materialMatters;
             const exist = conStandard.some(item => item.taxCode !== 'J0');
             if (exist) {
               this.cardFinanceInfoForm.invoiceType = this.cardFinanceInfoForm.invoiceTypeOptions[0].value;
             }
 
             const {jiaBillingInfo, yiBillingInfo, totalAmount} = cardFinanceInfoForm;
-            this.cardFinanceInfoForm.totalAmount = totalAmount;
-            this.cardFinanceInfoForm.jiaBillingInfo = jiaBillingInfo;
-            this.cardFinanceInfoForm.yiBillingInfo = yiBillingInfo;
+            Object.assign(this.cardFinanceInfoForm, {
+              totalAmount,
+              jiaBillingInfo,
+              yiBillingInfo
+            });
           }
         });
-      },
-      getBaseInfo(data) {
-        const {
-          creatorId,
-          contractName,
-          businessOperatorName,
-          businessDeptName,
-          contractBusinessTypeFirstName,
-          contractBusinessTypeSecondName,
-          contractBusinessTypeThirdName,
-          contractType,
-          contractTextType,
-          templateId,
-          templateName,
-          belongProject,
-          contractNo,
-          sealOrder,
-          ourSealOpinion
-        } = data;
-        return {
-          creatorId,
-          contractName,
-          businessOperatorName,
-          businessDeptName,
-          contractBusinessTypeFirstName,
-          contractBusinessTypeSecondName,
-          contractBusinessTypeThirdName,
-          contractType,
-          contractTextType,
-          templateId,
-          templateName,
-          belongProject,
-          contractNo,
-          sealOrder,
-          ourSealOpinion
-        };
-      },
-      getContentInfo(data) {
-        const {
-          tableSupplierInfo,
-          conSubjctName,
-          thirdPartyInfo,
-          conStandard,
-          effectiveCondition,
-          startTime,
-          endTime,
-          conditionDesc
-        } = data;
-        return {
-          tableSupplierInfo,
-          conSubjctName,
-          thirdPartyInfo,
-          conStandard,
-          effectiveCondition,
-          startTime,
-          endTime,
-          conditionDesc
-        };
-      },
-      getFinanceInfo(data) {
-        const {
-          totalAmount,
-          moneyInvolved,
-          oneOffPay,
-          currency,
-          invoiceType,
-          paymentTimePeriod,
-          paymentRemark
-        } = data;
-        const paymentMethods = data.paymentMethods;
-        Object.keys(this.cardFinanceInfoForm.paymentMethods).forEach((key) => {
-          paymentMethods[key][0].type = this.cardFinanceInfoForm.paymentMethods[key][0].type;
-        });
-        return {
-          totalAmount,
-          moneyInvolved,
-          oneOffPay,
-          currency,
-          invoiceType,
-          paymentTimePeriod,
-          paymentRemark,
-          paymentMethods
-        };
-      },
-      getCheckInfo(data) {
-        const {
-          responsibleId,
-          responsibleName,
-          responsibleDeptId,
-          responsibleDeptName,
-          checkType,
-          haveSample,
-          unionCheckPersons,
-          materialMatters,
-          serviceMatters
-        } = data;
-        return {
-          responsibleId,
-          responsibleName,
-          responsibleDeptId,
-          responsibleDeptName,
-          checkType,
-          haveSample,
-          unionCheckPersons,
-          materialMatters,
-          serviceMatters
-        };
-      },
-      getSealInfo(data) {
-        const {
-          sealNumber,
-          printNumber,
-          remainNumber,
-          sealUsedInfo,
-          attaches,
-          sealAttaches
-        } = data;
-        const contract = [];
-        const others = [];
-        const agreenments = [];
-        attaches.forEach((item) => {
-          if (+item[0].attachType === 2) {
-            agreenments.push(item[0]);
-            return;
-          }
-          if (this.baseInfoForm.contractTextType === 1) {
-            if (+item[0].attachType === 3) {
-              contract.push(item[0]);
-            } else {
-              others.push(item[0]);
-            }
-          } else {
-            contract.push(item[0]);
-          }
-        });
-        return {
-          contract,
-          others,
-          agreenments,
-          sealNumber,
-          printNumber,
-          remainNumber,
-          sealUsedInfo,
-          attaches,
-          sealAttaches
-        };
       },
       getRemarkInfo(data) {
         const {otherInstruction} = data;
@@ -1596,7 +1395,7 @@
           cardContentInfoForm,
           cardFinanceInfoForm,
           cardContCheckInfoForm,
-          cardSealInfoForm,
+          contractAttachAndSeal,
           cardRemarkInfoForm,
           simpleContract
         } = data;
@@ -1612,28 +1411,45 @@
         this.initContentInfo(cardContentInfoForm);
         this.initFinanceInfo(cardFinanceInfoForm);
         this.initCheckInfo(cardContCheckInfoForm);
-        this.initSealInfo(cardSealInfoForm);
+        this.initSealInfo(contractAttachAndSeal);
         this.initRemarkInfo(cardRemarkInfoForm);
 
         if (this.isSee) {
           this.historyDatas = simpleContract;
         }
+        if (this.isProcess) {
+          const items = this.cardContentInfoForm.tableSupplierInfo;
+          if (items.length) {
+            this.supplierCode = items[0].code;
+          }
+        }
       },
       initBaseInfo(baseInfoForm) {
-        Object.assign(this.baseInfoForm, this.getBaseInfo(baseInfoForm));
+        const result = getStructure(baseInfoStructure, baseInfoForm);
+        Object.assign(this.baseInfoForm, result);
       },
       initContentInfo(cardContentInfoForm) {
-        Object.assign(this.cardContentInfoForm, this.getContentInfo(cardContentInfoForm));
+        const result = getStructure(contentInfoStructure, cardContentInfoForm);
+        Object.assign(this.cardContentInfoForm, result);
       },
       initFinanceInfo(cardFinanceInfoForm) {
-        Object.assign(this.cardFinanceInfoForm, this.getFinanceInfo(cardFinanceInfoForm));
+        const result = getStructure(financeInfoStructure, cardFinanceInfoForm);
+        const paymentMethods = result.paymentMethods;
+        Object.keys(this.cardFinanceInfoForm.paymentMethods).forEach((key) => {
+          paymentMethods[key][0].type = financeInfoStructure.paymentMethods[key][0].type;
+        });
+        Object.assign(this.cardFinanceInfoForm, result);
       },
       initCheckInfo(cardContCheckInfoForm) {
-        Object.assign(this.cardContCheckInfoForm, this.getCheckInfo(cardContCheckInfoForm));
+        if (!this.$refs.cardContCheckInfoForm) {
+          return;
+        }
+        const result = getStructure(checkInfoStructure, cardContCheckInfoForm);
+        Object.assign(this.cardContCheckInfoForm, result);
       },
-      initSealInfo(cardSealInfoForm) {
-        Object.assign(this.cardSealInfoForm, this.getSealInfo(cardSealInfoForm));
-        Object.assign(this.cardSealFileForm, {sealAttaches: this.cardSealInfoForm.sealAttaches});
+      initSealInfo(contractAttachAndSeal) {
+        const result = getStructure(sealInfoStructure, contractAttachAndSeal);
+        Object.assign(this.cardSealInfoForm, result, this.getDiviFiles(result.attaches));
       },
       initRemarkInfo(cardRemarkInfoForm) {
         Object.assign(this.cardRemarkInfoForm, this.getRemarkInfo(cardRemarkInfoForm));
@@ -1647,7 +1463,7 @@
             this.$message.warning('请填写变更原因再提交！');
             return;
           }
-          const sealAttachments = this.cardSealFileForm.sealAttaches.filter((item => !item.id)); //合同变更必须上传附件
+          const sealAttachments = this.cardSealInfoForm.sealAttaches.filter((item => !item.id)); //合同变更必须上传附件
           if (!sealAttachments.length) {
             errorCount++;
             this.$message.warning('变更合同必须上传附件！');
@@ -1670,10 +1486,14 @@
           if (!tableSupplierInfo.length) {
             errorCount++;
             form.supplierErrorMsg = '合同供应商信息不能为空';
+          } else {
+            form.supplierErrorMsg = '';
           }
           if (!conSubjctName.length) {
             errorCount++;
             form.subjectsErrorMsg = '我方主体信息不能为空';
+          } else {
+            form.subjectsErrorMsg = '';
           }
           if (!valid) {
             errorCount++;
@@ -1746,7 +1566,7 @@
       },
       sealFileValid() {
         let errorCount = 0;
-        const form = this.cardSealFileForm;
+        const form = this.cardSealInfoForm;
         const {sealAttaches} = form;
         if (this.isModify) {
           const exist = sealAttaches.some(item => !item[0].id); //合同变更必须上传附件
@@ -1755,7 +1575,7 @@
             this.$message.warning('变更合同必须上传附件！');
           }
         }
-        form.errorCount = errorCount;
+        this.cardSealFileForm.errorCount = errorCount;
         return !errorCount;
       },
       remarkInfoValid() {
@@ -1804,29 +1624,27 @@
       },
 
       getResult() {
-        const baseInfoForm = this.getBaseInfo(this.baseInfoForm);
-        const cardContentInfoForm = this.getContentInfo(this.cardContentInfoForm);
-        const cardFinanceInfoForm = this.initFinanceInfo(this.cardFinanceInfoForm);
-        const cardContCheckInfoForm = this.getCheckInfo(this.cardContCheckInfoForm);
-        const cardSealInfoForm = this.getSealInfo(this.cardSealInfoForm);
+        const baseInfoForm = getStructure(baseInfoStructure, this.baseInfoForm);
+        const cardContentInfoForm = getStructure(contentInfoStructure, this.cardContentInfoForm);
+        const cardFinanceInfoForm = getStructure(financeInfoStructure, this.cardFinanceInfoForm);
+        const cardContCheckInfoForm = getStructure(checkInfoStructure, this.cardContCheckInfoForm);
+        const contractAttachAndSeal = getStructure(sealInfoStructure, this.cardSealInfoForm);
         const cardRemarkInfoForm = this.getRemarkInfo(this.cardRemarkInfoForm);
+        const contractLabels = this.contractLabels;
 
-        Object.assign(cardContentInfoForm, {
-          startTime: formatDate(cardContentInfoForm.startTime),
-          endTime: formatDate(cardContentInfoForm.endTime)
-        });
         return {
           baseInfoForm,
           cardContentInfoForm,
           cardFinanceInfoForm,
           cardContCheckInfoForm,
-          cardSealInfoForm,
-          cardRemarkInfoForm
+          contractAttachAndSeal,
+          cardRemarkInfoForm,
+          contractLabels
         };
       },
       handleSubmit() {
-        this.btnSubmitStatus = false;
         this.validateForms().then(() => {
+          this.btnSubmitStatus = true;
           const result = this.getResult();
           if (this.isCreate) {
             this.comLoading();
@@ -1834,7 +1652,7 @@
               this.$message.success('提交成功！');
               this.$router.push({name: routerNames.con_index});
             }).finally(() => {
-              this.btnSubmitStatus = true;
+              this.btnSubmitStatus = false;
               this.comLoading(false);
             });
           } else {
@@ -1848,14 +1666,12 @@
               this.$message.success('提交成功！');
               this.$router.push({name: routerNames.con_index});
             }).finally(() => {
-              this.btnSubmitStatus = true;
+              this.btnSubmitStatus = false;
               this.comLoading(false);
             });
           }
         }).catch(() => {
           this.$message.warning('表单填写不完整！');
-        }).finally(() => {
-          this.btnSubmitStatus = true;
         });
       }
     },

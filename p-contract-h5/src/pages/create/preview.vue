@@ -253,7 +253,7 @@
 </template>
 
 <script>
-  import Api from '../../api/support/index';
+  import Api from '../../api/manageContract';
   import numToChinese from '../../util/numToChinese';
 
   export default {
@@ -287,7 +287,6 @@
         depositRatio: '',
         moneyInvolved: false,
         oneOffPay: false,
-        tplData: {},
         currentTpl: null,
         corporeRemark: '',
         paymentRemark: ''
@@ -342,21 +341,9 @@
 
         return name;
       },
-      getTplData(templateId) {
-        const tplData = this.tplData[templateId];
-        if (tplData) {
-          const {content} = tplData;
-          this.currentTpl = content;
-          return;
-        }
-        if (!templateId) {
-          return;
-        }
-        Api.getTplData({templateId}).then((res) => {
-          const data = res.data.dataMap;
-          const {content} = data;
-          this.currentTpl = content;
-          this.tplData[templateId] = data;
+      getTplData() {
+        Api.getTplContent(this.datas).then((res) => {
+          this.currentTpl = res.data.dataMap;
         });
       },
       ok() {
@@ -373,10 +360,33 @@
           return;
         }
         const {
-          contractNo, contractBusinessTypeThirdName, conStandard, cardFinanceInfoForm, endTime, startTime, conditionDesc, effectiveCondition, templateId, contractType, contractBusinessTypeFirst, corporeRemark, paymentRemark
+          baseInfoForm,
+          cardContentInfoForm,
+          cardFinanceInfoForm
         } = this.datas;
         const {
-          jiaBillingInfo, yiBillingInfo, moneyInvolved, totalAmount, paymentMethods, oneOffPay, paymentTimePeriods
+          contractNo,
+          contractType,
+          contractBusinessTypeFirst,
+          contractBusinessTypeThirdName
+        } = baseInfoForm;
+        const {
+          effectiveCondition,
+          conStandard,
+          conditionDesc,
+          corporeRemark,
+          startTime,
+          endTime
+        } = cardContentInfoForm;
+        const {
+          jiaBillingInfo,
+          yiBillingInfo,
+          moneyInvolved,
+          totalAmount,
+          paymentMethods,
+          oneOffPay,
+          paymentTimePeriods,
+          paymentRemark
         } = cardFinanceInfoForm;
         const {
           earnest,
@@ -385,18 +395,19 @@
           _final, // eslint-disable-line
           deposit
         } = paymentMethods;
-        this.paymentTimePeriods = paymentTimePeriods;
+
+        this.contractNo = contractNo;
         this.contractType = contractType;
         this.contractBusinessTypeFirst = contractBusinessTypeFirst;
-        this.materialTable = conStandard;
+        this.title = contractBusinessTypeThirdName;
+
+        this.paymentTimePeriods = paymentTimePeriods;
         this.startTime = startTime;
         this.endTime = endTime;
         this.conditionDesc = conditionDesc;
         this.effectiveCondition = effectiveCondition;
-        this.contractNo = contractNo;
         this.corporeRemark = corporeRemark;
         this.paymentRemark = paymentRemark;
-        this.title = contractBusinessTypeThirdName;
         this.partAName = jiaBillingInfo.map((item) => item.company);
         this.partBName = yiBillingInfo.length > 0 ? [yiBillingInfo[0].company] : [];
         this.supplierName = yiBillingInfo.length > 0 ? yiBillingInfo[0].company : '';
@@ -409,11 +420,19 @@
           if (oneOffPay) {
             this.oneOffPay = true;
           } else {
-            this.priceTable = [...this.transformData(earnest, '定金'), ...this.transformData(advance, '预付款'), ...this.transformData(progress, ''), ...this.transformData(_final, '尾款'), ...this.transformData(deposit, '保证金')];
+            this.priceTable = [
+              ...this.transformData(earnest, '定金'),
+              ...this.transformData(advance, '预付款'),
+              ...this.transformData(progress, ''),
+              ...this.transformData(_final, '尾款'),
+              ...this.transformData(deposit, '保证金')
+            ];
           }
         }
 
-        this.getTplData(templateId);
+        this.materialTable = conStandard;
+
+        this.getTplData();
       }
     },
     filters: {
