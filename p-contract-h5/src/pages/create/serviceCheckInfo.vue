@@ -57,7 +57,7 @@
     props: {
       items: Array
     },
-    data() {
+    data () {
       return {
         visible: false,
         form: {
@@ -69,48 +69,50 @@
           name: [{required: true, message: '请输入服务名称', trigger: 'blur'}],
           requirement: [{required: true, message: '请输入验收要求', trigger: 'blur'}]
         }
-      };
+      }
     },
     computed: {
-      isVisible() {
-        const {isSee, isProcess} = this.$store.getters;
-        let visible = false;
+      isVisible () {
+        const {isSee, isProcess} = this.$store.getters
+        let visible = false
         if (!(isSee && isProcess)) {
-          visible = true;
+          visible = true
         }
-        return visible;
+        return visible
       }
     },
     methods: {
-      handleRemove(index, rows) {
-        rows.splice(index, 1);
+      handleRemove (index, rows) {
+        rows.splice(index, 1)
+        this.$emit('validate')
       },
-      handleAddServiceCheckItem(formName) {
-        const curForm = this.$refs[formName];
+      handleAddServiceCheckItem (formName) {
+        const curForm = this.$refs[formName]
         curForm.validate((valid) => {
           if (valid) {
-            const exist = this.items.some(chr => chr.name === this.form.name);
+            const exist = this.items.some(chr => chr.name === this.form.name)
             if (exist) {
-              this.$message.error('这条数据已存在咯！');
-              return;
+              this.$message.error('这条数据已存在咯！')
+              return
             }
             this.items.push({
               serviceRequire: this.form.requirement,
               serviceName: this.form.name,
               remark: this.form.remark,
               addNew: true
-            });
-            curForm.resetFields();
-            this.visible = false;
+            })
+            this.$emit('validate')
+            curForm.resetFields()
+            this.visible = false
           }
-        });
+        })
       },
-      handleCancelAddServiceCheck(formName) {
-        this.$refs[formName].resetFields();
-        this.visible = false;
+      handleCancelAddServiceCheck (formName) {
+        this.$refs[formName].resetFields()
+        this.visible = false
       }
     }
-  };
+  }
 </script>
 
 <style type="text/scss" lang="scss" scoped>

@@ -132,17 +132,17 @@
 </template>
 
 <script>
-  import Api from '../../api/sign';
-  import ContractApi from '../../api/manageContract';
-  import {routerNames, prTypeMap} from '../../core/consts';
-  import comLoading from '../../mixins/comLoading';
-  import {formatDate} from '../../filters/moment';
-  import SelectPerson from '../../components/selectPerson.vue';
-  import cutZero from '../../util/cutZero';
+  import Api from '../../api/sign'
+  import ContractApi from '../../api/manageContract'
+  import {routerNames, prTypeMap} from '../../core/consts'
+  import comLoading from '../../mixins/comLoading'
+  import {formatDate} from '../../filters/moment'
+  import SelectPerson from '../../components/selectPerson.vue'
+  import cutZero from '../../util/cutZero'
 
   export default {
     mixins: [comLoading],
-    data() {
+    data () {
       return {
         form: {
           fuzzySearch: '',
@@ -166,71 +166,71 @@
         totalPage: 0,
         daterange: [],
         pickerOptions: {
-          disabledDate(time) {
-            return time.getTime() > Date.now();
+          disabledDate (time) {
+            return time.getTime() > Date.now()
           }
         },
         tableData: []
-      };
+      }
     },
     methods: {
-      search() {
-        this.getList();
+      search () {
+        this.getList()
       },
-      selectPerson(val) {
-        this.form.initiator = val;
+      selectPerson (val) {
+        this.form.initiator = val
       },
-      formatType(row, column, cellValue) {
-        return [1, 3].indexOf(cellValue) > -1 ? prTypeMap[1] : prTypeMap[2];
+      formatType (row, column, cellValue) {
+        return [1, 3].indexOf(cellValue) > -1 ? prTypeMap[1] : prTypeMap[2]
       },
-      getList() {
-        this.comLoading();
-        this.form.createDateStart = formatDate(this.daterange[0]);
-        this.form.createDateEnd = formatDate(this.daterange[1]);
+      getList () {
+        this.comLoading()
+        this.form.createDateStart = formatDate(this.daterange[0])
+        this.form.createDateEnd = formatDate(this.daterange[1])
         Api.query(this.form).then((res) => {
-          console.log(res);
-          this.comLoading(false);
-          const {total, data} = res.data.dataMap;
-          this.tableData = data;
-          this.totalPage = total;
+          console.log(res)
+          this.comLoading(false)
+          const {total, data} = res.data.dataMap
+          this.tableData = data
+          this.totalPage = total
         }).catch(() => {
-          this.comLoading(false);
-        });
+          this.comLoading(false)
+        })
       },
-      see(row) {
-        const id = row.purchaseOrderId;
+      see (row) {
+        const id = row.purchaseOrderId
         return {
           name: routerNames.con_purchase_see,
           query: {id}
-        };
+        }
       },
-      handleSizeChange(val) {
-        console.log(`每页 ${val} 条`);
-        this.form.pageSize = val;
-        this.getList();
+      handleSizeChange (val) {
+        console.log(`每页 ${val} 条`)
+        this.form.pageSize = val
+        this.getList()
       },
-      handleCurrentChange(val) {
-        console.log(`当前页: ${val}`);
-        this.form.pageNo = val;
-        this.getList();
+      handleCurrentChange (val) {
+        console.log(`当前页: ${val}`)
+        this.form.pageNo = val
+        this.getList()
       },
-      createFilter(result) {
-        return result.map((item) => ({value: item.companyCode, label: `${item.companyCode} ${item.company}`}));
+      createFilter (result) {
+        return result.map((item) => ({value: item.companyCode, label: `${item.companyCode} ${item.company}`}))
       },
-      querySearch(queryString, cb) {
+      querySearch (queryString, cb) {
         if (!queryString) {
-          return cb([]);
+          return cb([])
         }
         return ContractApi.getRemoteSubjectsByKeyWord({
           key: queryString
         }).then((res) => {
-          const result = res.data.dataMap || [];
-          cb(this.createFilter(result));
-        }, () => cb([]));
+          const result = res.data.dataMap || []
+          cb(this.createFilter(result))
+        }, () => cb([]))
       }
     },
-    created() {
-      this.getList();
+    created () {
+      this.getList()
     },
     filters: {
       formatDate,
@@ -239,5 +239,5 @@
     components: {
       SelectPerson
     }
-  };
+  }
 </script>

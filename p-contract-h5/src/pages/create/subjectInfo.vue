@@ -63,7 +63,7 @@
 </template>
 
 <script>
-  import Api from '../../api/manageContract';
+  import Api from '../../api/manageContract'
 
   export default {
     name: 'subject-info',
@@ -71,7 +71,7 @@
       items: Array,
       contractType: Number
     },
-    data() {
+    data () {
       return {
         visible: false,
         subjects: [],
@@ -84,56 +84,57 @@
           ]
         },
         loading: false
-      };
+      }
     },
     computed: {
-      isVisibleAddBtn() {
-        const {isCreate} = this.$store.getters;
-        let visible = false;
+      isVisibleAddBtn () {
+        const {isCreate} = this.$store.getters
+        let visible = false
         if (isCreate) {
-          visible = true;
+          visible = true
         }
-        return visible;
+        return visible
       },
-      isVisibleBtns() {
-        const {isSee, isProcess} = this.$store.getters;
-        return !(isSee && isProcess);
+      isVisibleBtns () {
+        const {isSee, isProcess} = this.$store.getters
+        return !(isSee && isProcess)
       }
     },
     methods: {
-      enabledAllApply(code) {
-        let enabled = false;
-        const {isCreate} = this.$store.getters;
+      enabledAllApply (code) {
+        let enabled = false
+        const {isCreate} = this.$store.getters
         if (isCreate && code === '1001' && this.contractType >= 3) {
-          enabled = true;
+          enabled = true
         }
-        return enabled;
+        return enabled
       },
-      handleRemove(index, rows) {
-        rows.splice(index, 1);
+      handleRemove (index, rows) {
+        rows.splice(index, 1)
+        this.$emit('validate')
       },
-      getRemoteSubjectsByKeyWord(key) {
+      getRemoteSubjectsByKeyWord (key) {
         if (key !== '') {
-          this.loading = true;
+          this.loading = true
           Api.getRemoteSubjectsByKeyWord({key})
             .then((data) => {
-              this.loading = false;
-              this.subjects = data.data.dataMap || [];
-            });
+              this.loading = false
+              this.subjects = data.data.dataMap || []
+            })
         } else {
-          this.subjects = [];
+          this.subjects = []
         }
       },
-      handleAddNewSubject(formName) {
-        const curForm = this.$refs[formName];
+      handleAddNewSubject (formName) {
+        const curForm = this.$refs[formName]
         curForm.validate((valid) => {
           if (valid) {
-            const subjects = this.subjects;
-            const key = this.form.search;
-            const exist = this.items.some(chr => chr.code === key);
+            const subjects = this.subjects
+            const key = this.form.search
+            const exist = this.items.some(chr => chr.code === key)
             if (exist) {
-              this.$message.error('这条数据已存在咯！');
-              return;
+              this.$message.error('这条数据已存在咯！')
+              return
             }
             subjects.some((item) => {
               if (item.companyCode === key) {
@@ -142,24 +143,25 @@
                   name: item.company,
                   applyAll: false,
                   addNew: true
-                });
-                this.$emit('getJiaBillingInfo', item);
-                return true;
+                })
+                this.$emit('validate')
+                this.$emit('getJiaBillingInfo', item)
+                return true
               }
-              return false;
-            });
+              return false
+            })
 
-            curForm.resetFields();
-            this.visible = false;
+            curForm.resetFields()
+            this.visible = false
           }
-        });
+        })
       },
-      handleCancelAddNewSubject(formName) {
-        this.$refs[formName].resetFields();
-        this.visible = false;
+      handleCancelAddNewSubject (formName) {
+        this.$refs[formName].resetFields()
+        this.visible = false
       }
     }
-  };
+  }
 </script>
 
 <style type="text/scss" lang="scss" scoped>

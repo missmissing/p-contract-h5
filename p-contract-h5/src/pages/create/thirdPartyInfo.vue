@@ -57,14 +57,14 @@
 </template>
 
 <script>
-  import Api from '../../api/manageContract';
+  import Api from '../../api/manageContract'
 
   export default {
     name: 'third-party-info',
     props: {
       items: Array
     },
-    data() {
+    data () {
       return {
         visible: false,
         loading: false,
@@ -77,52 +77,52 @@
             {required: true, message: '请输入搜索关键字'}
           ]
         }
-      };
+      }
     },
     computed: {
-      isVisibleAddBtn() {
-        const {isCreate} = this.$store.getters;
-        let visible = false;
+      isVisibleAddBtn () {
+        const {isCreate} = this.$store.getters
+        let visible = false
         if (isCreate) {
-          visible = true;
+          visible = true
         }
-        return visible;
+        return visible
       },
-      isVisibleBtns() {
-        const {isSee, isProcess} = this.$store.getters;
-        let visible = false;
+      isVisibleBtns () {
+        const {isSee, isProcess} = this.$store.getters
+        let visible = false
         if (!(isSee && isProcess)) {
-          visible = true;
+          visible = true
         }
-        return visible;
+        return visible
       }
     },
     methods: {
-      handleRemove(index, rows) {
-        rows.splice(index, 1);
+      handleRemove (index, rows) {
+        rows.splice(index, 1)
       },
-      getRemoteThirdPartiesByKeyWord(key) {
+      getRemoteThirdPartiesByKeyWord (key) {
         if (key !== '') {
-          this.loading = true;
+          this.loading = true
           Api.getRemoteSuppliersByKeyWord({key})
             .then((data) => {
-              this.loading = false;
-              this.thirdParties = data.data.dataMap;
-            });
+              this.loading = false
+              this.thirdParties = data.data.dataMap
+            })
         } else {
-          this.thirdParties = [];
+          this.thirdParties = []
         }
       },
-      handleAddNewThirdParty(formName) {
-        const curForm = this.$refs[formName];
+      handleAddNewThirdParty (formName) {
+        const curForm = this.$refs[formName]
         curForm.validate((valid) => {
           if (valid) {
-            const thirdParties = this.thirdParties;
-            const key = this.form.search;
-            const exist = this.items.some(chr => chr.code === key);
+            const thirdParties = this.thirdParties
+            const key = this.form.search
+            const exist = this.items.some(chr => chr.code === key)
             if (exist) {
-              this.$message.error('这条数据已存在咯！');
-              return;
+              this.$message.error('这条数据已存在咯！')
+              return
             }
             thirdParties.some((item) => {
               if (item.companyCode === key) {
@@ -130,23 +130,23 @@
                   code: item.companyCode,
                   name: item.company,
                   addNew: true
-                });
-                return true;
+                })
+                return true
               }
-              return false;
-            });
+              return false
+            })
 
-            curForm.resetFields();
-            this.visible = false;
+            curForm.resetFields()
+            this.visible = false
           }
-        });
+        })
       },
-      handleCancelAddNewThirdParty(formName) {
-        this.$refs[formName].resetFields();
-        this.visible = false;
+      handleCancelAddNewThirdParty (formName) {
+        this.$refs[formName].resetFields()
+        this.visible = false
       }
     }
-  };
+  }
 </script>
 
 <style type="text/scss" lang="scss" scoped>

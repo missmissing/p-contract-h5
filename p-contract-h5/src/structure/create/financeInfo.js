@@ -1,36 +1,23 @@
-import _ from 'lodash';
+import _ from 'lodash'
+import {payTypes} from '../../core/consts'
 
 const payment = {
+  visible: false,
   paymentAmount: null,
-  paymentTime: null,
   paymentTimePeriod: null,
   ratio: null,
   remark: null,
   seriousPayments: null,
-  subItem: []
-};
-const paymentMethods = {
-  earnest: [{
-    type: '定金',
+  financeMores: []
+}
+
+const paymentMethods = Object.keys(payTypes).map((key) => {
+  return {
+    payType: key,
+    type: payTypes[key],
     ..._.cloneDeep(payment)
-  }],
-  advance: [{
-    type: '预付款',
-    ..._.cloneDeep(payment)
-  }],
-  progress: [{
-    type: '进度款',
-    ..._.cloneDeep(payment)
-  }],
-  _final: [{
-    type: '尾款',
-    ..._.cloneDeep(payment)
-  }],
-  deposit: [{
-    type: '保证金',
-    ..._.cloneDeep(payment)
-  }]
-};
+  }
+})
 
 const obj = {
   moneyInvolved: true,
@@ -40,9 +27,9 @@ const obj = {
   totalAmount: 0,
   paymentMethods,
   paymentTimePeriod: null,
-  paymentRemark: '',
+  paymentRemark: null,
   jiaBillingInfo: [],
   yiBillingInfo: []
-};
+}
 
-export default obj;
+export default obj

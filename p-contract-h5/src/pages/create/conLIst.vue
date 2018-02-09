@@ -16,14 +16,12 @@
               clearable
               v-model="form.contractType"
               placeholder="请选择合同模式"
-              class="wp100"
-            >
+              class="wp100">
               <el-option
                 v-for="item in conModels"
                 :key="item.id"
                 :value="item.id"
-                :label="item.name"
-              >
+                :label="item.name">
               </el-option>
             </el-select>
           </el-form-item>
@@ -199,15 +197,15 @@
 </template>
 
 <script>
-  import Api from '../../api/manageContract';
-  import TreeModal from '../../components/treeModal.vue';
-  import getBusiType from '../../mixins/getBusiType';
-  import {formatDate} from '../../filters/moment';
-  import toPage from '../../assets/js/toPage';
+  import Api from '../../api/manageContract'
+  import TreeModal from '../../components/treeModal.vue'
+  import getBusiType from '../../mixins/getBusiType'
+  import {formatDate} from '../../filters/moment'
+  import toPage from '../../assets/js/toPage'
 
   export default {
     mixins: [getBusiType],
-    data() {
+    data () {
       return {
         visible: false,
         defaultProps: {
@@ -245,102 +243,102 @@
         creators: [],
         loading: false,
         totalPage: 0
-      };
+      }
     },
     watch: {},
     methods: {
-      search() {
-        this.loading = true;
-        this.form.createStart = formatDate(this.daterange[0]);
-        this.form.createEnd = formatDate(this.daterange[1]);
+      search () {
+        this.loading = true
+        this.form.createStart = formatDate(this.daterange[0])
+        this.form.createEnd = formatDate(this.daterange[1])
         Api.getConList(this.form).then((data) => {
-          const dataMap = data.data.dataMap;
+          const dataMap = data.data.dataMap
           if (dataMap) {
-            this.tableData = dataMap.data;
-            this.totalPage = dataMap.total;
+            this.tableData = dataMap.data
+            this.totalPage = dataMap.total
           }
-          this.loading = false;
+          this.loading = false
         }).catch(() => {
-          this.loading = false;
-        });
+          this.loading = false
+        })
       },
-      handleConTypeName() {
-        this.form.businessType = [];
-        this.conTypeName = '';
+      handleConTypeName () {
+        this.form.businessType = []
+        this.conTypeName = ''
       },
-      getContractTextType(id) {
+      getContractTextType (id) {
         switch (id) {
           case 1:
-            return '合同模板';
+            return '合同模板'
           case 2:
-            return '合同文本';
+            return '合同文本'
           default:
-            return '';
+            return ''
         }
       },
-      getContractModel(id) {
+      getContractModel (id) {
         switch (id) {
           case 1:
-            return '单一合同';
+            return '单一合同'
           case 2:
-            return '固定格式合同';
+            return '固定格式合同'
           case 3:
-            return '框架协议';
+            return '框架协议'
           case 4:
-            return '框架意向合同';
+            return '框架意向合同'
           default:
-            return '';
+            return ''
         }
       },
-      handleSizeChange(val) {
-        this.form.pageSize = val;
-        this.search();
+      handleSizeChange (val) {
+        this.form.pageSize = val
+        this.search()
       },
-      handleCurrentChange(page) {
-        this.form.pageNo = page;
-        this.search();
+      handleCurrentChange (page) {
+        this.form.pageNo = page
+        this.search()
       },
-      setBusiType(checkNodes) {
-        const ids = [];
-        const names = [];
+      setBusiType (checkNodes) {
+        const ids = []
+        const names = []
         if (checkNodes.length) {
           for (let i = 0, len = checkNodes.length; i < len; i++) {
-            ids.push(checkNodes[i].id);
-            names.push(checkNodes[i].businessName);
+            ids.push(checkNodes[i].id)
+            names.push(checkNodes[i].businessName)
           }
         }
-        this.form.businessType = [ids[2]];
-        this.conTypeName = names.join('-');
+        this.form.businessType = [ids[2]]
+        this.conTypeName = names.join('-')
 
-        this.visible = false;
+        this.visible = false
       },
-      closeTree() {
-        this.visible = false;
+      closeTree () {
+        this.visible = false
       },
-      getRemoteSuppliersByKeyWord(query) {
+      getRemoteSuppliersByKeyWord (query) {
         if (query !== '') {
-          this.form.loading = true;
+          this.form.loading = true
           Api.getRemoteSuppliersByKeyWord({key: query})
             .then((data) => {
-              this.form.loading = false;
-              this.form.suppliers = data.data.dataMap;
-            });
+              this.form.loading = false
+              this.form.suppliers = data.data.dataMap
+            })
         } else {
-          this.form.suppliers = [];
+          this.form.suppliers = []
         }
       },
-      goToProcess(row) {
-        toPage.call(this, row);
+      goToProcess (row) {
+        toPage.call(this, row)
       }
     },
     components: {
       TreeModal
     },
-    mounted() {
-      this.search();
+    mounted () {
+      this.search()
     },
     filters: {
       formatDate
     }
-  };
+  }
 </script>

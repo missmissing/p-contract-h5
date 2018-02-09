@@ -11,17 +11,17 @@ const defaultOpts = {
   lock: true,
   text: '拼命加载中',
   customClass: ''
-};
+}
 
 class LoadingClass {
-  static init(options = {}) {
-    const loadingInstance = this.$loadingInstance;
-    loadingInstance && loadingInstance.close();
+  static init (options = {}) {
+    const loadingInstance = this.$loadingInstance
+    loadingInstance && loadingInstance.close()
     if (!options) {
-      return;
+      return
     }
-    const config = Object.assign({}, defaultOpts, options);
-    this.$loadingInstance = this.$loading(config);
+    const config = Object.assign({}, defaultOpts, options)
+    this.$loadingInstance = this.$loading(config)
   }
 }
 
@@ -29,4 +29,4 @@ export default {
   methods: {
     comLoading: LoadingClass.init
   }
-};
+}

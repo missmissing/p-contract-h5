@@ -129,95 +129,95 @@
 </template>
 
 <script>
-  import localStore from 'store';
-  import Api from '../../api';
-  import {formatTimeText} from '../../filters/moment';
+  import localStore from 'store'
+  import Api from '../../api'
+  import {formatTimeText} from '../../filters/moment'
 
   export default {
-    data() {
+    data () {
       return {
         logo: require('../../assets/img/logo.png'),
         timeText: formatTimeText(),
         user: localStore.get('user') || {},
         isCollapse: false,
         routes: []
-      };
+      }
     },
     computed: {
-      leftClass() {
+      leftClass () {
         return {
           'left-part': true,
           collapse: this.isCollapse
-        };
+        }
       },
-      rightClass() {
+      rightClass () {
         return {
           'right-part': true,
           collapse: this.isCollapse
-        };
+        }
       },
-      collpaseTip() {
-        return this.isCollapse ? '显示菜单' : '隐藏菜单';
+      collpaseTip () {
+        return this.isCollapse ? '显示菜单' : '隐藏菜单'
       }
     },
     methods: {
-      collapse() {
-        this.isCollapse = !this.isCollapse;
+      collapse () {
+        this.isCollapse = !this.isCollapse
       },
-      logout() {
+      logout () {
         Api.logout().then((res) => {
-          const {dataMap} = res.data;
-          localStore.remove('user');
-          const currentUrl = encodeURIComponent(`${window.location.origin}/#/con/index`);
-          window.location.href = `${dataMap}${currentUrl}`;
-        });
+          const {dataMap} = res.data
+          localStore.remove('user')
+          const currentUrl = encodeURIComponent(`${window.location.origin}/#/con/index`)
+          window.location.href = `${dataMap}${currentUrl}`
+        })
       },
-      allRoutesHiddenTrue(items) {
+      allRoutesHiddenTrue (items) {
         items.forEach((item) => {
           if (!item.meta.public) {
-            item.meta.hidden = true;
-            const {children} = item;
+            item.meta.hidden = true
+            const {children} = item
             if (children && children.length) {
-              this.allRoutesHiddenTrue(children);
+              this.allRoutesHiddenTrue(children)
             }
           }
-        });
+        })
       },
-      filterRoutes(items) {
+      filterRoutes (items) {
         items.forEach((item) => {
-          const {name, children} = item;
-          this.showRoute(name);
+          const {name, children} = item
+          this.showRoute(name)
           if (children && children.length) {
-            this.filterRoutes(children);
+            this.filterRoutes(children)
           }
-        });
+        })
       },
-      findRoute(routeNmae, items) {
+      findRoute (routeNmae, items) {
         items.some((item) => {
-          const {name, children} = item;
+          const {name, children} = item
           if (name === routeNmae) {
-            item.meta.hidden = false;
-            return true;
+            item.meta.hidden = false
+            return true
           }
           if (children && children.length) {
-            this.findRoute(routeNmae, children);
+            this.findRoute(routeNmae, children)
           }
-          return false;
-        });
+          return false
+        })
       },
-      showRoute(routeName) {
-        const defaultRoutes = this.$router.options.routes;
-        this.findRoute(routeName, defaultRoutes);
+      showRoute (routeName) {
+        const defaultRoutes = this.$router.options.routes
+        this.findRoute(routeName, defaultRoutes)
       }
     },
-    created() {
-      const powerSwitch = localStore.get('powerSwitch');
+    created () {
+      const powerSwitch = localStore.get('powerSwitch')
       if (powerSwitch) {
-        const powers = localStore.get('powers') || [];
-        const defaultRoutes = this.$router.options.routes;
-        this.allRoutesHiddenTrue(defaultRoutes);
-        this.filterRoutes(powers);
+        // const powers = localStore.get('powers') || []
+        // const defaultRoutes = this.$router.options.routes
+        // this.allRoutesHiddenTrue(defaultRoutes)
+        // this.filterRoutes(powers)
       }
     }
-  };
+  }
 </script>

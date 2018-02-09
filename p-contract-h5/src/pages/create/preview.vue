@@ -253,19 +253,19 @@
 </template>
 
 <script>
-  import Api from '../../api/manageContract';
-  import numToChinese from '../../util/numToChinese';
+  import Api from '../../api/manageContract'
+  import numToChinese from '../../util/numToChinese'
 
   export default {
     props: {
       visible: Boolean,
       datas: {
-        default() {
-          return {};
+        default () {
+          return {}
         }
       }
     },
-    data() {
+    data () {
       return {
         contractNo: '',
         supplierName: '',
@@ -290,86 +290,86 @@
         currentTpl: null,
         corporeRemark: '',
         paymentRemark: ''
-      };
+      }
     },
     methods: {
-      transformData(data, name) {
-        const priceTable = [];
+      transformData (data, name) {
+        const priceTable = []
         if (data.length) {
           data.forEach((item) => {
             if (!item.paymentAmount) {
-              return;
+              return
             }
-            const {seriousPayments} = item;
+            const {seriousPayments} = item
             if (seriousPayments) {
-              const {subItem} = item;
+              const {subItem} = item
               subItem.forEach((item1, index1) => {
                 const {
                   paymentAmount, paymentTimePeriod, remark, ratio
-                } = item1;
-                const type = `${name}${index1 + 1}`;
+                } = item1
+                const type = `${name}${index1 + 1}`
                 priceTable.push({
                   type,
                   paymentAmount,
                   paymentTimePeriod: this.getPaymentTimePeriodName(paymentTimePeriod),
                   remark,
                   ratio: `${ratio}%`
-                });
-              });
-              return;
+                })
+              })
+              return
             }
             priceTable.push({
               ...item,
               type: item.type === '进度款' ? '' : item.type,
               paymentTimePeriod: this.getPaymentTimePeriodName(item.paymentTimePeriod),
               ratio: `${item.ratio}%`
-            });
-          });
+            })
+          })
         }
-        return priceTable;
+        return priceTable
       },
-      getPaymentTimePeriodName(id) {
-        const paymentTimePeriods = this.paymentTimePeriods;
-        let name = '';
+      getPaymentTimePeriodName (id) {
+        const paymentTimePeriods = this.paymentTimePeriods
+        let name = ''
         paymentTimePeriods.some((item) => {
           if (item.id === id) {
-            name = item.name;
-            return true;
+            name = item.name
+            return true
           }
-          return false;
-        });
+          return false
+        })
 
-        return name;
+        return name
       },
-      getTplData() {
+      getTplData () {
         Api.getTplContent(this.datas).then((res) => {
-          this.currentTpl = res.data.dataMap;
-        });
+          this.currentTpl = res.data.dataMap
+        })
       },
-      ok() {
-        this.$emit('update:visible', false);
+      ok () {
+        this.$emit('update:visible', false)
       },
-      toPdf() {
-        document.getElementById('pdf-content').value = document.getElementById('pdf-wrap').innerHTML;
-        document.getElementById('pdf-form').submit();
+      toPdf () {
+        document.getElementById('pdf-content').value = document.getElementById('pdf-wrap').innerHTML
+        document.getElementById('pdf-form').submit()
       }
     },
     watch: {
-      datas() {
+      datas () {
         if (!Object.keys(this.datas).length) {
-          return;
+          return
         }
         const {
           baseInfoForm,
           cardContentInfoForm,
           cardFinanceInfoForm
-        } = this.datas;
+        } = this.datas
         const {
           contractNo,
           contractType,
           contractBusinessTypeFirst,
           contractBusinessTypeThirdName
-        } = baseInfoForm;
+        } = baseInfoForm
         const {
           effectiveCondition,
           conStandard,
@@ -377,7 +377,7 @@
           corporeRemark,
           startTime,
           endTime
-        } = cardContentInfoForm;
+        } = cardContentInfoForm
         const {
           jiaBillingInfo,
           yiBillingInfo,
@@ -387,38 +387,38 @@
           oneOffPay,
           paymentTimePeriods,
           paymentRemark
-        } = cardFinanceInfoForm;
+        } = cardFinanceInfoForm
         const {
           earnest,
           advance,
           progress,
           _final, // eslint-disable-line
           deposit
-        } = paymentMethods;
+        } = paymentMethods
 
-        this.contractNo = contractNo;
-        this.contractType = contractType;
-        this.contractBusinessTypeFirst = contractBusinessTypeFirst;
-        this.title = contractBusinessTypeThirdName;
+        this.contractNo = contractNo
+        this.contractType = contractType
+        this.contractBusinessTypeFirst = contractBusinessTypeFirst
+        this.title = contractBusinessTypeThirdName
 
-        this.paymentTimePeriods = paymentTimePeriods;
-        this.startTime = startTime;
-        this.endTime = endTime;
-        this.conditionDesc = conditionDesc;
-        this.effectiveCondition = effectiveCondition;
-        this.corporeRemark = corporeRemark;
-        this.paymentRemark = paymentRemark;
-        this.partAName = jiaBillingInfo.map((item) => item.company);
-        this.partBName = yiBillingInfo.length > 0 ? [yiBillingInfo[0].company] : [];
-        this.supplierName = yiBillingInfo.length > 0 ? yiBillingInfo[0].company : '';
+        this.paymentTimePeriods = paymentTimePeriods
+        this.startTime = startTime
+        this.endTime = endTime
+        this.conditionDesc = conditionDesc
+        this.effectiveCondition = effectiveCondition
+        this.corporeRemark = corporeRemark
+        this.paymentRemark = paymentRemark
+        this.partAName = jiaBillingInfo.map((item) => item.company)
+        this.partBName = yiBillingInfo.length > 0 ? [yiBillingInfo[0].company] : []
+        this.supplierName = yiBillingInfo.length > 0 ? yiBillingInfo[0].company : ''
         if (moneyInvolved) {
-          this.moneyInvolved = moneyInvolved;
-          this.totalAmount = totalAmount;
-          this.partA = jiaBillingInfo;
-          this.partB = yiBillingInfo[0] || {};
+          this.moneyInvolved = moneyInvolved
+          this.totalAmount = totalAmount
+          this.partA = jiaBillingInfo
+          this.partB = yiBillingInfo[0] || {}
 
           if (oneOffPay) {
-            this.oneOffPay = true;
+            this.oneOffPay = true
           } else {
             this.priceTable = [
               ...this.transformData(earnest, '定金'),
@@ -426,17 +426,17 @@
               ...this.transformData(progress, ''),
               ...this.transformData(_final, '尾款'),
               ...this.transformData(deposit, '保证金')
-            ];
+            ]
           }
         }
 
-        this.materialTable = conStandard;
+        this.materialTable = conStandard
 
-        this.getTplData();
+        this.getTplData()
       }
     },
     filters: {
       numToChinese
     }
-  };
+  }
 </script>

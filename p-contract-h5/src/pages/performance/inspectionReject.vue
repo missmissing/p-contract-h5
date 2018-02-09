@@ -229,21 +229,21 @@
 </template>
 
 <script>
-  import Api from '../../api/performance';
-  import Upload from '../../components/upload.vue';
-  import {routerNames, contractPatternMap, contractTextTypeMap} from '../../core/consts';
-  import comLoading from '../../mixins/comLoading';
-  import {formatDate, formatTimeStamp} from '../../filters/moment';
+  import Api from '../../api/performance'
+  import Upload from '../../components/upload.vue'
+  import {routerNames, contractPatternMap, contractTextTypeMap} from '../../core/consts'
+  import comLoading from '../../mixins/comLoading'
+  import {formatDate, formatTimeStamp} from '../../filters/moment'
 
   export default {
     mixins: [comLoading],
-    data() {
+    data () {
       return {
         fileList: [],
         checkItems: [],
         pickerOptions: {
-          disabledDate() {
-            return true;
+          disabledDate () {
+            return true
           }
         },
         addNotQualityDialogForm: {
@@ -320,37 +320,37 @@
         },
         toDetail: {name: routerNames.con_purchase_see, query: {id: ''}},
         info: {}
-      };
+      }
     },
     methods: {
-      search() {
+      search () {
         if (!this.basicForm.orderNo) {
-          this.$message.warning('请输入采购订单号！');
-          return;
+          this.$message.warning('请输入采购订单号！')
+          return
         }
-        this.comLoading();
+        this.comLoading()
         Api.getUnqualifiedByOrderNo({orderNo: this.basicForm.orderNo}).then((res) => {
-          const data = res.data.dataMap;
-          const {purchaseOrderId, checkItems} = data;
-          this.toDetail.query.id = purchaseOrderId;
-          this.info = data;
+          const data = res.data.dataMap
+          const {purchaseOrderId, checkItems} = data
+          this.toDetail.query.id = purchaseOrderId
+          this.info = data
           if (checkItems && checkItems.length) {
             this.checkItems = checkItems.map((item) => {
-              item.static = true;
-              return item;
-            });
+              item.static = true
+              return item
+            })
           }
-          this.setBasicForm();
-          this.pickerOptions.disabledDate = (time) => time.getTime() < this.basicForm.startTime;
-          this.comLoading(false);
+          this.setBasicForm()
+          this.pickerOptions.disabledDate = (time) => time.getTime() < this.basicForm.startTime
+          this.comLoading(false)
         }, () => {
-          this.comLoading(false);
-        });
+          this.comLoading(false)
+        })
       },
-      setBasicForm() {
+      setBasicForm () {
         const {
           businessOperatorName, businessDeptName, responsibleName, belongProject, startTime, endTime, contractTextType, contractType, contractNo
-        } = this.info;
+        } = this.info
         Object.assign(this.basicForm, {
           businessOperatorName,
           businessDeptName,
@@ -361,104 +361,104 @@
           contractTextType: contractTextTypeMap[contractTextType],
           contractType: contractPatternMap[contractType],
           contractNo
-        });
+        })
       },
-      addNotQualityDialogReset() {
+      addNotQualityDialogReset () {
         this.addNotQualityDialogForm = {
           serviceName: '',
           serviceRequire: '',
           checkResult: '',
           remark: '',
           editIndex: null
-        };
+        }
       },
-      addNotQualityDialogOk() {
-        const form = this.$refs.addNotQualityDialogForm;
+      addNotQualityDialogOk () {
+        const form = this.$refs.addNotQualityDialogForm
         form.validate((valid) => {
           if (valid) {
-            const item = {...this.addNotQualityDialogForm};
+            const item = {...this.addNotQualityDialogForm}
             if (this.addNotQualityDialogForm.editIndex === null) {
-              this.checkItems.push(item);
+              this.checkItems.push(item)
             } else {
-              this.checkItems.splice(this.editIndex, 1, item);
+              this.checkItems.splice(this.editIndex, 1, item)
             }
-            this.addNotQualityDialogReset();
-            this.addNotQualityDialogVisible = false;
+            this.addNotQualityDialogReset()
+            this.addNotQualityDialogVisible = false
           } else {
-            console.log('error submit!!');
+            console.log('error submit!!')
           }
-        });
+        })
       },
-      addNotQualityDialogCancel() {
-        this.addNotQualityDialogReset();
-        this.addNotQualityDialogVisible = false;
+      addNotQualityDialogCancel () {
+        this.addNotQualityDialogReset()
+        this.addNotQualityDialogVisible = false
       },
-      addItem() {
-        this.addNotQualityDialogVisible = true;
+      addItem () {
+        this.addNotQualityDialogVisible = true
       },
-      editRow(index, row) {
-        this.addNotQualityDialogForm.editIndex = index;
-        Object.assign(this.addNotQualityDialogForm, row);
-        this.addNotQualityDialogVisible = true;
+      editRow (index, row) {
+        this.addNotQualityDialogForm.editIndex = index
+        Object.assign(this.addNotQualityDialogForm, row)
+        this.addNotQualityDialogVisible = true
       },
-      deleteRow(index, rows) {
-        rows.splice(index, 1);
+      deleteRow (index, rows) {
+        rows.splice(index, 1)
       },
-      getResult() {
-        const files = [];
+      getResult () {
+        const files = []
         this.fileList.forEach((file) => {
           if (file.status === 'success') {
-            files.push(file.fileId);
+            files.push(file.fileId)
           }
-        });
-        this.handleForm.files = files;
+        })
+        this.handleForm.files = files
         return {
           orderNo: this.info.orderNo,
           contractNo: this.info.contractNo,
           contractCheckDate: formatTimeStamp(this.basicForm.contractCheckDate),
           checkItems: this.checkItems,
           ...this.handleForm
-        };
+        }
       },
-      check(result) {
-        let flag = false;
+      check (result) {
+        let flag = false
         this.$refs.basicForm.validate((valid) => {
           if (valid) {
             this.$refs.handleForm.validate((valid1) => {
               if (valid1) {
-                const {checkItems} = result;
+                const {checkItems} = result
                 if (checkItems.length) {
-                  const exist = checkItems.some((item) => !item.checkResult);
+                  const exist = checkItems.some((item) => !item.checkResult)
                   if (exist) {
-                    this.$message.warning('请填写验收信息检查结果！');
+                    this.$message.warning('请填写验收信息检查结果！')
                   } else {
-                    flag = true;
+                    flag = true
                   }
                 }
               }
-            });
+            })
           }
-        });
+        })
 
-        return flag;
+        return flag
       },
-      submit() {
-        const result = this.getResult();
+      submit () {
+        const result = this.getResult()
         if (!this.check(result)) {
-          this.$message.warning('表单信息不完整！');
-          return;
+          this.$message.warning('表单信息不完整！')
+          return
         }
         this.comLoading({
           text: '正在提交中'
-        });
+        })
         Api.unqualifiedSave(result).then(() => {
-          this.comLoading(false);
+          this.comLoading(false)
           this.$router.push({
             name: routerNames.con_index
-          });
+          })
         }, () => {
-          this.comLoading(false);
-        });
+          this.comLoading(false)
+        })
       }
     },
     components: {
@@ -467,5 +467,5 @@
     filters: {
       formatDate
     }
-  };
+  }
 </script>

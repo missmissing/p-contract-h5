@@ -63,14 +63,14 @@
 </template>
 
 <script>
-  import Api from '../../api/manageContract';
+  import Api from '../../api/manageContract'
 
   export default {
     name: 'supplier-info',
     props: {
       items: Array
     },
-    data() {
+    data () {
       return {
         visible: false,
         suppliers: [],
@@ -83,66 +83,68 @@
             {required: true, message: '请输入搜索关键字'}
           ]
         }
-      };
+      }
     },
     computed: {
-      isVisibleNewSupplierBtn() {
-        let visible = false;
+      isVisibleNewSupplierBtn () {
+        let visible = false
         if (!this.items.length) {
-          visible = true;
+          visible = true
         }
-        return visible;
+        return visible
       },
-      isVisibleBtns() {
-        const {isSee, isProcess} = this.$store.getters;
-        return !(isSee && isProcess);
+      isVisibleBtns () {
+        const {isSee, isProcess} = this.$store.getters
+        return !(isSee && isProcess)
       }
     },
     methods: {
-      handleRemove(index, rows) {
-        rows.splice(index, 1);
+      handleRemove (index, rows) {
+        rows.splice(index, 1)
+        this.$emit('validate')
       },
-      getRemoteSuppliersByKeyWord(key) {
+      getRemoteSuppliersByKeyWord (key) {
         if (key !== '') {
-          this.loading = true;
+          this.loading = true
           Api.getRemoteSuppliersByKeyWord({key})
             .then((data) => {
-              this.loading = false;
-              this.suppliers = data.data.dataMap;
-            });
+              this.loading = false
+              this.suppliers = data.data.dataMap
+            })
         } else {
-          this.suppliers = [];
+          this.suppliers = []
         }
       },
-      handleNewContractSupplier(formName) {
-        const curForm = this.$refs[formName];
+      handleNewContractSupplier (formName) {
+        const curForm = this.$refs[formName]
         curForm.validate((valid) => {
           if (valid) {
-            const key = this.form.search;
+            const key = this.form.search
             this.suppliers.some((item) => {
               if (key === item.companyCode) {
                 this.items.push({
                   code: item.companyCode,
                   name: item.company,
                   addNew: true
-                });
-                this.$emit('getYiBillingInfo', item);
-                return true;
+                })
+                this.$emit('validate')
+                this.$emit('getYiBillingInfo', item)
+                return true
               }
-              return false;
-            });
+              return false
+            })
 
-            curForm.resetFields();
-            this.visible = false;
+            curForm.resetFields()
+            this.visible = false
           }
-        });
+        })
       },
-      handleNewContractSupplierCancel(formName) {
-        this.$refs[formName].resetFields();
-        this.visible = false;
+      handleNewContractSupplierCancel (formName) {
+        this.$refs[formName].resetFields()
+        this.visible = false
       }
     }
-  };
+  }
 </script>
 
 <style type="text/scss" lang="scss" scoped>

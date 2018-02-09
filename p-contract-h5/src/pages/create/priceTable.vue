@@ -41,38 +41,38 @@
 </template>
 
 <script>
-  import Api from '../../api/manageContract/index';
-  import {formatDate} from '../../filters/moment';
-  import comLoading from '../../mixins/comLoading';
+  import Api from '../../api/manageContract/index'
+  import {formatDate} from '../../filters/moment'
+  import comLoading from '../../mixins/comLoading'
 
   export default {
     mixins: [comLoading],
     props: {
       prNo: String
     },
-    data() {
+    data () {
       return {
         tableData: []
-      };
+      }
     },
     filters: {
       formatDate
     },
     methods: {
-      getData() {
-        this.comLoading();
+      getData () {
+        this.comLoading()
         Api.getQrDetail({folio: this.prNo}).then((data) => {
           if (data.data.dataMap) {
-            this.tableData = [data.data.dataMap];
+            this.tableData = [data.data.dataMap]
           }
-          this.comLoading(false);
+          this.comLoading(false)
         }, () => {
-          this.comLoading(false);
-        });
+          this.comLoading(false)
+        })
       }
     },
-    created() {
-      this.getData();
+    created () {
+      this.getData()
     }
-  };
+  }
 </script>

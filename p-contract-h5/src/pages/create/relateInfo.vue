@@ -40,11 +40,11 @@
 </template>
 
 <script>
-  import Api from '../../api/manageContract';
-  import contractType from '../../filters/contractType';
-  import {formatDate} from '../../filters/moment';
+  import Api from '../../api/manageContract'
+  import contractType from '../../filters/contractType'
+  import {formatDate} from '../../filters/moment'
 
-  import comLoading from '../../mixins/comLoading';
+  import comLoading from '../../mixins/comLoading'
 
   export default {
     name: 'relate-info',
@@ -52,58 +52,58 @@
     props: {
       supplierCode: String
     },
-    data() {
+    data () {
       return {
         items: [],
         total: 0,
         pageNo: 1,
         pageSize: 10
-      };
-    },
-    watch: {
-      supplierCode() {
-        this.getList();
       }
     },
-    created() {
-      this.getList();
+    watch: {
+      supplierCode () {
+        this.getList()
+      }
+    },
+    created () {
+      this.getList()
     },
     methods: {
-      getList() {
+      getList () {
         if (!this.supplierCode) {
-          return;
+          return
         }
         this.comLoading({
           target: this.$refs.table.$el
-        });
+        })
         Api.getConList({
           pageNo: this.pageNo,
           pageSize: this.pageSize,
           supplierCode: this.supplierCode
         }).then((data) => {
-          const dataMap = data.data.dataMap;
+          const dataMap = data.data.dataMap
           if (dataMap) {
-            this.items = dataMap.data;
-            this.total = dataMap.total;
+            this.items = dataMap.data
+            this.total = dataMap.total
           }
         }).finally(() => {
-          this.comLoading(false);
-        });
+          this.comLoading(false)
+        })
       },
-      handleRelatedInfoSizeChange(val) {
-        this.pageSize = val;
-        this.getList();
+      handleRelatedInfoSizeChange (val) {
+        this.pageSize = val
+        this.getList()
       },
-      handleRelatedInfoCurrentChange(page) {
-        this.pageNo = page;
-        this.getList();
+      handleRelatedInfoCurrentChange (page) {
+        this.pageNo = page
+        this.getList()
       }
     },
     filters: {
       contractType,
       formatDate
     }
-  };
+  }
 </script>
 
 <style type="text/scss" lang="scss" scoped>

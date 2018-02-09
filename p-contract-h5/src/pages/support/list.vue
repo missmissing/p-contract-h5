@@ -154,15 +154,15 @@
 </template>
 
 <script>
-  import {routerNames} from '../../core/consts';
-  import supportModel from '../../api/support';
-  import comLoading from '../../mixins/comLoading';
-  import {formatTime, formatDate, formatTimeStamp} from '../../filters/moment';
-  import tplStatus from '../../filters/tplStatus';
+  import {routerNames} from '../../core/consts'
+  import supportModel from '../../api/support'
+  import comLoading from '../../mixins/comLoading'
+  import {formatTime, formatDate, formatTimeStamp} from '../../filters/moment'
+  import tplStatus from '../../filters/tplStatus'
 
   export default {
     mixins: [comLoading],
-    data() {
+    data () {
       return {
         form: {
           keywords: '',
@@ -178,48 +178,48 @@
         totalPage: 0,
         daterange: [],
         pickerOptions: {
-          disabledDate(time) {
-            return time.getTime() > Date.now();
+          disabledDate (time) {
+            return time.getTime() > Date.now()
           }
         },
         tableData: []
-      };
+      }
     },
     methods: {
-      search() {
-        this.getList();
+      search () {
+        this.getList()
       },
-      getList() {
-        this.comLoading();
-        this.form.startTime = formatTimeStamp(this.daterange[0]);
-        this.form.endTime = formatTimeStamp(this.daterange[1]);
+      getList () {
+        this.comLoading()
+        this.form.startTime = formatTimeStamp(this.daterange[0])
+        this.form.endTime = formatTimeStamp(this.daterange[1])
         supportModel.getList(this.form).then((res) => {
-          console.log(res);
-          const {total, data} = res.data.dataMap;
-          this.tableData = data;
-          this.totalPage = total;
-          this.comLoading(false);
+          console.log(res)
+          const {total, data} = res.data.dataMap
+          this.tableData = data
+          this.totalPage = total
+          this.comLoading(false)
         }, () => {
-          this.comLoading(false);
-        });
+          this.comLoading(false)
+        })
       },
-      handleSizeChange(val) {
-        console.log(`每页 ${val} 条`);
-        this.form.pageSize = val;
-        this.getList();
+      handleSizeChange (val) {
+        console.log(`每页 ${val} 条`)
+        this.form.pageSize = val
+        this.getList()
       },
-      handleCurrentChange(val) {
-        console.log(`当前页: ${val}`);
-        this.form.pageNumber = val;
-        this.getList();
+      handleCurrentChange (val) {
+        console.log(`当前页: ${val}`)
+        this.form.pageNumber = val
+        this.getList()
       },
-      see(row) {
+      see (row) {
         return {
           name: routerNames.con_tpl_see,
           query: {
             id: row.id
           }
-        };
+        }
       }
     },
     filters: {
@@ -227,8 +227,8 @@
       formatTime,
       tplStatus
     },
-    created() {
-      this.getList();
+    created () {
+      this.getList()
     }
-  };
+  }
 </script>

@@ -36,8 +36,8 @@
 </template>
 
 <script>
-  import {uploadUrl} from '../../api/consts';
-  import {formatDate} from '../../filters/moment';
+  import {uploadUrl} from '../../api/consts'
+  import {formatDate} from '../../filters/moment'
 
   export default {
     name: 'seal-files',
@@ -45,20 +45,20 @@
       items: Array,
       addVisible: Boolean
     },
-    data() {
+    data () {
       return {
         uploadUrl
-      };
+      }
     },
     methods: {
-      handleRemove(index, rows) {
-        rows.splice(index, 1);
+      handleRemove (index, rows) {
+        rows.splice(index, 1)
       },
-      handleUploadFileAfterSealSuccess(response) {
-        const {code, dataMap} = response;
+      handleUploadFileAfterSealSuccess (response) {
+        const {code, dataMap} = response
         if (code !== '200') {
-          this.$message.error(dataMap.message);
-          return;
+          this.$message.error(dataMap.message)
+          return
         }
         const {
           fileId,
@@ -66,7 +66,7 @@
           userName,
           userId,
           createTime
-        } = dataMap;
+        } = dataMap
         this.cardSealInfoForm.filesSealed.push({
           sealFileId: fileId,
           sealFileName: fileName,
@@ -75,14 +75,14 @@
           sealFileCreatorId: userId,
           sealFileCreateTime: formatDate(createTime),
           addNew: true
-        });
-        this.$message.success('文件上传成功');
+        })
+        this.$message.success('文件上传成功')
       }
     },
     filters: {
       formatDate
     }
-  };
+  }
 </script>
 
 <style type="text/scss" lang="scss" scoped>

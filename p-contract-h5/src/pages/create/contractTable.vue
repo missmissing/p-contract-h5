@@ -14,7 +14,7 @@
         label="发起人"
         width="150">
       </el-table-column>
-      <el-table-column v-if="contractInfo&&contractInfo[0]&&contractInfo[0].creatorDept"
+      <el-table-column
         prop="creatorDept"
         label="发起部门">
       </el-table-column>
@@ -39,21 +39,17 @@
 </template>
 
 <script>
-  import { formatDate } from '../../filters/moment';
-  import comLoading from '../../mixins/comLoading';
+  import {formatDate} from '../../filters/moment'
 
   export default {
-    mixins: [comLoading],
     props: {
       contractInfo: Array
     },
-    data() {
-      return {
-        tableData: []
-      };
+    data () {
+      return {}
     },
     filters: {
       formatDate
     }
-  };
+  }
 </script>

@@ -140,26 +140,26 @@
         default: []
       }
     },
-    data() {
-      return {};
+    data () {
+      return {}
     },
     computed: {
-      jia() {
-        const jiaBillingInfo = this.jiaBillingInfo;
-        let result = {};
+      jia () {
+        const jiaBillingInfo = this.jiaBillingInfo
+        let result = {}
         if (jiaBillingInfo.length) {
-          result = jiaBillingInfo[0] || {};
+          result = jiaBillingInfo[0] || {}
         }
-        return result;
+        return result
       },
-      yi() {
-        const yiBillingInfo = this.yiBillingInfo;
-        let result = {};
+      yi () {
+        const yiBillingInfo = this.yiBillingInfo
+        let result = {}
         if (yiBillingInfo.length) {
-          result = yiBillingInfo[0] || {};
+          result = yiBillingInfo[0] || {}
         }
-        return result;
+        return result
       }
     }
-  };
+  }
 </script>

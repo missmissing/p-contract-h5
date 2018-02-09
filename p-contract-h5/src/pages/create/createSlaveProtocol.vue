@@ -336,24 +336,24 @@
   </div>
 </template>
 <script>
-  import store from 'store';
-  import _ from 'lodash';
-  import Api from '../../api/manageContract';
-  import {formatDate} from '../../filters/moment';
-  import attachmentType from '../../filters/attachmentType';
-  import {downloadUrl, uploadUrl} from '../../api/consts';
-  import Process from '../../components/process.vue';
-  import {routerNames} from '../../core/consts';
+  import store from 'store'
+  import _ from 'lodash'
+  import Api from '../../api/manageContract'
+  import {formatDate} from '../../filters/moment'
+  import attachmentType from '../../filters/attachmentType'
+  import {downloadUrl, uploadUrl} from '../../api/consts'
+  import Process from '../../components/process.vue'
+  import {routerNames} from '../../core/consts'
 
-  const user = store.get('user');
+  const user = store.get('user')
 
   export default {
-    data() {
+    data () {
       return {
         procInstId: '', // 流程编号：
-        procTitle: '', //流程名称
+        procTitle: '', // 流程名称
         queryContractForm: {
-          testtype: [], //??delete
+          testtype: [], // ??delete
           visible: false, // 在创建从协议时控制从协议页面数据的显示与否
           code: '',
           rules: {
@@ -364,9 +364,9 @@
         users: user,
         downloadUrl,
         uploadUrl,
-        id: '', //从协议id
+        id: '', // 从协议id
         protocolNo: null, // 从协议编号
-        code: null, //合同编号
+        code: null, // 合同编号
         operateType: 'create', // 默认创建状态，query：查看
         activeTabName: 'tabBaseInfo',
         baseInfoForm: {
@@ -414,108 +414,108 @@
           loading: false
         },
         btnStatus: true // 提交按钮状态（提交中不可用）
-      };
+      }
     },
     computed: {
-      contentVisible() {
-        let visible = false;
+      contentVisible () {
+        let visible = false
         if (this.operateType === 'query') {
-          visible = true;
+          visible = true
         } else if (this.queryContractForm.visible) {
-          visible = true;
+          visible = true
         }
-        return visible;
+        return visible
       },
-      enabledInupdated() { // 在各种操作类型下，控制元素的是否可见和是否可用
-        let result = false;
+      enabledInupdated () { // 在各种操作类型下，控制元素的是否可见和是否可用
+        let result = false
         if (this.operateType === 'query') {
-          result = false;
+          result = false
         }
         if (this.operateType === 'create') {
-          result = true;
+          result = true
         }
-        return result;
+        return result
       },
-      ifShowNewSeals() {
-        let show = false;
+      ifShowNewSeals () {
+        let show = false
         if (this.enabledInupdated) {
-          show = true;
+          show = true
         } else if (this.cardSealInfoForm.sealAttachments.length) {
-          show = true;
+          show = true
         } else {
-          show = false;
+          show = false
         }
-        return show;
+        return show
       },
-      ifRole() {
-        const reg = /印章保管人/g;
-        return reg.test(this.users.roleName);
+      ifRole () {
+        const reg = /印章保管人/g
+        return reg.test(this.users.roleName)
       },
-      ifRole1() {
-        const reg = /采购合同上传/g;
-        return reg.test(this.users.roleName);
+      ifRole1 () {
+        const reg = /采购合同上传/g
+        return reg.test(this.users.roleName)
       },
-      enabledUpdateInApprove() { //在审批阶段修改附件时，控件的状态（仅用章保管人可用）
-        let enabled = false;
+      enabledUpdateInApprove () { // 在审批阶段修改附件时，控件的状态（仅用章保管人可用）
+        let enabled = false
         if (this.operateType === 'query') {
-          enabled = this.ifRole || this.ifRole1;
+          enabled = this.ifRole || this.ifRole1
         }
-        return enabled;
+        return enabled
       },
-      enabledUpdateInApprovePrint() { //创建可用，审批阶段且角色是用章保管人可用
-        let enabled = true;
+      enabledUpdateInApprovePrint () { // 创建可用，审批阶段且角色是用章保管人可用
+        let enabled = true
         if (this.operateType === 'query') {
-          enabled = !!this.ifRole;
+          enabled = !!this.ifRole
         }
-        return enabled;
+        return enabled
       }
     },
-    mounted() {
-      const query = this.$route.query;
+    mounted () {
+      const query = this.$route.query
       if (query.processData) {
-        this.procInstId = JSON.parse(query.processData).procInstId;
-        this.procTitle = JSON.parse(query.processData).procTitle;
-        this.users.roleName = JSON.parse(query.processData).roleName;
+        this.procInstId = JSON.parse(query.processData).procInstId
+        this.procTitle = JSON.parse(query.processData).procTitle
+        this.users.roleName = JSON.parse(query.processData).roleName
       }
       if (this.$route.path && this.$route.path === '/ConCreate/querySlaveProtocol') {
-        this.operateType = 'query';
-        this.requestQueryData();
+        this.operateType = 'query'
+        this.requestQueryData()
       }
     },
     components: {
       Process
     },
     methods: {
-      requestQueryData() {
+      requestQueryData () {
         Api.getAgreenmentDetail(this.$route.query.id)
           .then((data) => {
-            const dataMap = data.data.dataMap;
+            const dataMap = data.data.dataMap
             if (dataMap) {
-              Object.assign(this, dataMap);
+              Object.assign(this, dataMap)
             }
-          });
+          })
       },
-      handleAddContractSupplier() {
-        this.baseInfoForm.dialogAddContractSupplier = true;
+      handleAddContractSupplier () {
+        this.baseInfoForm.dialogAddContractSupplier = true
       },
-      getRemoteSuppliersByKeyWord(query) {
+      getRemoteSuppliersByKeyWord (query) {
         if (query !== '') {
-          this.formContractSupplier.loading = true;
+          this.formContractSupplier.loading = true
           Api.getRemoteSuppliersByKeyWord({key: query})
             .then((data) => {
-              this.formContractSupplier.loading = false;
-              this.formContractSupplier.suppliers = data.data.dataMap || [];
-            });
+              this.formContractSupplier.loading = false
+              this.formContractSupplier.suppliers = data.data.dataMap || []
+            })
         } else {
-          this.formContractSupplier.suppliers = [];
+          this.formContractSupplier.suppliers = []
         }
       },
-      handleNewContractSupplier(formName) {
-        const curForm = this.$refs[formName];
+      handleNewContractSupplier (formName) {
+        const curForm = this.$refs[formName]
         curForm.validate((valid) => {
           if (valid) {
-            const key = this.formContractSupplier.search;
-            const suppliers = this.formContractSupplier.suppliers;
+            const key = this.formContractSupplier.search
+            const suppliers = this.formContractSupplier.suppliers
             if (suppliers && suppliers.length) {
               for (let i = 0, len = suppliers.length; i < len; i += 1) {
                 if (parseInt(suppliers[i].companyCode, 10) === parseInt(key, 10)) {
@@ -523,53 +523,53 @@
                     id: suppliers[i].companyCode,
                     name: suppliers[i].company,
                     type: 'add'
-                  }];
+                  }]
                 }
               }
             }
-            curForm.resetFields();
-            this.baseInfoForm.dialogAddContractSupplier = false;
+            curForm.resetFields()
+            this.baseInfoForm.dialogAddContractSupplier = false
             if (this.isSubmit) {
-              this.validateForms();
+              this.validateForms()
             }
           } else {
-            console.log('error submit!!');
+            console.log('error submit!!')
           }
-        });
+        })
       },
-      handleNewContractSupplierCancel(formName) {
-        this.$refs[formName].resetFields();
-        this.baseInfoForm.dialogAddContractSupplier = false;
+      handleNewContractSupplierCancel (formName) {
+        this.$refs[formName].resetFields()
+        this.baseInfoForm.dialogAddContractSupplier = false
       },
-      handleNewSubjectName() {
-        this.baseInfoForm.dialogNewSubjectVisible = true;
+      handleNewSubjectName () {
+        this.baseInfoForm.dialogNewSubjectVisible = true
       },
-      getRemoteSubjectsByKeyWord(query) {
+      getRemoteSubjectsByKeyWord (query) {
         if (query !== '') {
-          this.formNewSubject.loading = true;
+          this.formNewSubject.loading = true
           Api.getRemoteSubjectsByKeyWord({key: query})
             .then((data) => {
-              this.formNewSubject.loading = false;
-              this.formNewSubject.subjects = data.data.dataMap || [];
-            });
+              this.formNewSubject.loading = false
+              this.formNewSubject.subjects = data.data.dataMap || []
+            })
         } else {
-          this.formNewSubject.subjects = [];
+          this.formNewSubject.subjects = []
         }
       },
-      handleCancelAddNewSubject(formName) {
-        this.$refs[formName].resetFields();
-        this.baseInfoForm.dialogNewSubjectVisible = false;
+      handleCancelAddNewSubject (formName) {
+        this.$refs[formName].resetFields()
+        this.baseInfoForm.dialogNewSubjectVisible = false
       },
-      handleAddNewSubject(formName) {
-        const curForm = this.$refs[formName];
+      handleAddNewSubject (formName) {
+        const curForm = this.$refs[formName]
         curForm.validate((valid) => {
           if (valid) {
-            const subjects = this.formNewSubject.subjects;
-            const key = this.formNewSubject.search;
-            const index = _.findIndex(this.baseInfoForm.conSubjctName, (chr) => chr.code === key);
+            const subjects = this.formNewSubject.subjects
+            const key = this.formNewSubject.search
+            const index = _.findIndex(this.baseInfoForm.conSubjctName, (chr) => chr.code === key)
             if (index > -1) {
-              this.$message.error('这条数据已存在咯！');
-              return;
+              this.$message.error('这条数据已存在咯！')
+              return
             }
             if (subjects && subjects.length) {
               for (let i = 0, len = subjects.length; i < len; i += 1) {
@@ -578,22 +578,22 @@
                     id: subjects[i].companyCode,
                     name: subjects[i].company,
                     type: 'add'
-                  });
+                  })
                 }
               }
             }
 
-            curForm.resetFields();
+            curForm.resetFields()
             if (this.isSubmit) {
-              this.validateForms();
+              this.validateForms()
             }
-            this.baseInfoForm.dialogNewSubjectVisible = false;
+            this.baseInfoForm.dialogNewSubjectVisible = false
           } else {
-            console.log('error submit!!');
+            console.log('error submit!!')
           }
-        });
+        })
       },
-      handleNewSealFile() {
+      handleNewSealFile () {
         const item = [{
           operate: 'add',
           name: '',
@@ -607,14 +607,14 @@
           ],
           isSeal: true,
           remark: ''
-        }];
-        this.cardSealInfoForm.sealAttachments.push(item);
+        }]
+        this.cardSealInfoForm.sealAttachments.push(item)
       },
-      handleUploadFileAfterSealSuccess(res) {
-        const dataMap = res.dataMap;
+      handleUploadFileAfterSealSuccess (res) {
+        const dataMap = res.dataMap
         if (dataMap.fileId) {
-          const index = this.cardSealInfoForm.current;
-          const curentFile = this.cardSealInfoForm.sealAttachments[index];
+          const index = this.cardSealInfoForm.current
+          const curentFile = this.cardSealInfoForm.sealAttachments[index]
           curentFile[0].filesSealed = [{
             sealFileId: dataMap.fileId,
             sealFileName: dataMap.fileName,
@@ -622,30 +622,30 @@
             sealFileCreatorName: dataMap.userName,
             sealFileCreateTime: formatDate(dataMap.createTime),
             operate: 'add'
-          }];
-          this.$message.success('文件上传成功');
+          }]
+          this.$message.success('文件上传成功')
         }
       },
-      handleUploadFileAfterSealError(err, file, fileList) {
-        console.log('error', err);
-        console.log('file', file);
-        console.log('fileList', fileList);
+      handleUploadFileAfterSealError (err, file, fileList) {
+        console.log('error', err)
+        console.log('file', file)
+        console.log('fileList', fileList)
       },
-      handleUploadSealFileSuccess(res) {
-        const dataMap = res.dataMap;
+      handleUploadSealFileSuccess (res) {
+        const dataMap = res.dataMap
         if (dataMap.fileId) {
-          const index = this.cardSealInfoForm.current;
-          const curentFile = this.cardSealInfoForm.sealAttachments[index];
-          curentFile[0].fileId = dataMap.fileId;
-          curentFile[0].fileName = dataMap.fileName;
-          curentFile[0].fileUrl = downloadUrl + dataMap.fileId;
-          this.$message.success('文件上传成功');
+          const index = this.cardSealInfoForm.current
+          const curentFile = this.cardSealInfoForm.sealAttachments[index]
+          curentFile[0].fileId = dataMap.fileId
+          curentFile[0].fileName = dataMap.fileName
+          curentFile[0].fileUrl = downloadUrl + dataMap.fileId
+          this.$message.success('文件上传成功')
         }
       },
-      handleUploadSealFileError(err, file, fileList) {
-        console.log('error', err);
-        console.log('file', file);
-        console.log('fileList', fileList);
+      handleUploadSealFileError (err, file, fileList) {
+        console.log('error', err)
+        console.log('file', file)
+        console.log('fileList', fileList)
       },
       // 验证
       /*
@@ -653,95 +653,95 @@
       * 2.我方主体至少有一个
       * 3.附件至少有一个 */
 
-      validateForms() { // supplierErrorMsg
+      validateForms () { // supplierErrorMsg
         return new Promise((resolve, reject) => {
-          const baseInfoForm = this.baseInfoForm;
-          const suppliers = baseInfoForm.tableSupplierInfo;
-          const subjects = baseInfoForm.conSubjctName;
-          const attachments = this.cardSealInfoForm.sealAttachments;
+          const baseInfoForm = this.baseInfoForm
+          const suppliers = baseInfoForm.tableSupplierInfo
+          const subjects = baseInfoForm.conSubjctName
+          const attachments = this.cardSealInfoForm.sealAttachments
           if (!suppliers.length) {
-            baseInfoForm.supplierErrorMsg = '合同供应商信息不能为空';
-            this.$message.error('请填写完合同供应商信息再提交！');
-            return;
+            baseInfoForm.supplierErrorMsg = '合同供应商信息不能为空'
+            this.$message.error('请填写完合同供应商信息再提交！')
+            return
           }
-          baseInfoForm.supplierErrorMsg = '';
+          baseInfoForm.supplierErrorMsg = ''
 
           if (!subjects.length) {
-            baseInfoForm.subjectErrorMsg = '我方主体信息不能为空';
-            this.$message.error('请填写完合同我方主体信息再提交！');
-            return;
+            baseInfoForm.subjectErrorMsg = '我方主体信息不能为空'
+            this.$message.error('请填写完合同我方主体信息再提交！')
+            return
           }
-          baseInfoForm.subjectErrorMsg = '';
+          baseInfoForm.subjectErrorMsg = ''
 
-          //验证附件的数据是否填写完整
+          // 验证附件的数据是否填写完整
           if (attachments && attachments.length) {
-            this.cardSealInfoForm.attachmentErrorMsg = '';
+            this.cardSealInfoForm.attachmentErrorMsg = ''
             const exist = attachments.some((item) => {
               if (item[0].haveSale) {
-                return !(item[0].printTime && item[0].remainTime && item[0].saleInfos.length && item[0].fileName);
+                return !(item[0].printTime && item[0].remainTime && item[0].saleInfos.length && item[0].fileName)
               }
-              return false;
-            });
+              return false
+            })
             if (exist) {
-              this.cardSealInfoForm.attachmentErrorMsg = '请确保所有附件信息填写完整';
+              this.cardSealInfoForm.attachmentErrorMsg = '请确保所有附件信息填写完整'
             }
           } else {
-            this.cardSealInfoForm.attachmentErrorMsg = '合同附件及盖章信息不能为空';
+            this.cardSealInfoForm.attachmentErrorMsg = '合同附件及盖章信息不能为空'
           }
           if (suppliers.length === 1 && subjects.length >= 1 && !this.cardSealInfoForm.attachmentErrorMsg) {
-            resolve();
+            resolve()
           } else {
-            reject();
+            reject(new Error('附件信息不完整'))
           }
-        });
+        })
       },
-      handleSubmit() {
-        this.btnStatus = false;
-        this.isSubmit = true;
+      handleSubmit () {
+        this.btnStatus = false
+        this.isSubmit = true
         this.validateForms().then(() => {
-          this.cardSealInfoForm.sealAttachments = this.combineSealsInfo();
-          const params = {};
-          params.id = parseInt(this.id, 10);
-          params.baseInfoForm = this.baseInfoForm;
-          params.cardSealInfoForm = this.cardSealInfoForm;
-          params.cardRemarkInfoForm = this.cardRemarkInfoForm;
-          params.protocolNo = '';
-          params.code = this.queryContractForm.code;
+          this.cardSealInfoForm.sealAttachments = this.combineSealsInfo()
+          const params = {}
+          params.id = parseInt(this.id, 10)
+          params.baseInfoForm = this.baseInfoForm
+          params.cardSealInfoForm = this.cardSealInfoForm
+          params.cardRemarkInfoForm = this.cardRemarkInfoForm
+          params.protocolNo = ''
+          params.code = this.queryContractForm.code
           Api.createAgreenment(params).then((data) => {
-            this.btnStatus = true;
+            this.btnStatus = true
             if (parseInt(data.data.code, 10) === 200) {
-              this.operateType = 'query';
-              this.$message.success(data.data.message);
+              this.operateType = 'query'
+              this.$message.success(data.data.message)
               this.$router.push({
                 name: routerNames.con_index
-              });
+              })
             }
           })
             .catch(() => {
-              this.btnStatus = true;
-            });
+              this.btnStatus = true
+            })
         }).catch(() => {
-          this.btnStatus = true;
-          this.$message.error('请填写完从协议信息再提交!');
-        });
+          this.btnStatus = true
+          this.$message.error('请填写完从协议信息再提交!')
+        })
       },
-      combineSealsInfo() {
-        const sealAttachments = this.cardSealInfoForm.sealAttachments;
-        const sealAttachment = [];
+      combineSealsInfo () {
+        const sealAttachments = this.cardSealInfoForm.sealAttachments
+        const sealAttachment = []
         if (sealAttachments && sealAttachments.length) {
           for (let i = 0, len = sealAttachments.length; i < len; i += 1) {
-            const item = sealAttachments[i];
+            const item = sealAttachments[i]
             if (item[0] && item[0].fileName) {
-              sealAttachment.push(item);
+              sealAttachment.push(item)
             }
           }
         }
-        return sealAttachment;
+        return sealAttachment
       },
-      handleChangeType(index, row) {
-        row.isSeal = index !== 2;
+      handleChangeType (index, row) {
+        row.isSeal = index !== 2
       },
-      handleNewOtherSealFile() {
+      handleNewOtherSealFile () {
         const file = [{
           operate: 'add',
           id: '',
@@ -772,67 +772,69 @@
             }
           ], // 章列表
           filesSealed: [] // 上传的盖章后的文件信息
-        }];
-        this.cardSealInfoForm.sealAttachments.push(file);
+        }]
+        this.cardSealInfoForm.sealAttachments.push(file)
         if (this.isSubmit) {
-          this.validateForms();
+          this.validateForms()
         }
       },
-      getEnabledUploadBtn(items) {
-        return (items && items.length > 0);
+      getEnabledUploadBtn (items) {
+        return (items && items.length > 0)
       },
-      getEnabledUploadBtnOuter(fileName) {
-        return !fileName;
+      getEnabledUploadBtnOuter (fileName) {
+        return !fileName
       },
-      handleUploadOuter(index) {
-        this.cardSealInfoForm.current = index;
+      handleUploadOuter (index) {
+        this.cardSealInfoForm.current = index
       },
-      handleUpload(index) {
-        this.cardSealInfoForm.current = index || 0;
+      handleUpload (index) {
+        this.cardSealInfoForm.current = index || 0
       },
-      handleRemoveItem(index, rows) {
-        rows.splice(index, 1);
+      handleRemoveItem (index, rows) {
+        rows.splice(index, 1)
       },
-      handleQuery(code) {
-        Api.getUpdateInfo(code).then((data) => {
-          const dataMap = data.data.dataMap;
+      handleQuery (code) {
+        Api.getContractDetailByNo({
+          contractNo: code
+        }).then((data) => {
+          const dataMap = data.data.dataMap
           if (dataMap && dataMap.baseInfoForm.id) {
-            this.queryContractForm.visible = true;
+            this.queryContractForm.visible = true
             if (dataMap.cardContentInfoForm.tableSupplierInfo && dataMap.cardContentInfoForm.tableSupplierInfo.length) {
-              this.baseInfoForm.tableSupplierInfo = dataMap.cardContentInfoForm.tableSupplierInfo;
+              this.baseInfoForm.tableSupplierInfo = dataMap.cardContentInfoForm.tableSupplierInfo
             }
             if (dataMap.cardContentInfoForm.conSubjctName && dataMap.cardContentInfoForm.conSubjctName.length) {
-              this.baseInfoForm.conSubjctName = dataMap.cardContentInfoForm.conSubjctName;
+              this.baseInfoForm.conSubjctName = dataMap.cardContentInfoForm.conSubjctName
             }
           }
-        });
+        })
       },
-      handleChangeValidateForms() {
+      handleChangeValidateForms () {
         if (this.isSubmit) {
-          this.validateForms();
+          this.validateForms()
         }
       },
-      callback(params) { //isSign:是否是加签人 isAgree:审批操作类型是否是同意
+      callback (params) { // isSign:是否是加签人 isAgree:审批操作类型是否是同意
         return new Promise((resolve, reject) => {
-          const {isSign, isAgree} = params;
+          const {isSign, isAgree} = params
           if (!isSign && isAgree && (this.ifRole || this.ifRole1)) {
-            const sealAttachments = this.combineSealsInfo();
-            const para = {};
-            para.sealAttachments = sealAttachments;
-            para.id = this.id;
-            para.type = 2;
-            para.uploadPerson = this.ifRole1;
+            const sealAttachments = this.combineSealsInfo()
+            const para = {}
+            para.sealAttachments = sealAttachments
+            para.id = this.id
+            para.type = 2
+            para.uploadPerson = this.ifRole1
             Api.uploadSealAttachments(para)
               .then(() => {
-                resolve();
+                resolve()
               })
               .catch(() => {
-                reject();
-              });
+                reject(new Error('提交失败'))
+              })
           } else {
-            resolve();
+            resolve()
           }
-        });
+        })
       }
     },
     filters: {
@@ -840,14 +842,14 @@
       attachmentType
     },
     watch: {
-      $route() {
-        const path = this.$route.path;
+      $route () {
+        const path = this.$route.path
         if (path && path === '/ConCreate/querySlaveProtocol') {
-          this.operateType = 'query';
-          this.requestQueryData();
+          this.operateType = 'query'
+          this.requestQueryData()
         }
         if (path && path === '/ConCreate/createSlaveProtocol') {
-          this.operateType = 'create';
+          this.operateType = 'create'
           const obj = {
             isSubmit: false,
             users: user,
@@ -899,10 +901,10 @@
               subjects: [],
               loading: false
             }
-          };
-          Object.assign(this, obj);
+          }
+          Object.assign(this, obj)
         }
       }
     }
-  };
+  }
 </script>

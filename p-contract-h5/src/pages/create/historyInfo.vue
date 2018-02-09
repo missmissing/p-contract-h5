@@ -17,8 +17,8 @@
 </template>
 
 <script>
-  import {formatDate} from '../../filters/moment';
-  import toPage from '../../assets/js/toPage';
+  import {formatDate} from '../../filters/moment'
+  import toPage from '../../assets/js/toPage'
 
   export default {
     name: 'history-info',
@@ -26,14 +26,14 @@
       items: Array
     },
     methods: {
-      goToProcess(row) {
-        toPage.call(this, row);
+      goToProcess (row) {
+        toPage.call(this, row)
       }
     },
     filters: {
       formatDate
     }
-  };
+  }
 </script>
 
 <style type="text/scss" lang="scss" scoped>

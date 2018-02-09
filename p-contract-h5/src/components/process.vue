@@ -70,14 +70,14 @@
 </template>
 
 <script>
-  import Api from '../api/process/index';
-  import {formatTime} from '../filters/moment';
-  import SelectPerson from './selectPerson.vue';
-  import {routerNames, processListMap} from '../core/consts';
-  import comLoading from '../mixins/comLoading';
-  import getEnv from '../util/getEnv';
+  import Api from '../api/process/index'
+import {formatTime} from '../filters/moment'
+import SelectPerson from './selectPerson.vue'
+import {routerNames, processListMap} from '../core/consts'
+import comLoading from '../mixins/comLoading'
+import getEnv from '../util/getEnv'
 
-  export default {
+export default {
     mixins: [comLoading],
     props: {
       extraFn: {
@@ -85,7 +85,7 @@
         default: null
       }
     },
-    data() {
+    data () {
       return {
         processData: null,
         lists: [],
@@ -94,59 +94,59 @@
         actionName: '',
         receiver: '',
         approveRemark: ''
-      };
+      }
     },
     computed: {
-      visible() {
-        return this.commonBtns.some(btn => btn === this.actionName);
+      visible () {
+        return this.commonBtns.some(btn => btn === this.actionName)
       },
-      required() {
-        return this.actionName === '拒绝';
+      required () {
+        return this.actionName === '拒绝'
       }
     },
     methods: {
-      change(value) {
-        this.receiver = value;
+      change (value) {
+        this.receiver = value
       },
-      beforeSubmit() {
+      beforeSubmit () {
         if (!this.actionName) {
-          this.$message.warning('请选择审批操作!');
-          return;
+          this.$message.warning('请选择审批操作!')
+          return
         }
         if (this.extraFn) {
-          const {sign} = this.processData;
-          const isSign = sign === 1;
-          const isAgree = this.actionName === '同意';
+          const {sign} = this.processData
+          const isSign = sign === 1
+          const isAgree = this.actionName === '同意'
           this.extraFn({isSign, isAgree}).then(() => {
-            this.submit();
-          });
-          return;
+            this.submit()
+          })
+          return
         }
-        this.submit();
+        this.submit()
       },
-      check(data) {
-        const {actionName, redirectApproverId} = data;
+      check (data) {
+        const {actionName, redirectApproverId} = data
         if (actionName === '拒绝') {
           if (!this.approveRemark) {
-            this.$message.warning('请输入审批意见！');
-            return false;
+            this.$message.warning('请输入审批意见！')
+            return false
           }
         }
         if (this.visible) {
           if (!redirectApproverId) {
-            this.$message.warning('请选择收文人！');
-            return false;
+            this.$message.warning('请选择收文人！')
+            return false
           }
         }
-        return true;
+        return true
       },
-      submit() {
+      submit () {
         const {
           procInstId,
           procCode,
           serialNumber,
           roleName
-        } = this.processData;
+        } = this.processData
         const result = {
           procInstId,
           procCode,
@@ -155,51 +155,51 @@
           actionName: this.actionName,
           redirectApproverId: this.receiver,
           approveRemark: this.approveRemark
-        };
+        }
         if (!this.check(result)) {
-          return;
+          return
         }
         this.comLoading({
           text: '正在提交中'
-        });
+        })
         Api.submitProcess(result).then(() => {
-          this.$message.success('提交成功！');
+          this.$message.success('提交成功！')
           if (this.$route.query.from === 'out') {
             if (getEnv() === 'prd') {
-              window.location.href = 'http://a.oa.chinaredstar.com/tip/success?t=1';
+              window.location.href = 'http://a.oa.chinaredstar.com/tip/success?t=1'
             } else {
-              window.location.href = 'http://10.11.25.157:81/tip/success?t=1 ';
+              window.location.href = 'http://10.11.25.157:81/tip/success?t=1 '
             }
-            return;
+            return
           }
-          this.$router.push({name: routerNames.con_index});
+          this.$router.push({name: routerNames.con_index})
         }).finally(() => {
-          this.comLoading(false);
-        });
+          this.comLoading(false)
+        })
       }
     },
-    created() {
-      let {processData} = this.$route.query;
+    created () {
+      let {processData} = this.$route.query
       if (!processData) {
-        return;
+        return
       }
-      processData = JSON.parse(processData);
+      processData = JSON.parse(processData)
       const {
         procInstId, procCode, actions, sign, dataType
-      } = processData;
+      } = processData
       if (sign === 1) {
-        this.commonBtns = [];
+        this.commonBtns = []
       }
-      this.btns = actions || [];
-      this.processData = processData;
-      this.show = dataType === processListMap[0];
+      this.btns = actions || []
+      this.processData = processData
+      this.show = dataType === processListMap[0]
 
       Api.getStartedProcNodes({
         procInstId,
         procCode
       }).then((res) => {
-        this.lists = res.data.dataMap.nodes;
-      });
+        this.lists = res.data.dataMap.nodes
+      })
     },
     components: {
       SelectPerson
@@ -208,12 +208,12 @@
       formatTime
     },
     watch: {
-      $route() {
-        const {processData} = this.$route.query;
+      $route () {
+        const {processData} = this.$route.query
         if (!processData) {
-          this.processData = null;
+          this.processData = null
         }
       }
     }
-  };
+  }
 </script>

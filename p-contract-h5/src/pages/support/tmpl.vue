@@ -127,14 +127,14 @@
 </template>
 
 <script>
-  import _ from 'lodash';
-  import Sortable from 'sortablejs';
-  import {routerNames} from '../../core/consts';
-  import getModules from '../../mixins/getModules';
-  import Api from '../../api/support';
+  import _ from 'lodash'
+  import Sortable from 'sortablejs'
+  import {routerNames} from '../../core/consts'
+  import getModules from '../../mixins/getModules'
+  import Api from '../../api/support'
 
-  import Editor from '../../components/editor.vue';
-  import Dropdown from '../../components/dropdown.vue';
+  import Editor from '../../components/editor.vue'
+  import Dropdown from '../../components/dropdown.vue'
 
   export default {
     components: {
@@ -142,7 +142,7 @@
       Dropdown
     },
     mixins: [getModules],
-    data() {
+    data () {
       return {
         contentModule: [],
         header: '',
@@ -172,7 +172,7 @@
           label: 'labelName',
           value: 'id'
         }
-      };
+      }
     },
     props: {
       showTmpl: {
@@ -181,230 +181,230 @@
       tplInfo: Object
     },
     methods: {
-      getTmplTypes() {
+      getTmplTypes () {
         Api.getTmplTypes({}).then((res) => {
-          this.options = res.data.dataMap;
-        });
+          this.options = res.data.dataMap
+        })
       },
-      onEditorChange(html, editor) {
-        const id = editor.$textContainerElem[0].id;
-        const index = id.split('-')[1];
+      onEditorChange (html, editor) {
+        const id = editor.$textContainerElem[0].id
+        const index = id.split('-')[1]
         this.editableTabs.some((item, i) => {
           if (i === +index) {
-            const obj = Object.assign({}, item);
-            obj.content = html;
-            this.editableTabs.splice(i, 1, obj);
-            return true;
+            const obj = Object.assign({}, item)
+            obj.content = html
+            this.editableTabs.splice(i, 1, obj)
+            return true
           }
-          return false;
-        });
+          return false
+        })
       },
-      handleTabsEdit(targetName, action) {
+      handleTabsEdit (targetName, action) {
         if (action === 'add') {
-          const len = `${this.editableTabs.length}`;
+          const len = `${this.editableTabs.length}`
           this.editableTabs.push({
             title: '附件',
             name: len,
             content: ''
-          });
-          this.editableTabsValue = len;
+          })
+          this.editableTabsValue = len
         }
         if (action === 'remove') {
-          const tabs = this.editableTabs;
-          let activeName = this.editableTabsValue;
+          const tabs = this.editableTabs
+          let activeName = this.editableTabsValue
           if (activeName === targetName) {
             tabs.some((tab, index) => {
               if (tab.name === targetName) {
-                const nextTab = tabs[index + 1] || tabs[index - 1];
+                const nextTab = tabs[index + 1] || tabs[index - 1]
                 if (nextTab) {
-                  activeName = nextTab.name;
+                  activeName = nextTab.name
                 }
-                return true;
+                return true
               }
-              return false;
-            });
+              return false
+            })
           }
 
-          this.editableTabsValue = activeName;
-          this.editableTabs = tabs.filter(tab => tab.name !== targetName);
+          this.editableTabsValue = activeName
+          this.editableTabs = tabs.filter(tab => tab.name !== targetName)
         }
         this.$nextTick(() => {
-          this.sortInit();
-        });
+          this.sortInit()
+        })
       },
-      save() {
+      save () {
         if (!this.disabled) {
           const templateFileContents = this.editableTabs.map((item) => {
-            const content = item.content.replace(/\s/g, '&nbsp;');
+            const content = item.content.replace(/\s/g, '&nbsp;')
             return {
               content
-            };
-          });
+            }
+          })
           const result = {
             contentModule: this.contentModule,
             content: templateFileContents[0].content,
             templateFileContents: templateFileContents.slice(1),
             labels: this.customLabels
-          };
-          this.$emit('getData', result);
+          }
+          this.$emit('getData', result)
         }
-        this.back();
+        this.back()
       },
-      back() {
-        this.$emit('update:showTmpl', false);
+      back () {
+        this.$emit('update:showTmpl', false)
       },
-      sortInit() {
-        const t = this;
+      sortInit () {
+        const t = this
         if (this.Sortable) {
-          this.Sortable.destroy();
+          this.Sortable.destroy()
         }
-        const container = document.querySelector('.el-tabs__nav');
-        const ignoreElem = container.firstChild;
+        const container = document.querySelector('.el-tabs__nav')
+        const ignoreElem = container.firstChild
         this.Sortable = Sortable.create(container, {
           handle: '.drag-elements',
-          onEnd(evt) {
-            const {newIndex, oldIndex} = evt;
+          onEnd (evt) {
+            const {newIndex, oldIndex} = evt
             if (newIndex !== oldIndex) {
-              const editableTabs = t.editableTabs.slice(0);
-              const item = editableTabs.splice(oldIndex, 1);
-              editableTabs.splice(newIndex, 0, item[0]);
-              t.editableTabs = editableTabs;
+              const editableTabs = t.editableTabs.slice(0)
+              const item = editableTabs.splice(oldIndex, 1)
+              editableTabs.splice(newIndex, 0, item[0])
+              t.editableTabs = editableTabs
             }
           },
-          onMove(evt) {
-            return ignoreElem !== evt.related;
+          onMove (evt) {
+            return ignoreElem !== evt.related
           }
-        });
+        })
       },
-      addCustomLabel() {
-        const form = this.$refs.customLabelForm;
+      addCustomLabel () {
+        const form = this.$refs.customLabelForm
         form.validate((valid) => {
           if (!valid) {
-            return;
+            return
           }
-          const {name, description} = this.customLabelForm;
-          const customLabels = this.customLabels;
-          const exist = customLabels.some(item => item.labelName === name);
+          const {name, description} = this.customLabelForm
+          const customLabels = this.customLabels
+          const exist = customLabels.some(item => item.labelName === name)
           if (exist) {
-            this.$message.warning('自定义标签已存在！');
-            return;
+            this.$message.warning('自定义标签已存在！')
+            return
           }
           customLabels.unshift({
             labelName: name,
             labelKey: `{{${this.customLabelForm.name}}}`,
             labelDesc: description
-          });
-          form.resetFields();
-          this.dialogVisible = false;
-        });
+          })
+          form.resetFields()
+          this.dialogVisible = false
+        })
       },
-      chooseLabel(item) {
-        console.log('选中标签', item);
-        const currentEditor = this.$refs[`editor-${this.editableTabsValue}`][0];
-        currentEditor.editor.cmd.do('insertHTML', item.source.labelKey);
+      chooseLabel (item) {
+        console.log('选中标签', item)
+        const currentEditor = this.$refs[`editor-${this.editableTabsValue}`][0]
+        currentEditor.editor.cmd.do('insertHTML', item.source.labelKey)
       },
-      getTemplateLabels() {
+      getTemplateLabels () {
         Api.getTemplateLabels({
           templateId: ''
         }).then((res) => {
-          const data = res.data.dataMap;
-          const staticLabels = [];
-          const customLabels = [];
+          const data = res.data.dataMap
+          const staticLabels = []
+          const customLabels = []
           data.forEach((item) => {
             if (item.labelType === 'FIXED') {
-              staticLabels.push(item);
-              return;
+              staticLabels.push(item)
+              return
             }
-            customLabels.push(item);
-          });
-          this.staticLabels = staticLabels;
-          this.customLabels = customLabels;
-        });
+            customLabels.push(item)
+          })
+          this.staticLabels = staticLabels
+          this.customLabels = customLabels
+        })
       }
     },
     watch: {
-      modulesData() {
-        this.getTmplTypes();
+      modulesData () {
+        this.getTmplTypes()
       },
-      options() {
-        this.tplType = this.options[0].id;
+      options () {
+        this.tplType = this.options[0].id
       },
-      tplType() {
-        const options = this.options;
+      tplType () {
+        const options = this.options
         if (!options.length) {
-          return;
+          return
         }
-        const option = _.find(options, (o) => o.id === this.tplType);
-        this.contentModule = option.moduleIds;
+        const option = _.find(options, (o) => o.id === this.tplType)
+        this.contentModule = option.moduleIds
       },
-      tplInfo() {
-        const tplInfo = this.tplInfo;
+      tplInfo () {
+        const tplInfo = this.tplInfo
         if (!Object.keys(tplInfo).length) {
-          return;
+          return
         }
-        const {content, contentModule, templateFileContents} = tplInfo;
-        this.contentModule = contentModule.map(item => item.id);
-        this.content = content;
-        this.editableTabs[0].content = content;
+        const {content, contentModule, templateFileContents} = tplInfo
+        this.contentModule = contentModule.map(item => item.id)
+        this.content = content
+        this.editableTabs[0].content = content
         if (templateFileContents && templateFileContents.length) {
           const contents = templateFileContents.map((item, index) => ({
             name: `${index + 1}`,
             title: '附件',
             content: item.content
-          }));
-          this.editableTabs = this.editableTabs.concat(contents);
+          }))
+          this.editableTabs = this.editableTabs.concat(contents)
         }
-        this.getTemplateLabels();
+        this.getTemplateLabels()
       },
-      contentModule(val) {
-        const modulesData = this.modulesData;
+      contentModule (val) {
+        const modulesData = this.modulesData
         if (!val.length || !modulesData.length) {
-          return;
+          return
         }
-        const header = [];
-        const footer = [];
+        const header = []
+        const footer = []
         val.forEach((key) => {
-          const module = _.find(modulesData, (o) => o.id === key);
-          const content = module.moduleContent;
+          const module = _.find(modulesData, (o) => o.id === key)
+          const content = module.moduleContent
           if (module.moduleType === 1) {
-            header.push(content);
+            header.push(content)
           } else if (module.moduleType === 2) {
-            footer.push(content);
+            footer.push(content)
           }
-        });
-        this.header = header.join('');
-        this.footer = footer.join('');
+        })
+        this.header = header.join('')
+        this.footer = footer.join('')
       }
     },
     computed: {
-      disabled() {
-        return [routerNames.con_tpl_see, routerNames.con_tpl_abolish].indexOf(this.$route.name) > -1;
+      disabled () {
+        return [routerNames.con_tpl_see, routerNames.con_tpl_abolish].indexOf(this.$route.name) > -1
       },
-      previewContent() {
-        return this.editableTabs.map(item => item.content).join('');
+      previewContent () {
+        return this.editableTabs.map(item => item.content).join('')
       }
     },
     filters: {
-      setItemDisabled(items, self) {
+      setItemDisabled (items, self) {
         if (self.disabled) {
           return items.map((item) => {
-            const newItem = Object.assign({}, item);
-            newItem.disabled = true;
-            return newItem;
-          });
+            const newItem = Object.assign({}, item)
+            newItem.disabled = true
+            return newItem
+          })
         }
-        return items;
+        return items
       }
     },
-    created() {
+    created () {
       if (routerNames.con_tpl_create === this.$route.name) {
-        this.getTemplateLabels();
+        this.getTemplateLabels()
       }
     },
-    mounted() {
+    mounted () {
       this.$nextTick(() => {
-        !this.disabled && this.sortInit();
-      });
+        !this.disabled && this.sortInit()
+      })
     }
-  };
+  }
 </script>

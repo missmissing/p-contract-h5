@@ -18,60 +18,60 @@
       datas: Array,
       prop: {
         type: Object,
-        default() {
+        default () {
           return {
             label: 'label',
             value: 'value'
-          };
+          }
         }
       }
     },
     watch: {
-      data(val) {
-        this.items = this.transform(val);
+      data (val) {
+        this.items = this.transform(val)
       }
     },
     computed: {
-      items() {
+      items () {
         if (!this.datas.length) {
-          return [];
+          return []
         }
-        const {label, value} = this.prop;
+        const {label, value} = this.prop
         return this.datas.map((item) => {
           if (Object.keys(item).length) {
-            let labelKey = '';
-            let valueKey = '';
+            let labelKey = ''
+            let valueKey = ''
             if (value in item) {
-              valueKey = item[value];
+              valueKey = item[value]
             }
             if (label in item) {
-              labelKey = item[label];
+              labelKey = item[label]
             } else {
-              labelKey = valueKey;
+              labelKey = valueKey
             }
             return {
               label: labelKey,
               value: valueKey,
               source: item
-            };
+            }
           }
           return {
             label: item,
             value: item,
             source: item
-          };
-        });
+          }
+        })
       }
     },
     methods: {
-      handleClick() {
-        this.$emit('click');
+      handleClick () {
+        this.$emit('click')
       },
-      handleCommand(item) {
-        this.$emit('command', item);
+      handleCommand (item) {
+        this.$emit('command', item)
       }
     }
-  };
+  }
 </script>
 
 <style type="text/scss" lang="scss" scoped>

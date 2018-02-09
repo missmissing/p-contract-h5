@@ -69,10 +69,10 @@
 </template>
 
 <script>
-  import {mapGetters} from 'vuex';
-  import {uploadUrl, downloadUrl} from '../../api/consts';
-  import {formatDate} from '../../filters/moment';
-  import attachmentType from '../../filters/attachmentType';
+  import {mapGetters} from 'vuex'
+  import {uploadUrl, downloadUrl} from '../../api/consts'
+  import {formatDate} from '../../filters/moment'
+  import attachmentType from '../../filters/attachmentType'
 
   export default {
     props: {
@@ -80,11 +80,11 @@
       backLogCreator: Boolean,
       tplType: Number
     },
-    data() {
+    data () {
       return {
         uploadUrl,
         downloadUrl
-      };
+      }
     },
     computed: {
       ...mapGetters([
@@ -93,87 +93,87 @@
         'isSee',
         'isProcess'
       ]),
-      addLoad() {
+      addLoad () {
         if (this.backLogCreator) {
-          return true;
+          return true
         }
         if (!this.isSee && !this.isProcess) {
-          return true;
+          return true
         }
-        return false;
+        return false
       }
     },
     methods: {
-      disabled(row) {
+      disabled (row) {
         if (row.attachType === 3) {
-          return true;
+          return true
         }
         if (row.id) {
-          return true;
+          return true
         }
         if (this.backLogCreator) {
-          return false;
+          return false
         }
         if (this.isSee || this.isProcess) {
-          return true;
+          return true
         }
-        return false;
+        return false
       },
-      ifUploadFile(row) {
-        const {attachType, id} = row;
+      ifUploadFile (row) {
+        const {attachType, id} = row
         if (attachType === 3) {
           if (this.isCreate || this.isModify) {
-            return false;
+            return false
           }
           if (this.backLogCreator && this.tplType === 2) {
-            return true;
+            return true
           }
         }
 
         if (!id) {
-          return true;
+          return true
         }
         if (this.isSee || this.isProcess) {
-          return false;
+          return false
         }
-        return false;
+        return false
       },
-      //流程覆盖上传按钮
-      coverUpload(row) {
-        return (row.attachType === 3 && this.tplType === 2 && this.backLogCreator);
+      // 流程覆盖上传按钮
+      coverUpload (row) {
+        return (row.attachType === 3 && this.tplType === 2 && this.backLogCreator)
       },
-      add() {
+      add () {
         const file = {
           fileName: '',
           fileUrl: '',
           attachType: 1,
           haveSeal: true,
           remark: ''
-        };
-        this.items.push(file);
+        }
+        this.items.push(file)
       },
-      handleRemove(index, rows) {
-        rows.splice(index, 1);
+      handleRemove (index, rows) {
+        rows.splice(index, 1)
       },
-      handleUploadSealFileSuccess(row, response) {
-        const {code, dataMap} = response;
+      handleUploadSealFileSuccess (row, response) {
+        const {code, dataMap} = response
         if (code !== '200') {
-          this.$message.error(dataMap.message);
-          return;
+          this.$message.error(dataMap.message)
+          return
         }
-        const {fileId} = dataMap;
-        row.fileId = dataMap.fileId;
-        row.fileName = dataMap.fileName;
-        row.fileUrl = `${this.downloadUrl}${fileId}`;
+        const {fileId} = dataMap
+        row.fileId = dataMap.fileId
+        row.fileName = dataMap.fileName
+        row.fileUrl = `${this.downloadUrl}${fileId}`
         if (this.coverUpload(row)) {
-          row.id && delete row.id;
+          row.id && delete row.id
         }
-        this.$message.success('文件上传成功');
+        this.$message.success('文件上传成功')
       }
     },
     filters: {
       formatDate,
       attachmentType
     }
-  };
+  }
 </script>

@@ -180,34 +180,34 @@
 </template>
 
 <script>
-  import Api from '../../api/manageContract';
-  import {formatDate} from '../../filters/moment';
-  import comLoading from '../../mixins/comLoading';
-  import {routerNames} from '../../core/consts';
-  import {downloadUrl, uploadUrl} from '../../api/consts';
+  import Api from '../../api/manageContract'
+  import {formatDate} from '../../filters/moment'
+  import comLoading from '../../mixins/comLoading'
+  import {routerNames} from '../../core/consts'
+  import {downloadUrl, uploadUrl} from '../../api/consts'
 
   export default {
     mixins: [comLoading],
-    data() {
+    data () {
       return {
-        procInstId: '', //流程id
-        procTitle: '', //流程名称
+        procInstId: '', // 流程id
+        procTitle: '', // 流程名称
         users: {},
         downloadUrl,
         uploadUrl,
         isSubmit: false,
         form: {
           errorMsg: '',
-          /*suspendReason: '',*/
+          /* suspendReason: '', */
           suspendTime: '',
           suspendRemark: '',
           sealAttachments: [],
           current: null // 为上传功能保存当前所在附件列表的索引
         },
         rules: {
-          /*suspendReason: [
+          /* suspendReason: [
             {required: true, message: '请选择中止原因'}
-          ],*/
+          ], */
           suspendTime: [
             {
               type: 'date', required: true, message: '请选择中止时间', trigger: 'change'
@@ -224,73 +224,73 @@
         startTime: '',
         endTime: '',
         pickerOptions: {
-          disabledDate() {
-            return true;
+          disabledDate () {
+            return true
           }
         },
         options: [{value: 1, label: '合同违约中止'}, {value: 2, label: '合同变更后中止'}, {value: 3, label: '固定期限合同正常履行完成后中止'}],
         info: null,
         toDetail: {name: routerNames.con_Check, query: {contractNo: ''}}
-      };
+      }
     },
     methods: {
-      search() {
+      search () {
         if (!this.contractCode) {
-          this.$message.warning('请输入合同编号！');
-          return;
+          this.$message.warning('请输入合同编号！')
+          return
         }
-        this.comLoading();
-        Api.getContractDetail({contractNo: this.contractCode, operate: 'SUSPENDED'}).then((res) => {
-          const data = res.data.dataMap;
-          this.info = data;
-          const {baseInfoForm, cardContentInfoForm} = data;
-          const {approvalDate, contractStatusName} = baseInfoForm;
-          const {startTime, endTime} = cardContentInfoForm;
-          this.approvalDate = approvalDate;
-          this.contractStatusName = contractStatusName;
-          this.startTime = startTime;
-          this.endTime = endTime;
-          this.toDetail.query.contractNo = this.contractCode;
-          this.pickerOptions.disabledDate = (time) => time.getTime() < this.startTime;
-          this.comLoading(false);
+        this.comLoading()
+        Api.getContractDetailByNo({contractNo: this.contractCode, operate: 'SUSPENDED'}).then((res) => {
+          const data = res.data.dataMap
+          this.info = data
+          const {baseInfoForm, cardContentInfoForm} = data
+          const {approvalDate, contractStatusName} = baseInfoForm
+          const {startTime, endTime} = cardContentInfoForm
+          this.approvalDate = approvalDate
+          this.contractStatusName = contractStatusName
+          this.startTime = startTime
+          this.endTime = endTime
+          this.toDetail.query.contractNo = this.contractCode
+          this.pickerOptions.disabledDate = (time) => time.getTime() < this.startTime
+          this.comLoading(false)
         }, () => {
-          this.comLoading(false);
-        });
+          this.comLoading(false)
+        })
       },
-      submit() {
-        this.isSubmit = true;
+      submit () {
+        this.isSubmit = true
         this.validateForms().then(() => {
           if (!this.info) {
-            this.$message.warning('请输入合同编号查询');
-            return;
+            this.$message.warning('请输入合同编号查询')
+            return
           }
-          const {baseInfoForm} = this.info;
-          const {id} = baseInfoForm;
+          const {baseInfoForm} = this.info
+          const {id} = baseInfoForm
           const result = {
             id,
             suspendTime: formatDate(this.form.suspendTime),
-            /*suspendReason: this.form.suspendReason,*/
+            /* suspendReason: this.form.suspendReason, */
             suspendRemark: this.form.suspendRemark,
             sealAttachments: this.combineAttachments(this.form.sealAttachments)
-          };
+          }
           this.comLoading({
             text: '正在提交中'
-          });
+          })
           Api.contractSuspendSubmit(result).then((res) => {
-            console.log(res);
-            this.comLoading(false);
+            console.log(res)
+            this.comLoading(false)
             this.$router.push({
               name: routerNames.con_index
-            });
+            })
           }, () => {
-            this.comLoading(false);
-          });
+            this.comLoading(false)
+          })
         }).catch(() => {
-          console.log('error submit!!');
-          return false;
-        });
+          console.log('error submit!!')
+          return false
+        })
       },
-      handleNewSealFile() {
+      handleNewSealFile () {
         const file = [{
           operate: 'add',
           id: '',
@@ -325,90 +325,89 @@
             }
           ], // 章列表
           filesSealed: [] // 上传的盖章后的文件信息
-        }];
-        this.form.sealAttachments.push(file);
+        }]
+        this.form.sealAttachments.push(file)
       },
-      handleUploadSealFileSuccess(res) {
-        const dataMap = res.dataMap;
+      handleUploadSealFileSuccess (res) {
+        const dataMap = res.dataMap
         if (dataMap.fileId) {
-          const index = this.form.sealAttachments.current;
-          const curentFile = this.form.sealAttachments[index];
-          curentFile[0].fileId = dataMap.fileId;
-          curentFile[0].fileName = dataMap.fileName;
-          curentFile[0].fileUrl = downloadUrl + dataMap.fileId;
-          this.$message.success('文件上传成功');
+          const index = this.form.sealAttachments.current
+          const curentFile = this.form.sealAttachments[index]
+          curentFile[0].fileId = dataMap.fileId
+          curentFile[0].fileName = dataMap.fileName
+          curentFile[0].fileUrl = downloadUrl + dataMap.fileId
+          this.$message.success('文件上传成功')
         }
       },
-      handleUploadSealFileError(err, file, fileList) {
-        console.log('error', err);
-        console.log('file', file);
-        console.log('fileList', fileList);
+      handleUploadSealFileError (err, file, fileList) {
+        console.log('error', err)
+        console.log('file', file)
+        console.log('fileList', fileList)
       },
-      getEnabledUploadBtnOuter(fileName) {
-        return !fileName;
+      getEnabledUploadBtnOuter (fileName) {
+        return !fileName
       },
-      handleChangeValidateForms() {
+      handleChangeValidateForms () {
         if (this.isSubmit) {
           this.validateForms().catch(() => {
-            console.log('validate failed');
-          });
+            console.log('validate failed')
+          })
         }
       },
-      handleUploadOuter(index) {
-        this.form.sealAttachments.current = index;
+      handleUploadOuter (index) {
+        this.form.sealAttachments.current = index
       },
-      handleRemoveAttachmentsItem(index, rows) {
-        rows.splice(index, 1);
+      handleRemoveAttachmentsItem (index, rows) {
+        rows.splice(index, 1)
       },
-      combineAttachments(files) { //上传附件剔除空附件
-        const newFiles = [];
+      combineAttachments (files) { // 上传附件剔除空附件
+        const newFiles = []
         if (files && files.length) {
           files.forEach((item) => {
             if (item[0] && item[0].fileName) {
-              const inItem = item[0];
-              const {filesSealed} = inItem;
+              const inItem = item[0]
+              const {filesSealed} = inItem
               if (filesSealed && filesSealed[0]) {
-                const {sealFileCreateTime} = filesSealed[0];
-                filesSealed[0].sealFileCreateTime = formatDate(sealFileCreateTime);
+                const {sealFileCreateTime} = filesSealed[0]
+                filesSealed[0].sealFileCreateTime = formatDate(sealFileCreateTime)
               }
-              newFiles.push(item);
+              newFiles.push(item)
             }
-          });
+          })
         }
-        return newFiles;
+        return newFiles
       },
-      validateForms() {
+      validateForms () {
         return new Promise((resolve, reject) => {
           this.$refs.form.validate((valid) => {
-            //验证附件的数据是否填写完整
-            const sealAttachments = this.form.sealAttachments;
+            // 验证附件的数据是否填写完整
+            const sealAttachments = this.form.sealAttachments
             if (sealAttachments && sealAttachments.length) {
               sealAttachments.forEach((item) => {
                 if (item[0].haveSale) {
                   if (item[0].printTime && item[0].remainTime && item[0].saleInfos.length) {
-                    this.form.errorMsg = '';
+                    this.form.errorMsg = ''
                   } else {
-                    this.form.errorMsg = '请确保所有附件信息填写完整';
+                    this.form.errorMsg = '请确保所有附件信息填写完整'
                   }
                 }
-              });
+              })
             } else {
-              this.form.errorMsg = '请确保所有附件信息填写完整';
+              this.form.errorMsg = '请确保所有附件信息填写完整'
             }
             if (valid && !this.form.errorMsg) {
-              resolve();
+              resolve()
             } else {
-              reject();
+              reject(new Error(this.form.errorMsg))
             }
           }).catch(() => {
-            console.log('验证失败');
-            reject();
-          });
-        });
+            reject(new Error('附件信息不完整'))
+          })
+        })
       }
     },
     filters: {
       formatDate
     }
-  };
+  }
 </script>

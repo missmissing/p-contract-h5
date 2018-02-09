@@ -16,7 +16,7 @@
     props: {
       items: Array
     }
-  };
+  }
 </script>
 
 <style type="text/scss" lang="scss" scoped>

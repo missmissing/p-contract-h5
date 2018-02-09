@@ -196,19 +196,19 @@
 </template>
 
 <script>
-  import Api from '../../api/manageContract';
-  import {formatDate} from '../../filters/moment';
-  import comLoading from '../../mixins/comLoading';
-  import {routerNames} from '../../core/consts';
-  import Process from '../../components/process.vue';
-  import {downloadUrl, uploadUrl} from '../../api/consts';
+  import Api from '../../api/manageContract'
+  import {formatDate} from '../../filters/moment'
+  import comLoading from '../../mixins/comLoading'
+  import {routerNames} from '../../core/consts'
+  import Process from '../../components/process.vue'
+  import {downloadUrl, uploadUrl} from '../../api/consts'
 
   export default {
     mixins: [comLoading],
-    data() {
+    data () {
       return {
-        procInstId: '', //流程id
-        procTitle: '', //流程名称
+        procInstId: '', // 流程id
+        procTitle: '', // 流程名称
         users: {},
         downloadUrl,
         uploadUrl,
@@ -231,145 +231,144 @@
         options: [{value: 1, label: '合同违约中止'}, {value: 2, label: '合同变更后中止'}, {value: 3, label: '固定期限合同正常履行完成后中止'}],
         info: null,
         toDetail: {name: routerNames.con_Check, query: {contractNo: ''}}
-      };
+      }
     },
     computed: {
-      ifRole() {
-        const reg = /印章保管人/g;
-        return reg.test(this.users.roleName);
+      ifRole () {
+        const reg = /印章保管人/g
+        return reg.test(this.users.roleName)
       },
-      ifRole1() {
-        const reg = /采购合同上传/g;
-        return reg.test(this.users.roleName);
+      ifRole1 () {
+        const reg = /采购合同上传/g
+        return reg.test(this.users.roleName)
       },
-      enabledUpdateInApprove() { //在审批阶段修改附件时，上传盖章合同控件的上传按钮状态（仅用章保管人可用）
-        return this.ifRole || this.ifRole1;
+      enabledUpdateInApprove () { // 在审批阶段修改附件时，上传盖章合同控件的上传按钮状态（仅用章保管人可用）
+        return this.ifRole || this.ifRole1
       }
     },
     methods: {
-      getInfo(id) {
-        this.comLoading();
-        const paras = {id, operate: 'PROCESS'};
+      getInfo (id) {
+        this.comLoading()
+        const paras = {id, operate: 'PROCESS'}
         Api.getContractDetailById(paras).then((res) => {
-          this.comLoading(false);
-          const data = res.data.dataMap;
-          this.setData(data);
+          this.comLoading(false)
+          const data = res.data.dataMap
+          this.setData(data)
         }, () => {
-          this.comLoading(false);
-        });
+          this.comLoading(false)
+        })
       },
-      getAttachmentsInProcess(data) {
-        const arr = [];
+      getAttachmentsInProcess (data) {
+        const arr = []
         if (data && data.length) {
           data.forEach((item) => {
-            if (item[0].attachStatus === 2) { //流程中
-              arr.push(item);
+            if (item[0].attachStatus === 2) { // 流程中
+              arr.push(item)
             }
-          });
+          })
         }
-        return arr;
+        return arr
       },
-      setData(data) {
+      setData (data) {
         const {
           baseInfoForm, cardContentInfoForm, contSuspend, cardSealInfoForm
-        } = data;
+        } = data
         const {
           contractNo, approvalDate, contractStatusName, id
-        } = baseInfoForm;
-        const {suspendReason, suspendTime, suspendRemark} = contSuspend || {};
-        const {startTime, endTime} = cardContentInfoForm;
-        const {sealAttachments} = cardSealInfoForm;
-        this.contractCode = contractNo;
-        this.signDate = approvalDate;
-        this.contractStatus = contractStatusName;
-        this.startTime = startTime;
-        this.endTime = endTime;
-        this.id = id;
+        } = baseInfoForm
+        const {suspendReason, suspendTime, suspendRemark} = contSuspend || {}
+        const {startTime, endTime} = cardContentInfoForm
+        const {sealAttachments} = cardSealInfoForm
+        this.contractCode = contractNo
+        this.signDate = approvalDate
+        this.contractStatus = contractStatusName
+        this.startTime = startTime
+        this.endTime = endTime
+        this.id = id
 
         Object.assign(this.form, {
           suspendReason,
           suspendTime,
           suspendRemark,
           sealAttachments: this.getAttachmentsInProcess(sealAttachments)
-        });
+        })
 
-        this.toDetail.query.contractNo = contractNo;
+        this.toDetail.query.contractNo = contractNo
       },
-      handleChangeValidateForms() {
+      handleChangeValidateForms () {
         if (this.isSubmit) {
           this.validateForms().catch(() => {
-            console.log('validate failed');
-          });
+            console.log('validate failed')
+          })
         }
       },
-      validateForms() {
+      validateForms () {
         return new Promise((resolve, reject) => {
-          //验证附件的数据是否填写完整
-          const sealAttachments = this.form.sealAttachments;
+          // 验证附件的数据是否填写完整
+          const sealAttachments = this.form.sealAttachments
           if (sealAttachments && sealAttachments.length) {
-            this.form.errorMsg = '';
+            this.form.errorMsg = ''
             const exist = sealAttachments.some((item) => {
               if (item[0].haveSale) {
-                return !(item[0].printTime && item[0].remainTime && item[0].saleInfos.length && item[0].fileName);
+                return !(item[0].printTime && item[0].remainTime && item[0].saleInfos.length && item[0].fileName)
               }
-              return false;
-            });
+              return false
+            })
             if (exist) {
-              this.form.errorMsg = '请确保所有附件信息填写完整';
+              this.form.errorMsg = '请确保所有附件信息填写完整'
             }
           }
           if (!this.form.errorMsg) {
-            resolve();
-          } else {
-            reject();
+            resolve()
           }
-        });
+          reject(new Error(this.form.errorMsg))
+        })
       },
-      combineAttachments(files) { //上传附件剔除空附件
-        const newFiles = [];
+      combineAttachments (files) { // 上传附件剔除空附件
+        const newFiles = []
         if (files && files.length) {
           files.forEach((item) => {
             if (item[0] && item[0].fileName) {
-              const inItem = item[0];
-              const {filesSealed} = inItem;
+              const inItem = item[0]
+              const {filesSealed} = inItem
               if (filesSealed && filesSealed[0]) {
-                const {sealFileCreateTime} = filesSealed[0];
-                filesSealed[0].sealFileCreateTime = formatDate(sealFileCreateTime);
+                const {sealFileCreateTime} = filesSealed[0]
+                filesSealed[0].sealFileCreateTime = formatDate(sealFileCreateTime)
               }
-              newFiles.push(item);
+              newFiles.push(item)
             }
-          });
+          })
         }
-        return newFiles;
+        return newFiles
       },
-      callback(params) {
-        const t = this;
-        //isSign:是否是加签人 isAgree:审批操作类型是否是同意
+      callback (params) {
+        const t = this
+        // isSign:是否是加签人 isAgree:审批操作类型是否是同意
         return new Promise((resolve, reject) => {
-          const {isSign, isAgree} = params;
+          const {isSign, isAgree} = params
           if (!isSign && isAgree && (t.ifRole || t.ifRole1)) {
-            const para = {};
-            para.sealAttachments = this.combineAttachments(this.form.sealAttachments);
-            para.id = this.id;
-            para.type = 1;
-            para.uploadPerson = this.ifRole1;
+            const para = {}
+            para.sealAttachments = this.combineAttachments(this.form.sealAttachments)
+            para.id = this.id
+            para.type = 1
+            para.uploadPerson = this.ifRole1
             Api.uploadSealAttachments(para)
               .then(() => {
-                resolve();
+                resolve()
               })
               .catch(() => {
-                reject();
-              });
+                reject(new Error('上传附件失败'))
+              })
           } else {
-            resolve();
+            resolve()
           }
-        });
+        })
       },
-      handleUploadFileAfterSealSuccess(res) {
-        const dataMap = res.dataMap;
+      handleUploadFileAfterSealSuccess (res) {
+        const dataMap = res.dataMap
         if (dataMap.fileId) {
-          const index = this.form.current;
-          const curentFile = this.form.sealAttachments[index];
+          const index = this.form.current
+          const curentFile = this.form.sealAttachments[index]
           curentFile[0].filesSealed = [{
             sealFileId: dataMap.fileId,
             sealFileName: dataMap.fileName,
@@ -377,33 +376,33 @@
             sealFileCreatorName: dataMap.userName,
             sealFileCreateTime: formatDate(dataMap.createTime),
             operate: 'add'
-          }];
-          console.log('this.cardSealInfoForm', this.form.sealAttachments);
-          this.$message.success('文件上传成功');
+          }]
+          console.log('this.cardSealInfoForm', this.form.sealAttachments)
+          this.$message.success('文件上传成功')
         }
       },
-      handleUploadFileAfterSealError(err, file, fileList) {
-        console.log('error', err);
-        console.log('file', file);
-        console.log('fileList', fileList);
+      handleUploadFileAfterSealError (err, file, fileList) {
+        console.log('error', err)
+        console.log('file', file)
+        console.log('fileList', fileList)
       },
-      getEnabledUploadBtn(items) {
-        return (items && items.length > 0);
+      getEnabledUploadBtn (items) {
+        return (items && items.length > 0)
       },
-      handleUpload(type, index) {
-        this.form.current = index || 0;
+      handleUpload (type, index) {
+        this.form.current = index || 0
       }
     },
-    created() {
-      const {id, processData} = this.$route.query;
-      this.getInfo(id);
+    created () {
+      const {id, processData} = this.$route.query
+      this.getInfo(id)
       if (processData) {
-        const data = JSON.parse(processData);
-        const {procTitle, procInstId, roleName} = data;
-        this.procInstId = procInstId;
-        this.procTitle = procTitle;
-        this.users.roleName = roleName;
-        console.log('users', this.users);
+        const data = JSON.parse(processData)
+        const {procTitle, procInstId, roleName} = data
+        this.procInstId = procInstId
+        this.procTitle = procTitle
+        this.users.roleName = roleName
+        console.log('users', this.users)
       }
     },
     filters: {
@@ -412,5 +411,5 @@
     components: {
       Process
     }
-  };
+  }
 </script>

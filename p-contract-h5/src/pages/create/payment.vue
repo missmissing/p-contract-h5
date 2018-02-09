@@ -3,7 +3,7 @@
 </style>
 
 <template>
-  <el-table :show-header="showHeader" :data="items" row-key="type" :expand-row-keys="expandkeys" class="wp100">
+  <el-table v-show="items[0].visible" :show-header="showHeader" :data="items" row-key="type" :expand-row-keys="expandkeys" class="wp100">
     <el-table-column type="expand" v-if="items.length&&items[0].seriousPayments">
       <template slot-scope="scope">
         <div class="pt20 pb20" v-if="items.length&&items[0].seriousPayments">
@@ -16,7 +16,7 @@
             class="mb10">
             添加
           </el-button>
-          <el-table :data="scope.row.subItem">
+          <el-table :data="scope.row.financeMores">
             <el-table-column width="100" prop="name" label="名称">
               <template slot-scope="scope1">{{`${scope.row.type}${scope1.$index + 1}`}}</template>
             </el-table-column>
@@ -74,7 +74,7 @@
               width="100">
               <template slot-scope="scope1">
                 <el-button
-                  @click="handleRemove(scope1.$index, scope.row.subItem)"
+                  @click="handleRemove(scope1.$index, scope.row.financeMores)"
                   type="danger" size="small">移除
                 </el-button>
               </template>
@@ -137,12 +137,17 @@
         {{calcPercent(scope.row, scope.row.paymentAmount)}}
       </template>
     </el-table-column>
+    <el-table-column label="操作" v-if="ifEnableRemove">
+      <template slot-scope="scope">
+        <el-button type="danger" size="small" @click="remove">移除</el-button>
+      </template>
+    </el-table-column>
   </el-table>
 </template>
 
 <script>
-  import {mapGetters} from 'vuex';
-  import {nonNegative} from '../../util/reg';
+  import {mapGetters} from 'vuex'
+  import {nonNegative} from '../../util/reg'
 
   export default {
     props: {
@@ -152,17 +157,10 @@
       totalAmount: Number,
       backLogFA: Boolean
     },
-    data() {
+    data () {
       return {
-        expandkeys: [],
-        paymentType: {
-          1: '定金',
-          2: '预付款',
-          3: '进度款',
-          4: '尾款',
-          5: '保证金'
-        }
-      };
+        expandkeys: []
+      }
     },
     computed: {
       ...mapGetters([
@@ -171,78 +169,95 @@
         'isSee',
         'isProcess'
       ]),
-      totalPaymentAmount() {
-        let total = 0;
+      totalPaymentAmount () {
+        let total = 0
         if (this.items.length) {
-          this.items[0].subItem.forEach((item) => {
+          this.items[0].financeMores.forEach((item) => {
             if (item.paymentAmount) {
-              total += Number(item.paymentAmount, 10);
+              total += Number(item.paymentAmount, 10)
             }
-          });
-          this.items[0].paymentAmount = total;
+          })
+          this.items[0].paymentAmount = total
         }
-        return total;
+        return total
       },
-      disabledTable() {
+      disabledTable () {
         if (this.backLogFA) {
-          return false;
+          return false
         }
         if (this.isSee || this.isProcess) {
-          return true;
+          return true
         }
-        return false;
+        return false
       },
-      payTimesDisabled() {
-        const item = this.items[0];
-        const {type} = item;
-        if ([this.paymentType[1], this.paymentType[5]].indexOf(type) > -1) {
-          return true;
+      payTimesDisabled () {
+        const item = this.items[0]
+        const {payType} = item
+        if ([1, 5].indexOf(payType) > -1) {
+          return true
         } else if (this.disabledTable) {
-          return true;
+          return true
         }
-        return false;
+        return false
+      },
+      ifEnableRemove () {
+        if (this.isCreate || this.backLogFA) {
+          return true
+        }
+        return false
       }
     },
     methods: {
-      inputChange(item) {
-        const val = item.paymentAmount;
+      inputChange (item) {
+        const val = item.paymentAmount
         if (val && !nonNegative(val)) {
-          this.$message.warning('请输入数值！');
+          this.$message.warning('请输入数值！')
           this.$nextTick(() => {
-            item.paymentAmount = '';
-          });
+            item.paymentAmount = ''
+          })
         }
       },
-      calcPercent(item, val) {
-        let result = 0;
+      calcPercent (item, val) {
+        let result = 0
         if (val) {
           if (this.totalAmount) {
-            result = ((val / this.totalAmount) * 100).toFixed(2);
+            result = ((val / this.totalAmount) * 100).toFixed(2)
           }
-          item.ratio = result;
+          item.ratio = result
         }
-        return `${result}%`;
+        return `${result}%`
       },
-      handleSeriousPaymentsChange(item) {
-        item.seriousPayments = !item.seriousPayments;
-        item.paymentAmount = null;
-        item.paymentTimePeriod = null;
-        item.remark = null;
-        item.subItem = [];
-        this.expandkeys = [];
+      handleSeriousPaymentsChange (item) {
+        item.seriousPayments = !item.seriousPayments
+        item.paymentAmount = null
+        item.paymentTimePeriod = null
+        item.remark = null
+        item.financeMores = []
+        this.expandkeys = []
       },
-      handleAddItem() {
+      handleAddItem () {
         const item = {
           paymentTimePeriod: null,
           paymentAmount: '',
           remark: '',
           ratio: ''
-        };
-        this.items[0].subItem.push(item);
+        }
+        this.items[0].financeMores.push(item)
       },
-      handleRemove(index, rows) {
-        rows.splice(index, 1);
+      handleRemove (index, rows) {
+        rows.splice(index, 1)
+      },
+      remove () {
+        Object.assign(this.items[0], {
+          visible: false,
+          paymentAmount: null,
+          paymentTimePeriod: null,
+          ratio: null,
+          remark: null,
+          seriousPayments: null,
+          financeMores: []
+        })
       }
     }
-  };
+  }
 </script>

@@ -17,8 +17,8 @@
 </template>
 
 <script>
-  import attachmentType from '../../filters/attachmentType';
-  import {routerNames} from '../../core/consts';
+  import attachmentType from '../../filters/attachmentType'
+  import {routerNames} from '../../core/consts'
 
   export default {
     name: 'agreement-info',
@@ -26,19 +26,19 @@
       items: Array
     },
     methods: {
-      toPage(id) {
+      toPage (id) {
         return {
           name: routerNames.con_querySlaveProtocol,
           query: {
             id
           }
-        };
+        }
       }
     },
     filters: {
       attachmentType
     }
-  };
+  }
 </script>
 
 <style type="text/scss" lang="scss" scoped>

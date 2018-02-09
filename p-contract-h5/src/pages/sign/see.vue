@@ -226,16 +226,16 @@
 </template>
 
 <script>
-  import Api from '../../api/sign';
-  import {formatDate} from '../../filters/moment';
-  import comLoading from '../../mixins/comLoading';
-  import Process from '../../components/process.vue';
-  import cutZero from '../../util/cutZero';
-  import {routerNames, contractPatternMap, prTypeMap} from '../../core/consts';
+  import Api from '../../api/sign'
+  import {formatDate} from '../../filters/moment'
+  import comLoading from '../../mixins/comLoading'
+  import Process from '../../components/process.vue'
+  import cutZero from '../../util/cutZero'
+  import {routerNames, contractPatternMap, prTypeMap} from '../../core/consts'
 
   export default {
     mixins: [comLoading],
-    data() {
+    data () {
       return {
         procTitle: '',
         procInstId: '',
@@ -246,28 +246,28 @@
         serverData: [],
         receiveInfo: [],
         contractForm: {}
-      };
+      }
     },
     methods: {
-      getInfo(id) {
-        this.comLoading();
+      getInfo (id) {
+        this.comLoading()
         Api.detailByPoId({id}).then((res) => {
-          console.log(res);
-          this.info = res.data.dataMap;
-          this.toDetail.query.contractNo = this.info.contractNo;
-          this.setOrderData();
-          this.setServerData();
-          this.setReceiveData();
-          this.setContractForm();
-          this.comLoading(false);
+          console.log(res)
+          this.info = res.data.dataMap
+          this.toDetail.query.contractNo = this.info.contractNo
+          this.setOrderData()
+          this.setServerData()
+          this.setReceiveData()
+          this.setContractForm()
+          this.comLoading(false)
         }).catch(() => {
-          this.comLoading(false);
-        });
+          this.comLoading(false)
+        })
       },
-      setContractForm() {
+      setContractForm () {
         const {
           contractNo, contractBusinessTypeThirdName, contractType, belongProject, startTime, endTime
-        } = this.info;
+        } = this.info
         this.contractForm = {
           contractNo,
           contractBusinessTypeThirdName,
@@ -275,52 +275,52 @@
           belongProject,
           startTime,
           endTime
-        };
+        }
       },
-      setOrderData() {
+      setOrderData () {
         const {
           purOrderMaterials, supplierName, companyCode, companyName, supplierCode, purchaseOrderNo
-        } = this.info;
-        let type = '';
+        } = this.info
+        let type = ''
         if (purOrderMaterials.length) {
           if ([1, 3].indexOf(purOrderMaterials[0].category) > -1) {
-            type = prTypeMap[1];
+            type = prTypeMap[1]
           } else {
-            type = prTypeMap[2];
+            type = prTypeMap[2]
           }
         }
-        this.orderData = purOrderMaterials;
+        this.orderData = purOrderMaterials
         this.orderForm = {
           supplierName,
           type,
           companyCode: `${companyCode} ${companyName}`,
           supplierCode,
           purchaseOrderNo
-        };
+        }
       },
-      setServerData() {
-        const {orderCheckItems} = this.info;
-        this.serverData = orderCheckItems || [];
+      setServerData () {
+        const {orderCheckItems} = this.info
+        this.serverData = orderCheckItems || []
       },
-      setReceiveData() {
-        const {poReceiveInfo} = this.info;
-        this.receiveInfo = poReceiveInfo || [];
+      setReceiveData () {
+        const {poReceiveInfo} = this.info
+        this.receiveInfo = poReceiveInfo || []
       },
-      formatType(row, column, cellValue) {
-        return prTypeMap[cellValue];
+      formatType (row, column, cellValue) {
+        return prTypeMap[cellValue]
       },
-      formatDate(value) {
-        return formatDate(value);
+      formatDate (value) {
+        return formatDate(value)
       }
     },
-    created() {
-      const {id, processData} = this.$route.query;
-      this.getInfo(id);
+    created () {
+      const {id, processData} = this.$route.query
+      this.getInfo(id)
       if (processData) {
-        const data = JSON.parse(processData);
-        const {procInstId, procTitle} = data;
-        this.procInstId = procInstId;
-        this.procTitle = procTitle;
+        const data = JSON.parse(processData)
+        const {procInstId, procTitle} = data
+        this.procInstId = procInstId
+        this.procTitle = procTitle
       }
     },
     filters: {
@@ -330,5 +330,5 @@
     components: {
       Process
     }
-  };
+  }
 </script>

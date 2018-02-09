@@ -64,14 +64,14 @@
 </template>
 
 <script>
-  import Api from '../../api/manageContract';
+  import Api from '../../api/manageContract'
 
   export default {
     name: 'union-check-info',
     props: {
       items: Array
     },
-    data() {
+    data () {
       return {
         visible: false,
         loading: false,
@@ -87,58 +87,58 @@
             {required: true, message: '请输入验收人'}
           ]
         }
-      };
+      }
     },
     computed: {
-      isVisibleAddBtn() {
-        const {isCreate} = this.$store.getters;
-        let visible = false;
+      isVisibleAddBtn () {
+        const {isCreate} = this.$store.getters
+        let visible = false
         if (isCreate) {
-          visible = true;
+          visible = true
         }
-        return visible;
+        return visible
       },
-      isVisibleBtns() {
-        const {isSee, isProcess} = this.$store.getters;
-        return !(isSee && isProcess);
+      isVisibleBtns () {
+        const {isSee, isProcess} = this.$store.getters
+        return !(isSee && isProcess)
       }
     },
     methods: {
-      handleRemove(index, rows) {
-        rows.splice(index, 1);
+      handleRemove (index, rows) {
+        rows.splice(index, 1)
       },
-      getRemoteCheckPersonsByKeyWord(keyword) {
+      getRemoteCheckPersonsByKeyWord (keyword) {
         if (keyword !== '') {
-          this.loading = true;
+          this.loading = true
           Api.getRemoteCreatePersonsByKeyWord({keyword})
             .then((data) => {
-              this.loading = false;
-              this.checkPersons = data.data.dataMap;
-            });
+              this.loading = false
+              this.checkPersons = data.data.dataMap
+            })
         } else {
-          this.checkPersons = [];
+          this.checkPersons = []
         }
       },
-      handleCheckPersonsChange(val) {
+      handleCheckPersonsChange (val) {
         this.checkPersons.some((item) => {
           if (item.userId === val) {
-            this.form.personDept = item.deptName;
-            this.form.personDeptId = item.deptCode;
-            this.form.personId = item.userId;
-            this.form.personName = item.userName;
-            return true;
+            this.form.personDept = item.deptName
+            this.form.personDeptId = item.deptCode
+            this.form.personId = item.userId
+            this.form.personName = item.userName
+            return true
           }
-          return false;
-        });
+          return false
+        })
       },
-      handleAddUnionCheckItem(formName) {
-        const curForm = this.$refs[formName];
+      handleAddUnionCheckItem (formName) {
+        const curForm = this.$refs[formName]
         curForm.validate((valid) => {
           if (valid) {
-            const exist = this.items.some(chr => chr.personId === this.form.personId);
+            const exist = this.items.some(chr => chr.personId === this.form.personId)
             if (exist) {
-              this.$message.error('这条数据已存在咯！');
-              return;
+              this.$message.error('这条数据已存在咯！')
+              return
             }
 
             this.items.push({
@@ -147,18 +147,18 @@
               personDeptId: this.form.personDeptId,
               personDept: this.form.personDept,
               addNew: true
-            });
-            curForm.resetFields();
-            this.visible = false;
+            })
+            curForm.resetFields()
+            this.visible = false
           }
-        });
+        })
       },
-      handleCancelAddUnionCheck(formName) {
-        this.$refs[formName].resetFields();
-        this.visible = false;
+      handleCancelAddUnionCheck (formName) {
+        this.$refs[formName].resetFields()
+        this.visible = false
       }
     }
-  };
+  }
 </script>
 
 <style type="text/scss" lang="scss" scoped>

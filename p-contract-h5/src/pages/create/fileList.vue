@@ -15,7 +15,7 @@
 </template>
 
 <script>
-  import {formatDate} from '../../filters/moment';
+  import {formatDate} from '../../filters/moment'
 
   export default {
     name: 'file-list',
@@ -25,7 +25,7 @@
     filters: {
       formatDate
     }
-  };
+  }
 </script>
 
 <style type="text/scss" lang="scss" scoped>
