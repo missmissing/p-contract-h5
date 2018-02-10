@@ -70,9 +70,9 @@
 
 <script>
   import {mapGetters} from 'vuex'
-  import {uploadUrl, downloadUrl} from '../../api/consts'
-  import {formatDate} from '../../filters/moment'
-  import attachmentType from '../../filters/attachmentType'
+  import {uploadUrl, downloadUrl} from '../../../api/consts'
+  import {formatDate} from '../../../filters/moment'
+  import attachmentType from '../../../filters/attachmentType'
 
   export default {
     props: {

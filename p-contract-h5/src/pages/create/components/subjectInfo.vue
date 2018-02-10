@@ -1,53 +1,31 @@
 <template>
   <div>
-    <el-button
-      v-if="isVisibleAddBtn"
-      type="primary"
-      size="small"
-      @click="visible=true"
-      prefix-icon="el-icon-plus"
-      class="mb10">新增
-    </el-button>
-    <el-table :data="items">
-      <el-table-column prop="code" label="公司代码"></el-table-column>
-      <el-table-column prop="name" label="公司名称"></el-table-column>
-      <el-table-column prop="applyAll" label="全公司适用" width="150" align="center">
-        <template slot-scope="scope">
-          <el-checkbox :disabled="!enabledAllApply(scope.row.code)"
-                       v-model="scope.row.applyAll"></el-checkbox>
-        </template>
-      </el-table-column>
-      <el-table-column
-        label="操作"
-        width="100"
-        v-if="isVisibleBtns">
-        <template slot-scope="scope">
-          <el-button
-            v-if="scope.row.addNew"
-            @click="handleRemove(scope.$index, items)"
-            type="danger" size="small">移除
-          </el-button>
-        </template>
-      </el-table-column>
-    </el-table>
+    <el-card>
+      <header slot="header">合同我方主体名称<i class="tip ml20">{{subjectsErrorMsg}}</i></header>
+      <el-button v-if="isVisibleAddBtn" type="primary" size="small" @click="visible=true" prefix-icon="el-icon-plus" class="mb10">
+        新增
+      </el-button>
+      <el-table :data="items">
+        <el-table-column prop="code" label="公司代码"></el-table-column>
+        <el-table-column prop="name" label="公司名称"></el-table-column>
+        <el-table-column prop="applyAll" label="全公司适用" width="150" align="center">
+          <template slot-scope="scope">
+            <el-checkbox :disabled="!enabledAllApply(scope.row.code)" v-model="scope.row.applyAll"></el-checkbox>
+          </template>
+        </el-table-column>
+        <el-table-column label="操作" width="100" v-if="!disabled">
+          <template slot-scope="scope">
+            <el-button v-if="scope.row.addNew" @click="handleRemove(scope.$index, items)" type="danger" size="small">移除
+            </el-button>
+          </template>
+        </el-table-column>
+      </el-table>
+    </el-card>
     <el-dialog title="新增合同我方主体" :visible.sync="visible">
-      <el-form :model="form" label-width="100px" ref="form"
-               :rules="rules">
+      <el-form :model="form" label-width="100px" ref="form" :rules="rules">
         <el-form-item label="公司名称/编码" prop="search" label-width="150px">
-          <el-select
-            style="width:300px"
-            size="small"
-            v-model="form.search"
-            filterable
-            remote
-            placeholder="请输入关键词搜索"
-            :remote-method="getRemoteSubjectsByKeyWord"
-            :loading="loading">
-            <el-option
-              v-for="item in subjects"
-              :key="item.companyCode"
-              :label="item.company"
-              :value="item.companyCode">
+          <el-select style="width:300px" size="small" v-model="form.search" filterable remote placeholder="请输入关键词搜索" :remote-method="getRemoteSubjectsByKeyWord" :loading="loading">
+            <el-option v-for="item in subjects" :key="item.companyCode" :label="item.company" :value="item.companyCode">
               <span class="fl">{{ item.companyCode }}</span>
               <span class="fr">{{ item.company }}</span>
             </el-option>
@@ -63,13 +41,15 @@
 </template>
 
 <script>
-  import Api from '../../api/manageContract'
+  import bus from '../../../core/bus'
+  import Api from '../../../api/manageContract/index'
 
   export default {
     name: 'subject-info',
     props: {
       items: Array,
-      contractType: Number
+      contractType: Number,
+      disabled: Boolean
     },
     data () {
       return {
@@ -95,9 +75,11 @@
         }
         return visible
       },
-      isVisibleBtns () {
-        const {isSee, isProcess} = this.$store.getters
-        return !(isSee && isProcess)
+      subjectsErrorMsg () {
+        if (this.items.length) {
+          return null
+        }
+        return '请填写我方主体信息'
       }
     },
     methods: {
@@ -111,7 +93,7 @@
       },
       handleRemove (index, rows) {
         rows.splice(index, 1)
-        this.$emit('validate')
+        bus.$emit('contentInfoValid')
       },
       getRemoteSubjectsByKeyWord (key) {
         if (key !== '') {
@@ -144,8 +126,8 @@
                   applyAll: false,
                   addNew: true
                 })
-                this.$emit('validate')
-                this.$emit('getJiaBillingInfo', item)
+                bus.$emit('contentInfoValid')
+                bus.$emit('getJiaBillingInfo', item)
                 return true
               }
               return false

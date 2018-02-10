@@ -48,7 +48,7 @@
       <el-row>
         <el-col :span="8">
           <el-form-item label="文本类型">
-            <el-select v-if="!disabled" class="wp100" :disabled="disabled" v-model="baseInfoForm.contractTextType" placeholder="请选择合同文本类型" @change="handleContractTextTypeChange">
+            <el-select v-if="!disabled" class="wp100" v-model="baseInfoForm.contractTextType" placeholder="请选择合同文本类型" @change="handleContractTextTypeChange">
               <el-option v-for="item in contractTextTypeOptions" :key="item.id" :label="item.name" :value="item.id"></el-option>
             </el-select>
             <el-input v-else :readonly="true" v-model="contractTextTypeName" :class="{wp100:true,disabledInput:true}"></el-input>
@@ -95,7 +95,8 @@
 </template>
 
 <script>
-  import Api from '../../api/manageContract'
+  import bus from '../../../core/bus'
+  import Api from '../../../api/manageContract/index'
 
   export default {
     name: 'base-info',
@@ -171,7 +172,7 @@
             this.baseInfoForm.businessOperatorName = item.userName
             this.baseInfoForm.businessDeptName = item.deptName
             this.baseInfoForm.businessDeptId = item.deptCode
-            this.$emit('getResponsibleInfo', item)
+            bus.$emit('getResponsibleInfo', item)
             return true
           }
           return false
@@ -184,6 +185,7 @@
         Api.getTemplateByBizTypeId({
           bizTypeId: contractBusinessTypeThird, templateType: contractTextType === 1 ? 'TEMPLATE' : 'TEXT'
         }).then((res) => {
+          this.baseInfoForm.templateId = null
           this.templateOptions = res.data.dataMap || []
         })
       },
@@ -202,11 +204,11 @@
           return false
         })
         const params = {templateId: val, templateName, contractTextType}
-        this.$emit('getAttachmentInfo', params)
+        bus.$emit('getAttachmentInfo', params)
       },
       // 预览
       handlePreview () {
-        this.$emit('handlePreview')
+        bus.$emit('handlePreview')
       },
       // 检验
       valid () {

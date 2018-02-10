@@ -7,8 +7,7 @@
     </el-table-column>
     <el-table-column prop="fileName" label="从协议编号" width="150px">
       <template slot-scope="scope">
-        <router-link v-if="scope.row.fileId"
-                     :to="toPage(`${scope.row.fileId}`)">
+        <router-link v-if="scope.row.fileId" :to="toPage(`${scope.row.fileId}`)">
           {{scope.row.fileName}}
         </router-link>
       </template>
@@ -17,8 +16,8 @@
 </template>
 
 <script>
-  import attachmentType from '../../filters/attachmentType'
-  import {routerNames} from '../../core/consts'
+  import attachmentType from '../../../filters/attachmentType'
+  import {routerNames} from '../../../core/consts'
 
   export default {
     name: 'agreement-info',

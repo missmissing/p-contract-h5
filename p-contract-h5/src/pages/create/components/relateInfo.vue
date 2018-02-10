@@ -40,17 +40,17 @@
 </template>
 
 <script>
-  import Api from '../../api/manageContract'
-  import contractType from '../../filters/contractType'
-  import {formatDate} from '../../filters/moment'
+  import Api from '../../../api/manageContract/index'
+  import contractType from '../../../filters/contractType'
+  import {formatDate} from '../../../filters/moment'
 
-  import comLoading from '../../mixins/comLoading'
+  import comLoading from '../../../mixins/comLoading'
 
   export default {
     name: 'relate-info',
     mixins: [comLoading],
     props: {
-      supplierCode: String
+      suppliers: Array
     },
     data () {
       return {
@@ -61,7 +61,7 @@
       }
     },
     watch: {
-      supplierCode () {
+      items () {
         this.getList()
       }
     },
@@ -70,7 +70,7 @@
     },
     methods: {
       getList () {
-        if (!this.supplierCode) {
+        if (!this.suppliers.length) {
           return
         }
         this.comLoading({
@@ -79,7 +79,7 @@
         Api.getConList({
           pageNo: this.pageNo,
           pageSize: this.pageSize,
-          supplierCode: this.supplierCode
+          supplierCode: this.suppliers[0].code
         }).then((data) => {
           const dataMap = data.data.dataMap
           if (dataMap) {

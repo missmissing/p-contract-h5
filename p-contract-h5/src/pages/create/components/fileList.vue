@@ -15,7 +15,7 @@
 </template>
 
 <script>
-  import {formatDate} from '../../filters/moment'
+  import {formatDate} from '../../../filters/moment'
 
   export default {
     name: 'file-list',

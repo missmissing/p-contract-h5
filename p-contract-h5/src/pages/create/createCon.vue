@@ -17,12 +17,6 @@
       width: 18px;
       height: 18px;
     }
-    .errorMsg {
-      color: red;
-      font-style: normal;
-      font-size: 12px;
-      margin-left: 20px;
-    }
   }
 </style>
 <template>
@@ -32,70 +26,15 @@
       <div class="fl fb">{{procTitle}}</div>
     </div>
     <el-card v-if="isModify">
-      <UpdateInfo ref="updateForm" :updateForm="updateForm" :visible.sync="updateVisible" @init="initData"></UpdateInfo>
+      <UpdateInfo ref="updateForm" :updateForm="updateForm" :visible.sync="updateVisible"></UpdateInfo>
     </el-card>
     <div v-if="contentVisible">
-      <BaseInfo :disabled="!isCreate" :baseInfoForm="baseInfoForm" ref="baseInfoForm" @getResponsibleInfo="getResponsibleInfo"
-                @getAttachmentInfo="getAttachmentInfo" @handlePreview="handlePreview"></BaseInfo>
+      <BaseInfo :disabled="!isCreate" :baseInfoForm="baseInfoForm" ref="baseInfoForm"></BaseInfo>
       <el-card>
         <el-tabs>
           <el-tab-pane>
-            <span slot="label" class="title">
-              <i v-if="cardContentInfoForm.errorCount" class="errorCount">{{cardContentInfoForm.errorCount}}</i>合同内容信息
-            </span>
-            <el-card>
-              <header slot="header">合同供应商信息<i class="errorMsg">{{cardContentInfoForm.supplierErrorMsg}}</i></header>
-              <SupplierInfo :items="cardContentInfoForm.tableSupplierInfo" @validate="contentInfoValid" @getYiBillingInfo="getYiBillingInfo"></SupplierInfo>
-            </el-card>
-            <el-card class="mt20">
-              <header slot="header">合同我方主体名称<i class="errorMsg">{{cardContentInfoForm.subjectsErrorMsg}}</i></header>
-              <SubjectInfo :items="cardContentInfoForm.conSubjctName" :contractType="baseInfoForm.contractType" @validate="contentInfoValid" @getJiaBillingInfo="getJiaBillingInfo"></SubjectInfo>
-            </el-card>
-            <el-card class="mt20" v-if="ifThirdInfo" header="第三方信息">
-              <ThirdPartyInfo :items="cardContentInfoForm.thirdPartyInfo"></ThirdPartyInfo>
-            </el-card>
-            <el-card class="mt20" v-if="ifStandardInfo" header="合同标的">
-              <StandardInfo :items="cardContentInfoForm.conStandard" :contractBusinessTypeFirst="baseInfoForm.contractBusinessTypeFirst" :contractType="baseInfoForm.contractType"
-              ></StandardInfo>
-              <el-row class="mt20" v-if="cardContentInfoForm.conStandard.length">
-                <el-form-item label="备注" prop="corporeRemark" label-width="60px">
-                  <el-input :disabled="!isCreate" v-model="cardContentInfoForm.corporeRemark" placeholder="请输入备注" type="textarea" :rows="4"></el-input>
-                  <span style="color:#FF0000;font-size:12px;">注：备注内容将会被添加到合同条款中</span>
-                </el-form-item>
-              </el-row>
-            </el-card>
-            <el-form ref="cardContentInfoForm" :model="cardContentInfoForm" label-width="120px" :rules="cardContentInfoForm.rules">
-              <el-row class="mt20">
-                <el-form-item label="生效条件" prop="effectiveCondition">
-                  <el-radio-group v-model="cardContentInfoForm.effectiveCondition" :disabled="!isCreate">
-                    <el-radio :label="1">附期限生效</el-radio>
-                    <el-radio :label="2">附条件生效</el-radio>
-                    <el-radio :label="3">签订生效</el-radio>
-                  </el-radio-group>
-                </el-form-item>
-                <el-row v-if="ifTerm">
-                  <el-col :span="8">
-                    <el-form-item label="合同生效日期" prop="startTime">
-                      <el-date-picker v-model="cardContentInfoForm.startTime" format="yyyy-MM-dd" value-format="timestamp" :disabled="!isCreate" placeholder="合同生效日期" type="date"
-                                      @change="contentInfoValid">
-                      </el-date-picker>
-                    </el-form-item>
-                  </el-col>
-                  <el-col :span="8">
-                    <el-form-item label="合同终止日期" prop="endTime">
-                      <el-date-picker :disabled="!isCreate" v-model="cardContentInfoForm.endTime" format="yyyy-MM-dd" value-format="timestamp" placeholder="合同终止日期" type="date"
-                                      @change="contentInfoValid">
-                      </el-date-picker>
-                    </el-form-item>
-                  </el-col>
-                </el-row>
-                <el-row v-if="ifCondition">
-                  <el-form-item prop="conditionDesc" class="mr20" label="备注">
-                    <el-input :disabled="!isCreate" @change="contentInfoValid" v-model="cardContentInfoForm.conditionDesc" type="textarea" :rows="4"></el-input>
-                  </el-form-item>
-                </el-row>
-              </el-row>
-            </el-form>
+            <span slot="label" class="title"><i v-if="cardContentInfoForm.errorCount" class="errorCount">{{cardContentInfoForm.errorCount}}</i>合同内容信息</span>
+            <ContentInfo :cardContentInfoForm="cardContentInfoForm" :baseInfoForm="baseInfoForm" :disabled="!isCreate" ref="cardContentInfoForm"></ContentInfo>
           </el-tab-pane>
           <el-tab-pane>
             <span slot="label" class="title">合同财务信息
@@ -128,48 +67,53 @@
                 </el-col>
                 <el-col :span="8">
                   <el-form-item label="开票类型" prop="invoiceType">
-                    <el-select class="wp100" v-model="cardFinanceInfoForm.invoiceType" placeholder="请选择开票类型" :disabled="invoiceTypeDisabled">
+                    <el-select class="wp100" v-model="cardFinanceInfoForm.invoiceType" placeholder="请选择开票类型" :disabled="financeDisabled">
                       <el-option v-for="item in cardFinanceInfoForm.invoiceTypeOptions" :key="item.value" :label="item.label" :value="item.value"></el-option>
                     </el-select>
                   </el-form-item>
                 </el-col>
                 <el-col :span="8">
                   <el-form-item label="币种" prop="currency">
-                    <el-select class="wp100" v-model="cardFinanceInfoForm.currency" placeholder="请选择币种" :disabled="currencyDisabled">
+                    <el-select class="wp100" v-model="cardFinanceInfoForm.currency" placeholder="请选择币种" :disabled="financeDisabled">
                       <el-option v-for="item in cardFinanceInfoForm.currencyOptions" :key="item.value" :label="item.label" :value="item.value"></el-option>
                     </el-select>
                   </el-form-item>
                 </el-col>
               </el-row>
-              <el-row v-if="cardFinanceInfoForm.oneOffPay&&cardFinanceInfoForm.moneyInvolved">
+              <el-row v-if="cardFinanceInfoForm.moneyInvolved&&cardFinanceInfoForm.oneOffPay">
                 <el-col :span="8">
                   <el-form-item label="付款条件" prop="paymentTimePeriod">
-                    <el-select :disabled="paymentTimePeriodDisabled" v-model="cardFinanceInfoForm.paymentTimePeriod" placeholder="请选择付款条件" class="wp100" @change="financeInfoValid">
+                    <el-select :disabled="financeDisabled" v-model="cardFinanceInfoForm.paymentTimePeriod" placeholder="请选择付款条件" class="wp100" @change="financeInfoValid">
                       <el-option v-for="item in cardFinanceInfoForm.paymentTimePeriods" :key="item.id" :value="item.id" :label="item.name"></el-option>
                     </el-select>
                   </el-form-item>
                 </el-col>
               </el-row>
-              <el-card v-if="cardFinanceInfoForm.moneyInvolved">
+              <el-row v-show="cardFinanceInfoForm.moneyInvolved">
+                <el-form-item label="备注" prop="paymentRemark">
+                  <el-input :disabled="!isCreate" v-model="cardFinanceInfoForm.paymentRemark" placeholder="请输入备注" type="textarea" :rows="4"></el-input>
+                  <span class="tip">注：备注内容将会被添加到合同条款中</span>
+                </el-form-item>
+              </el-row>
+              <el-card v-show="cardFinanceInfoForm.moneyInvolved&&!cardFinanceInfoForm.oneOffPay" class="mb20">
                 <header class="clearfix" slot="header">
-                  付款方式<i class="errorMsg">{{cardFinanceInfoForm.paymentErrorMSG}}</i>
-                  <el-select class="fr" placeholder="选择付款类型" v-model="cardFinanceInfoForm.payType" @change="selectPayType">
-                    <el-option v-for="item in cardFinanceInfoForm.payTypeOpts" :key="item.id" :label="item.name" :value="item.id"></el-option>
-                  </el-select>
+                  付款方式<i class="tip ml20">{{cardFinanceInfoForm.paymentErrorMSG}}</i>
                 </header>
-                <div v-if="!cardFinanceInfoForm.oneOffPay">
+                <div>
+                  <el-dropdown @command="selectPayType" class="mb20">
+                    <span class="router-link">付款类型<i class="el-icon-arrow-down el-icon--right"></i></span>
+                    <el-dropdown-menu slot="dropdown">
+                      <template v-for="item in cardFinanceInfoForm.payTypeOpts">
+                        <el-dropdown-item :command="item.id">{{item.name}}</el-dropdown-item>
+                      </template>
+                    </el-dropdown-menu>
+                  </el-dropdown>
                   <template v-for="(item,index) in cardFinanceInfoForm.paymentMethods">
                     <Payment :items="[item]" :paymentTimePeriods="cardFinanceInfoForm.paymentTimePeriods" :totalAmount="cardFinanceInfoForm.totalAmount"
                              :backLogFA="backLogFA"
                              :show-header="index===0"></Payment>
                   </template>
                 </div>
-                <el-row class="mt20">
-                  <el-form-item label="备注" prop="paymentRemark" label-width="60px">
-                    <el-input :disabled="!isCreate" v-model="cardFinanceInfoForm.paymentRemark" placeholder="请输入备注" type="textarea" :rows="4"></el-input>
-                    <span style="color:#FF0000;font-size:12px;">注：备注内容将会被添加到合同条款中</span>
-                  </el-form-item>
-                </el-row>
               </el-card>
               <el-card class="mt20">
                 <header slot="header">开票信息</header>
@@ -182,44 +126,7 @@
               <i v-if="cardContCheckInfoForm.errorCount" class="errorCount">{{cardContCheckInfoForm.errorCount}}</i>
               合同验收与样品信息
             </span>
-            <el-form ref="cardContCheckInfoForm" :model="cardContCheckInfoForm" label-width="120px">
-              <el-row :gutter="20">
-                <el-col :span="8">
-                  <el-form-item label="验收责任人" prop="responsibleName">
-                    <el-input class="wp100" :disabled="true" v-model="cardContCheckInfoForm.responsibleName" placeholder="请输入验收责任人"></el-input>
-                  </el-form-item>
-                </el-col>
-                <el-col :span="8">
-                  <el-form-item prop="responsibleDeptName" label="验收责任人部门">
-                    <el-input :disabled="true" v-model="cardContCheckInfoForm.responsibleDeptName" placeholder="请输入验收责任人部门"></el-input>
-                  </el-form-item>
-                </el-col>
-                <el-col :span="8" v-if="ifServiceCheck">
-                  <el-form-item prop="checkType" label="服务类验收方式">
-                    <el-select :disabled="isSP" v-model="cardContCheckInfoForm.checkType" placeholder="请选择服务类验收方式">
-                      <el-option v-for="item in cardContCheckInfoForm.checkServiceMethods" :key="item.id" :label="item.name" :value="item.id"></el-option>
-                    </el-select>
-                  </el-form-item>
-                </el-col>
-              </el-row>
-              <UnionCheckInfo :items="cardContCheckInfoForm.unionCheckPersons"></UnionCheckInfo>
-              <el-form-item prop="haveSample" label="是否有样品">
-                <el-radio-group v-model="cardContCheckInfoForm.haveSample" :disabled="isSP">
-                  <el-radio :label="true">是</el-radio>
-                  <el-radio :label="false">否</el-radio>
-                </el-radio-group>
-              </el-form-item>
-              <el-card>
-                <template v-if="ifServiceCheck">
-                  <header slot="header">服务验收事项<i class="errorMsg">{{cardContCheckInfoForm.serviceCheckMsg}}</i></header>
-                  <ServiceCheckInfo :items="cardContCheckInfoForm.serviceMatters" @validate="checkInfoValid"></ServiceCheckInfo>
-                </template>
-                <template v-else>
-                  <header slot="header">物资验收事项</header>
-                  <MaterialCheckInfo :items="cardContCheckInfoForm.materialMatters"></MaterialCheckInfo>
-                </template>
-              </el-card>
-            </el-form>
+            <CheckInfo :cardContCheckInfoForm="cardContCheckInfoForm" :baseInfoForm="baseInfoForm" :cardContentInfoForm="cardContentInfoForm" :disabled="!isCreate" ref="cardContCheckInfoForm"></CheckInfo>
           </el-tab-pane>
           <el-tab-pane>
             <span slot="label" class="title">
@@ -228,8 +135,7 @@
             </span>
             <FileList v-if="cardSealInfoForm.others.length" :items="cardSealInfoForm.others" class="mb20"></FileList>
             <div v-if="baseInfoForm.templateId">
-              <el-form rel="cardSealInfoForm" :model="cardSealInfoForm" label-width="100px"
-                       :rules="cardSealInfoForm.rules">
+              <el-form rel="cardSealInfoForm" :model="cardSealInfoForm" label-width="100px" :rules="cardSealInfoForm.rules">
                 <el-row>
                   <el-col :span="6">
                     <el-form-item label="用章次数" prop="sealNumber">
@@ -265,7 +171,7 @@
             <span slot="label" class="title">
               <i v-if="cardSealFileForm.errorCount" class="errorCount">{{cardSealFileForm.errorCount}}</i>盖章附件
             </span>
-            <SealFile :items="cardSealInfoForm.sealAttaches" :addVisible="ifuploadSealFile"></SealFile>
+            <SealFile :items="cardSealInfoForm.sealAttaches" :disabled="ifuploadSealFile"></SealFile>
           </el-tab-pane>
           <el-tab-pane>
           <span slot="label" class="title">备注
@@ -278,7 +184,7 @@
             </el-form>
           </el-tab-pane>
           <el-tab-pane label="相关数据" v-if="isProcess">
-            <RelateInfo :supplierCode="supplierCode"></RelateInfo>
+            <RelateInfo :suppliers="cardContentInfoForm.tableSupplierInfo"></RelateInfo>
           </el-tab-pane>
           <el-tab-pane label="其他" v-if="!isCreate">
             <OtherTables :baseInfoForm="baseInfoForm"></OtherTables>
@@ -299,6 +205,7 @@
 <script>
   import store from 'store'
   import {mapGetters} from 'vuex'
+  import bus from '../../core/bus'
   import Api from '../../api/manageContract'
   import comLoading from '../../mixins/comLoading'
   import {formatDate} from '../../filters/moment'
@@ -312,15 +219,14 @@
   import checkInfoStructure from '../../structure/create/checkInfo'
   import sealInfoStructure from '../../structure/create/sealInfo'
 
-  import BaseInfo from './baseInfo.vue'
-  import SupplierInfo from './supplierInfo.vue'
-  import SubjectInfo from './subjectInfo.vue'
-  import ThirdPartyInfo from './thirdPartyInfo.vue'
+  import BaseInfo from './components/baseInfo.vue'
+  import ContentInfo from './components/contentInfo.vue'
+  import CheckInfo from './components/checkInfo.vue'
 
   export default {
     mixins: [comLoading],
     data () {
-      const payTypeOpts = Object.keys(payTypes).map(key => ({id: key, name: payTypes[key]}))
+      const payTypeOpts = Object.keys(payTypes).map(key => ({id: +key, name: payTypes[key]}))
       return {
         processData: null, // 流程数据
         procCode: null, // 流程code
@@ -332,7 +238,7 @@
         updateForm: {
           code: null,
           remark: null
-        },
+        }, // 变更信息
         baseInfoForm: {
           ...baseInfoStructure,
           loading: false, // 业务操作人
@@ -349,44 +255,13 @@
             templateId: [{required: true, message: '请选择模板名称'}],
             ourSealOpinion: [{required: true, message: '请输入原因'}]
           }
-        },
+        }, // 基本信息
         cardContentInfoForm: {
           ...contentInfoStructure,
-          supplierErrorMsg: null,
-          subjectsErrorMsg: null,
-          errorCount: 0,
-          rules: {
-            startTime: [{
-              required: true, message: '请输入合同生效日期'
-            }, {
-              validator: (rule, value, callback) => {
-                const endTime = this.cardContentInfoForm.endTime
-                if (endTime && value > endTime) {
-                  callback(new Error('合同终止日期必须大于合同生效日期'))
-                }
-                callback()
-              },
-              trigger: 'change'
-            }],
-            endTime: [{
-              required: true, message: '请输入合同截止日期'
-            }, {
-              validator: (rule, value, callback) => {
-                const startTime = this.cardContentInfoForm.startTime
-                if (startTime && value < startTime) {
-                  callback(new Error('合同终止日期必须大于合同生效日期'))
-                }
-                callback()
-              },
-              trigger: 'change'
-            }],
-            effectiveCondition: [{required: true, message: '请选择生效条件'}],
-            conditionDesc: [{required: true, message: '请输入附期限生效信息'}]
-          }
-        },
+          errorCount: 0
+        }, // 内容信息
         cardFinanceInfoForm: {
           ...financeInfoStructure,
-          payType: null,
           payTypeOpts,
           currencyOptions: [{
             value: 1, label: 'CNY 人民币'
@@ -425,23 +300,11 @@
             invoiceType: [{required: true, message: '请选择开票类型'}],
             paymentTimePeriod: [{required: true, message: '请输入付款条件'}]
           }
-        },
+        }, // 财务信息
         cardContCheckInfoForm: {
           ...checkInfoStructure,
-          responsibles: [],
-          checkServiceMethods: [{
-            id: 1, name: '收货验收'
-          }, {
-            id: 2, name: '按阶段验收'
-          }],
-          serviceCheckMsg: null,
-          errorCount: 0,
-          rules: {
-            responsibleName: [{required: true, message: '基本信息中业务申请人填写后自动带出'}],
-            responsibleDeptName: [{required: true, message: '业务申请人填写后自动带出'}],
-            checkType: [{required: true, message: '请选择服务类验收方式'}]
-          }
-        },
+          errorCount: 0
+        }, // 验收信息
         cardSealInfoForm: {
           ...sealInfoStructure,
           contract: [],
@@ -452,10 +315,10 @@
           rules: {
             sealUsedInfo: [{required: true, message: '请选择用章'}]
           }
-        },
+        }, // 附件信息
         cardSealFileForm: {
           errorCount: 0
-        },
+        }, // 盖章信息
         cardRemarkInfoForm: {
           otherInstruction: null,
           errorCount: 0,
@@ -472,10 +335,9 @@
               }
             }]
           }
-        },
-        supplierCode: null,
-        contractLabels: [],
-        historyDatas: [],
+        }, // 备注信息
+        contractLabels: [], // 自定义标签
+        historyDatas: [], // 历史信息
         btnSubmitStatus: false
       }
     },
@@ -520,10 +382,6 @@
       isFARole () {
         return this.processData ? this.processData.roleName.indexOf('FA') > -1 : false
       },
-      // 是否允许上传盖章后附件
-      ifuploadSealFile () {
-        return this.isSealRole || this.isPurchaseRole
-      },
 
       contentVisible () {
         let visible = false
@@ -538,27 +396,6 @@
       ifCheckInfo () {
         return [1, 3].indexOf(this.baseInfoForm.contractType) > -1
       },
-      // 当合同模式不是固定格式合同时，显示第三方信息
-      ifThirdInfo () {
-        return this.baseInfoForm.contractType !== 2
-      },
-      // 当合同模式不是框架意向合同时，显示合同标的信息
-      ifStandardInfo () {
-        return this.baseInfoForm.contractType !== 4
-      },
-      // 附期限生效
-      ifTerm () {
-        return this.cardContentInfoForm.effectiveCondition === 1
-      },
-      // 附条件生效
-      ifCondition () {
-        return this.cardContentInfoForm.effectiveCondition === 2
-      },
-      // 是否显示服务类验收方式，服务类验收事项
-      ifServiceCheck () {
-        const exist = this.cardContentInfoForm.conStandard.some(item => !!item.materialCode)
-        return !exist && this.baseInfoForm.contractBusinessTypeFirst === 2
-      },
       // 计算分批付款金额之和
       totalConMoney () {
         const {oneOffPay, totalAmount, paymentMethods} = this.cardFinanceInfoForm
@@ -572,14 +409,18 @@
             m += parseFloat(paymentAmount)
           }
         })
-        if (m !== this.cardFinanceInfoForm.totalAmount) {
-          this.cardFinanceInfoForm.paymentErrorMSG = '您添加的付款金额必须等于合同总金额'
-        } else {
-          this.cardFinanceInfoForm.paymentErrorMSG = null
-        }
         return m
       },
+      // 是否允许上传盖章后附件
+      ifuploadSealFile () {
+        if (this.isSealRole || this.isPurchaseRole) {
+          return false
+        }
+        return true
+      },
 
+      /** 财务信息 **/
+      // 是否涉及金额
       moneyInvolvedDisabled () {
         const {contractType} = this.baseInfoForm
         if (this.isSP) {
@@ -591,12 +432,14 @@
         }
         return false
       },
+      // 是否一次性付款
       oneOffPayDisabled () {
         if (this.isSP || this.baseInfoForm.contractType === 3) {
           return true
         }
         return false
       },
+      // 合同总金额
       totalAmountDisabled () {
         if (!this.isSP) {
           if (this.baseInfoForm.contractType === 3) {
@@ -605,7 +448,8 @@
         }
         return true
       },
-      invoiceTypeDisabled () {
+      // 开票类型，币种，付款条件禁用
+      financeDisabled () {
         if (this.backLogFA) {
           return false
         }
@@ -614,24 +458,8 @@
         }
         return false
       },
-      currencyDisabled () {
-        if (this.backLogFA) {
-          return false
-        }
-        if (this.isSP) {
-          return true
-        }
-        return false
-      },
-      paymentTimePeriodDisabled () {
-        if (this.backLogFA) {
-          return false
-        }
-        if (this.isSP) {
-          return true
-        }
-        return false
-      },
+
+      // 附件信息打印份数，留存份数禁用
       timesDisabled () {
         if (this.isCreate || this.backLogCreator) {
           return false
@@ -655,6 +483,7 @@
       this.setCurrentStatus()
       const {query} = this.$route
       if (this.isCreate) {
+        this.bindEvents()
         this.getCreateInfo()
       } else if (this.isSee) {
         this.comLoading()
@@ -814,6 +643,7 @@
             item.visible = true
             return true
           }
+          return false
         })
       },
 
@@ -834,10 +664,9 @@
         return Promise.all(promises)
       },
       modifyAddNewFiles () {
-        const t = this
-        const sealAttachments = t.cardSealInfoForm.sealAttaches.filter(item => !item.id)
+        const sealAttachments = this.cardSealInfoForm.sealAttaches.filter(item => !item.id)
         return Api.uploadSealAttachments({
-          id: t.baseInfoForm.id, type: 1, uploadPerson: true, sealAttachments
+          id: this.baseInfoForm.id, type: 1, uploadPerson: true, sealAttachments
         })
       },
       modifyFA () {
@@ -943,12 +772,6 @@
         if (this.isSee) {
           this.historyDatas = simpleContract
         }
-        if (this.isProcess) {
-          const items = this.cardContentInfoForm.tableSupplierInfo
-          if (items.length) {
-            this.supplierCode = items[0].code
-          }
-        }
       },
       initBaseInfo (baseInfoForm) {
         const result = getStructure(baseInfoStructure, baseInfoForm)
@@ -991,6 +814,21 @@
         Object.assign(this.cardRemarkInfoForm, {otherInstruction: cardRemarkInfoForm.otherInstruction})
       },
 
+      // 监听事件
+      bindEvents () {
+        bus.$on('initData', this.initData)
+
+        bus.$on('getResponsibleInfo', this.getResponsibleInfo)
+        bus.$on('getAttachmentInfo', this.getAttachmentInfo)
+        bus.$on('handlePreview', this.handlePreview)
+
+        bus.$on('getJiaBillingInfo', this.getJiaBillingInfo)
+        bus.$on('getYiBillingInfo', this.getYiBillingInfo)
+        bus.$on('contentInfoValid', this.contentInfoValid)
+
+        bus.$on('checkInfoValid', this.checkInfoValid)
+      },
+
       // 各选项卡表单校验
       updateInfoValid () {
         return this.$refs.updateForm.valid()
@@ -999,28 +837,7 @@
         return this.$refs.baseInfoForm.valid()
       },
       contentInfoValid () {
-        let errorCount = 0
-        const form = this.cardContentInfoForm
-        const {tableSupplierInfo, conSubjctName} = form
-        this.$refs.cardContentInfoForm.validate((valid) => {
-          if (!tableSupplierInfo.length) {
-            errorCount++
-            form.supplierErrorMsg = '合同供应商信息不能为空'
-          } else {
-            form.supplierErrorMsg = null
-          }
-          if (!conSubjctName.length) {
-            errorCount++
-            form.subjectsErrorMsg = '我方主体信息不能为空'
-          } else {
-            form.subjectsErrorMsg = null
-          }
-          if (!valid) {
-            errorCount++
-          }
-          form.errorCount = errorCount
-        })
-        return !errorCount
+        return this.$refs.cardContentInfoForm.valid()
       },
       financeInfoValid () {
         let errorCount = 0
@@ -1045,24 +862,7 @@
         return !errorCount
       },
       checkInfoValid () {
-        let errorCount = 0
-        const form = this.cardContCheckInfoForm
-        const {serviceMatters} = form
-        this.$refs.cardContCheckInfoForm.validate((valid) => {
-          if (this.ifServiceCheck) {
-            if (!serviceMatters.length) {
-              errorCount++
-              this.cardContCheckInfoForm.serviceCheckMsg = '服务验收事项不能为空'
-            } else {
-              this.cardContCheckInfoForm.serviceCheckMsg = null
-            }
-          }
-          if (!valid) {
-            errorCount++
-          }
-          form.errorCount = errorCount
-        })
-        return !errorCount
+        return this.$refs.cardContCheckInfoForm.valid()
       },
       sealInfoValid () {
         let errorCount = 0
@@ -1108,10 +908,10 @@
       // 校验全部
       validateForms () {
         const valids = [this.baseInfoValid(), this.contentInfoValid(), this.financeInfoValid(), this.sealFileValid(), this.remarkInfoValid()]
-        if (this.isModify) {
+        if (this.$refs.updateForm) {
           valids.unshift(this.updateInfoValid())
         }
-        if (this.$refs.cardContCheckInfoForm) {
+        if (this.ifCheckInfo) {
           valids.push(this.checkInfoValid())
         }
         if (this.$refs.cardSealInfoForm) {
@@ -1127,7 +927,6 @@
       },
       // 取消校验全部
       noValidate () {
-        this.cardContentInfoForm.rules = {}
         this.cardFinanceInfoForm.rules = {}
         this.cardSealInfoForm.rules = {}
         this.cardRemarkInfoForm.rules = {}
@@ -1198,56 +997,43 @@
     },
     components: {
       BaseInfo,
-      SupplierInfo,
-      SubjectInfo,
-      ThirdPartyInfo,
-      StandardInfo: (resolve) => {
-        require(['./standardInfo.vue'], resolve)
-      },
+      ContentInfo,
+      CheckInfo,
       Preview: (resolve) => {
-        require(['./preview.vue'], resolve)
+        require(['./components/preview.vue'], resolve)
       },
       Process: (resolve) => {
         require(['../../components/process.vue'], resolve)
       },
       FileList: (resolve) => {
-        require(['./fileList.vue'], resolve)
+        require(['./components/fileList.vue'], resolve)
       },
       Payment: (resolve) => {
-        require(['./payment.vue'], resolve)
+        require(['./components/payment.vue'], resolve)
       },
       BothInfo: (resolve) => {
-        require(['./bothInfo.vue'], resolve)
+        require(['./components/bothInfo.vue'], resolve)
       },
       SealTable: (resolve) => {
-        require(['./sealTable.vue'], resolve)
+        require(['./components/sealTable.vue'], resolve)
       },
       SealFile: (resolve) => {
-        require(['./sealFile.vue'], resolve)
-      },
-      UnionCheckInfo: (resolve) => {
-        require(['./unionCheckInfo.vue'], resolve)
-      },
-      MaterialCheckInfo: (resolve) => {
-        require(['./materialCheckInfo.vue'], resolve)
-      },
-      ServiceCheckInfo: (resolve) => {
-        require(['./serviceCheckInfo.vue'], resolve)
+        require(['./components/sealFile.vue'], resolve)
       },
       OtherTables: (resolve) => {
-        require(['./otherTables.vue'], resolve)
+        require(['./components/otherTables.vue'], resolve)
       },
       HistoryInfo: (resolve) => {
-        require(['./historyInfo.vue'], resolve)
+        require(['./components/historyInfo.vue'], resolve)
       },
       RelateInfo: (resolve) => {
-        require(['./relateInfo.vue'], resolve)
+        require(['./components/relateInfo.vue'], resolve)
       },
       AgreementInfo: (resolve) => {
-        require(['./agreementInfo.vue'], resolve)
+        require(['./components/agreementInfo.vue'], resolve)
       },
       UpdateInfo: (resolve) => {
-        require(['./updateInfo.vue'], resolve)
+        require(['./components/updateInfo.vue'], resolve)
       }
     }
   }

@@ -17,7 +17,8 @@
 </template>
 
 <script>
-  import Api from '../../api/manageContract'
+  import bus from '../../../core/bus'
+  import Api from '../../../api/manageContract/index'
 
   export default {
     name: 'update-info',
@@ -43,7 +44,7 @@
         Api.getContractDetailByNo(params).then((res) => {
           const data = res.data.dataMap
           if (data) {
-            this.$emit('init', data)
+            bus.$emit('initData', data)
             this.$emit('update:visible', true)
           }
         })

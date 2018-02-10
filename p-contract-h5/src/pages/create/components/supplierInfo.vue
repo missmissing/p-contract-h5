@@ -1,53 +1,33 @@
 <template>
   <div>
-    <el-button
-      v-show="isVisibleNewSupplierBtn"
-      size="small"
-      @click="visible=true"
-      prefix-icon="el-icon-plus"
-      class="mb10" type="primary">
-      新增
-    </el-button>
-    <el-table :data="items">
-      <el-table-column type="index" label="序号" width="80">
-        <template slot-scope="scope">
-          {{scope.$index + 1}}
-        </template>
-      </el-table-column>
-      <el-table-column prop="code" label="供应商编号"></el-table-column>
-      <el-table-column prop="name" label="供应商名称"></el-table-column>
-      <el-table-column
-        label="操作"
-        width="100"
-        v-if="isVisibleBtns">
-        <template slot-scope="scope">
-          <el-button
-            v-if="scope.row.addNew"
-            @click="handleRemove(scope.$index, items)"
-            type="danger"
-            size="small">移除
-          </el-button>
-        </template>
-      </el-table-column>
-    </el-table>
+    <el-card>
+      <header slot="header">合同供应商信息<i class="tip ml20">{{supplierErrorMsg}}</i></header>
+      <el-button v-show="isVisibleNewSupplierBtn" size="small" @click="visible=true" prefix-icon="el-icon-plus" class="mb10" type="primary">
+        新增
+      </el-button>
+      <el-table :data="items">
+        <el-table-column prop="code" label="供应商编号"></el-table-column>
+        <el-table-column prop="name" label="供应商名称"></el-table-column>
+        <el-table-column
+          label="操作"
+          width="100"
+          v-if="!disabled">
+          <template slot-scope="scope">
+            <el-button
+              v-if="scope.row.addNew"
+              @click="handleRemove(scope.$index, items)"
+              type="danger"
+              size="small">移除
+            </el-button>
+          </template>
+        </el-table-column>
+      </el-table>
+    </el-card>
     <el-dialog title="新增合同供应商信息" :visible.sync="visible">
-      <el-form :model="form" label-width="100px" ref="form"
-               :rules="rules">
+      <el-form :model="form" label-width="100px" ref="form" :rules="rules">
         <el-form-item label="供应商名称/编码" prop="search" label-width="150px">
-          <el-select
-            style="width:300px"
-            size="small"
-            v-model="form.search"
-            filterable
-            remote
-            placeholder="请输入关键词搜索"
-            :remote-method="getRemoteSuppliersByKeyWord"
-            :loading="loading">
-            <el-option
-              v-for="item in suppliers"
-              :key="item.companyCode"
-              :label="item.company"
-              :value="item.companyCode">
+          <el-select style="width:300px" size="small" v-model="form.search" filterable remote placeholder="请输入关键词搜索" :remote-method="getRemoteSuppliersByKeyWord" :loading="loading">
+            <el-option v-for="item in suppliers" :key="item.companyCode" :label="item.company" :value="item.companyCode">
               <span class="fl">{{ item.companyCode }}</span>
               <span class="fr">{{ item.company }}</span>
             </el-option>
@@ -63,12 +43,14 @@
 </template>
 
 <script>
-  import Api from '../../api/manageContract'
+  import bus from '../../../core/bus'
+  import Api from '../../../api/manageContract/index'
 
   export default {
     name: 'supplier-info',
     props: {
-      items: Array
+      items: Array,
+      disabled: Boolean
     },
     data () {
       return {
@@ -93,15 +75,17 @@
         }
         return visible
       },
-      isVisibleBtns () {
-        const {isSee, isProcess} = this.$store.getters
-        return !(isSee && isProcess)
+      supplierErrorMsg () {
+        if (this.items.length) {
+          return null
+        }
+        return '请填写合同供应商信息'
       }
     },
     methods: {
       handleRemove (index, rows) {
         rows.splice(index, 1)
-        this.$emit('validate')
+        bus.$emit('contentInfoValid')
       },
       getRemoteSuppliersByKeyWord (key) {
         if (key !== '') {
@@ -127,8 +111,8 @@
                   name: item.company,
                   addNew: true
                 })
-                this.$emit('validate')
-                this.$emit('getYiBillingInfo', item)
+                bus.$emit('contentInfoValid')
+                bus.$emit('getYiBillingInfo', item)
                 return true
               }
               return false

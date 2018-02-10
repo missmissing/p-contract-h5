@@ -53,10 +53,10 @@
 </template>
 
 <script>
-  import Api from '../../api/manageContract/index'
-  import {formatDate} from '../../filters/moment'
-  import comLoading from '../../mixins/comLoading'
-  import {routerNames} from '../../core/consts'
+  import Api from '../../../api/manageContract/index'
+  import {formatDate} from '../../../filters/moment'
+  import comLoading from '../../../mixins/comLoading'
+  import {routerNames} from '../../../core/consts'
 
   export default {
     props: ['contractNo'],

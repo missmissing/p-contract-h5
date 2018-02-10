@@ -38,6 +38,6 @@ export default {
     return Http.get(`${contract}/contract-web/template/setTemplateAbolish`, params)
   },
   getTemplateLabels (params) {
-    return Http.get(`${contract}/contract-web/template/getTemplateLabels`, params)
+    return Http.get(`${contract}/contract-web/template/getConstTemplateLabels`, params)
   }
 }

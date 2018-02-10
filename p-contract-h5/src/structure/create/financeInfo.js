@@ -13,7 +13,7 @@ const payment = {
 
 const paymentMethods = Object.keys(payTypes).map((key) => {
   return {
-    payType: key,
+    payType: +key,
     type: payTypes[key],
     ..._.cloneDeep(payment)
   }

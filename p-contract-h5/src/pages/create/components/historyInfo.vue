@@ -17,8 +17,8 @@
 </template>
 
 <script>
-  import {formatDate} from '../../filters/moment'
-  import toPage from '../../assets/js/toPage'
+  import {formatDate} from '../../../filters/moment'
+  import toPage from '../../../assets/js/toPage'
 
   export default {
     name: 'history-info',

@@ -60,7 +60,7 @@ class Jump {
   see (row) {
     const {procInstId, serialNumber, procCode} = row
     if (this.dataType === processListMap[0]) {
-      Api.getApproveNode({
+      return Api.getApproveNode({
         serialNumber,
         procCode
       }).then((res) => {
@@ -68,7 +68,7 @@ class Jump {
         this.toPage(row, data)
       })
     } else {
-      Api.getStartedProcNodes({
+      return Api.getStartedProcNodes({
         procInstId,
         procCode
       }).then((res) => {
@@ -167,7 +167,7 @@ class Jump {
     } = query
     const newSerialNumber = serialNumber || sn
     const newProcInstId = procInstId || newSerialNumber.split('_')[0]
-    this.see({
+    return this.see({
       procInstId: newProcInstId,
       serialNumber: newSerialNumber,
       procCode,

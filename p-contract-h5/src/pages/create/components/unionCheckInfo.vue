@@ -1,7 +1,7 @@
 <template>
   <div>
     <el-button
-      v-if="isVisibleAddBtn"
+      v-if="!disabled"
       @click="visible=true"
       size="small"
       prefix-icon="el-icon-plus"
@@ -14,7 +14,7 @@
       <el-table-column
         label="操作"
         width="100"
-        v-if="isVisibleBtns">
+        v-if="!disabled">
         <template slot-scope="scope">
           <el-button
             v-if="scope.row.addNew"
@@ -64,12 +64,13 @@
 </template>
 
 <script>
-  import Api from '../../api/manageContract'
+  import Api from '../../../api/manageContract/index'
 
   export default {
     name: 'union-check-info',
     props: {
-      items: Array
+      items: Array,
+      disabled: Boolean
     },
     data () {
       return {
@@ -87,20 +88,6 @@
             {required: true, message: '请输入验收人'}
           ]
         }
-      }
-    },
-    computed: {
-      isVisibleAddBtn () {
-        const {isCreate} = this.$store.getters
-        let visible = false
-        if (isCreate) {
-          visible = true
-        }
-        return visible
-      },
-      isVisibleBtns () {
-        const {isSee, isProcess} = this.$store.getters
-        return !(isSee && isProcess)
       }
     },
     methods: {

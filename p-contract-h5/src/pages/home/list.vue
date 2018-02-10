@@ -55,7 +55,10 @@
   import {formatDate} from '../../filters/moment'
   import toPage from '../../assets/js/toPage'
 
+  import comLoading from '../../mixins/comLoading'
+
   export default {
+    mixins: [comLoading],
     props: {
       title: {
         default: ''

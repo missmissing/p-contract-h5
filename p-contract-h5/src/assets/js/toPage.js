@@ -14,5 +14,5 @@ export default function (row) {
   } else {
     query.routeName = routerNames.con_process_see
   }
-  new Jump(this.$router).init(query)
+  return new Jump(this.$router).init(query)
 }
