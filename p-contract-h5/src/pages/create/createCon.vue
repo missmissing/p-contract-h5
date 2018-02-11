@@ -110,7 +110,7 @@
                   </el-dropdown>
                   <template v-for="(item,index) in cardFinanceInfoForm.paymentMethods">
                     <Payment :items="[item]" :paymentTimePeriods="cardFinanceInfoForm.paymentTimePeriods" :totalAmount="cardFinanceInfoForm.totalAmount"
-                             :backLogFA="backLogFA"
+                             :backLogFARole="backLogFARole"
                              :show-header="index===0"></Payment>
                   </template>
                 </div>
@@ -133,39 +133,7 @@
               <i v-if="cardSealInfoForm.errorCount" class="errorCount">{{cardSealInfoForm.errorCount}}</i>
               合同附件
             </span>
-            <FileList v-if="cardSealInfoForm.others.length" :items="cardSealInfoForm.others" class="mb20"></FileList>
-            <div v-if="baseInfoForm.templateId">
-              <el-form rel="cardSealInfoForm" :model="cardSealInfoForm" label-width="100px" :rules="cardSealInfoForm.rules">
-                <el-row>
-                  <el-col :span="6">
-                    <el-form-item label="用章次数" prop="sealNumber">
-                      <el-input-number size="small" :disabled="true" v-model="cardSealInfoForm.sealNumber" :min="1" :max="10" class="wp100"></el-input-number>
-                    </el-form-item>
-                  </el-col>
-                  <el-col :span="6">
-                    <el-form-item label="打印份数" prop="printNumber">
-                      <el-input-number :disabled="timesDisabled" size="small" :min="1" :max="10" v-model="cardSealInfoForm.printNumber" class="wp100"></el-input-number>
-                    </el-form-item>
-                  </el-col>
-                  <el-col :span="6">
-                    <el-form-item label="留存份数" prop="remainNumber">
-                      <el-input-number :disabled="timesDisabled" size="small" :min="1" :max="10" v-model="cardSealInfoForm.remainNumber" class="wp100"></el-input-number>
-                    </el-form-item>
-                  </el-col>
-                  <el-col :span="6">
-                    <el-form-item label="选择用章" prop="sealUsedInfo">
-                      <el-checkbox-group :disabled="!isCreate" v-model="cardSealInfoForm.sealUsedInfo">
-                        <el-checkbox label="1" name="sealInfo">公章</el-checkbox>
-                        <el-checkbox label="2" name="sealInfo">法人章</el-checkbox>
-                      </el-checkbox-group>
-                    </el-form-item>
-                  </el-col>
-                </el-row>
-              </el-form>
-              <SealTable v-if="cardSealInfoForm.contract.length" :items="cardSealInfoForm.contract" :backLogCreator="backLogCreator" :tplType="baseInfoForm.contractTextType" class="mb20"></SealTable>
-              <AgreementInfo :items="cardSealInfoForm.agreenments" class="mt20"></AgreementInfo>
-            </div>
-            <h4 v-else>请选择合同基本信息的模板名称！</h4>
+            <FileInfo :cardSealInfoForm="cardSealInfoForm" :baseInfoForm="baseInfoForm" :disabled="!isCreate" ref="cardSealInfoForm"></FileInfo>
           </el-tab-pane>
           <el-tab-pane label="盖章附件" v-if="isSP">
             <span slot="label" class="title">
@@ -203,14 +171,14 @@
   </div>
 </template>
 <script>
-  import store from 'store'
   import {mapGetters} from 'vuex'
+  import {PROCESSSTATUS, PROCESSCREATORID, PROCESSROLE} from '../../store/consts'
   import bus from '../../core/bus'
   import Api from '../../api/manageContract'
   import comLoading from '../../mixins/comLoading'
   import {formatDate} from '../../filters/moment'
   import getContractType from '../../filters/contractType'
-  import {routerNames, processListMap, payTypes} from '../../core/consts'
+  import {routerNames, payTypes} from '../../core/consts'
   import getPageStatus from '../../util/pageStatus'
   import getStructure from '../../util/getStructure'
   import baseInfoStructure from '../../structure/create/baseInfo'
@@ -222,6 +190,7 @@
   import BaseInfo from './components/baseInfo.vue'
   import ContentInfo from './components/contentInfo.vue'
   import CheckInfo from './components/checkInfo.vue'
+  import FileInfo from './components/fileInfo.vue'
 
   export default {
     mixins: [comLoading],
@@ -311,10 +280,7 @@
           others: [],
           agreenments: [],
           errorMsg: null,
-          errorCount: 0,
-          rules: {
-            sealUsedInfo: [{required: true, message: '请选择用章'}]
-          }
+          errorCount: 0
         }, // 附件信息
         cardSealFileForm: {
           errorCount: 0
@@ -342,45 +308,9 @@
       }
     },
     computed: {
-      ...mapGetters(['isCreate', 'isModify', 'isSee', 'isProcess']),
+      ...mapGetters(['backLogCreator', 'backLogFARole', 'backLogSealRole', 'backLogPurchaseRole', 'isCreate', 'isModify', 'isSee', 'isProcess']),
       isSP () { // 报表查看，流程查看
         return (this.see || this.isProcess)
-      },
-      // 是否为待办流程且当前用户角色为财务
-      backLogFA () {
-        let isBackLog = false
-        let isFA = false
-        if (this.isProcess) {
-          isBackLog = this.processData.dataType === processListMap[0]
-          isFA = isBackLog ? this.isFARole : false
-        }
-
-        return isBackLog && isFA
-      },
-      // 是否为待办流程且当前用户为发起人
-      backLogCreator () {
-        let isBackLog = false
-        let isCreator = false
-        if (this.isProcess) {
-          isBackLog = this.processData.dataType === processListMap[0]
-          const user = store.get('user')
-          isCreator = isBackLog ? this.baseInfoForm.creatorId === user.userId : false
-        }
-        return isBackLog && isCreator
-      },
-      // 是否为印章保管人
-      isSealRole () {
-        const reg = /印章保管人/g
-        return this.processData ? reg.test(this.processData.roleName) : false
-      },
-      // 是否为采购合同上传
-      isPurchaseRole () {
-        const reg = /采购合同上传/g
-        return this.processData ? reg.test(this.processData.roleName) : false
-      },
-      // 是否为财务
-      isFARole () {
-        return this.processData ? this.processData.roleName.indexOf('FA') > -1 : false
       },
 
       contentVisible () {
@@ -413,7 +343,7 @@
       },
       // 是否允许上传盖章后附件
       ifuploadSealFile () {
-        if (this.isSealRole || this.isPurchaseRole) {
+        if (this.backLogSealRole || this.backLogPurchaseRole) {
           return false
         }
         return true
@@ -450,21 +380,13 @@
       },
       // 开票类型，币种，付款条件禁用
       financeDisabled () {
-        if (this.backLogFA) {
+        if (this.backLogFARole) {
           return false
         }
         if (this.isSP) {
           return true
         }
         return false
-      },
-
-      // 附件信息打印份数，留存份数禁用
-      timesDisabled () {
-        if (this.isCreate || this.backLogCreator) {
-          return false
-        }
-        return true
       }
     },
     watch: {
@@ -502,6 +424,14 @@
         this.procCode = this.processData.procCode
         this.procInstId = this.processData.procInstId
         this.procTitle = this.processData.procTitle
+
+        this.$store.commit(PROCESSSTATUS, {
+          data: this.processData.dataType
+        })
+        // 当前用户角色为待办流程FA
+        this.$store.commit(PROCESSROLE, {
+          data: this.processData.roleName
+        })
 
         this.comLoading()
         Api.getContractDetailById({
@@ -652,9 +582,9 @@
         const t = this
         const promises = []
         const {isSign, isAgree} = params
-        if (!isSign && isAgree && (t.isSealRole || t.isPurchaseRole)) {
+        if (!isSign && isAgree && (t.backLogSealRole || t.backLogPurchaseRole)) {
           promises.push(t.modifyAddNewFiles())
-        } else if (t.backLogFA) {
+        } else if (t.backLogFARole) {
           promises.push(t.modifyFA())
         } else if (t.backLogCreator) {
           promises.push(t.modifyFiles())
@@ -663,12 +593,14 @@
         }
         return Promise.all(promises)
       },
+      // 印章保管人，采购合同上传，盖章信息修改
       modifyAddNewFiles () {
         const sealAttachments = this.cardSealInfoForm.sealAttaches.filter(item => !item.id)
         return Api.uploadSealAttachments({
           id: this.baseInfoForm.id, type: 1, uploadPerson: true, sealAttachments
         })
       },
+      // 待办流程财务信息修改
       modifyFA () {
         if (!this.financeInfoValid()) {
           this.$message.warning('合同财务信息不完整')
@@ -684,6 +616,7 @@
           finances: paymentMethods
         })
       },
+      // 待办流程发起人附件信息修改
       modifyFiles () {
         return Api.updateAttach({
           contractId: this.$route.query.contractId, contractAttachments: this.cardSealInfoForm.contract
@@ -776,6 +709,10 @@
       initBaseInfo (baseInfoForm) {
         const result = getStructure(baseInfoStructure, baseInfoForm)
         Object.assign(this.baseInfoForm, result)
+        // 流程发起人id
+        this.$store.commit(PROCESSCREATORID, {
+          data: result.creatorId
+        })
       },
       initContentInfo (cardContentInfoForm) {
         const result = getStructure(contentInfoStructure, cardContentInfoForm)
@@ -827,6 +764,8 @@
         bus.$on('contentInfoValid', this.contentInfoValid)
 
         bus.$on('checkInfoValid', this.checkInfoValid)
+
+        bus.$on('sealInfoValid', this.sealInfoValid)
       },
 
       // 各选项卡表单校验
@@ -865,34 +804,7 @@
         return this.$refs.cardContCheckInfoForm.valid()
       },
       sealInfoValid () {
-        let errorCount = 0
-        const form = this.cardSealInfoForm
-        this.$refs.cardSealInfoForm.validate((valid) => {
-          if (!valid) {
-            errorCount++
-          }
-          const {contract} = form
-          const exist = contract.some(item => !item[0].fileName)
-          if (exist) {
-            errorCount++
-          }
-          form.errorCount = errorCount
-        })
-        return !errorCount
-      },
-      sealFileValid () {
-        let errorCount = 0
-        const form = this.cardSealInfoForm
-        const {sealAttaches} = form
-        if (this.isModify) {
-          const exist = sealAttaches.some(item => !item[0].id) // 合同变更必须上传附件
-          if (!exist) {
-            errorCount++
-            this.$message.warning('变更合同必须上传附件！')
-          }
-        }
-        this.cardSealFileForm.errorCount = errorCount
-        return !errorCount
+        return this.$refs.cardSealInfoForm.valid()
       },
       remarkInfoValid () {
         let errorCount = 0
@@ -907,7 +819,7 @@
       },
       // 校验全部
       validateForms () {
-        const valids = [this.baseInfoValid(), this.contentInfoValid(), this.financeInfoValid(), this.sealFileValid(), this.remarkInfoValid()]
+        const valids = [this.baseInfoValid(), this.contentInfoValid(), this.financeInfoValid(), this.remarkInfoValid()]
         if (this.$refs.updateForm) {
           valids.unshift(this.updateInfoValid())
         }
@@ -999,23 +911,18 @@
       BaseInfo,
       ContentInfo,
       CheckInfo,
+      FileInfo,
       Preview: (resolve) => {
         require(['./components/preview.vue'], resolve)
       },
       Process: (resolve) => {
         require(['../../components/process.vue'], resolve)
       },
-      FileList: (resolve) => {
-        require(['./components/fileList.vue'], resolve)
-      },
       Payment: (resolve) => {
         require(['./components/payment.vue'], resolve)
       },
       BothInfo: (resolve) => {
         require(['./components/bothInfo.vue'], resolve)
-      },
-      SealTable: (resolve) => {
-        require(['./components/sealTable.vue'], resolve)
       },
       SealFile: (resolve) => {
         require(['./components/sealFile.vue'], resolve)
@@ -1028,9 +935,6 @@
       },
       RelateInfo: (resolve) => {
         require(['./components/relateInfo.vue'], resolve)
-      },
-      AgreementInfo: (resolve) => {
-        require(['./components/agreementInfo.vue'], resolve)
       },
       UpdateInfo: (resolve) => {
         require(['./components/updateInfo.vue'], resolve)

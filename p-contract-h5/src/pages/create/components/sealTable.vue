@@ -6,13 +6,7 @@
 
 <template>
   <div>
-    <el-button
-      type="primary"
-      @click="add"
-      size="small"
-      prefix-icon="el-icon-plus"
-      v-if="addLoad"
-      class="mb20">
+    <el-button type="primary" @click="add" size="small" prefix-icon="el-icon-plus" v-show="addVisible" class="mb20">
       添加
     </el-button>
     <el-table :data="items">
@@ -28,38 +22,22 @@
       </el-table-column>
       <el-table-column prop="haveSeal" label="是否盖章" width="150px">
         <template slot-scope="scope">
-          <el-checkbox
-            :disabled="disabled(scope.row)"
-            v-model="scope.row.haveSeal"
-          ></el-checkbox>
+          <el-checkbox :disabled="disabledFn(scope.row)" v-model="scope.row.haveSeal"></el-checkbox>
         </template>
       </el-table-column>
       <el-table-column prop="remark" label="备注">
         <template slot-scope="scope">
-          <el-input v-model="scope.row.remark" :disabled="disabled(scope.row)"></el-input>
+          <el-input v-model="scope.row.remark" :disabled="disabledFn(scope.row)"></el-input>
         </template>
       </el-table-column>
-      <el-table-column
-        label="操作"
-        width="180">
+      <el-table-column label="操作" width="180">
         <template slot-scope="scope">
           <div class="btns">
-            <el-upload
-              v-if="ifUploadFile(scope.row)"
-              ref="uploadSealFile"
-              :show-file-list="false"
-              :action="uploadUrl"
-              :with-credentials="true"
-              :on-success="handleUploadSealFileSuccess.bind(this,scope.row)"
-            >
+            <el-upload v-if="ifUploadFile(scope.row)" :show-file-list="false" :action="uploadUrl" :with-credentials="true" :on-success="handleUploadSealFileSuccess.bind(this,scope.row)">
               <el-button size="small" type="primary">上传</el-button>
             </el-upload>
-            <el-button
-              v-if="!scope.row.id"
-              class="ml20"
-              @click="handleRemove(scope.$index,items)"
-              type="danger"
-              size="small">移除
+            <el-button v-if="!scope.row.id" class="ml20" @click="handleRemove(scope.$index,items)" type="danger" size="small">
+              移除
             </el-button>
           </div>
         </template>
@@ -77,8 +55,8 @@
   export default {
     props: {
       items: Array,
-      backLogCreator: Boolean,
-      tplType: Number
+      baseInfoForm: Object,
+      disabled: Boolean
     },
     data () {
       return {
@@ -88,23 +66,19 @@
     },
     computed: {
       ...mapGetters([
+        'backLogCreator',
         'isCreate',
-        'isModify',
-        'isSee',
-        'isProcess'
+        'isModify'
       ]),
-      addLoad () {
-        if (this.backLogCreator) {
-          return true
-        }
-        if (!this.isSee && !this.isProcess) {
+      addVisible () {
+        if (this.isCreate || this.isModify || this.backLogCreator) {
           return true
         }
         return false
       }
     },
     methods: {
-      disabled (row) {
+      disabledFn (row) {
         if (row.attachType === 3) {
           return true
         }
@@ -114,10 +88,10 @@
         if (this.backLogCreator) {
           return false
         }
-        if (this.isSee || this.isProcess) {
-          return true
+        if (this.isCreate || this.isModify) {
+          return false
         }
-        return false
+        return true
       },
       ifUploadFile (row) {
         const {attachType, id} = row
@@ -125,7 +99,7 @@
           if (this.isCreate || this.isModify) {
             return false
           }
-          if (this.backLogCreator && this.tplType === 2) {
+          if (this.backLogCreator && this.baseInfoForm.contractTextType === 2) {
             return true
           }
         }
@@ -133,14 +107,14 @@
         if (!id) {
           return true
         }
-        if (this.isSee || this.isProcess) {
-          return false
+        if (this.isCreate || this.isModify) {
+          return true
         }
         return false
       },
       // 流程覆盖上传按钮
       coverUpload (row) {
-        return (row.attachType === 3 && this.tplType === 2 && this.backLogCreator)
+        return (this.backLogCreator && row.attachType === 3 && this.baseInfoForm.contractTextType === 2)
       },
       add () {
         const file = {

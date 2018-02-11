@@ -15,7 +15,7 @@ import Api from '../../api/process/index'
 class Jump {
   constructor (router) {
     this.router = router
-    this.dataType = ''
+    this.dataType = null
   }
 
   static getProcTitle (procCode) {
@@ -59,6 +59,7 @@ class Jump {
 
   see (row) {
     const {procInstId, serialNumber, procCode} = row
+
     if (this.dataType === processListMap[0]) {
       return Api.getApproveNode({
         serialNumber,

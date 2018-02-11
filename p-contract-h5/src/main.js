@@ -6,6 +6,7 @@ import Api from './api/index'
 import App from './App.vue'
 import router from './router'
 import store from './store'
+import {USERINFO} from './store/consts'
 import errorHanding from './core/errorHanding'
 import queryString from './util/queryString'
 import './assets/css/common.scss'
@@ -55,6 +56,10 @@ new Vue({ //eslint-disable-line
       } else {
         this.canRender = true
       }
+      // userInfo vuex
+      this.$store.commit(USERINFO, {
+        data: LocalStore.get('user')
+      })
     }
   },
   created () {

@@ -1,5 +1,5 @@
 <template>
-  <el-form rel="form" :model="cardSealInfoForm" label-width="100px" :rules="cardSealInfoForm.rules">
+  <el-form ref="form" :model="cardSealInfoForm" label-width="100px" :rules="disabled?{}:rules">
     <el-row>
       <el-col :span="6">
         <el-form-item label="用章次数" prop="sealNumber">
@@ -18,7 +18,7 @@
       </el-col>
       <el-col :span="6">
         <el-form-item label="选择用章" prop="sealUsedInfo">
-          <el-checkbox-group :disabled="disabled" v-model="cardSealInfoForm.sealUsedInfo">
+          <el-checkbox-group :disabled="disabled" v-model="cardSealInfoForm.sealUsedInfo" @change="emitValid">
             <el-checkbox label="1" name="sealInfo">公章</el-checkbox>
             <el-checkbox label="2" name="sealInfo">法人章</el-checkbox>
           </el-checkbox-group>
@@ -29,16 +29,24 @@
 </template>
 
 <script>
+  import {mapGetters} from 'vuex'
   import bus from '../../../core/bus'
 
   export default {
     name: 'seal-condition-form',
     props: {
       cardSealInfoForm: Object,
-      disabled: Boolean,
-      backLogCreator: Boolean
+      disabled: Boolean
+    },
+    data () {
+      return {
+        rules: {
+          sealUsedInfo: [{required: true, message: '请选择用章'}]
+        }
+      }
     },
     computed: {
+      ...mapGetters(['backLogCreator']),
       // 附件信息打印份数，留存份数禁用
       timesDisabled () {
         if (this.backLogCreator) {
@@ -50,7 +58,7 @@
     methods: {
       // 触发顶级校验
       emitValid () {
-        // bus.$emit('contentInfoValid')
+        bus.$emit('sealInfoValid')
       },
       valid () {
         let flag = true
