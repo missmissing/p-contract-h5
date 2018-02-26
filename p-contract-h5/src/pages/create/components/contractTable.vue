@@ -2,7 +2,6 @@
   <div>
     <el-table
       :data="contractInfo"
-      border
       class="wp100">
       <el-table-column
         width="200"

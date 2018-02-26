@@ -1,6 +1,6 @@
 <template>
   <div>
-    <el-table :data="items" ref="table" border>
+    <el-table :data="items" ref="table">
       <el-table-column type="index" label="序号" width="80">
         <template slot-scope="scope">
           {{scope.$index + 1}}

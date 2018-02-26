@@ -3,7 +3,6 @@
     <el-table
       :data="tableData"
       ref="table"
-      border
       class="wp100">
       <el-table-column
         prop="contractNo"

@@ -6,7 +6,7 @@
 
 <template>
   <div>
-    <el-button type="primary" @click="add" size="small" prefix-icon="el-icon-plus" v-show="addVisible" class="mb20">
+    <el-button type="primary" @click="add" size="small" prefix-icon="el-icon-plus" class="mb20">
       添加
     </el-button>
     <el-table :data="items">
@@ -22,7 +22,7 @@
       </el-table-column>
       <el-table-column prop="haveSeal" label="是否盖章" width="150px">
         <template slot-scope="scope">
-          <el-checkbox :disabled="disabledFn(scope.row)" v-model="scope.row.haveSeal"></el-checkbox>
+          <el-checkbox v-model="scope.row.haveSeal" :disabled="disabledFn(scope.row)"></el-checkbox>
         </template>
       </el-table-column>
       <el-table-column prop="remark" label="备注">
@@ -47,16 +47,14 @@
 </template>
 
 <script>
-  import {mapGetters} from 'vuex'
-  import {uploadUrl, downloadUrl} from '../../../api/consts'
-  import {formatDate} from '../../../filters/moment'
-  import attachmentType from '../../../filters/attachmentType'
+  import {uploadUrl, downloadUrl} from '../../../../api/consts'
+  import {formatDate} from '../../../../filters/moment'
+  import attachmentType from '../../../../filters/attachmentType'
 
   export default {
     props: {
       items: Array,
-      baseInfoForm: Object,
-      disabled: Boolean
+      baseInfoForm: Object
     },
     data () {
       return {
@@ -64,57 +62,27 @@
         downloadUrl
       }
     },
-    computed: {
-      ...mapGetters([
-        'backLogCreator',
-        'isCreate',
-        'isModify'
-      ]),
-      addVisible () {
-        if (this.isCreate || this.isModify || this.backLogCreator) {
+    methods: {
+      disabledFn (row) {
+        const {attachType, id} = row
+        if (attachType === 3) {
+          return true
+        }
+        if (id) {
           return true
         }
         return false
-      }
-    },
-    methods: {
-      disabledFn (row) {
-        if (row.attachType === 3) {
-          return true
-        }
-        if (row.id) {
-          return true
-        }
-        if (this.backLogCreator) {
-          return false
-        }
-        if (this.isCreate || this.isModify) {
-          return false
-        }
-        return true
       },
       ifUploadFile (row) {
         const {attachType, id} = row
         if (attachType === 3) {
-          if (this.isCreate || this.isModify) {
-            return false
-          }
-          if (this.backLogCreator && this.baseInfoForm.contractTextType === 2) {
-            return true
-          }
+          return false
         }
 
         if (!id) {
           return true
         }
-        if (this.isCreate || this.isModify) {
-          return true
-        }
-        return false
-      },
-      // 流程覆盖上传按钮
-      coverUpload (row) {
-        return (this.backLogCreator && row.attachType === 3 && this.baseInfoForm.contractTextType === 2)
+        return true
       },
       add () {
         const file = {
@@ -139,9 +107,6 @@
         row.fileId = dataMap.fileId
         row.fileName = dataMap.fileName
         row.fileUrl = `${this.downloadUrl}${fileId}`
-        if (this.coverUpload(row)) {
-          row.id && delete row.id
-        }
         this.$message.success('文件上传成功')
       }
     },

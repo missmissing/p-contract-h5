@@ -12,27 +12,14 @@
         </el-col>
         <el-col :span="8">
           <el-form-item label="合同模式" prop="contractType">
-            <el-select
-              clearable
-              v-model="form.contractType"
-              placeholder="请选择合同模式"
-              class="wp100">
-              <el-option
-                v-for="item in conModels"
-                :key="item.id"
-                :value="item.id"
-                :label="item.name">
-              </el-option>
+            <el-select clearable v-model="form.contractType" placeholder="请选择合同模式" class="wp100">
+              <el-option v-for="item in conModels" :key="item.id" :value="item.id" :label="item.name"></el-option>
             </el-select>
           </el-form-item>
         </el-col>
         <el-col :span="8">
           <el-form-item label="业务类型" prop="conTypeName">
-            <el-input readonly
-                      placeholder="请选择业务类型"
-                      v-model="conTypeName"
-                      clearable
-                      @focus="visible=true">
+            <el-input readonly placeholder="请选择业务类型" v-model="conTypeName" clearable @focus="visible=true">
               <i class="el-icon-error" @click="handleConTypeName" slot="suffix"></i>
             </el-input>
           </el-form-item>
@@ -58,14 +45,7 @@
       <el-row>
         <el-col :span="8">
           <el-form-item label="创建时间">
-            <el-date-picker
-              style="width:100%;"
-              v-model="daterange"
-              type="daterange"
-              :editable="false"
-              start-placeholder="开始日期"
-              end-placeholder="结束日期">
-            </el-date-picker>
+            <el-date-picker style="width:100%;" v-model="daterange" type="daterange" :editable="false" start-placeholder="开始日期" end-placeholder="结束日期"></el-date-picker>
           </el-form-item>
         </el-col>
         <el-col :span="8">
@@ -87,22 +67,10 @@
         </el-col>
         <el-col :span="8">
           <el-form-item label="供应商名称/编码" prop="supplierCode" label-width="150px">
-            <el-select
-              class="wp100"
-              clearable
-              v-model="form.supplierCode"
-              filterable
-              remote
-              placeholder="请输入关键词搜索"
-              :remote-method="getRemoteSuppliersByKeyWord"
-              :loading="form.loading">
-              <el-option
-                v-for="item in form.suppliers"
-                :key="item.companyCode"
-                :label="item.company"
-                :value="item.companyCode">
-                <span style="float: right">{{ item.company }}</span>
-                <span style="float: left; color: #8492a6; font-size: 13px">{{ item.companyCode }}</span>
+            <el-select class="wp100" clearable v-model="form.supplierCode" filterable remote placeholder="请输入关键词搜索" :remote-method="getRemoteSuppliersByKeyWord" :loading="form.loading">
+              <el-option v-for="item in form.suppliers" :key="item.companyCode" :label="item.company" :value="item.companyCode">
+                <span class="fl">{{ item.companyCode }}</span>
+                <span class="fr">{{ item.company }}</span>
               </el-option>
             </el-select>
           </el-form-item>
@@ -115,17 +83,12 @@
         </el-col>
       </el-row>
     </el-form>
-    <el-table
-      :data="tableData"
-      border
-      highlight-current-row
-      class="wp100">
+    <el-table :data="tableData" border highlight-current-row class="wp100">
       <el-table-column prop="id" label="合同编号" width="140px">
         <template slot-scope="scope">
-          <router-link class="router-link"
-                       :to="{path:'/ConCreate/conCheck', query:{contractNo:''+tableData[scope.$index].contractNo}}">
+          <div class="router-link" @click="goToSee(scope.row)">
             {{tableData[scope.$index].contractNo}}
-          </router-link>
+          </div>
         </template>
       </el-table-column>
       <el-table-column prop="id" label="流程id" width="100px">
@@ -198,6 +161,7 @@
 
 <script>
   import Api from '../../api/manageContract'
+  import {routerNames} from '../../core/consts'
   import TreeModal from '../../components/treeModal.vue'
   import getBusiType from '../../mixins/getBusiType'
   import {formatDate} from '../../filters/moment'
@@ -326,6 +290,14 @@
         } else {
           this.form.suppliers = []
         }
+      },
+      goToSee (row) {
+        this.$router.push({
+          name: routerNames.con_Check,
+          query: {
+            contractNo: row.contractNo
+          }
+        })
       },
       goToProcess (row) {
         toPage.call(this, row)

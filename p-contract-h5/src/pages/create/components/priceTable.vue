@@ -2,7 +2,6 @@
   <div>
     <el-table
       :data="tableData"
-      border
       class="wp100">
       <el-table-column
         prop="folio"

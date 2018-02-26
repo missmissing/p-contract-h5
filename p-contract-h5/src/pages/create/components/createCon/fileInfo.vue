@@ -2,7 +2,7 @@
   <div>
     <FileList v-if="cardSealInfoForm.others.length" :items="cardSealInfoForm.others" class="mb20"></FileList>
     <div v-if="baseInfoForm.templateId">
-      <SealConditionForm :cardSealInfoForm="cardSealInfoForm" :disabled="disabled" ref="form"></SealConditionForm>
+      <SealConditionForm :cardSealInfoForm="cardSealInfoForm" ref="form"></SealConditionForm>
       <SealTable v-if="cardSealInfoForm.contract.length" :items="cardSealInfoForm.contract" :baseInfoForm="baseInfoForm" class="mb20"></SealTable>
       <AgreementInfo :items="cardSealInfoForm.agreenments" class="mt20"></AgreementInfo>
     </div>
@@ -11,12 +11,10 @@
 </template>
 
 <script>
-  import {mapGetters} from 'vuex'
-
   import SealConditionForm from './sealConditionForm.vue'
-  import FileList from './fileList.vue'
+  import FileList from '../fileList.vue'
   import SealTable from './sealTable.vue'
-  import AgreementInfo from './agreementInfo.vue'
+  import AgreementInfo from '../agreementInfo.vue'
 
   export default {
     name: 'file-info',
@@ -24,11 +22,6 @@
       cardSealInfoForm: Object,
       disabled: Boolean,
       baseInfoForm: Object
-    },
-    computed: {
-      ...mapGetters([
-        'isModify'
-      ])
     },
     methods: {
       valid () {

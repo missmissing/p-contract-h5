@@ -23,36 +23,7 @@
       disabled: Boolean
     },
     data () {
-      return {
-        rules: {
-          startTime: [{
-            required: true, message: '请输入合同生效日期'
-          }, {
-            validator: (rule, value, callback) => {
-              const endTime = this.cardContentInfoForm.endTime
-              if (endTime && value > endTime) {
-                callback(new Error('合同终止日期必须大于合同生效日期'))
-              }
-              callback()
-            },
-            trigger: 'change'
-          }],
-          endTime: [{
-            required: true, message: '请输入合同截止日期'
-          }, {
-            validator: (rule, value, callback) => {
-              const startTime = this.cardContentInfoForm.startTime
-              if (startTime && value < startTime) {
-                callback(new Error('合同终止日期必须大于合同生效日期'))
-              }
-              callback()
-            },
-            trigger: 'change'
-          }],
-          effectiveCondition: [{required: true, message: '请选择生效条件'}],
-          conditionDesc: [{required: true, message: '请输入附期限生效信息'}]
-        }
-      }
+      return {}
     },
     computed: {
       // 当合同模式不是固定格式合同时，显示第三方信息
@@ -69,7 +40,6 @@
         let errorCount = 0
         const form = this.cardContentInfoForm
         const {tableSupplierInfo, conSubjctName} = form
-        console.log(this.$refs.form.valid())
         if (!this.$refs.form.valid()) {
           errorCount++
         }

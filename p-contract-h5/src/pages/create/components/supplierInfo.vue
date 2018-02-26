@@ -76,7 +76,7 @@
         return visible
       },
       supplierErrorMsg () {
-        if (this.items.length) {
+        if (this.disabled || this.items.length) {
           return null
         }
         return '请填写合同供应商信息'

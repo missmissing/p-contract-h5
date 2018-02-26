@@ -142,34 +142,35 @@ const router = new Router({
           name: routerNames.con_contract_create
         },
         {
-          path: '/ConCreate/createSlaveProtocol',
-          meta: {
-            auth: true
-          },
-          component (resolve) {
-            require(['../pages/create/createSlaveProtocol.vue'], resolve)
-          },
-          name: routerNames.con_createSlaveProtocol
-        },
-        {
-          path: '/ConCreate/querySlaveProtocol',
-          meta: {
-            auth: true,
-            hidden: true
-          },
-          component (resolve) {
-            require(['../pages/create/createSlaveProtocol.vue'], resolve)
-          },
-          name: routerNames.con_querySlaveProtocol
-        },
-        {
           path: '/conperf/conupdate',
           component (resolve) {
-            require(['../pages/create/createCon.vue'], resolve)
+            require(['../pages/create/updateCon.vue'], resolve)
           },
           name: routerNames.con_update,
           meta: {
             auth: true
+          }
+        },
+        {
+          path: '/ConCreate/conCheck', // 查看合同
+          component (resolve) {
+            require(['../pages/create/seeCon.vue'], resolve)
+          },
+          name: routerNames.con_Check,
+          meta: {
+            auth: true,
+            hidden: true
+          }
+        },
+        {
+          path: '/ConCreate/processCon', // 合同流程
+          component (resolve) {
+            require(['../pages/create/processCon.vue'], resolve)
+          },
+          name: routerNames.con_proc_see,
+          meta: {
+            auth: true,
+            hidden: true
           }
         },
         {
@@ -194,15 +195,25 @@ const router = new Router({
           }
         },
         {
-          path: '/ConCreate/conCheck', // 查看合同
-          component (resolve) {
-            require(['../pages/create/createCon.vue'], resolve)
+          path: '/ConCreate/createSlaveProtocol',
+          meta: {
+            auth: true
           },
-          name: routerNames.con_Check,
+          component (resolve) {
+            require(['../pages/create/createSlaveProtocol.vue'], resolve)
+          },
+          name: routerNames.con_createSlaveProtocol
+        },
+        {
+          path: '/ConCreate/querySlaveProtocol',
           meta: {
             auth: true,
             hidden: true
-          }
+          },
+          component (resolve) {
+            require(['../pages/create/createSlaveProtocol.vue'], resolve)
+          },
+          name: routerNames.con_querySlaveProtocol
         }
       ]
     },

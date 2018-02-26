@@ -17,8 +17,8 @@
 </template>
 
 <script>
-  import bus from '../../../core/bus'
-  import Api from '../../../api/manageContract/index'
+  import bus from '../../../../core/bus'
+  import Api from '../../../../api/manageContract/index'
 
   export default {
     name: 'update-info',

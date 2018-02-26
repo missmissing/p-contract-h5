@@ -15,8 +15,5 @@ export default {
   },
   [types.PROCESSROLE] (state, payload) {
     state.processRole = payload.data
-  },
-  [types.CURRENTSTATUS] (state, payload) {
-    state.currentStatus = payload.data
   }
 }

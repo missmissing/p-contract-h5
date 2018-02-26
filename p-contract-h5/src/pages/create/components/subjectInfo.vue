@@ -2,7 +2,7 @@
   <div>
     <el-card>
       <header slot="header">合同我方主体名称<i class="tip ml20">{{subjectsErrorMsg}}</i></header>
-      <el-button v-if="isVisibleAddBtn" type="primary" size="small" @click="visible=true" prefix-icon="el-icon-plus" class="mb10">
+      <el-button v-if="!disabled" type="primary" size="small" @click="visible=true" prefix-icon="el-icon-plus" class="mb10">
         新增
       </el-button>
       <el-table :data="items">
@@ -67,16 +67,8 @@
       }
     },
     computed: {
-      isVisibleAddBtn () {
-        const {isCreate} = this.$store.getters
-        let visible = false
-        if (isCreate) {
-          visible = true
-        }
-        return visible
-      },
       subjectsErrorMsg () {
-        if (this.items.length) {
+        if (this.disabled || this.items.length) {
           return null
         }
         return '请填写我方主体信息'
@@ -85,8 +77,7 @@
     methods: {
       enabledAllApply (code) {
         let enabled = false
-        const {isCreate} = this.$store.getters
-        if (isCreate && code === '1001' && this.contractType >= 3) {
+        if (!this.disabled && code === '1001' && this.contractType >= 3) {
           enabled = true
         }
         return enabled

@@ -49,6 +49,7 @@ export const routerNames = {
   con_update: '合同变更',
   con_contract_create: '合同创建信息',
   con_Check: '合同查看',
+  con_proc_see: '合同流程查看',
   con_stop: '合同终止',
   con_stop_see: '合同终止查看',
 

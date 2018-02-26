@@ -112,7 +112,7 @@ class Jump {
       param = {
         contractId: id
       }
-      name = routerNames.con_Check
+      name = routerNames.con_proc_see
     } else if (prMap.indexOf(procCode) > -1) {
       const {purchaseOrderId} = approveInfo
       param = {
