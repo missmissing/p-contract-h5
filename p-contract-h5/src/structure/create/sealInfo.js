@@ -1,4 +1,5 @@
 const obj = {
+  id: null,
   sealNumber: 1, // 盖章次数
   printNumber: 4, // 打印份数
   remainNumber: 2, // 留存份数

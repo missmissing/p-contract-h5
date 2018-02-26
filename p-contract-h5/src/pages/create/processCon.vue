@@ -89,7 +89,6 @@
   import Api from '../../api/manageContract'
   import comLoading from '../../mixins/comLoading'
   import {formatDate} from '../../filters/moment'
-  import {routerNames} from '../../core/consts'
   import getStructure from '../../util/getStructure'
   import baseInfoStructure from '../../structure/create/baseInfo'
   import contentInfoStructure from '../../structure/create/contentInfo'
@@ -253,19 +252,11 @@
         const agreements = []
         files.forEach((item) => {
           const attachType = item.attachType
-          if (attachType === 2) {
+          if (attachType === 2) { // 从协议
             agreements.push(item)
             return
           }
-          if (this.baseInfoForm.contractTextType === 1) {
-            if (attachType === 3) {
-              contract.push(item)
-            } else {
-              others.push(item)
-            }
-          } else {
-            contract.push(item)
-          }
+          contract.push(item)
         })
         return {
           contract, others, agreements
@@ -313,14 +304,21 @@
       },
       // 待办流程发起人附件信息修改
       modifyFiles () {
+        const {id, sealNumber, printNumber, remainNumber, sealUsedInfo, contract} = this.cardSealInfoForm
         return Api.updateAttach({
-          contractId: this.$route.query.contractId, contractAttachments: this.cardSealInfoForm.contract
+          id,
+          relationId: this.$route.query.contractId,
+          sealNumber,
+          printNumber,
+          remainNumber,
+          sealUsedInfo,
+          attaches: contract
         })
       },
 
       // 回填数据
       initData (data) {
-        const {baseInfoForm, cardContentInfoForm, cardFinanceInfoForm, cardContCheckInfoForm, contractAttachAndSeal, cardRemarkInfoForm, simpleContract} = data
+        const {baseInfoForm, cardContentInfoForm, cardFinanceInfoForm, cardContCheckInfoForm, contractAttachAndSeal, cardRemarkInfoForm} = data
 
         this.initBaseInfo(baseInfoForm)
         this.initContentInfo(cardContentInfoForm)

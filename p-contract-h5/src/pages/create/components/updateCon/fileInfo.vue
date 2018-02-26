@@ -1,6 +1,5 @@
 <template>
   <div>
-    <FileList v-if="cardSealInfoForm.others.length" :items="cardSealInfoForm.others" class="mb20"></FileList>
     <div v-if="baseInfoForm.templateId">
       <SealConditionForm :cardSealInfoForm="cardSealInfoForm" :disabled="disabled" ref="form"></SealConditionForm>
       <SealTable v-if="cardSealInfoForm.contract.length" :items="cardSealInfoForm.contract" :baseInfoForm="baseInfoForm" class="mb20"></SealTable>
@@ -12,7 +11,6 @@
 
 <script>
   import SealConditionForm from './sealConditionForm.vue'
-  import FileList from '../fileList.vue'
   import SealTable from './sealTable.vue'
   import AgreementInfo from '../agreementInfo.vue'
 
@@ -36,7 +34,6 @@
     },
     components: {
       SealConditionForm,
-      FileList,
       SealTable,
       AgreementInfo
     }

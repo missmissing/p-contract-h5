@@ -202,15 +202,7 @@
             agreements.push(item)
             return
           }
-          if (this.baseInfoForm.contractTextType === 1) {
-            if (attachType === 3) {
-              contract.push(item)
-            } else {
-              others.push(item)
-            }
-          } else {
-            contract.push(item)
-          }
+          contract.push(item)
         })
         return {
           contract, others, agreements
