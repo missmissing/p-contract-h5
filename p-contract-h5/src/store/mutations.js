@@ -15,5 +15,8 @@ export default {
   },
   [types.PROCESSROLE] (state, payload) {
     state.processRole = payload.data
+  },
+  [types.PAGESTATUS] (state, payload) {
+    state.pageStatus = payload.data
   }
 }

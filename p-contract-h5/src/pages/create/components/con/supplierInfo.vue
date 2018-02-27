@@ -43,14 +43,15 @@
 </template>
 
 <script>
-  import bus from '../../../core/bus'
-  import Api from '../../../api/manageContract/index'
+  import {mapState} from 'vuex'
+
+  import bus from '../../../../core/bus'
+  import Api from '../../../../api/manageContract/index'
 
   export default {
     name: 'supplier-info',
     props: {
-      items: Array,
-      disabled: Boolean
+      items: Array
     },
     data () {
       return {
@@ -68,6 +69,10 @@
       }
     },
     computed: {
+      ...mapState(['pageStatus']),
+      disabled () {
+        return this.pageStatus !== 1
+      },
       isVisibleNewSupplierBtn () {
         let visible = false
         if (!this.items.length) {

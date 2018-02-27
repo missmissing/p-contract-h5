@@ -137,15 +137,17 @@ const router = new Router({
             hidden: true
           },
           component (resolve) {
-            require(['../pages/create/createCon.vue'], resolve)
+            require(['../pages/create/con.vue'], resolve)
           },
+          query: {pageStatus: 1},
           name: routerNames.con_contract_create
         },
         {
           path: '/conperf/conupdate',
           component (resolve) {
-            require(['../pages/create/updateCon.vue'], resolve)
+            require(['../pages/create/con.vue'], resolve)
           },
+          query: {pageStatus: 2},
           name: routerNames.con_update,
           meta: {
             auth: true
@@ -154,8 +156,9 @@ const router = new Router({
         {
           path: '/ConCreate/conCheck', // 查看合同
           component (resolve) {
-            require(['../pages/create/seeCon.vue'], resolve)
+            require(['../pages/create/con.vue'], resolve)
           },
+          query: {pageStatus: 3},
           name: routerNames.con_Check,
           meta: {
             auth: true,
@@ -165,8 +168,9 @@ const router = new Router({
         {
           path: '/ConCreate/processCon', // 合同流程
           component (resolve) {
-            require(['../pages/create/processCon.vue'], resolve)
+            require(['../pages/create/con.vue'], resolve)
           },
+          query: {pageStatus: 4},
           name: routerNames.con_proc_see,
           meta: {
             auth: true,
@@ -176,9 +180,10 @@ const router = new Router({
         {
           path: '/conperf/conrepeal',
           component (resolve) {
-            require(['../pages/performance/conRepeal.vue'], resolve)
+            require(['../pages/create/conRepeal.vue'], resolve)
           },
           name: routerNames.con_stop,
+          query: {pageStatus: 1},
           meta: {
             auth: true
           }
@@ -186,9 +191,22 @@ const router = new Router({
         {
           path: '/conperf/conrepeal/see',
           component (resolve) {
-            require(['../pages/performance/conRepealSee.vue'], resolve)
+            require(['../pages/create/conRepeal.vue'], resolve)
           },
           name: routerNames.con_stop_see,
+          query: {pageStatus: 3},
+          meta: {
+            auth: true,
+            hidden: true
+          }
+        },
+        {
+          path: '/conperf/conrepeal/process',
+          component (resolve) {
+            require(['../pages/create/conRepeal.vue'], resolve)
+          },
+          name: routerNames.con_stop_process,
+          query: {pageStatus: 4},
           meta: {
             auth: true,
             hidden: true
@@ -202,6 +220,7 @@ const router = new Router({
           component (resolve) {
             require(['../pages/create/createSlaveProtocol.vue'], resolve)
           },
+          query: {pageStatus: 1},
           name: routerNames.con_createSlaveProtocol
         },
         {
@@ -213,7 +232,20 @@ const router = new Router({
           component (resolve) {
             require(['../pages/create/createSlaveProtocol.vue'], resolve)
           },
+          query: {pageStatus: 3},
           name: routerNames.con_querySlaveProtocol
+        },
+        {
+          path: '/ConCreate/slaveProtocol/process',
+          meta: {
+            auth: true,
+            hidden: true
+          },
+          component (resolve) {
+            require(['../pages/create/createSlaveProtocol.vue'], resolve)
+          },
+          query: {pageStatus: 4},
+          name: routerNames.con_slaveProtocol_process
         }
       ]
     },

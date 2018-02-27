@@ -30,7 +30,7 @@
           </el-tab-pane>
           <el-tab-pane label="盖章附件">
             <span slot="label" class="title">盖章附件</span>
-            <SealFile :items="cardSealInfoForm.sealAttaches" :disabled="true"></SealFile>
+            <SealFile :items="cardSealInfoForm.sealAttaches"></SealFile>
           </el-tab-pane>
           <el-tab-pane>
             <span slot="label" class="title">备注</span>

@@ -36,13 +36,14 @@
 </template>
 
 <script>
-  import Api from '../../../api/manageContract/index'
+  import {mapState} from 'vuex'
+
+  import Api from '../../../../api/manageContract/index'
 
   export default {
     name: 'third-party-info',
     props: {
-      items: Array,
-      disabled: Boolean
+      items: Array
     },
     data () {
       return {
@@ -57,6 +58,12 @@
             {required: true, message: '请输入搜索关键字'}
           ]
         }
+      }
+    },
+    computed: {
+      ...mapState(['pageStatus']),
+      disabled () {
+        return this.pageStatus !== 1
       }
     },
     methods: {

@@ -74,7 +74,7 @@
         </el-form-item>
         <i class="errorMsg">{{form.errorMsg}}</i>
         <template v-if="form.sealAttachments.length" v-for="(item,index) in form.sealAttachments">
-          <el-table :data="item" :show-header="index===0?true:false">
+          <el-table :data="item" :show-header="index===0">
             <el-table-column type="expand" v-if="item[0].haveSale">
               <template slot-scope="props" v-if="item[0].haveSale">
                 <div v-if="item[0].haveSale" v-bind:class="{tdPd:item[0].haveSale}">

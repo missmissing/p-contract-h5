@@ -1,61 +1,40 @@
 <template>
   <div>
-    <el-table
-      :data="tableData"
-      ref="table"
-      class="wp100">
-      <el-table-column
-        prop="contractNo"
-        label="合同号">
+    <el-table :data="tableData" ref="table" class="wp100">
+      <el-table-column prop="contractNo" label="合同号">
       </el-table-column>
-      <el-table-column
-        prop="purchaseOrderNo"
-        label="采购订单">
+      <el-table-column prop="purchaseOrderNo" label="采购订单">
         <template slot-scope="scope">
           <router-link class="router-link" :to="see(scope.row)" target="_blank">
             {{scope.row.purchaseOrderNo}}
           </router-link>
         </template>
       </el-table-column>
-      <el-table-column
-        prop="taxIncludedAmount"
-        label="含税总金额">
+      <el-table-column prop="taxIncludedAmount" label="含税总金额">
       </el-table-column>
-      <el-table-column
-        prop="initiateTime"
-        label="发起时间"
-        width="120">
+      <el-table-column prop="initiateTime" label="发起时间" width="120">
         <template slot-scope="scope">
           {{scope.row.initiateTime | formatDate}}
         </template>
       </el-table-column>
-      <el-table-column
-        prop="orderTime"
-        label="下单时间"
-        width="150">
+      <el-table-column prop="orderTime" label="下单时间" width="150">
         <template slot-scope="scope">
           {{scope.row.orderTime | formatDate}}
         </template>
       </el-table-column>
     </el-table>
-    <el-pagination
-      class="mt20 mb20 fr"
-      @size-change="handleSizeChange"
-      @current-change="handleCurrentChange"
-      :current-page="pageNo"
-      :page-sizes="[10, 20, 50, 100]"
-      :page-size="pageSize"
-      layout="total, sizes, prev, pager, next, jumper"
-      :total="total">
+    <el-pagination class="mt20 mb20 fr" @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="pageNo" :page-sizes="[10, 20, 50, 100]" :page-size="pageSize"
+                   layout="total, sizes, prev, pager, next, jumper"
+                   :total="total">
     </el-pagination>
   </div>
 </template>
 
 <script>
-  import Api from '../../../api/manageContract/index'
-  import {formatDate} from '../../../filters/moment'
-  import comLoading from '../../../mixins/comLoading'
-  import {routerNames} from '../../../core/consts'
+  import Api from '../../../../api/manageContract/index'
+  import {formatDate} from '../../../../filters/moment'
+  import comLoading from '../../../../mixins/comLoading'
+  import {routerNames} from '../../../../core/consts'
 
   export default {
     props: ['contractNo'],

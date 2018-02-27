@@ -1,9 +1,9 @@
 <template>
-  <el-form :model="cardFinanceInfoForm" :rules="rules" label-width="120px" ref="form">
+  <el-form ref="form" :model="cardFinanceInfoForm" :rules="rules" label-width="120px">
     <el-row>
       <el-col :span="8">
         <el-form-item label="是否涉及金额">
-          <el-radio-group v-model="cardFinanceInfoForm.moneyInvolved" :disabled="disabled">
+          <el-radio-group v-model="cardFinanceInfoForm.moneyInvolved" :disabled="moneyInvolvedDisabled">
             <el-radio :label="true">是</el-radio>
             <el-radio :label="false">否</el-radio>
           </el-radio-group>
@@ -11,7 +11,7 @@
       </el-col>
       <el-col :span="8" v-if="cardFinanceInfoForm.moneyInvolved">
         <el-form-item label="是否一次性付款">
-          <el-radio-group v-model="cardFinanceInfoForm.oneOffPay" :disabled="disabled">
+          <el-radio-group v-model="cardFinanceInfoForm.oneOffPay" :disabled="oneOffPayDisabled">
             <el-radio :label="true">是</el-radio>
             <el-radio :label="false">否</el-radio>
           </el-radio-group>
@@ -26,14 +26,14 @@
       </el-col>
       <el-col :span="8">
         <el-form-item label="开票类型" prop="invoiceType">
-          <el-select class="wp100" v-model="cardFinanceInfoForm.invoiceType" placeholder="请选择开票类型" :disabled="financeDisabled">
+          <el-select class="wp100" v-model="cardFinanceInfoForm.invoiceType" :disabled="financeDisabled" placeholder="请选择开票类型">
             <el-option v-for="item in invoiceTypeOptions" :key="item.value" :label="item.label" :value="item.value"></el-option>
           </el-select>
         </el-form-item>
       </el-col>
       <el-col :span="8">
         <el-form-item label="币种" prop="currency">
-          <el-select class="wp100" v-model="cardFinanceInfoForm.currency" placeholder="请选择币种" :disabled="financeDisabled">
+          <el-select class="wp100" v-model="cardFinanceInfoForm.currency" :disabled="financeDisabled" placeholder="请选择币种">
             <el-option v-for="item in currencyOptions" :key="item.value" :label="item.label" :value="item.value"></el-option>
           </el-select>
         </el-form-item>
@@ -42,7 +42,7 @@
     <el-row v-if="cardFinanceInfoForm.moneyInvolved&&cardFinanceInfoForm.oneOffPay">
       <el-col :span="8">
         <el-form-item label="付款条件" prop="paymentTimePeriod">
-          <el-select :disabled="financeDisabled" v-model="cardFinanceInfoForm.paymentTimePeriod" placeholder="请选择付款条件" class="wp100" @change="emitValid">
+          <el-select v-model="cardFinanceInfoForm.paymentTimePeriod" :disabled="financeDisabled" placeholder="请选择付款条件" class="wp100" @change="emitValid">
             <el-option v-for="item in paymentTimePeriods" :key="item.id" :value="item.id" :label="item.name"></el-option>
           </el-select>
         </el-form-item>
@@ -50,7 +50,7 @@
     </el-row>
     <el-row v-show="cardFinanceInfoForm.moneyInvolved">
       <el-form-item label="备注" prop="paymentRemark">
-        <el-input :disabled="true" v-model="cardFinanceInfoForm.paymentRemark" placeholder="请输入备注" type="textarea" :rows="4"></el-input>
+        <el-input v-model="cardFinanceInfoForm.paymentRemark" :disabled="disabled" placeholder="请输入备注" type="textarea" :rows="4"></el-input>
         <span class="tip">注：备注内容将会被添加到合同条款中</span>
       </el-form-item>
     </el-row>
@@ -58,8 +58,9 @@
 </template>
 
 <script>
-  import {mapGetters} from 'vuex'
+  import {mapState, mapGetters} from 'vuex'
   import bus from '../../../../core/bus'
+  import {payTypes} from '../../../../core/consts'
 
   export default {
     name: 'finance-form',
@@ -68,7 +69,9 @@
       baseInfoForm: Object
     },
     data () {
+      const payTypeOpts = Object.keys(payTypes).map(key => ({id: +key, name: payTypes[key]}))
       return {
+        payTypeOpts,
         currencyOptions: [{
           value: 1, label: 'CNY 人民币'
         }, {
@@ -108,12 +111,30 @@
     },
     computed: {
       ...mapGetters(['backLogFARole']),
+      ...mapState(['pageStatus']),
+      // 是否涉及金额
+      moneyInvolvedDisabled () {
+        const {contractType} = this.baseInfoForm
+        if ([2, 4].indexOf(contractType) > -1) {
+          return true
+        } else if (contractType === 3 && !this.baseInfoForm.prFlag) {
+          return true
+        }
+        return [3, 4].indexOf(this.pageStatus) > -1
+      },
+      // 是否一次性付款
+      oneOffPayDisabled () {
+        if (this.baseInfoForm.contractType === 3) {
+          return true
+        }
+        return [3, 4].indexOf(this.pageStatus) > -1
+      },
       // 合同总金额
       totalAmountDisabled () {
-        if (this.baseInfoForm.contractType === 3) {
-          return false
+        if (this.baseInfoForm.contractType !== 3) {
+          return true
         }
-        return true
+        return [3, 4].indexOf(this.pageStatus) > -1
       },
       // 开票类型，币种，付款条件禁用
       financeDisabled () {
@@ -121,6 +142,9 @@
           return false
         }
         return true
+      },
+      disabled () {
+        return this.pageStatus !== 1
       }
     },
     methods: {

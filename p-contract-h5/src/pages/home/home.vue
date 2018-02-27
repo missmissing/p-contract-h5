@@ -97,16 +97,14 @@
     <div class="main" id="main">
       <div :class="leftClass" id="left">
         <div>
-          <el-menu :default-active="$route.path" unique-opened router>
+          <el-menu :default-active="$route.path" unique-opened>
             <template v-for="(item,index) in $router.options.routes" v-if="!item.meta.hidden">
               <el-submenu :index="item.name">
                 <template slot="title">
                   <span>{{item.name}}</span>
                 </template>
                 <template v-for="(child) in item.children" v-if="!child.meta.hidden">
-                  <el-menu-item :index="child.path">
-                    <a :href="`#${child.path}`" style="color:inherit;">{{child.name}}</a>
-                  </el-menu-item>
+                  <el-menu-item :index="child.path" @click="push(child)">{{child.name}}</el-menu-item>
                 </template>
               </el-submenu>
             </template>
@@ -133,7 +131,10 @@
   import Api from '../../api'
   import {formatTimeText} from '../../filters/moment'
 
+  import pageStatus from '../../mixins/pageStatus'
+
   export default {
+    mixins: [pageStatus],
     data () {
       return {
         logo: require('../../assets/img/logo.png'),
@@ -171,6 +172,9 @@
           const currentUrl = encodeURIComponent(`${window.location.origin}/#/con/index`)
           window.location.href = `${dataMap}${currentUrl}`
         })
+      },
+      push (route) {
+        this.$router.push(route)
       },
       allRoutesHiddenTrue (items) {
         items.forEach((item) => {

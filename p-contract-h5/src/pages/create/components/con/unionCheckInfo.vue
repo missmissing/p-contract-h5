@@ -1,25 +1,14 @@
 <template>
   <div>
-    <el-button
-      v-if="!disabled"
-      @click="visible=true"
-      size="small"
-      prefix-icon="el-icon-plus"
-      type="primary"
-      class="mb10">添加
+    <el-button v-if="!disabled" @click="visible=true" size="small" prefix-icon="el-icon-plus" type="primary" class="mb10">
+      添加
     </el-button>
     <el-table class="mb20" :data="items">
       <el-table-column prop="personName" label="联合验收人"></el-table-column>
       <el-table-column prop="personDept" label="联合验收人部门"></el-table-column>
-      <el-table-column
-        label="操作"
-        width="100"
-        v-if="!disabled">
+      <el-table-column label="操作" width="100" v-if="!disabled">
         <template slot-scope="scope">
-          <el-button
-            v-if="scope.row.addNew"
-            @click="handleRemove(scope.$index,items)"
-            type="danger" size="small">移除
+          <el-button v-if="scope.row.addNew" @click="handleRemove(scope.$index,items)" type="danger" size="small">移除
           </el-button>
         </template>
       </el-table-column>
@@ -31,28 +20,16 @@
         label-width="120px"
         :rules="rules">
         <el-form-item label="联合验收人" prop="personName">
-          <el-select
-            style="width:300px"
-            v-model="form.personName"
-            filterable
-            remote
-            placeholder="请输入联合验收人"
-            :remote-method="getRemoteCheckPersonsByKeyWord"
-            :loading="loading"
-            @change="handleCheckPersonsChange">
-            <el-option
-              v-for="item in checkPersons"
-              :key="item.userId"
-              :label="item.userName"
-              :value="item.userId">
+          <el-select style="width:300px" v-model="form.personName" filterable remote placeholder="请输入联合验收人" :remote-method="getRemoteCheckPersonsByKeyWord" :loading="loading"
+                     @change="handleCheckPersonsChange">
+            <el-option v-for="item in checkPersons" :key="item.userId" :label="item.userName" :value="item.userId">
               <span class="fl">{{ item.deptName }}</span>
               <span class="fr">{{ item.userName }}</span>
             </el-option>
           </el-select>
         </el-form-item>
         <el-form-item prop="personDept" label="联合验收人部门">
-          <el-input style="width:300px" :disabled="true" v-model="form.personDept"
-                    placeholder="请输入联合验收人部门"></el-input>
+          <el-input style="width:300px" :disabled="true" v-model="form.personDept" placeholder="请输入联合验收人部门"></el-input>
         </el-form-item>
       </el-form>
       <footer slot="footer">
@@ -64,13 +41,14 @@
 </template>
 
 <script>
-  import Api from '../../../api/manageContract/index'
+  import {mapState} from 'vuex'
+
+  import Api from '../../../../api/manageContract/index'
 
   export default {
     name: 'union-check-info',
     props: {
-      items: Array,
-      disabled: Boolean
+      items: Array
     },
     data () {
       return {
@@ -88,6 +66,12 @@
             {required: true, message: '请输入验收人'}
           ]
         }
+      }
+    },
+    computed: {
+      ...mapState(['pageStatus']),
+      disabled () {
+        return this.pageStatus !== 1
       }
     },
     methods: {

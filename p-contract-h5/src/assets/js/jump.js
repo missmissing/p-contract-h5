@@ -154,6 +154,7 @@ class Jump {
       query: {
         ...param,
         from,
+        pageStatus: 4,
         processData: JSON.stringify(processData)
       }
     })

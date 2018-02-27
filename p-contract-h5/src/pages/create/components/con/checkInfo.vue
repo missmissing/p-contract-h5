@@ -12,10 +12,10 @@
 </template>
 
 <script>
-  import CheckConditionForm from './con/checkConditionForm.vue'
-  import UnionCheckInfo from './con/unionCheckInfo.vue'
-  import MaterialCheckInfo from './con/materialCheckInfo.vue'
-  import ServiceCheckInfo from './con/serviceCheckInfo.vue'
+  import CheckConditionForm from './checkConditionForm.vue'
+  import UnionCheckInfo from './unionCheckInfo.vue'
+  import MaterialCheckInfo from './materialCheckInfo.vue'
+  import ServiceCheckInfo from './serviceCheckInfo.vue'
 
   export default {
     name: 'check-info',

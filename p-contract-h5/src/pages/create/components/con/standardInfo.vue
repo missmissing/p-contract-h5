@@ -16,22 +16,31 @@
         </template>
       </el-table-column>
     </el-table>
-    <el-row class="mt20" v-if="cardContentInfoForm.conStandard.length">
-      <el-form-item label="备注" prop="corporeRemark" label-width="60px">
-        <el-input :disabled="disabled" v-model="cardContentInfoForm.corporeRemark" placeholder="请输入备注" type="textarea" :rows="4"></el-input>
-        <span class="tip">注：备注内容将会被添加到合同条款中</span>
-      </el-form-item>
-    </el-row>
+    <el-form>
+      <el-row class="mt20" v-if="cardContentInfoForm.conStandard.length">
+        <el-form-item label="备注" label-width="60px">
+          <el-input :disabled="disabled" v-model="cardContentInfoForm.corporeRemark" placeholder="请输入备注" type="textarea" :rows="4"></el-input>
+          <span class="tip">注：备注内容将会被添加到合同条款中</span>
+        </el-form-item>
+      </el-row>
+    </el-form>
   </el-card>
 </template>
 
 <script>
+  import {mapState} from 'vuex'
+
   export default {
     name: 'standard-info',
     props: {
-      disabled: Boolean,
       cardContentInfoForm: Object,
       baseInfoForm: Object
+    },
+    computed: {
+      ...mapState(['pageStatus']),
+      disabled () {
+        return this.pageStatus !== 1
+      }
     }
   }
 </script>

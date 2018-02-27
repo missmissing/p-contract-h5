@@ -43,13 +43,14 @@
 </template>
 
 <script>
-  import bus from '../../../core/bus'
+  import {mapState} from 'vuex'
+
+  import bus from '../../../../core/bus'
 
   export default {
     name: 'service-check-info',
     props: {
-      items: Array,
-      disabled: Boolean
+      items: Array
     },
     data () {
       return {
@@ -66,6 +67,10 @@
       }
     },
     computed: {
+      ...mapState(['pageStatus']),
+      disabled () {
+        return this.pageStatus !== 1
+      },
       serviceCheckMsg () {
         if (this.items.length) {
           return null

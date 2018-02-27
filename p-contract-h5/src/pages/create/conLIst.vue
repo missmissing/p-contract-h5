@@ -295,7 +295,8 @@
         this.$router.push({
           name: routerNames.con_Check,
           query: {
-            contractNo: row.contractNo
+            contractNo: row.contractNo,
+            pageStatus: 3
           }
         })
       },

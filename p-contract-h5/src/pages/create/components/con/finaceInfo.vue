@@ -28,7 +28,7 @@
 
   import FinaceForm from './financeForm.vue'
   import Payment from './payment.vue'
-  import BothInfo from '../bothInfo.vue'
+  import BothInfo from './bothInfo.vue'
 
   export default {
     name: 'finace-info',

@@ -41,15 +41,16 @@
 </template>
 
 <script>
-  import bus from '../../../core/bus'
-  import Api from '../../../api/manageContract/index'
+  import {mapState} from 'vuex'
+
+  import bus from '../../../../core/bus'
+  import Api from '../../../../api/manageContract/index'
 
   export default {
     name: 'subject-info',
     props: {
       items: Array,
-      contractType: Number,
-      disabled: Boolean
+      contractType: Number
     },
     data () {
       return {
@@ -67,6 +68,10 @@
       }
     },
     computed: {
+      ...mapState(['pageStatus']),
+      disabled () {
+        return this.pageStatus !== 1
+      },
       subjectsErrorMsg () {
         if (this.disabled || this.items.length) {
           return null

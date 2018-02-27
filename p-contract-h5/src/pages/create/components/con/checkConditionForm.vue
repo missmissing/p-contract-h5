@@ -29,13 +29,14 @@
 </template>
 
 <script>
-  import bus from '../../../core/bus'
+  import {mapState} from 'vuex'
+
+  import bus from '../../../../core/bus'
 
   export default {
     name: 'check-condition-form',
     props: {
       cardContCheckInfoForm: Object,
-      disabled: Boolean,
       cardContentInfoForm: Object,
       baseInfoForm: Object
     },
@@ -52,6 +53,10 @@
       }
     },
     computed: {
+      ...mapState(['pageStatus']),
+      disabled () {
+        return this.pageStatus !== 1
+      },
       // 是否显示服务类验收方式，服务类验收事项
       ifServiceCheck () {
         const exist = this.cardContentInfoForm.conStandard.some(item => !!item.materialCode)

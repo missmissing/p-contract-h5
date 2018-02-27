@@ -31,13 +31,14 @@
 </template>
 
 <script>
-  import bus from '../../../core/bus'
+  import {mapState} from 'vuex'
+
+  import bus from '../../../../core/bus'
 
   export default {
     name: 'effective-condition-form',
     props: {
-      cardContentInfoForm: Object,
-      disabled: Boolean
+      cardContentInfoForm: Object
     },
     data () {
       return {
@@ -72,6 +73,10 @@
       }
     },
     computed: {
+      ...mapState(['pageStatus']),
+      disabled () {
+        return this.pageStatus !== 1
+      },
       // 附期限生效
       ifTerm () {
         return this.cardContentInfoForm.effectiveCondition === 1

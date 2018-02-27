@@ -24,9 +24,9 @@
 </template>
 
 <script>
-  import PriceTable from './con/priceTable'
-  import ContractTable from './con/contractTable'
-  import OrderTable from './con/orderTable'
+  import PriceTable from './priceTable'
+  import ContractTable from './contractTable'
+  import OrderTable from './orderTable'
 
   export default {
     name: 'other-tables',

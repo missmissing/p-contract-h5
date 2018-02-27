@@ -28,8 +28,8 @@
 
 <script>
   import {mapGetters} from 'vuex'
-  import {uploadUrl} from '../../../api/consts'
-  import {formatDate} from '../../../filters/moment'
+  import {uploadUrl} from '../../../../api/consts'
+  import {formatDate} from '../../../../filters/moment'
 
   export default {
     name: 'seal-files',

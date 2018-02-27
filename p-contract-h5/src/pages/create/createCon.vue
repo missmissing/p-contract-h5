@@ -69,7 +69,6 @@
   </div>
 </template>
 <script>
-  import bus from '../../core/bus'
   import Api from '../../api/manageContract'
   import comLoading from '../../mixins/comLoading'
   import {formatDate} from '../../filters/moment'
@@ -82,6 +81,10 @@
   import checkInfoStructure from '../../structure/create/checkInfo'
   import sealInfoStructure from '../../structure/create/sealInfo'
 
+  import bus from '../../core/bus'
+
+  import pageStatus from '../../mixins/pageStatus'
+
   import BaseInfo from './components/baseInfo.vue'
   import ContentInfo from './components/contentInfo.vue'
   import FincanceInfo from './components/createCon/finaceInfo.vue'
@@ -90,7 +93,7 @@
   import Preview from './components/preview.vue'
 
   export default {
-    mixins: [comLoading],
+    mixins: [comLoading, pageStatus],
     data () {
       return {
         baseInfoForm: {

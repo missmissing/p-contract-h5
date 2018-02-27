@@ -44,7 +44,8 @@ export const routerNames = {
   con_create: '合同签批管理',
   con_createIndex: '合同创建',
   con_createSlaveProtocol: '从协议创建',
-  con_querySlaveProtocol: '查看从协议',
+  con_querySlaveProtocol: '从协议查看',
+  con_slaveProtocol_process: '从协议流程查看',
   con_agreementList: '从协议查询',
   con_update: '合同变更',
   con_contract_create: '合同创建信息',
@@ -52,6 +53,7 @@ export const routerNames = {
   con_proc_see: '合同流程查看',
   con_stop: '合同终止',
   con_stop_see: '合同终止查看',
+  con_stop_process: '合同终止流程查看',
 
   con_sign: '合同履约管理',
   con_purchase_order: '采购订单创建',

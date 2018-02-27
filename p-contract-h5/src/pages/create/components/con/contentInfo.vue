@@ -1,26 +1,25 @@
 <template>
   <div>
-    <SupplierInfo :items="cardContentInfoForm.tableSupplierInfo" :disabled="disabled" class="mb20"></SupplierInfo>
-    <SubjectInfo class="mb20" :items="cardContentInfoForm.conSubjctName" :contractType="baseInfoForm.contractType" :disabled="disabled"></SubjectInfo>
-    <ThirdPartyInfo :items="cardContentInfoForm.thirdPartyInfo" :disabled="disabled" class="mb20" v-if="ifThirdInfo"></ThirdPartyInfo>
-    <StandardInfo :cardContentInfoForm="cardContentInfoForm" :baseInfoForm="baseInfoForm" :disabled="disabled" class="mb20" v-if="ifStandardInfo"></StandardInfo>
-    <EffectiveConditionForm :cardContentInfoForm="cardContentInfoForm" :disabled="disabled" ref="form"></EffectiveConditionForm>
+    <SupplierInfo :items="cardContentInfoForm.tableSupplierInfo" class="mb20"></SupplierInfo>
+    <SubjectInfo class="mb20" :items="cardContentInfoForm.conSubjctName" :contractType="baseInfoForm.contractType"></SubjectInfo>
+    <ThirdPartyInfo :items="cardContentInfoForm.thirdPartyInfo" class="mb20" v-if="ifThirdInfo"></ThirdPartyInfo>
+    <StandardInfo :cardContentInfoForm="cardContentInfoForm" :baseInfoForm="baseInfoForm" class="mb20" v-if="ifStandardInfo"></StandardInfo>
+    <EffectiveConditionForm :cardContentInfoForm="cardContentInfoForm" ref="form"></EffectiveConditionForm>
   </div>
 </template>
 
 <script>
-  import SupplierInfo from './con/supplierInfo.vue'
-  import SubjectInfo from './con/subjectInfo.vue'
-  import ThirdPartyInfo from './con/thirdPartyInfo.vue'
-  import StandardInfo from './con/standardInfo.vue'
-  import EffectiveConditionForm from './con/effectiveConditionForm.vue'
+  import SupplierInfo from './supplierInfo.vue'
+  import SubjectInfo from './subjectInfo.vue'
+  import ThirdPartyInfo from './thirdPartyInfo.vue'
+  import StandardInfo from './standardInfo.vue'
+  import EffectiveConditionForm from './effectiveConditionForm.vue'
 
   export default {
     name: 'content-info',
     props: {
       cardContentInfoForm: Object,
-      baseInfoForm: Object,
-      disabled: Boolean
+      baseInfoForm: Object
     },
     data () {
       return {}
