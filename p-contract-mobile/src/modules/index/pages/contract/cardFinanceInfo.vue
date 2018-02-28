@@ -14,18 +14,21 @@
     </div>
     <div v-if="!info.oneOffPay">
       <div v-if="info.paymentMethods">
-        <Payment :items="info.paymentMethods.earnest" :datas="moreDatas" :show-header="true" class="wp100"></Payment>
-        <Payment :items="info.paymentMethods.advance" :datas="moreDatas" class="wp100"></Payment>
-        <Payment :items="info.paymentMethods.progress" :datas="moreDatas" class="wp100"></Payment>
-        <Payment :items="info.paymentMethods._final" :datas="moreDatas" class="wp100"></Payment>
-        <Payment :items="info.paymentMethods.deposit" :datas="moreDatas" class="wp100"></Payment>
+        <Payment v-if="info.paymentMethods.earnest" :items="info.paymentMethods.earnest" :totalAmount="info.totalAmount"
+                 :show-header="true"
+                 class="wp100"></Payment>
+        <Payment v-if="info.paymentMethods.advance" :items="info.paymentMethods.advance" :totalAmount="info.totalAmount"
+                 class="wp100"></Payment>
+        <Payment v-if="info.paymentMethods.progress" :items="info.paymentMethods.progress"
+                 :totalAmount="info.totalAmount" class="wp100"></Payment>
+        <Payment v-if="info.paymentMethods._final" :items="info.paymentMethods._final" :totalAmount="info.totalAmount"
+                 class="wp100"></Payment>
+        <Payment v-if="info.paymentMethods.deposit" :items="info.paymentMethods.deposit" :totalAmount="info.totalAmount"
+                 class="wp100"></Payment>
       </div>
     </div>
     <div class="title mt20">开票信息</div>
-    <BothInfo
-      :jiaBillingInfo="info.jiaBillingInfo"
-      :yiBillingInfo="info.yiBillingInfo"
-    ></BothInfo>
+    <BothInfo :jiaBillingInfo="info.jiaBillingInfo" :yiBillingInfo="info.yiBillingInfo"></BothInfo>
   </div>
 </template>
 
@@ -48,13 +51,6 @@
     },
     data() {
       return {};
-    },
-    computed: {
-      moreDatas() {
-        return {
-          totalAmount: this.info.totalAmount
-        };
-      }
     },
     watch: {
       info(val) {

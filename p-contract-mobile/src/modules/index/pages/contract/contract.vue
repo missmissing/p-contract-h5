@@ -7,10 +7,11 @@
         <mt-tab-item :id="1">合同内容信息</mt-tab-item>
         <mt-tab-item :id="2">合同财务信息</mt-tab-item>
         <mt-tab-item :id="3">合同验收与样品信息</mt-tab-item>
-        <mt-tab-item :id="4">合同附件及盖章信息</mt-tab-item>
-        <mt-tab-item :id="5">备注</mt-tab-item>
-        <mt-tab-item :id="6">相关数据</mt-tab-item>
-        <mt-tab-item :id="7">其他</mt-tab-item>
+        <mt-tab-item :id="4">合同附件</mt-tab-item>
+        <mt-tab-item :id="5">盖章信息</mt-tab-item>
+        <mt-tab-item :id="6">备注</mt-tab-item>
+        <mt-tab-item :id="7">相关数据</mt-tab-item>
+        <mt-tab-item :id="8">其他</mt-tab-item>
       </mt-navbar>
       <div>
         <mt-tab-container v-model="selected">
@@ -30,12 +31,15 @@
             <SealInfo :info="cardSealInfoForm" :moreData="{baseInfoForm}"></SealInfo>
           </mt-tab-container-item>
           <mt-tab-container-item :id="5">
-            <mt-cell :value="cardRemarkInfoForm.otherInstruction"></mt-cell>
+            <SealFile :items="cardSealInfoForm.sealAttaches"></SealFile>
           </mt-tab-container-item>
           <mt-tab-container-item :id="6">
-            <CardRelatedInfo :moreData="{cardContentInfoForm}"></CardRelatedInfo>
+            <mt-cell :value="cardRemarkInfoForm.otherInstruction"></mt-cell>
           </mt-tab-container-item>
           <mt-tab-container-item :id="7">
+            <CardRelatedInfo :moreData="{cardContentInfoForm}"></CardRelatedInfo>
+          </mt-tab-container-item>
+          <mt-tab-container-item :id="8">
             <OtherInfo :info="baseInfoForm"></OtherInfo>
           </mt-tab-container-item>
         </mt-tab-container>
@@ -53,6 +57,7 @@
   import CardFinanceInfo from './cardFinanceInfo.vue';
   import CardContCheckInfo from './cardContCheckInfo.vue';
   import SealInfo from './sealInfo.vue';
+  import SealFile from './sealFile.vue';
   import CardRelatedInfo from './cardRelatedInfo.vue';
   import OtherInfo from './otherInfo.vue';
   import Comments from '../../components/comments.vue';
@@ -105,6 +110,7 @@
       CardFinanceInfo,
       CardContCheckInfo,
       SealInfo,
+      SealFile,
       CardRelatedInfo,
       OtherInfo,
       Comments,

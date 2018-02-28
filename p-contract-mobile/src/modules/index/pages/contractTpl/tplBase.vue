@@ -8,6 +8,13 @@
     <mt-cell title="文本名称" :value="form.templateName"></mt-cell>
     <mt-cell title="类型" :value="form.templateType | tplType"></mt-cell>
     <mt-cell title="状态" :value="form.templateStatus | tplStatus"></mt-cell>
+
+    <div v-if="showText">
+      <mt-cell title="业务经办人" :value="form.businessOperatorName"></mt-cell>
+      <mt-cell title="金额" :value="form.amount"></mt-cell>
+      <mt-cell title="合同类型" :value="form.contractType | contractPattern"></mt-cell>
+    </div>
+
     <mt-cell title="生效时间" :value="form.startDate"></mt-cell>
     <mt-cell title="终止时间" :value="form.endDate"></mt-cell>
     <mt-cell title="版本" :value="form.version"></mt-cell>
@@ -56,6 +63,7 @@
   import tplType from '../../../../filters/tplTypeMap';
   import {tplMap} from '../../../../core/consts';
   import download from '../../../../filters/download';
+  import contractPattern from '../../../../filters/contractPattern';
 
   export default {
     props: {
@@ -83,10 +91,27 @@
           busiTypeText: '',
           operatorName: '',
           creatorName: '',
-          version: ''
+          version: '',
+          businessOperatorName: null,
+          amount: null,
+          contractType: null
         },
         versions: [],
         fileList: []
+      }
+    },
+    computed: {
+      showText() {
+        const processData = this.$store.state.processData;
+        return this.form.templateType === 'TEXT' && processData.procCode === tplMap[0]
+      }
+    },
+    watch: {
+      info() {
+        this.setData();
+      },
+      'form.templateCode': function () {
+        //this.getAllVersions();
       }
     },
     methods: {
@@ -147,15 +172,8 @@
     filters: {
       formatDate,
       tplStatus,
-      tplType
-    },
-    watch: {
-      info() {
-        this.setData();
-      },
-      'form.templateCode': function () {
-        //this.getAllVersions();
-      }
+      tplType,
+      contractPattern
     }
   };
 </script>
