@@ -6,7 +6,7 @@
 
 <template>
   <div>
-    <el-button type="primary" @click="add" size="small" prefix-icon="el-icon-plus" class="mb20" v-if="showAdd">添加
+    <el-button type="primary" @click="add" size="small" prefix-icon="el-icon-plus" class="mb20" v-if="!disabled">添加
     </el-button>
     <el-table :data="items">
       <el-table-column prop="attachType" label="附件类型" width="150px">
@@ -29,7 +29,7 @@
           <el-input v-model="scope.row.remark" :disabled="disabledFn(scope.row)"></el-input>
         </template>
       </el-table-column>
-      <el-table-column label="操作" width="180">
+      <el-table-column label="操作" width="180" v-if="!disabled">
         <template slot-scope="scope">
           <div class="btns">
             <el-upload v-if="ifUploadFile(scope.row)" :show-file-list="false" :action="uploadUrl" :with-credentials="true" :on-success="handleUploadSealFileSuccess.bind(this,scope.row)">
@@ -66,31 +66,30 @@
     },
     computed: {
       ...mapState(['pageStatus']),
-      showAdd () {
-        return this.pageStatus === 1
+      disabled () {
+        return this.pageStatus !== 1
       }
     },
     methods: {
       disabledFn (row) {
-        const {attachType, id} = row
-        if (attachType === 3) {
-          return true
-        }
+        const {id} = row
         if (id) {
           return true
         }
-        return false
-      },
-      ifUploadFile (row) {
-        const {attachType, id} = row
-        if (attachType === 3) {
+        if (this.pageStatus === 1) {
           return false
         }
-
+        return true
+      },
+      ifUploadFile (row) {
+        const {id} = row
         if (!id) {
           return true
         }
-        return true
+        if (this.pageStatus === 1) {
+          return true
+        }
+        return false
       },
       add () {
         const file = {

@@ -30,8 +30,8 @@
       <div class="fr">流程编号 {{procInstId}}</div>
       <div class="fl fb">{{procTitle}}</div>
     </div>
-    <div class="mt20">
-      <el-form rel="queryContractForm" :model="queryContractForm" label-width="100px" :rules="queryContractForm.rules">
+    <div v-show="showSearch" class="mt20">
+      <el-form re="queryContractForm" :model="queryContractForm" label-width="100px" :rules="queryContractForm.rules">
         <el-row :gutter="20">
           <el-col :span="8">
             <el-form-item label="合同编号" prop="code">
@@ -101,12 +101,15 @@
 
   import bus from '../../core/bus'
 
+  import comLoading from '../../mixins/comLoading'
+
   import BaseInfo from './baseInfo.vue'
   import FileInfo from './fileInfo.vue'
   import SealFile from './sealFile.vue'
   import RelateTable from './relateTable.vue'
 
   export default {
+    mixins: [comLoading],
     data () {
       return {
         downloadUrl,
@@ -127,8 +130,7 @@
           tableSupplierInfo: [],
           conSubjctName: [],
           radioSealOrder: 1, // 0：我方先盖章 1：对方先盖章
-          sealReason: '',
-          errorCount: 0
+          sealReason: ''
         },
         cardSealInfoForm: {
           ...sealInfoStructure,
@@ -149,6 +151,9 @@
     computed: {
       ...mapGetters(['backLogSealRole', 'backLogPurchaseRole']),
       ...mapState(['pageStatus']),
+      showSearch () {
+        return this.pageStatus === 1
+      },
       showSealFile () {
         return [3, 4].indexOf(this.pageStatus) > -1
       },
@@ -162,32 +167,58 @@
       }
 
       if (this.pageStatus !== 1) {
+        this.queryContractForm.visible = true
         this.requestQueryData()
       }
 
       if (this.pageStatus === 4) {
-        this.initProcessData()
+        this.getProcessData()
       }
     },
     methods: {
       requestQueryData () {
-        Api.getAgreenmentDetail(this.$route.query.id).then((res) => {
+        Api.getAgreenmentDetail({id: this.$route.query.id}).then((res) => {
           const data = res.data.dataMap
-          console.log(data)
+          const {id, code, conSubjctName, tableSupplierInfo, contractAttachAndSeal, otherInstruction, protocolNo, radioSealOrder, sealReason} = data
+          this.id = id
+          this.code = code
+          this.protocolNo = protocolNo
+          Object.assign(this.baseInfoForm, {
+            conSubjctName,
+            tableSupplierInfo,
+            radioSealOrder,
+            sealReason
+          })
+          const result = getStructure(sealInfoStructure, contractAttachAndSeal)
+          Object.assign(this.cardSealInfoForm, result, {contract: result.attaches})
+          this.cardRemarkInfoForm.otherInstruction = otherInstruction
         })
       },
       getResult () {
+        const contractAttachAndSeal = getStructure(sealInfoStructure, this.cardSealInfoForm)
         const result = {
           id: this.id,
-          baseInfoForm: this.baseInfoForm,
-          cardSealInfoForm: this.cardSealInfoForm,
-          cardRemarkInfoForm: this.cardRemarkInfoForm,
-          code: this.queryContractForm.code
+          protocolNo: this.protocolNo,
+          radioSealOrder: this.baseInfoForm.radioSealOrder,
+          sealReason: this.baseInfoForm.sealReason,
+          tableSupplierInfo: this.baseInfoForm.tableSupplierInfo,
+          conSubjctName: this.baseInfoForm.conSubjctName,
+          otherInstruction: this.cardRemarkInfoForm.otherInstruction,
+          code: this.queryContractForm.code,
+          contractAttachAndSeal
         }
         return result
       },
       valid () {
+        let errorCount = 0
+        if (!this.sealInfoValid()) {
+          errorCount++
+        }
 
+        return !errorCount
+      },
+      sealInfoValid () {
+        return this.$refs.cardSealInfoForm.valid()
       },
       handleSubmit () {
         if (!this.valid()) {
@@ -203,6 +234,7 @@
       },
       // 查询
       handleQuery () {
+        this.comLoading()
         Api.getContractDetailByNo({
           contractNo: this.queryContractForm.code
         }).then((res) => {
@@ -214,11 +246,13 @@
             this.baseInfoForm.tableSupplierInfo = tableSupplierInfo
             this.baseInfoForm.conSubjctName = conSubjctName
           }
+        }).finally(() => {
+          this.comLoading(false)
         })
       },
 
       bindEvents () {
-        bus.$on('sealInfoValid', this.valid)
+        bus.$on('sealInfoValid', this.sealInfoValid)
       },
 
       // 流程审批前置动作
@@ -244,7 +278,7 @@
         })
       },
 
-      initProcessData () {
+      getProcessData () {
         const query = this.$route.query
         if (query.processData) {
           this.procInstId = JSON.parse(query.processData).procInstId

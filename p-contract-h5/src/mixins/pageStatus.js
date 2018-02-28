@@ -1,4 +1,4 @@
-import {PAGESTATUS} from '../store/consts'
+import {PAGESTATUS, PROCESSSTATUS, PROCESSROLE} from '../store/consts'
 
 export default {
   created () {
@@ -15,6 +15,19 @@ export default {
       this.$store.commit(PAGESTATUS, {
         data: +pageStatus || 1
       })
+
+      if (+pageStatus === 4) {
+        const {query} = this.$route
+        const processData = JSON.parse(query.processData)
+        const {dataType, roleName} = processData
+
+        this.$store.commit(PROCESSSTATUS, {
+          data: dataType
+        })
+        this.$store.commit(PROCESSROLE, {
+          data: roleName
+        })
+      }
     }
   }
 }

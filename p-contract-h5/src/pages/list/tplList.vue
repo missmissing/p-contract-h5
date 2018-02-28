@@ -155,7 +155,7 @@
 
 <script>
   import {routerNames} from '../../core/consts'
-  import supportModel from '../../api/support'
+  import supportModel from '../../api/support/index'
   import comLoading from '../../mixins/comLoading'
   import {formatTime, formatDate, formatTimeStamp} from '../../filters/moment'
   import tplStatus from '../../filters/tplStatus'

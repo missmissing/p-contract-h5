@@ -61,7 +61,7 @@
               </el-col>
               <el-col :span="8">
                 <el-form-item label="合同类型">
-                  {{form.contractType}}
+                  {{form.contractType | contractType}}
                 </el-form-item>
               </el-col>
             </el-row>
@@ -164,6 +164,7 @@
   import Process from '../../components/process.vue'
   import supportModel from '../../api/support'
   import comLoading from '../../mixins/comLoading'
+  import contractType from '../../filters/contractType'
   import {formatDate} from '../../filters/moment'
   import tplStatus from '../../filters/tplStatus'
   import {tplMap} from '../../core/consts'
@@ -284,7 +285,8 @@
     },
     filters: {
       formatDate,
-      tplStatus
+      tplStatus,
+      contractType
     },
     computed: {
       tplTypeShow () {

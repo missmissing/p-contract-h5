@@ -132,8 +132,8 @@
 </template>
 
 <script>
-  import Api from '../../api/sign'
-  import ContractApi from '../../api/manageContract'
+  import Api from '../../api/sign/index'
+  import ContractApi from '../../api/manageContract/index'
   import {routerNames, prTypeMap} from '../../core/consts'
   import comLoading from '../../mixins/comLoading'
   import {formatDate} from '../../filters/moment'

@@ -458,7 +458,7 @@ const router = new Router({
         {
           path: '/contemplate/list',
           component (resolve) {
-            require(['../pages/support/list.vue'], resolve)
+            require(['../pages/list/tplList.vue'], resolve)
           },
           meta: {
             auth: true
@@ -468,7 +468,7 @@ const router = new Router({
         {
           path: '/contemplate/orderList',
           component (resolve) {
-            require(['../pages/sign/list.vue'], resolve)
+            require(['../pages/list/signList.vue'], resolve)
           },
           meta: {
             auth: true

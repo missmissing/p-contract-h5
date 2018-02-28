@@ -80,7 +80,7 @@ export default {
   },
   // 根据从协议ID查询从协议详情
   getAgreenmentDetail (params) {
-    return Http.get(`${contract}/contract-web/protocol/detail/id/${params}`)
+    return Http.get(`${contract}/contract-web/protocol/getById`, params)
   },
   // 根据从协议编号查询从协议详情
   getAgreenmentDetailByAgreenmentNo (params) {

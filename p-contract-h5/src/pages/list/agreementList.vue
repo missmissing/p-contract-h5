@@ -31,8 +31,8 @@
                 :key="item.companyCode"
                 :label="item.company"
                 :value="item.companyCode">
-                <span style="float: right">{{ item.company }}</span>
-                <span style="float: left; color: #8492a6; font-size: 13px">{{ item.companyCode }}</span>
+                <span class="fr">{{ item.company }}</span>
+                <span class="fl">{{ item.companyCode }}</span>
               </el-option>
             </el-select>
           </el-form-item>
@@ -91,10 +91,9 @@
     <el-table :data="agreementList" border highlight-current-row style="width:100%">
       <el-table-column prop="protocolNo" label="从协议编码" width="210">
         <template slot-scope="scope">
-          <router-link class="router-link"
-                       :to="{path:'/ConCreate/querySlaveProtocol', query:{id:''+agreementList[scope.$index].id}}">
-            {{agreementList[scope.$index].protocolNo}}
-          </router-link>
+          <div class="router-link" @click="goToSee(scope.row)">
+            {{scope.row.protocolNo}}
+          </div>
         </template>
       </el-table-column>
       <el-table-column prop="contractNo" label="合同编号" width="130"></el-table-column>
@@ -125,6 +124,7 @@
 <script>
   import Api from '../../api/manageContract/index'
   import {formatDate} from '../../filters/moment'
+  import {routerNames} from '../../core/consts'
 
   export default {
     data () {
@@ -149,7 +149,7 @@
         totalPage: 0
       }
     },
-    mounted () {
+    created () {
       this.handleQuery()
     },
     methods: {
@@ -209,6 +209,15 @@
       handleCurrentChange (page) {
         this.agreementForm.pageNo = page
         this.handleQuery()
+      },
+      goToSee (row) {
+        this.$router.push({
+          name: routerNames.con_querySlaveProtocol,
+          query: {
+            id: row.id,
+            pageStatus: 3
+          }
+        })
       }
     },
     filters: {

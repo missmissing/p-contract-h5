@@ -87,7 +87,7 @@
 <script>
   import {mapState} from 'vuex'
 
-  import {PROCESSSTATUS, PROCESSCREATORID, PROCESSROLE} from '../../store/consts'
+  import {PROCESSCREATORID} from '../../store/consts'
   import Api from '../../api/manageContract/index'
   import comLoading from '../../mixins/comLoading'
   import {formatDate} from '../../filters/moment'
@@ -387,14 +387,6 @@
         this.procInstId = this.processData.procInstId
         this.procTitle = this.processData.procTitle
 
-        this.$store.commit(PROCESSSTATUS, {
-          data: this.processData.dataType
-        })
-        // 当前用户角色为待办流程FA
-        this.$store.commit(PROCESSROLE, {
-          data: this.processData.roleName
-        })
-
         this.comLoading()
         Api.getContractDetailById({
           id: query.contractId, operate: 'PROCESS'
@@ -488,6 +480,9 @@
       },
 
       // 各选项卡表单校验
+      updateInfoValid () {
+        return this.$refs.updateForm.valid()
+      },
       baseInfoValid () {
         return this.$refs.baseInfoForm.valid()
       },
@@ -516,9 +511,11 @@
       },
       // 校验全部
       validateForms () {
-        const valids = [this.baseInfoValid(), this.contentInfoValid(), this.financeInfoValid(), this.remarkInfoValid()]
-        if (this.ifCheckInfo) {
-          valids.push(this.checkInfoValid())
+        let valids = []
+        if (this.pageStatus === 1) {
+          valids = this.createValid()
+        } else {
+          valids = this.updateValid()
         }
         return new Promise((resolve, reject) => {
           const exist = valids.some(item => !item)
@@ -527,6 +524,22 @@
           }
           return resolve()
         })
+      },
+      createValid () {
+        const valids = [this.baseInfoValid(), this.contentInfoValid(), this.financeInfoValid(), this.sealInfoValid(), this.remarkInfoValid()]
+        if (this.ifCheckInfo) {
+          valids.push(this.checkInfoValid())
+        }
+        return valids
+      },
+      updateValid () {
+        const valids = [this.updateInfoValid(), this.financeInfoValid(), this.sealInfoValid()]
+        const exist = this.cardSealInfoForm.sealAttaches.some(item => !item.id) // 合同变更必须上传附件
+        if (!exist) {
+          this.$message.warning('变更合同必须上传附件！')
+          valids.unshift(Promise.reject(new Error('变更合同必须上传附件！')))
+        }
+        return valids
       },
 
       // 删除

@@ -1,17 +1,19 @@
 <template>
   <div>
-    <el-row>
-      <el-col :span="8" v-if="protocolNo">
-        <el-form-item prop="protocolNo" label="从协议编号">
-          <el-input v-model="protocolNo" :disabled="true"></el-input>
-        </el-form-item>
-      </el-col>
-      <el-col :span="8" v-if="code">
-        <el-form-item prop="code" label="关联合同编号">
-          <el-input v-model="code" :disabled="true"></el-input>
-        </el-form-item>
-      </el-col>
-    </el-row>
+    <el-form label-width="100px">
+      <el-row :gutter="20">
+        <el-col :span="8" v-if="protocolNo">
+          <el-form-item prop="protocolNo" label="从协议编号">
+            <el-input v-model="protocolNo" :disabled="true"></el-input>
+          </el-form-item>
+        </el-col>
+        <el-col :span="8" v-if="code">
+          <el-form-item prop="code" label="关联合同编号">
+            <el-input v-model="code" :disabled="true"></el-input>
+          </el-form-item>
+        </el-col>
+      </el-row>
+    </el-form>
     <SupplierInfo :items="baseInfoForm.tableSupplierInfo" :disabled="true" class="mb20"></SupplierInfo>
     <SubjectInfo :items="baseInfoForm.conSubjctName" :disabled="true" class="mb20"></SubjectInfo>
     <el-form ref="form" :model="baseInfoForm" label-width="100px" :rules="rules">
@@ -35,8 +37,8 @@
 <script>
   import {mapState} from 'vuex'
 
-  import SupplierInfo from '../con/supplierInfo.vue'
-  import SubjectInfo from '../con/subjectInfo.vue'
+  import SupplierInfo from './supplierInfo.vue'
+  import SubjectInfo from './subjectInfo.vue'
 
   export default {
     name: 'base-info',
