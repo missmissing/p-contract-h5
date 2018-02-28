@@ -3,12 +3,11 @@
     <div v-if="showFileList">
       <FileList v-if="cardSealInfoForm.others.length" :items="cardSealInfoForm.others" class="mb20"></FileList>
     </div>
-    <div v-if="baseInfoForm.templateId">
+    <div>
       <SealConditionForm :cardSealInfoForm="cardSealInfoForm" ref="form"></SealConditionForm>
       <SealTable v-if="cardSealInfoForm.contract.length" :items="cardSealInfoForm.contract" :baseInfoForm="baseInfoForm" class="mb20"></SealTable>
       <AgreementInfo :items="cardSealInfoForm.agreenments" class="mt20"></AgreementInfo>
     </div>
-    <h4 v-else>请选择合同基本信息的模板名称！</h4>
   </div>
 </template>
 
@@ -35,6 +34,9 @@
     },
     methods: {
       valid () {
+        if (!this.baseInfoForm.templateId) {
+          return true
+        }
         let errorCount = 0
         const form = this.cardSealInfoForm
         if (!this.$refs.form.valid()) {

@@ -32,6 +32,10 @@
             <span slot="label" class="title"><i v-if="cardContentInfoForm.errorCount" class="errorCount">{{cardContentInfoForm.errorCount}}</i>合同内容信息</span>
             <ContentInfo :cardContentInfoForm="cardContentInfoForm" :baseInfoForm="baseInfoForm" ref="cardContentInfoForm"></ContentInfo>
           </el-tab-pane>
+          <el-tab-pane v-if="showCustomLabel">
+            <span slot="label" class="title"><i v-if="customLabelForm.errorCount" class="errorCount">{{customLabelForm.errorCount}}</i>自定义标签</span>
+            <CustomLabelInfo :items="customLabelForm.contractLabels" ref="customLabelForm"></CustomLabelInfo>
+          </el-tab-pane>
           <el-tab-pane>
             <span slot="label" class="title">合同财务信息
               <i v-if="cardFinanceInfoForm.errorCount" class="errorCount">{{cardFinanceInfoForm.errorCount}}</i>
@@ -45,7 +49,7 @@
             </span>
             <CheckInfo :cardContCheckInfoForm="cardContCheckInfoForm" :baseInfoForm="baseInfoForm" :cardContentInfoForm="cardContentInfoForm" ref="cardContCheckInfoForm"></CheckInfo>
           </el-tab-pane>
-          <el-tab-pane>
+          <el-tab-pane v-if="showSealInfo">
             <span slot="label" class="title">
               <i v-if="cardSealInfoForm.errorCount" class="errorCount">{{cardSealInfoForm.errorCount}}</i>
               合同附件
@@ -113,6 +117,7 @@
   import HistoryInfo from './historyInfo.vue'
   import Preview from './preview.vue'
   import UpdateInfo from './updateInfo.vue'
+  import CustomLabelInfo from './customLabelInfo.vue'
 
   export default {
     mixins: [comLoading],
@@ -161,13 +166,16 @@
         historyDatas: [], // 历史信息
         previewData: {}, // 预览数据
         visible: false, // 预览
-        contractLabels: [], // 自定义标签
         btnSubmitStatus: false,
         updateVisible: false,
         updateForm: {
           code: null,
           remark: null
-        } // 变更信息
+        }, // 变更信息
+        customLabelForm: {
+          contractLabels: [], // 自定义标签
+          errorCount: 0
+        } // 自定义标签信息
       }
     },
     computed: {
@@ -184,6 +192,15 @@
           return this.updateVisible
         }
         return true
+      },
+      showCustomLabel () {
+        if (this.baseInfoForm.templateId && this.customLabelForm.contractLabels.length) {
+          return true
+        }
+        return false
+      },
+      showSealInfo () {
+        return this.baseInfoForm.templateId
       },
       showSealFile () {
         return [3, 4].indexOf(this.pageStatus) > -1
@@ -289,7 +306,10 @@
             const {contractAttaches, templateLabels} = data
             const allFiles = this.getDiviFiles(contractAttaches)
             Object.assign(this.cardSealInfoForm, allFiles, {attaches: allFiles.contract})
-            this.contractLabels = templateLabels
+            this.customLabelForm.contractLabels = templateLabels.map((item) => {
+              item.value = null
+              return item
+            })
           }
         })
       },
@@ -362,7 +382,6 @@
           }
         })
       },
-
       // 查看获取数据
       getData () {
         const {query} = this.$route
@@ -378,7 +397,6 @@
           this.comLoading(false)
         })
       },
-
       // 流程查看获取数据
       getProcessData () {
         const {query} = this.$route
@@ -473,10 +491,9 @@
         bus.$on('contentInfoValid', this.contentInfoValid)
 
         bus.$on('financeInfoValid', this.financeInfoValid)
-
         bus.$on('checkInfoValid', this.checkInfoValid)
-
         bus.$on('sealInfoValid', this.sealInfoValid)
+        bus.$on('customLabelValid', this.customLabelValid)
       },
 
       // 各选项卡表单校验
@@ -509,6 +526,14 @@
         })
         return !errorCount
       },
+      customLabelValid () {
+        if (!this.$refs.customLabelForm.valid()) {
+          this.customLabelForm.errorCount = 1
+          return false
+        }
+        this.customLabelForm.errorCount = 0
+        return true
+      },
       // 校验全部
       validateForms () {
         let valids = []
@@ -529,6 +554,9 @@
         const valids = [this.baseInfoValid(), this.contentInfoValid(), this.financeInfoValid(), this.sealInfoValid(), this.remarkInfoValid()]
         if (this.ifCheckInfo) {
           valids.push(this.checkInfoValid())
+        }
+        if (this.customLabelForm.contractLabels.length) {
+          valids.push(this.customLabelValid())
         }
         return valids
       },
@@ -554,7 +582,7 @@
         const cardContCheckInfoForm = getStructure(checkInfoStructure, this.cardContCheckInfoForm)
         const contractAttachAndSeal = getStructure(sealInfoStructure, this.cardSealInfoForm)
         const cardRemarkInfoForm = this.cardRemarkInfoForm
-        const contractLabels = this.contractLabels
+        const contractLabels = this.customLabelForm.contractLabels
 
         return {
           baseInfoForm,
@@ -598,7 +626,8 @@
       OtherTables,
       HistoryInfo,
       Preview,
-      UpdateInfo
+      UpdateInfo,
+      CustomLabelInfo
     }
   }
 </script>
