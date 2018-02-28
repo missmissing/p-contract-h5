@@ -137,7 +137,7 @@ const router = new Router({
             hidden: true
           },
           component (resolve) {
-            require(['../pages/create/con.vue'], resolve)
+            require(['../pages/con/index.vue'], resolve)
           },
           query: {pageStatus: 1},
           name: routerNames.con_contract_create
@@ -145,7 +145,7 @@ const router = new Router({
         {
           path: '/conperf/conupdate',
           component (resolve) {
-            require(['../pages/create/con.vue'], resolve)
+            require(['../pages/con/index.vue'], resolve)
           },
           query: {pageStatus: 2},
           name: routerNames.con_update,
@@ -156,7 +156,7 @@ const router = new Router({
         {
           path: '/ConCreate/conCheck', // 查看合同
           component (resolve) {
-            require(['../pages/create/con.vue'], resolve)
+            require(['../pages/con/index.vue'], resolve)
           },
           query: {pageStatus: 3},
           name: routerNames.con_Check,
@@ -168,7 +168,7 @@ const router = new Router({
         {
           path: '/ConCreate/processCon', // 合同流程
           component (resolve) {
-            require(['../pages/create/con.vue'], resolve)
+            require(['../pages/con/index.vue'], resolve)
           },
           query: {pageStatus: 4},
           name: routerNames.con_proc_see,
@@ -180,7 +180,7 @@ const router = new Router({
         {
           path: '/conperf/conrepeal',
           component (resolve) {
-            require(['../pages/create/conRepeal.vue'], resolve)
+            require(['../pages/conRepeal/index.vue'], resolve)
           },
           name: routerNames.con_stop,
           query: {pageStatus: 1},
@@ -191,7 +191,7 @@ const router = new Router({
         {
           path: '/conperf/conrepeal/see',
           component (resolve) {
-            require(['../pages/create/conRepeal.vue'], resolve)
+            require(['../pages/conRepeal/index.vue'], resolve)
           },
           name: routerNames.con_stop_see,
           query: {pageStatus: 3},
@@ -203,7 +203,7 @@ const router = new Router({
         {
           path: '/conperf/conrepeal/process',
           component (resolve) {
-            require(['../pages/create/conRepeal.vue'], resolve)
+            require(['../pages/conRepeal/index.vue'], resolve)
           },
           name: routerNames.con_stop_process,
           query: {pageStatus: 4},
@@ -218,7 +218,7 @@ const router = new Router({
             auth: true
           },
           component (resolve) {
-            require(['../pages/create/createSlaveProtocol.vue'], resolve)
+            require(['../pages/slaveProtocol/index.vue'], resolve)
           },
           query: {pageStatus: 1},
           name: routerNames.con_createSlaveProtocol
@@ -230,7 +230,7 @@ const router = new Router({
             hidden: true
           },
           component (resolve) {
-            require(['../pages/create/createSlaveProtocol.vue'], resolve)
+            require(['../pages/slaveProtocol/index.vue'], resolve)
           },
           query: {pageStatus: 3},
           name: routerNames.con_querySlaveProtocol
@@ -242,7 +242,7 @@ const router = new Router({
             hidden: true
           },
           component (resolve) {
-            require(['../pages/create/createSlaveProtocol.vue'], resolve)
+            require(['../pages/slaveProtocol/index.vue'], resolve)
           },
           query: {pageStatus: 4},
           name: routerNames.con_slaveProtocol_process
@@ -438,7 +438,7 @@ const router = new Router({
         {
           path: '/conperf/conlist',
           component (resolve) {
-            require(['../pages/create/conLIst.vue'], resolve)
+            require(['../pages/list/conLIst.vue'], resolve)
           },
           name: routerNames.con_query,
           meta: {
@@ -448,7 +448,7 @@ const router = new Router({
         {
           path: '/contract/agreementList',
           component (resolve) {
-            require(['../pages/create/agreementList.vue'], resolve)
+            require(['../pages/list/agreementList.vue'], resolve)
           },
           name: routerNames.con_agreementList,
           meta: {

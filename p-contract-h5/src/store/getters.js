@@ -6,8 +6,11 @@ export default {
   },
   // 待办流程
   backLog (state) {
-    const {processStatus} = state
-    return processStatus === processListMap[0]
+    const {pageStatus, processStatus} = state
+    if (pageStatus === 4) {
+      return processStatus === processListMap[0]
+    }
+    return false
   },
   // 当前用户为待办流程发起人
   backLogCreator (state, getters) {
