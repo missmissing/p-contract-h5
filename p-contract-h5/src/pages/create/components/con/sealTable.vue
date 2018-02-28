@@ -47,6 +47,8 @@
 </template>
 
 <script>
+  import {mapState, mapGetters} from 'vuex'
+
   import {uploadUrl, downloadUrl} from '../../../../api/consts'
   import {formatDate} from '../../../../filters/moment'
   import attachmentType from '../../../../filters/attachmentType'
@@ -62,6 +64,10 @@
         downloadUrl
       }
     },
+    computed: {
+      ...mapState(['pageStatus']),
+      ...mapGetters(['backLogCreator'])
+    },
     methods: {
       disabledFn (row) {
         const {attachType, id} = row
@@ -71,18 +77,32 @@
         if (id) {
           return true
         }
-        return false
+        if (this.backLogCreator) {
+          return false
+        }
+        if ([1, 2].indexOf(this.pageStatus)) {
+          return false
+        }
+        return true
       },
       ifUploadFile (row) {
         const {attachType, id} = row
         if (attachType === 3) {
-          return false
+          if (this.backLogCreator && this.baseInfoForm.contractTextType === 2) {
+            return true
+          }
         }
 
         if (!id) {
           return true
         }
-        return true
+        return false
+      },
+      // 流程覆盖上传按钮
+      coverUpload (row) {
+        if (this.backLogCreator && row.attachType === 3 && this.baseInfoForm.contractTextType === 2) {
+          row.id && delete row.id
+        }
       },
       add () {
         const file = {
@@ -108,6 +128,9 @@
         row.fileName = dataMap.fileName
         row.fileUrl = `${this.downloadUrl}${fileId}`
         this.$message.success('文件上传成功')
+        if (this.pageStatus === 4) {
+          this.coverUpload(row)
+        }
       }
     },
     filters: {

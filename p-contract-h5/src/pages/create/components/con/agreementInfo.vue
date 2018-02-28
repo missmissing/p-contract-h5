@@ -29,6 +29,7 @@
         return {
           name: routerNames.con_querySlaveProtocol,
           query: {
+            pageStatus: 3,
             id
           }
         }
