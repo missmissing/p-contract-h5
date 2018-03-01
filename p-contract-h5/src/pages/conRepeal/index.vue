@@ -205,7 +205,7 @@
       }
 
       if (this.pageStatus === 4) {
-        this.initProcessData()
+        this.getProcessData()
       }
     },
     methods: {
@@ -355,7 +355,7 @@
         })
       },
       // 初始化流程数据
-      initProcessData () {
+      getProcessData () {
         const {processData} = this.$route.query
         const data = JSON.parse(processData)
         const {procTitle, procInstId} = data

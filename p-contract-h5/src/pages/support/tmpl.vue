@@ -291,7 +291,7 @@
           }
           customLabels.unshift({
             labelName: name,
-            labelKey: `{{${this.customLabelForm.name}}}`,
+            labelKey: `\`\`${this.customLabelForm.name}\`\``,
             labelDesc: description
           })
           form.resetFields()

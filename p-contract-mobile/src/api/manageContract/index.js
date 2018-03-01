@@ -26,9 +26,7 @@ export default {
   },
   // 根据合同id查询合同详情
   getContractDetailByContractId(params) {
-    const {contractId} = params;
-    delete params.contractId;
-    return Http.get(`${domain}/contract-web/contract/id/${contractId}`, params);
+    return Http.get(`${domain}/contract-web/contract/getById`, params);
   },
   /** ***相关数据-订单页****/
   getOrderTableData(params) {

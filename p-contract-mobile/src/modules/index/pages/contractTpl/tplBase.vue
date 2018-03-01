@@ -56,7 +56,6 @@
 </template>
 
 <script>
-  import _ from 'lodash';
   import supportModel from '../../../../api/support/index';
   import {formatDate} from '../../../../filters/moment';
   import tplStatus from '../../../../filters/tplStatus';
@@ -130,7 +129,10 @@
           operatorName,
           creatorName,
           description,
-          files
+          files,
+          amount,
+          contractType,
+          businessOperatorName
         } = this.info;
         this.form.templateCode = templateCode;
         this.form.templateName = templateName;
@@ -145,6 +147,9 @@
         this.form.operatorName = operatorName;
         this.form.creatorName = creatorName;
         this.form.description = description;
+        this.form.amount = amount
+        this.form.contractType = contractType
+        this.form.businessOperatorName = businessOperatorName
         this.fileList = files || [];
       },
       getAllVersions() {

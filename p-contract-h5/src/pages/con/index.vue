@@ -82,10 +82,11 @@
         </el-tabs>
       </el-card>
     </div>
-    <div class="mt20 mb20">
+    <div v-show="showSubmitBtn" class="mt20 mb20">
       <el-button :disabled="btnSubmitStatus" type="primary" @click="handleSubmit">提交</el-button>
     </div>
     <Preview :visible.sync="visible" :datas="previewData"></Preview>
+    <Process :extraFn="callback.bind(this)"></Process>
   </div>
 </template>
 <script>
@@ -118,6 +119,7 @@
   import Preview from './preview.vue'
   import UpdateInfo from './updateInfo.vue'
   import CustomLabelInfo from './customLabelInfo.vue'
+  import Process from '../../components/process.vue'
 
   export default {
     mixins: [comLoading],
@@ -180,7 +182,7 @@
     },
     computed: {
       ...mapState(['pageStatus']),
-      ...mapGetters(['backLogFARole', 'backLogCreator']),
+      ...mapGetters(['backLogFARole', 'backLogCreator', 'backLogSealRole', 'backLogPurchaseRole']),
       // 当合同模式为单一合同和框架协议合同时,显示合同验收与样品信息
       ifCheckInfo () {
         return [1, 3].indexOf(this.baseInfoForm.contractType) > -1
@@ -221,6 +223,10 @@
       // 是否显示历史信息选项卡
       showHistory () {
         return this.pageStatus === 3
+      },
+      // 是否显示提交按钮
+      showSubmitBtn () {
+        return [1, 2].indexOf(this.pageStatus) > -1
       },
       disabled () {
         return this.pageStatus !== 1
@@ -463,7 +469,6 @@
         this.initCheckInfo(cardContCheckInfoForm)
         this.initSealInfo(contractAttachAndSeal)
         this.initRemarkInfo(cardRemarkInfoForm)
-
         if (this.pageStatus === 3) {
           this.historyDatas = simpleContract
         }
@@ -495,9 +500,6 @@
         Object.assign(this.cardFinanceInfoForm, result)
       },
       initCheckInfo (cardContCheckInfoForm) {
-        if (!this.$refs.cardContCheckInfoForm) {
-          return
-        }
         const result = getStructure(checkInfoStructure, cardContCheckInfoForm)
         Object.assign(this.cardContCheckInfoForm, result)
       },
@@ -694,6 +696,52 @@
           contractLabels: [], // 自定义标签
           errorCount: 0
         }
+      },
+
+      // 流程审批前置动作
+      callback (params) { // isSign:是否是加签人 isAgree:审批操作类型是否是同意
+        const t = this
+        const promises = []
+        const {isSign, isAgree} = params
+        if (!isSign && isAgree && (t.backLogSealRole || t.backLogPurchaseRole)) {
+          promises.push(t.modifyAddNewFiles())
+        } else if (t.backLogFARole) {
+          promises.push(t.modifyFA())
+        } else if (t.backLogCreator) {
+          promises.push(t.modifyFiles())
+        } else {
+          return Promise.resolve()
+        }
+        return Promise.all(promises)
+      },
+      // 印章保管人，采购合同上传，盖章信息修改
+      modifyAddNewFiles () {
+        const sealAttachments = this.cardSealInfoForm.sealAttaches.filter(item => !item.id)
+        return Api.uploadSealAttachments({
+          id: this.baseInfoForm.id, type: 1, uploadPerson: true, sealAttachments
+        })
+      },
+      // 待办流程财务信息修改
+      modifyFA () {
+        if (!this.financeInfoValid()) {
+          this.$message.warning('合同财务信息不完整')
+          return Promise.reject(new Error('合同财务信息不完整'))
+        }
+        const {currency, invoiceType, paymentTimePeriod, paymentMethods} = this.cardFinanceInfoForm
+
+        return Api.updateFinanceByContractId({
+          contractId: this.$route.query.contractId,
+          currency,
+          invoiceType,
+          paymentTimePeriod,
+          finances: paymentMethods
+        })
+      },
+      // 待办流程发起人附件信息修改
+      modifyFiles () {
+        return Api.updateAttach({
+          contractId: this.$route.query.contractId, contractAttachments: this.cardSealInfoForm.contract
+        })
       }
     },
     filters: {
@@ -711,7 +759,8 @@
       HistoryInfo,
       Preview,
       UpdateInfo,
-      CustomLabelInfo
+      CustomLabelInfo,
+      Process
     }
   }
 </script>

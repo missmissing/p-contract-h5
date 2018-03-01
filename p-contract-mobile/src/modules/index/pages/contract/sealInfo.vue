@@ -11,7 +11,6 @@
     <SealTable
       v-if="contract.length"
       :items="contract"
-      :show-header="true"
       class="mb20">
     </SealTable>
     <el-table v-if="agreenments.length" :data="agreenments" class="mt20">
@@ -26,18 +25,14 @@
 </template>
 
 <script>
+  import printChapter from '../../../../filters/printChapter'
   import attachmentType from '../../../../filters/attachmentType';
+
   import SealTable from '../../components/sealTable.vue';
 
   export default {
     props: {
       info: {
-        type: Object,
-        default() {
-          return {};
-        }
-      },
-      moreData: {
         type: Object,
         default() {
           return {};
@@ -56,9 +51,9 @@
           const contract = [];
           const agreenments = [];
           val.attaches.forEach((item) => {
-            const attachType = item[0].attachType;
+            const attachType = item.attachType;
             if (attachType === 2) {
-              agreenments.push(item[0]);
+              agreenments.push(item);
             } else {
               contract.push(item)
             }
@@ -69,7 +64,8 @@
       }
     },
     filters: {
-      attachmentType
+      attachmentType,
+      printChapter
     },
     components: {
       SealTable

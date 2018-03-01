@@ -26,7 +26,8 @@
       </div>
       <mt-navbar v-model="selected" class="mt20 mb20">
         <mt-tab-item :id="1">审批意见</mt-tab-item>
-        <mt-tab-item :id="3">合同附件及盖章信息</mt-tab-item>
+        <mt-tab-item :id="2">合同附件</mt-tab-item>
+        <mt-tab-item :id="3">盖章信息</mt-tab-item>
         <mt-tab-item :id="4">补充信息</mt-tab-item>
         <mt-tab-item :id="5" v-if="cardRelatedInfoForm.contractList.length">相关数据</mt-tab-item>
       </mt-navbar>
@@ -34,11 +35,11 @@
         <mt-tab-container-item :id="1">
           <Comments></Comments>
         </mt-tab-container-item>
+        <mt-tab-container-item :id="2">
+          <SealInfo :info="cardSealInfoForm" :moreData="{baseInfoForm}"></SealInfo>
+        </mt-tab-container-item>
         <mt-tab-container-item :id="3">
-          <template v-if="cardSealInfoForm.sealAttachments&&cardSealInfoForm.sealAttachments.length"
-                    v-for="(item,index) in cardSealInfoForm.sealAttachments">
-            <SealTable :items="item" :show-header="index===0" v-if="item&&item.length"></SealTable>
-          </template>
+          <SealFile :items="cardSealInfoForm.sealAttaches"></SealFile>
         </mt-tab-container-item>
         <mt-tab-container-item :id="4">
           <mt-cell title="备注" :value="cardRemarkInfoForm.otherInstruction"></mt-cell>
@@ -64,7 +65,8 @@
   import printOpts from '../../../../filters/printOpts';
   import Header from '../../components/header.vue';
   import ActionSumit from '../../components/actionSubmit.vue';
-  import SealTable from '../../components/sealTable.vue';
+  import SealInfo from './sealInfo.vue';
+  import SealFile from '../../components/sealFile.vue';
   import Comments from '../../components/comments.vue';
 
   export default {
@@ -120,7 +122,8 @@
     },
     components: {
       Header,
-      SealTable,
+      SealInfo,
+      SealFile,
       ActionSumit,
       Comments
     }

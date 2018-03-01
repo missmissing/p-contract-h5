@@ -45,7 +45,6 @@
           templateId: id
         }).then((res) => {
           this.info = res.data.dataMap;
-          //console.log(this.info);
         });
       }
     },
