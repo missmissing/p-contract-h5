@@ -51,5 +51,9 @@ export default {
   },
   getQrDetail(params) {
     return Http.get(`${domain}/contract-web/contract/folio`, params);
+  },
+
+  getTplContent(params) {
+    return Http.post(`${domain}/contract-web/contract/getTemplateContent`, params);
   }
 };

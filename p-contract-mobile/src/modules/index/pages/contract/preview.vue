@@ -201,7 +201,7 @@
 </template>
 
 <script>
-  import Api from '../../../../api/support';
+  import Api from '../../../../api/manageContract';
   import numToChinese from '../../../../filters/numToChinese';
   import {formatDate} from '../../../../filters/moment';
   import paymentTimePeriods from '../../../../filters/paymentTimePeriods';
@@ -310,10 +310,9 @@
         if (!templateId) {
           return;
         }
-        Api.getTplData({templateId}).then((res) => {
+        Api.getTplContent(this.info.datas).then((res) => {
           const data = res.data.dataMap;
-          const {content} = data;
-          this.currentTpl = content;
+          this.currentTpl = data;
           this.tplData[templateId] = data;
         });
       }

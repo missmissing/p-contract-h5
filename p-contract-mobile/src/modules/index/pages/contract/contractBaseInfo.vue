@@ -4,7 +4,7 @@
 
 <template>
   <div>
-    <mt-cell title="合同名称" :value="info.contractName" is-link @click.native="visible=true"></mt-cell>
+    <mt-cell title="合同名称" :value="info.contractName" is-link @click.native="preview"></mt-cell>
     <mt-cell title="业务申请人" :value="info.businessOperatorId"></mt-cell>
     <mt-cell title="业务部门" :value="info.businessDeptName"></mt-cell>
     <mt-cell title="合同模式" :value="info.contractType | contractPattern"></mt-cell>
@@ -48,6 +48,20 @@
       return {
         visible: false
       };
+    },
+    watch: {
+      visible(val) {
+        if (val) {
+          window._____processCenterPageAction('setheaderdisplay', {show: false});
+        } else {
+          window._____processCenterPageAction('setheaderdisplay', {show: true});
+        }
+      }
+    },
+    methods: {
+      preview() {
+        this.visible = true
+      }
     },
     components: {
       Preview
