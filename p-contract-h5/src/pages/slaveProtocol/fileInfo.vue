@@ -2,7 +2,7 @@
   <div>
     <div>
       <SealConditionForm :cardSealInfoForm="cardSealInfoForm" ref="form"></SealConditionForm>
-      <SealTable :items="cardSealInfoForm.contract" class="mb20"></SealTable>
+      <SealTable :items="cardSealInfoForm.attaches" class="mb20"></SealTable>
     </div>
   </div>
 </template>

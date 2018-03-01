@@ -135,7 +135,6 @@
         },
         cardSealInfoForm: {
           ..._.cloneDeep(sealInfoStructure),
-          contract: [],
           errorCount: 0
         }, // 附件信息
         cardSealFileForm: {
@@ -191,7 +190,7 @@
             sealReason
           })
           const result = getStructure(sealInfoStructure, contractAttachAndSeal)
-          Object.assign(this.cardSealInfoForm, result, {contract: result.attaches})
+          Object.assign(this.cardSealInfoForm, result)
           this.cardRemarkInfoForm.otherInstruction = otherInstruction
         })
       },
