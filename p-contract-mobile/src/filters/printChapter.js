@@ -4,6 +4,9 @@ const map = {
 };
 
 export default (arr) => {
+  if (!arr) {
+    return arr;
+  }
   if (arr.length === 1) {
     return map[arr[0]];
   }
