@@ -77,6 +77,8 @@
                 style="width:100%;"
                 :disabled="disabled"
                 v-model="form.suspendTime"
+                format="yyyy-MM-dd"
+                value-format="timestamp"
                 type="date"
                 placeholder="选择日期"
                 :picker-options="pickerOptions">
@@ -122,7 +124,7 @@
   import {mapState, mapGetters} from 'vuex'
   import _ from 'lodash'
   import Api from '../../api/manageContract/index'
-  import {formatDate} from '../../filters/moment'
+  import {formatDate, formatTimeStamp} from '../../filters/moment'
   import {routerNames} from '../../core/consts'
   import {downloadUrl, uploadUrl} from '../../api/consts'
   import getStructure from '../../util/getStructure'
@@ -157,7 +159,7 @@
         },
         rules: {
           suspendTime: [{
-            type: 'date', required: true, message: '请选择中止时间', trigger: 'change'
+            required: true, message: '请选择中止时间', trigger: 'change'
           }],
           suspendRemark: [
             {required: true, message: '请填写原因说明', trigger: 'change'},
@@ -237,7 +239,7 @@
         const {id} = baseInfoForm
         const result = {
           id,
-          suspendTime: formatDate(this.form.suspendTime),
+          suspendTime: this.form.suspendTime,
           suspendRemark: this.form.suspendRemark,
           sealAttachments: getStructure(sealInfoStructure, this.cardSealInfoForm)
         }
@@ -303,15 +305,11 @@
         const {
           baseInfoForm, cardContentInfoForm, contSuspend, cardSealInfoForm
         } = data
-        const {
-          contractNo, approvalDate, contractStatusName, id
-        } = baseInfoForm
+        const {contractNo, id} = baseInfoForm
         const {suspendReason, suspendTime, suspendRemark} = contSuspend || {}
         const {startTime, endTime} = cardContentInfoForm
         const {sealAttachments} = cardSealInfoForm
         this.contractCode = contractNo
-        this.signDate = approvalDate
-        this.contractStatus = contractStatusName
         this.startTime = startTime
         this.endTime = endTime
         this.id = id

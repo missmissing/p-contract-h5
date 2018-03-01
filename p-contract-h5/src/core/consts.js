@@ -51,9 +51,9 @@ export const routerNames = {
   con_contract_create: '合同创建信息',
   con_Check: '合同查看',
   con_proc_see: '合同流程查看',
-  con_stop: '合同终止',
-  con_stop_see: '合同终止查看',
-  con_stop_process: '合同终止流程查看',
+  con_stop: '合同中止',
+  con_stop_see: '合同中止查看',
+  con_stop_process: '合同中止流程查看',
 
   con_sign: '合同履约管理',
   con_purchase_order: '采购订单创建',
