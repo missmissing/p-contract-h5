@@ -5,7 +5,7 @@
       <mt-navbar v-model="selected" class="mt20 mb20">
         <mt-tab-item :id="0">审批意见</mt-tab-item>
         <mt-tab-item :id="1">合同内容信息</mt-tab-item>
-        <mt-tab-item :id="2" v-if="contractLabels.length">自定义标签</mt-tab-item>
+        <mt-tab-item :id="2" v-if="showCustomLabel">自定义标签</mt-tab-item>
         <mt-tab-item :id="3">合同财务信息</mt-tab-item>
         <mt-tab-item :id="4" v-if="ifCheckInfo">合同验收与样品信息</mt-tab-item>
         <mt-tab-item :id="5">合同附件</mt-tab-item>
@@ -86,6 +86,12 @@
       // 当合同模式为单一合同和框架协议合同时,显示合同验收与样品信息
       ifCheckInfo() {
         return [1, 3].indexOf(this.baseInfoForm.contractType) > -1
+      },
+      showCustomLabel () {
+        if (this.contractLabels.length) {
+          return true
+        }
+        return false
       }
     },
     methods: {
@@ -100,10 +106,11 @@
         });
       },
       initData(data) {
-        const {baseInfoForm, cardContentInfoForm, cardFinanceInfoForm, cardContCheckInfoForm, contractAttachAndSeal} = data;
+        const {baseInfoForm, cardContentInfoForm, contractLabels, cardFinanceInfoForm, cardContCheckInfoForm, contractAttachAndSeal} = data;
         this.datas = data;
         this.baseInfoForm = baseInfoForm;
         this.cardContentInfoForm = cardContentInfoForm;
+        this.contractLabels = contractLabels;
         this.cardFinanceInfoForm = cardFinanceInfoForm;
         this.cardContCheckInfoForm = cardContCheckInfoForm;
         this.cardSealInfoForm = contractAttachAndSeal;

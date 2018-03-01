@@ -4,7 +4,7 @@
     <el-card v-show="cardFinanceInfoForm.moneyInvolved&&!cardFinanceInfoForm.oneOffPay" class="mb20">
       <header slot="header">付款方式<i class="tip ml20">{{paymentErrorMSG}}</i></header>
       <div>
-        <el-dropdown @command="selectPayType" class="mb20">
+        <el-dropdown v-show="showSelectPayType" @command="selectPayType" class="mb20">
           <span class="router-link">付款类型<i class="el-icon-arrow-down el-icon--right"></i></span>
           <el-dropdown-menu slot="dropdown">
             <template v-for="item in payTypeOpts">
@@ -24,7 +24,11 @@
 </template>
 
 <script>
+  import {mapState, mapGetters} from 'vuex'
+
   import {payTypes} from '../../core/consts'
+
+  import numCalc from '../../util/numCalc'
 
   import FinaceForm from './financeForm.vue'
   import Payment from './payment.vue'
@@ -44,6 +48,8 @@
       }
     },
     computed: {
+      ...mapState(['pageStatus']),
+      ...mapGetters(['backLogFARole']),
       // 计算分批付款金额之和
       totalConMoney () {
         const {oneOffPay, totalAmount, paymentMethods} = this.cardFinanceInfoForm
@@ -54,10 +60,20 @@
         paymentMethods.forEach((item) => {
           const {paymentAmount} = item
           if (paymentAmount) {
-            m += parseFloat(paymentAmount)
+            m = numCalc.add(m, paymentAmount)
           }
         })
         return m
+      },
+      // 是否显示付款方式选择器
+      showSelectPayType () {
+        if ([1, 2].indexOf(this.pageStatus) > -1) {
+          return true
+        }
+        if (this.backLogFARole) {
+          return true
+        }
+        return false
       }
     },
     watch: {
@@ -81,20 +97,24 @@
         })
       },
       // 判断多次付款，付款条件是否选择
-      checkPayCondition () {
-        return this.cardFinanceInfoForm.paymentMethods.some((item) => {
+      checkPayCondition (paymentMethods) {
+        const exist = paymentMethods.some((item) => {
           const {financeMores, seriousPayments, paymentAmount} = item
           if (seriousPayments) {
             if (financeMores.length) {
-              return this.checkPayCondition(financeMores)
+              return !this.checkPayCondition(financeMores)
             }
-            return false
+            return true
           }
           if (paymentAmount) {
             return !item.paymentTimePeriod
           }
           return false
         })
+        if (exist) {
+          return false
+        }
+        return true
       },
       valid () {
         let errorCount = 0
@@ -109,7 +129,8 @@
             if (this.totalConMoney !== totalAmount) {
               errorCount++
             }
-            if (this.checkPayCondition()) { // 判断付款条件是否选择
+            const paymentMethods = this.cardFinanceInfoForm.paymentMethods.filter(item => item.visible)
+            if (!this.checkPayCondition(paymentMethods)) { // 判断付款条件是否选择
               errorCount++
             }
           }

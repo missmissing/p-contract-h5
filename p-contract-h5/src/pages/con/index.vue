@@ -461,7 +461,7 @@
 
       // 回填数据
       initData (data) {
-        const {baseInfoForm, cardContentInfoForm, cardFinanceInfoForm, cardContCheckInfoForm, contractAttachAndSeal, cardRemarkInfoForm, simpleContract} = data
+        const {baseInfoForm, cardContentInfoForm, contractLabels, cardFinanceInfoForm, cardContCheckInfoForm, contractAttachAndSeal, cardRemarkInfoForm, simpleContract} = data
 
         this.initBaseInfo(baseInfoForm)
         this.initContentInfo(cardContentInfoForm)
@@ -469,6 +469,7 @@
         this.initCheckInfo(cardContCheckInfoForm)
         this.initSealInfo(contractAttachAndSeal)
         this.initRemarkInfo(cardRemarkInfoForm)
+        this.customLabelForm.contractLabels = contractLabels
         if (this.pageStatus === 3) {
           this.historyDatas = simpleContract
         }
@@ -584,7 +585,10 @@
         })
       },
       createValid () {
-        const valids = [this.baseInfoValid(), this.contentInfoValid(), this.financeInfoValid(), this.sealInfoValid(), this.remarkInfoValid()]
+        const valids = [this.baseInfoValid(), this.contentInfoValid(), this.financeInfoValid(), this.remarkInfoValid()]
+        if (this.showSealInfo) {
+          valids.push(this.sealInfoValid())
+        }
         if (this.ifCheckInfo) {
           valids.push(this.checkInfoValid())
         }
@@ -630,7 +634,15 @@
       getResult () {
         const baseInfoForm = getStructure(baseInfoStructure, this.baseInfoForm)
         const cardContentInfoForm = getStructure(contentInfoStructure, this.cardContentInfoForm)
-        const cardFinanceInfoForm = getStructure(financeInfoStructure, this.cardFinanceInfoForm)
+
+        const paymentMethods = this.cardFinanceInfoForm.paymentMethods.filter((item) => {
+          if (item.visible && item.paymentAmount > 0) {
+            return true
+          }
+          return false
+        })
+        const cardFinanceInfoForm = Object.assign({}, getStructure(financeInfoStructure, this.cardFinanceInfoForm), {paymentMethods})
+
         const cardContCheckInfoForm = getStructure(checkInfoStructure, this.cardContCheckInfoForm)
         const contractAttachAndSeal = getStructure(sealInfoStructure, this.cardSealInfoForm)
         const cardRemarkInfoForm = this.cardRemarkInfoForm

@@ -37,19 +37,25 @@
     },
     watch: {
       items () {
+        this.createForm()
+      }
+    },
+    created () {
+      this.createForm()
+    },
+    methods: {
+      createForm () {
         const rules = {}
         const form = {}
         this.items.forEach((item) => {
-          form[item.labelKey] = null
+          form[item.labelKey] = item.value || null
           rules[item.labelKey] = [{
             required: true, message: '请输入必填项', trigger: 'change'
           }]
         })
         this.form = form
         this.rules = rules
-      }
-    },
-    methods: {
+      },
       change (index, value) {
         this.items[index].value = value
         bus.$emit('customLabelValid')
