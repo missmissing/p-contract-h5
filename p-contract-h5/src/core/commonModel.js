@@ -3,7 +3,7 @@
  */
 import axios from 'axios'
 import LocalStore from 'store'
-import emitter from './emitter'
+import bus from './bus'
 import Consts from './consts'
 
 axios.defaults.withCredentials = true
@@ -26,7 +26,7 @@ function checkStatus (response) {
 }
 
 function cancelRequest () {
-  emitter.emit(Consts.EVENT_KEY.NET_REQUEST_TIMEOUT)
+  bus.$emit(Consts.EVENT_KEY.NET_REQUEST_TIMEOUT)
 }
 
 export default class Http {
@@ -37,17 +37,17 @@ export default class Http {
       if (response) {
         const {data = {}, status} = response
         const {message = '系统异常！'} = data
-        emitter.emit(Consts.EVENT_KEY.ERROR)
+        bus.$emit(Consts.EVENT_KEY.ERROR)
         // 触发网络异常
-        emitter.emit(Consts.EVENT_KEY.NET_COMMUNICATION.BUSINESS_ERROR.NOT_200, message)
+        bus.$emit(Consts.EVENT_KEY.NET_COMMUNICATION.BUSINESS_ERROR.NOT_200, message)
 
         if (status === 401) {
           // 触发401异常
-          emitter.emit(Consts.EVENT_KEY.NET_COMMUNICATION.BUSINESS_ERROR.ERROR_401)
+          bus.$emit(Consts.EVENT_KEY.NET_COMMUNICATION.BUSINESS_ERROR.ERROR_401)
         }
         if (status === 500) {
           // 触发500异常
-          emitter.emit(Consts.EVENT_KEY.NET_COMMUNICATION.NORMAL_ERROR.ERROR_500)
+          bus.$emit(Consts.EVENT_KEY.NET_COMMUNICATION.NORMAL_ERROR.ERROR_500)
         }
       } else if (error.request) {
         console.log('error.request', error.request)

@@ -1,5 +1,5 @@
 import {Message} from 'element-ui'
-import emitter from './emitter'
+import bus from './bus'
 import Consts from './consts'
 
 class Base {
@@ -26,16 +26,16 @@ class Base {
   }
 
   constructor () {
-    emitter.off(Consts.EVENT_KEY.ERROR, Base.errorProcess)
-    emitter.off(Consts.EVENT_KEY.NET_COMMUNICATION.BUSINESS_ERROR.ERROR_401, Base.error401Process)
-    emitter.off(Consts.EVENT_KEY.NET_COMMUNICATION.NORMAL_ERROR.ERROR_500, Base.error500Process)
-    emitter.off(Consts.EVENT_KEY.NET_COMMUNICATION.BUSINESS_ERROR.NOT_200, Base.errorNot200Process)
-    emitter.off(Consts.EVENT_KEY.NET_REQUEST_TIMEOUT, Base.errorRequestTimeout)
-    emitter.on(Consts.EVENT_KEY.ERROR, Base.errorProcess)
-    emitter.on(Consts.EVENT_KEY.NET_COMMUNICATION.BUSINESS_ERROR.ERROR_401, Base.error401Process)
-    emitter.on(Consts.EVENT_KEY.NET_COMMUNICATION.NORMAL_ERROR.ERROR_500, Base.error500Process)
-    emitter.on(Consts.EVENT_KEY.NET_COMMUNICATION.BUSINESS_ERROR.NOT_200, Base.errorNot200Process)
-    emitter.on(Consts.EVENT_KEY.NET_REQUEST_TIMEOUT, Base.errorRequestTimeout)
+    bus.$off(Consts.EVENT_KEY.ERROR, Base.errorProcess)
+    bus.$off(Consts.EVENT_KEY.NET_COMMUNICATION.BUSINESS_ERROR.ERROR_401, Base.error401Process)
+    bus.$off(Consts.EVENT_KEY.NET_COMMUNICATION.NORMAL_ERROR.ERROR_500, Base.error500Process)
+    bus.$off(Consts.EVENT_KEY.NET_COMMUNICATION.BUSINESS_ERROR.NOT_200, Base.errorNot200Process)
+    bus.$off(Consts.EVENT_KEY.NET_REQUEST_TIMEOUT, Base.errorRequestTimeout)
+    bus.$on(Consts.EVENT_KEY.ERROR, Base.errorProcess)
+    bus.$on(Consts.EVENT_KEY.NET_COMMUNICATION.BUSINESS_ERROR.ERROR_401, Base.error401Process)
+    bus.$on(Consts.EVENT_KEY.NET_COMMUNICATION.NORMAL_ERROR.ERROR_500, Base.error500Process)
+    bus.$on(Consts.EVENT_KEY.NET_COMMUNICATION.BUSINESS_ERROR.NOT_200, Base.errorNot200Process)
+    bus.$on(Consts.EVENT_KEY.NET_REQUEST_TIMEOUT, Base.errorRequestTimeout)
   }
 }
 

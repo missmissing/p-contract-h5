@@ -145,7 +145,6 @@
           contract: [],
           others: [],
           agreenments: [],
-          errorMsg: null,
           errorCount: 0
         }, // 附件信息
         cardRemarkInfoForm: {
@@ -696,7 +695,6 @@
           contract: [],
           others: [],
           agreenments: [],
-          errorMsg: null,
           errorCount: 0
         }
         this.cardRemarkInfoForm = {
