@@ -293,14 +293,32 @@
       }
     },
     methods: {
-      transformData (data, name) {
+      transformData (data) {
         const priceTable = []
+        let name = ''
         if (data.length) {
           data.forEach((item) => {
             if (!item.paymentAmount) {
               return
             }
-            const {seriousPayments} = item
+            const {seriousPayments, payType} = item
+            switch (payType) {
+              case 1:
+                name = '定金'
+                break
+              case 2:
+                name = '预付款'
+                break
+              case 3:
+                name = ''
+                break
+              case 4:
+                name = '尾款'
+                break
+              case 5:
+                name = '保证金'
+                break
+            }
             if (seriousPayments) {
               const {subItem} = item
               subItem.forEach((item1, index1) => {
@@ -320,7 +338,7 @@
             }
             priceTable.push({
               ...item,
-              type: item.type === '进度款' ? '' : item.type,
+              type: name,
               paymentTimePeriod: this.getPaymentTimePeriodName(item.paymentTimePeriod),
               ratio: `${item.ratio}%`
             })
@@ -355,15 +373,15 @@
       }
     },
     watch: {
-      datas () {
-        if (!Object.keys(this.datas).length) {
+      datas (val) {
+        if (!Object.keys(val).length) {
           return
         }
         const {
           baseInfoForm,
           cardContentInfoForm,
           cardFinanceInfoForm
-        } = this.datas
+        } = val
         const {
           contractNo,
           contractType,
@@ -388,13 +406,6 @@
           paymentTimePeriods,
           paymentRemark
         } = cardFinanceInfoForm
-        const {
-          earnest,
-          advance,
-          progress,
-          _final, // eslint-disable-line
-          deposit
-        } = paymentMethods
 
         this.contractNo = contractNo
         this.contractType = contractType
@@ -420,17 +431,11 @@
           if (oneOffPay) {
             this.oneOffPay = true
           } else {
-            this.priceTable = [
-              ...this.transformData(earnest, '定金'),
-              ...this.transformData(advance, '预付款'),
-              ...this.transformData(progress, ''),
-              ...this.transformData(_final, '尾款'),
-              ...this.transformData(deposit, '保证金')
-            ]
+            this.priceTable = this.transformData(paymentMethods)
           }
         }
 
-        this.materialTable = conStandard
+        this.materialTable = conStandard || []
 
         this.getTplData()
       }
