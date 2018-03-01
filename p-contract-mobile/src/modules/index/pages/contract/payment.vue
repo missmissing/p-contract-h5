@@ -63,7 +63,9 @@
 </template>
 
 <script>
-  import paymentTimePeriods from '../../../filters/paymentTimePeriods';
+  import paymentTimePeriods from '../../../../filters/paymentTimePeriods';
+
+  import numCalc from '../../../../util/numCalc'
 
   export default {
     props: {
@@ -98,7 +100,7 @@
         if (this.items.length) {
           this.items[0].financeMores.forEach((item) => {
             if (item.paymentAmount) {
-              total += Number(item.paymentAmount, 10)
+              total = numCalc.add(total, item.paymentAmount)
             }
           });
           this.items[0].paymentAmount = total
