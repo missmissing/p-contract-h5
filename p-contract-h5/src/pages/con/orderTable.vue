@@ -60,20 +60,25 @@
         if (!this.contractNo) {
           return
         }
+        if (!this.$refs.table) {
+          return
+        }
         this.comLoading({
           target: this.$refs.table.$el
         })
-        Api.getOrderTableData({contractNo: this.contractNo, pageNo: this.pageNo, pageSize: this.pageSize})
-          .then((res) => {
-            const data = res.data.dataMap
-            if (data) {
-              this.tableData = data.data
-              this.total = data.total
-            }
-          })
-          .finally(() => {
-            this.comLoading(false)
-          })
+        Api.getOrderTableData({
+          contractNo: this.contractNo,
+          pageNo: this.pageNo,
+          pageSize: this.pageSize
+        }).then((res) => {
+          const data = res.data.dataMap
+          if (data) {
+            this.tableData = data.data
+            this.total = data.total
+          }
+        }).finally(() => {
+          this.comLoading(false)
+        })
       },
       handleSizeChange (val) {
         this.pageSize = val

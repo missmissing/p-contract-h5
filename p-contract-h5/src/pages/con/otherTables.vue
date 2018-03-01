@@ -1,24 +1,10 @@
 <template>
   <div>
-    <el-select
-      v-model="condition"
-      placeholder="请选择"
-      class="mb20"
-    >
-      <el-option
-        v-for="item in conditionOptions"
-        :key="item.value"
-        :label="item.label"
-        :value="item.value">
-      </el-option>
+    <el-select v-model="condition" placeholder="请选择" class="mb20">
+      <el-option v-for="item in conditionOptions" :key="item.value" :label="item.label" :value="item.value"></el-option>
     </el-select>
     <transition name="component-fade" mode="out-in">
-      <component
-        :contractInfo="[baseInfoForm]"
-        :prNo="baseInfoForm.prNo"
-        :contractNo="baseInfoForm.contractNo"
-        :is="tabs">
-      </component>
+      <component :contractInfo="[baseInfoForm]" :prNo="baseInfoForm.prNo" :contractNo="baseInfoForm.contractNo" :is="tabs"></component>
     </transition>
   </div>
 </template>
@@ -68,8 +54,12 @@
       }
     },
     watch: {
-      'baseInform.prNo': function (val) {
+      'baseInfoForm.prNo': function (val) {
         if (val) {
+          const exist = this.conditionOptions.some(item => item.value === 2)
+          if (exist) {
+            return
+          }
           this.conditionOptions.unshift({
             value: 2,
             label: '比价单信息'

@@ -89,20 +89,20 @@
   </div>
 </template>
 <script>
-  import {mapState} from 'vuex'
+  import {mapState, mapGetters} from 'vuex'
+  import _ from 'lodash'
 
   import {PROCESSCREATORID} from '../../store/consts'
   import Api from '../../api/manageContract/index'
   import comLoading from '../../mixins/comLoading'
   import {formatDate} from '../../filters/moment'
-  import getContractType from '../../filters/contractType'
   import {routerNames} from '../../core/consts'
   import getStructure from '../../util/getStructure'
-  import baseInfoStructure from '../../structure/create/baseInfo'
-  import contentInfoStructure from '../../structure/create/contentInfo'
-  import financeInfoStructure from '../../structure/create/financeInfo'
-  import checkInfoStructure from '../../structure/create/checkInfo'
-  import sealInfoStructure from '../../structure/create/sealInfo'
+  import baseInfoStructure from '../../structure/con/baseInfo'
+  import contentInfoStructure from '../../structure/con/contentInfo'
+  import financeInfoStructure from '../../structure/con/financeInfo'
+  import checkInfoStructure from '../../structure/con/checkInfo'
+  import sealInfoStructure from '../../structure/con/sealInfo'
 
   import bus from '../../core/bus'
 
@@ -124,22 +124,22 @@
     data () {
       return {
         baseInfoForm: {
-          ...baseInfoStructure
+          ..._.cloneDeep(baseInfoStructure)
         }, // 基本信息
         cardContentInfoForm: {
-          ...contentInfoStructure,
+          ..._.cloneDeep(contentInfoStructure),
           errorCount: 0
         }, // 内容信息
         cardFinanceInfoForm: {
-          ...financeInfoStructure,
+          ..._.cloneDeep(financeInfoStructure),
           errorCount: 0
         }, // 财务信息
         cardContCheckInfoForm: {
-          ...checkInfoStructure,
+          ..._.cloneDeep(checkInfoStructure),
           errorCount: 0
         }, // 验收信息
         cardSealInfoForm: {
-          ...sealInfoStructure,
+          ..._.cloneDeep(sealInfoStructure),
           contract: [],
           others: [],
           agreenments: [],
@@ -180,10 +180,12 @@
     },
     computed: {
       ...mapState(['pageStatus']),
+      ...mapGetters(['backLogFARole', 'backLogCreator']),
       // 当合同模式为单一合同和框架协议合同时,显示合同验收与样品信息
       ifCheckInfo () {
         return [1, 3].indexOf(this.baseInfoForm.contractType) > -1
       },
+      // 是否显示变更表单
       showUpdateForm () {
         return this.pageStatus === 2
       },
@@ -193,29 +195,40 @@
         }
         return true
       },
+      // 是否显示自定义标签选项卡
       showCustomLabel () {
         if (this.baseInfoForm.templateId && this.customLabelForm.contractLabels.length) {
           return true
         }
         return false
       },
+      // 是否显示合同附件选项卡
       showSealInfo () {
         return this.baseInfoForm.templateId
       },
+      // 是否显示盖章信息选项卡
       showSealFile () {
         return [3, 4].indexOf(this.pageStatus) > -1
       },
+      // 是否显示相关数据选项卡
       showRelate () {
         return this.pageStatus === 4
       },
+      // 是否显示其它选项卡
       showOther () {
         return this.pageStatus !== 1
       },
+      // 是否显示历史信息选项卡
       showHistory () {
         return this.pageStatus === 3
       },
       disabled () {
         return this.pageStatus !== 1
+      }
+    },
+    watch: {
+      $route () {
+        this.resetData()
       }
     },
     created () {
@@ -238,7 +251,7 @@
       },
       // 预览按钮
       handlePreview () {
-        this.validateForms().then(() => {
+        this.handlePreviewValid().then(() => {
           this.getPreviewData()
         }).catch(() => {
           this.$message.error('请填写完合同信息再预览！')
@@ -298,6 +311,25 @@
           contract, others, agreements
         }
       },
+      // 获取合同附件
+      getFiles (files) {
+        if (!files || !files.length) {
+          return {}
+        }
+        const contract = []
+        const agreements = []
+        files.forEach((item) => {
+          const attachType = item.attachType
+          if (attachType === 2) {
+            agreements.push(item)
+            return
+          }
+          contract.push(item)
+        })
+        return {
+          contract, agreements
+        }
+      },
       // 获取模板附件信息
       getAttachmentInfo (params) {
         Api.getSealAttachments(params).then((res) => {
@@ -330,7 +362,6 @@
           contractBusinessTypeThirdName: names[2],
           prNo: currentFolio,
           prFlag: currentFolio ? 1 : null,
-          contractTypeName: getContractType(curConModelId),
           contractType
         })
 
@@ -472,7 +503,7 @@
       },
       initSealInfo (contractAttachAndSeal) {
         const result = getStructure(sealInfoStructure, contractAttachAndSeal)
-        Object.assign(this.cardSealInfoForm, result, this.getDiviFiles(result.attaches))
+        Object.assign(this.cardSealInfoForm, result, this.getFiles(result.attaches))
       },
       initRemarkInfo (cardRemarkInfoForm) {
         Object.assign(this.cardRemarkInfoForm, {otherInstruction: cardRemarkInfoForm.otherInstruction})
@@ -534,12 +565,12 @@
         this.customLabelForm.errorCount = 0
         return true
       },
-      // 校验全部
+      // 提交校验全部
       validateForms () {
         let valids = []
         if (this.pageStatus === 1) {
           valids = this.createValid()
-        } else {
+        } else if (this.pageStatus === 2) {
           valids = this.updateValid()
         }
         return new Promise((resolve, reject) => {
@@ -568,6 +599,25 @@
           valids.unshift(Promise.reject(new Error('变更合同必须上传附件！')))
         }
         return valids
+      },
+      handlePreviewValid () {
+        let valids = []
+        if (this.pageStatus === 1) {
+          valids = this.createValid()
+        } else if (this.pageStatus === 2) {
+          valids = [this.financeInfoValid()]
+        } else if (this.pageStatus === 4) {
+          if (this.backLogFARole) {
+            valids.push(this.financeInfoValid())
+          }
+        }
+        return new Promise((resolve, reject) => {
+          const exist = valids.some(item => !item)
+          if (exist) {
+            return reject(new Error('验证不通过'))
+          }
+          return resolve()
+        })
       },
 
       // 删除
@@ -610,6 +660,40 @@
         }).catch(() => {
           this.$message.warning('表单填写不完整！')
         })
+      },
+      // 重置数据
+      resetData () {
+        this.baseInfoForm = {..._.cloneDeep(baseInfoStructure)}
+        this.cardContentInfoForm = {
+          ..._.cloneDeep(contentInfoStructure),
+          errorCount: 0
+        }
+        this.cardFinanceInfoForm = {
+          ..._.cloneDeep(financeInfoStructure),
+          errorCount: 0
+        }
+        this.cardContCheckInfoForm = {
+          ..._.cloneDeep(checkInfoStructure),
+          errorCount: 0
+        }
+        this.cardSealInfoForm = {
+          ..._.cloneDeep(sealInfoStructure),
+          contract: [],
+          others: [],
+          agreenments: [],
+          errorMsg: null,
+          errorCount: 0
+        }
+        this.cardRemarkInfoForm = {
+          otherInstruction: null,
+          errorCount: 0
+        }
+        this.historyDatas = []
+        this.previewData = {}
+        this.customLabelForm = {
+          contractLabels: [], // 自定义标签
+          errorCount: 0
+        }
       }
     },
     filters: {

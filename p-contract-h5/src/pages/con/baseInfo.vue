@@ -36,7 +36,7 @@
       <el-row>
         <el-col :span="8">
           <el-form-item label="合同模式">
-            <el-input :readonly="true" :class="{disabledInput:true}" v-model="baseInfoForm.contractTypeName" placeholder="请输入合同模式"></el-input>
+            <el-input :readonly="true" :class="{disabledInput:true}" :value="baseInfoForm.contractType | getContractType"></el-input>
           </el-form-item>
         </el-col>
         <el-col :span="8">
@@ -99,6 +99,8 @@
 
   import bus from '../../core/bus'
   import Api from '../../api/manageContract/index'
+
+  import getContractType from '../../filters/contractType'
 
   export default {
     name: 'base-info',
@@ -228,6 +230,9 @@
       if (!this.disabled) {
         this.handleContractTextTypeChange()
       }
+    },
+    filters: {
+      getContractType
     }
   }
 </script>

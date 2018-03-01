@@ -89,6 +89,7 @@
 </template>
 <script>
   import {mapState, mapGetters} from 'vuex'
+  import _ from 'lodash'
 
   import Api from '../../api/manageContract/index'
   import {formatDate} from '../../filters/moment'
@@ -97,7 +98,7 @@
   import Process from '../../components/process.vue'
   import {routerNames} from '../../core/consts'
   import getStructure from '../../util/getStructure'
-  import sealInfoStructure from '../../structure/create/sealInfo'
+  import sealInfoStructure from '../../structure/con/sealInfo'
 
   import bus from '../../core/bus'
 
@@ -133,7 +134,7 @@
           sealReason: ''
         },
         cardSealInfoForm: {
-          ...sealInfoStructure,
+          ..._.cloneDeep(sealInfoStructure),
           contract: [],
           errorCount: 0
         }, // 附件信息

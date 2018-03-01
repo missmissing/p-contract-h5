@@ -10,7 +10,6 @@ const obj = {
   businessDeptId: null,
   businessDeptName: null,
   contractType: null, // 合同模式id
-  contractTypeName: null, // 合同模式名称
   contractTextType: 1,
   sealOrder: 1, // 0：我方先盖章 1：对方先盖章
   ourSealOpinion: null, // 我方先盖章原因

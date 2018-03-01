@@ -138,6 +138,9 @@
       },
       // 开票类型，币种，付款条件禁用
       financeDisabled () {
+        if ([1, 2].indexOf(this.pageStatus) > -1) {
+          return false
+        }
         if (this.backLogFARole) {
           return false
         }
