@@ -255,6 +255,7 @@
 <script>
   import Api from '../../api/manageContract/index'
   import numToChinese from '../../util/numToChinese'
+  import paymentTimePeriods from '../../filters/paymentTimePeriods'
 
   export default {
     props: {
@@ -274,7 +275,6 @@
         contractBusinessTypeFirst: null,
         materialTable: [],
         priceTable: [],
-        paymentTimePeriods: [],
         partA: [],
         partAName: [],
         partB: [],
@@ -329,7 +329,7 @@
                 priceTable.push({
                   type,
                   paymentAmount,
-                  paymentTimePeriod: this.getPaymentTimePeriodName(paymentTimePeriod),
+                  paymentTimePeriod: paymentTimePeriods(paymentTimePeriod),
                   remark,
                   ratio: `${ratio}%`
                 })
@@ -339,25 +339,12 @@
             priceTable.push({
               ...item,
               type: name,
-              paymentTimePeriod: this.getPaymentTimePeriodName(item.paymentTimePeriod),
+              paymentTimePeriod: paymentTimePeriods(item.paymentTimePeriod),
               ratio: `${item.ratio}%`
             })
           })
         }
         return priceTable
-      },
-      getPaymentTimePeriodName (id) {
-        const paymentTimePeriods = this.paymentTimePeriods
-        let name = ''
-        paymentTimePeriods.some((item) => {
-          if (item.id === id) {
-            name = item.name
-            return true
-          }
-          return false
-        })
-
-        return name
       },
       getTplData () {
         Api.getTplContent(this.datas).then((res) => {
@@ -403,7 +390,6 @@
           totalAmount,
           paymentMethods,
           oneOffPay,
-          paymentTimePeriods,
           paymentRemark
         } = cardFinanceInfoForm
 
@@ -412,7 +398,6 @@
         this.contractBusinessTypeFirst = contractBusinessTypeFirst
         this.title = contractBusinessTypeThirdName
 
-        this.paymentTimePeriods = paymentTimePeriods
         this.startTime = startTime
         this.endTime = endTime
         this.conditionDesc = conditionDesc

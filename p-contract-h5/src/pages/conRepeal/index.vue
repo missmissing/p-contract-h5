@@ -124,7 +124,7 @@
   import {mapState, mapGetters} from 'vuex'
   import _ from 'lodash'
   import Api from '../../api/manageContract/index'
-  import {formatDate, formatTimeStamp} from '../../filters/moment'
+  import {formatDate} from '../../filters/moment'
   import {routerNames} from '../../core/consts'
   import {downloadUrl, uploadUrl} from '../../api/consts'
   import getStructure from '../../util/getStructure'
@@ -168,7 +168,6 @@
         },
         cardSealInfoForm: {
           ..._.cloneDeep(sealInfoStructure),
-          contract: [],
           errorCount: 0
         }, // 附件信息
         cardSealFileForm: {
@@ -257,7 +256,7 @@
           errorCount++
         }
 
-        const exist = this.cardSealInfoForm.contract.some(item => item.fileId)
+        const exist = this.cardSealInfoForm.attaches.some(item => item.fileId)
         if (!exist) {
           errorCount++
         }

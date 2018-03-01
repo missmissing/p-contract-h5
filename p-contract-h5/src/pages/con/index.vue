@@ -317,6 +317,21 @@
           contract, others, agreements
         }
       },
+      // 获取模板附件信息
+      getAttachmentInfo (params) {
+        Api.getSealAttachments(params).then((res) => {
+          const data = res.data.dataMap
+          if (data) {
+            const {contractAttaches, templateLabels} = data
+            const allFiles = this.getDiviFiles(contractAttaches)
+            Object.assign(this.cardSealInfoForm, allFiles, {attaches: allFiles.contract})
+            this.customLabelForm.contractLabels = templateLabels.map((item) => {
+              item.value = null
+              return item
+            })
+          }
+        })
+      },
       // 获取合同附件
       getFiles (files) {
         if (!files || !files.length) {
@@ -335,21 +350,6 @@
         return {
           contract, agreements
         }
-      },
-      // 获取模板附件信息
-      getAttachmentInfo (params) {
-        Api.getSealAttachments(params).then((res) => {
-          const data = res.data.dataMap
-          if (data) {
-            const {contractAttaches, templateLabels} = data
-            const allFiles = this.getDiviFiles(contractAttaches)
-            Object.assign(this.cardSealInfoForm, allFiles, {attaches: allFiles.contract})
-            this.customLabelForm.contractLabels = templateLabels.map((item) => {
-              item.value = null
-              return item
-            })
-          }
-        })
       },
 
       // 获取创建初始数据
@@ -486,7 +486,7 @@
         const paymentMethods = []
         financeInfoStructure.paymentMethods.forEach((originItem) => {
           const exist = cardFinanceInfoForm.paymentMethods.some((item) => {
-            if (originItem.payType === item.payType) {
+            if (originItem.payType === item.payType && item.paymentAmount) {
               paymentMethods.push(Object.assign(item, {visible: true}))
               return true
             }
@@ -506,7 +506,8 @@
       },
       initSealInfo (contractAttachAndSeal) {
         const result = getStructure(sealInfoStructure, contractAttachAndSeal)
-        Object.assign(this.cardSealInfoForm, result, this.getFiles(result.attaches))
+        const allFiles = this.getFiles(result.attaches)
+        Object.assign(this.cardSealInfoForm, result, allFiles, {attaches: allFiles.contract})
       },
       initRemarkInfo (cardRemarkInfoForm) {
         Object.assign(this.cardRemarkInfoForm, {otherInstruction: cardRemarkInfoForm.otherInstruction})
@@ -636,7 +637,7 @@
         const cardContentInfoForm = getStructure(contentInfoStructure, this.cardContentInfoForm)
 
         const paymentMethods = this.cardFinanceInfoForm.paymentMethods.filter((item) => {
-          if (item.visible && item.paymentAmount > 0) {
+          if (item.visible && item.paymentAmount) {
             return true
           }
           return false
@@ -752,7 +753,7 @@
       // 待办流程发起人附件信息修改
       modifyFiles () {
         return Api.updateAttach({
-          contractId: this.$route.query.contractId, contractAttachments: this.cardSealInfoForm.contract
+          ...getStructure(sealInfoStructure, this.cardSealInfoForm)
         })
       }
     },

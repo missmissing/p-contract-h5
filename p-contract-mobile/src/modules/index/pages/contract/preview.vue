@@ -283,7 +283,7 @@
                 priceTable.push({
                   type,
                   paymentAmount,
-                  paymentTimePeriod: this.getPaymentTimePeriodName(paymentTimePeriod),
+                  paymentTimePeriod: paymentTimePeriods(paymentTimePeriod),
                   remark,
                   ratio: `${ratio}%`
                 })
@@ -293,7 +293,7 @@
             priceTable.push({
               ...item,
               type: name,
-              paymentTimePeriod: this.getPaymentTimePeriodName(item.paymentTimePeriod),
+              paymentTimePeriod: paymentTimePeriods(item.paymentTimePeriod),
               ratio: `${item.ratio}%`
             })
           })
@@ -328,7 +328,6 @@
         const {contractNo, templateId, contractType, contractBusinessTypeFirst, contractBusinessTypeThirdName} = baseInfoForm;
         const {startTime, endTime, conStandard, effectiveCondition, conditionDesc, corporeRemark} = cardContentInfoForm;
         const {paymentMethods, paymentRemark, jiaBillingInfo, yiBillingInfo, moneyInvolved, totalAmount, oneOffPay} = cardFinanceInfoForm;
-        const {earnest, advance, progress, _final, deposit} = paymentMethods;
         this.contractType = contractType;
         this.contractBusinessTypeFirst = contractBusinessTypeFirst;
         this.materialTable = conStandard;

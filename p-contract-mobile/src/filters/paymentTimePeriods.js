@@ -1,9 +1,13 @@
 import {paymentTimePeriods} from '../core/consts';
 
-export default (type) => {
-  const result = paymentTimePeriods.filter(item => item.id === type);
-  if (result.length) {
-    return result[0].name;
-  }
-  return '';
+export default (id) => {
+  let name = '';
+  paymentTimePeriods.some((item) => {
+    if (item.id === id) {
+      name = item.name;
+      return true;
+    }
+    return false;
+  });
+  return name;
 };

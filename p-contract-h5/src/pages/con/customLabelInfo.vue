@@ -4,7 +4,7 @@
       <template v-for="(item,index) in items">
         <el-col :span="8">
           <el-form-item :label="item.labelName" :prop="item.labelKey">
-            <el-input :readonly="disabled" :class="{disabledInput:disabled}" v-model="form[item.labelKey]" @input="change(index,form[item.labelKey])"></el-input>
+            <el-input :readonly="disabled" :class="{disabledInput:disabled}" v-model.trim="form[item.labelKey]" @input="change(index,form[item.labelKey])"></el-input>
             <div class="tip">{{item.labelDesc}}</div>
           </el-form-item>
         </el-col>
