@@ -125,7 +125,7 @@
             </div>
           </div>
           <div v-if="moneyInvolved" class="mb20">
-            <div v-if="!oneOffPay">
+            <div v-if="!oneOffPay&&priceTable.length">
               <p>付款方式：</p>
               <table>
                 <thead>
@@ -247,14 +247,35 @@
       back() {
         this.$emit('update:visible', false)
       },
-      transformData(data, name) {
+      transformData(data) {
         const priceTable = [];
+        let name = '';
         if (data.length) {
           data.forEach((item) => {
-            const {seriousPayments} = item;
+            if (!item.paymentAmount) {
+              return
+            }
+            const {seriousPayments, payType} = item;
+            switch (payType) {
+              case 1:
+                name = '定金';
+                break;
+              case 2:
+                name = '预付款';
+                break;
+              case 3:
+                name = '';
+                break;
+              case 4:
+                name = '尾款';
+                break;
+              case 5:
+                name = '保证金';
+                break
+            }
             if (seriousPayments) {
-              const {subItem} = item;
-              subItem.forEach((item1, index1) => {
+              const {financeMores} = item;
+              financeMores.forEach((item1, index1) => {
                 const {
                   paymentAmount, paymentTimePeriod, remark, ratio
                 } = item1;
@@ -262,22 +283,22 @@
                 priceTable.push({
                   type,
                   paymentAmount,
-                  paymentTimePeriod: paymentTimePeriods(paymentTimePeriod),
+                  paymentTimePeriod: this.getPaymentTimePeriodName(paymentTimePeriod),
                   remark,
                   ratio: `${ratio}%`
-                });
+                })
               });
-              return;
+              return
             }
             priceTable.push({
               ...item,
-              type: item.type === '进度款' ? '' : item.type,
-              paymentTimePeriod: paymentTimePeriods(item.paymentTimePeriod),
+              type: name,
+              paymentTimePeriod: this.getPaymentTimePeriodName(item.paymentTimePeriod),
               ratio: `${item.ratio}%`
-            });
-          });
+            })
+          })
         }
-        return priceTable;
+        return priceTable
       },
       getTplData(templateId) {
         const tplData = this.tplData[templateId];
@@ -329,7 +350,7 @@
           if (oneOffPay) {
             this.oneOffPay = true;
           } else {
-            this.priceTable = [...this.transformData(earnest, '定金'), ...this.transformData(advance, '预付款'), ...this.transformData(progress, ''), ...this.transformData(_final, '尾款'), ...this.transformData(deposit, '保证金')];
+            this.priceTable = this.transformData(paymentMethods);
           }
         }
 

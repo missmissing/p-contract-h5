@@ -147,7 +147,7 @@
             </div>
           </div>
           <div v-if="moneyInvolved">
-            <div v-if="!oneOffPay">
+            <div v-if="!oneOffPay&&priceTable.length">
               <p>付款方式：</p>
               <table>
                 <thead>
@@ -320,8 +320,8 @@
                 break
             }
             if (seriousPayments) {
-              const {subItem} = item
-              subItem.forEach((item1, index1) => {
+              const {financeMores} = item
+              financeMores.forEach((item1, index1) => {
                 const {
                   paymentAmount, paymentTimePeriod, remark, ratio
                 } = item1
