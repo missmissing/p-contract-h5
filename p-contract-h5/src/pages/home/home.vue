@@ -217,10 +217,10 @@
     created () {
       const powerSwitch = localStore.get('powerSwitch')
       if (powerSwitch) {
-        // const powers = localStore.get('powers') || []
-        // const defaultRoutes = this.$router.options.routes
-        // this.allRoutesHiddenTrue(defaultRoutes)
-        // this.filterRoutes(powers)
+        const powers = localStore.get('powers') || []
+        const defaultRoutes = this.$router.options.routes
+        this.allRoutesHiddenTrue(defaultRoutes)
+        this.filterRoutes(powers)
       }
     }
   }
