@@ -65,8 +65,7 @@
   export default {
     name: 'finance-form',
     props: {
-      cardFinanceInfoForm: Object,
-      baseInfoForm: Object
+      cardFinanceInfoForm: Object
     },
     data () {
       const payTypeOpts = Object.keys(payTypes).map(key => ({id: +key, name: payTypes[key]}))
@@ -96,26 +95,24 @@
     computed: {
       ...mapGetters(['backLogFARole']),
       ...mapState(['pageStatus']),
+      ...mapState('con', ['contractType']),
       // 是否涉及金额
       moneyInvolvedDisabled () {
-        const {contractType} = this.baseInfoForm
-        if ([2, 4].indexOf(contractType) > -1) {
-          return true
-        } else if (contractType === 3 && !this.baseInfoForm.prFlag) {
+        if ([2, 4].indexOf(this.contractType) > -1) {
           return true
         }
         return [3, 4].indexOf(this.pageStatus) > -1
       },
       // 是否一次性付款
       oneOffPayDisabled () {
-        if (this.baseInfoForm.contractType === 3) {
+        if (this.contractType === 3) {
           return true
         }
         return [3, 4].indexOf(this.pageStatus) > -1
       },
       // 合同总金额
       totalAmountDisabled () {
-        if (this.baseInfoForm.contractType !== 3) {
+        if (this.contractType !== 3) {
           return true
         }
         return [3, 4].indexOf(this.pageStatus) > -1

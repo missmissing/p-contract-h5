@@ -55,8 +55,7 @@
 
   export default {
     props: {
-      items: Array,
-      baseInfoForm: Object
+      items: Array
     },
     data () {
       return {
@@ -67,6 +66,7 @@
     computed: {
       ...mapState(['pageStatus']),
       ...mapGetters(['backLogCreator']),
+      ...mapState('con', ['textType']),
       disabled () {
         if (this.backLogCreator) {
           return false
@@ -97,7 +97,7 @@
       ifUploadFile (row) {
         const {attachType, id} = row
         if (attachType === 3) {
-          if (this.backLogCreator && this.baseInfoForm.contractTextType === 2) {
+          if (this.backLogCreator && this.textType === 2) {
             return true
           }
         }
@@ -109,7 +109,7 @@
       },
       // 流程覆盖上传按钮
       coverUpload (row) {
-        if (this.backLogCreator && row.attachType === 3 && this.baseInfoForm.contractTextType === 2) {
+        if (this.backLogCreator && row.attachType === 3 && this.textType === 2) {
           row.id && delete row.id
         }
       },

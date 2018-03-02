@@ -49,9 +49,7 @@
   export default {
     name: 'relate-info',
     mixins: [comLoading],
-    props: {
-      suppliers: Array
-    },
+    props: ['supplierCode'],
     data () {
       return {
         items: [],
@@ -61,7 +59,7 @@
       }
     },
     watch: {
-      items () {
+      supplierCode () {
         this.getList()
       }
     },
@@ -70,7 +68,7 @@
     },
     methods: {
       getList () {
-        if (!this.suppliers.length) {
+        if (!this.supplierCode) {
           return
         }
         this.comLoading({
@@ -79,7 +77,7 @@
         Api.getConList({
           pageNo: this.pageNo,
           pageSize: this.pageSize,
-          supplierCode: this.suppliers[0].code
+          supplierCode: this.supplierCode
         }).then((data) => {
           const dataMap = data.data.dataMap
           if (dataMap) {

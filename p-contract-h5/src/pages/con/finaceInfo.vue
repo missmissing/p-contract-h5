@@ -1,6 +1,6 @@
 <template>
   <div>
-    <FinaceForm :cardFinanceInfoForm="cardFinanceInfoForm" :baseInfoForm="baseInfoForm" ref="form"></FinaceForm>
+    <FinaceForm :cardFinanceInfoForm="cardFinanceInfoForm" ref="form"></FinaceForm>
     <el-card v-show="cardFinanceInfoForm.moneyInvolved&&!cardFinanceInfoForm.oneOffPay" class="mb20">
       <header slot="header">付款方式<i class="tip ml20">{{paymentErrorMSG}}</i></header>
       <div>
@@ -37,8 +37,7 @@
   export default {
     name: 'finace-info',
     props: {
-      cardFinanceInfoForm: Object,
-      baseInfoForm: Object
+      cardFinanceInfoForm: Object
     },
     data () {
       const payTypeOpts = Object.keys(payTypes).map(key => ({id: +key, name: payTypes[key]}))

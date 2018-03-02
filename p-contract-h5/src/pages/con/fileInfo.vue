@@ -5,7 +5,7 @@
     </div>
     <div>
       <SealConditionForm :cardSealInfoForm="cardSealInfoForm" ref="form"></SealConditionForm>
-      <SealTable v-if="cardSealInfoForm.contract.length" :items="cardSealInfoForm.contract" :baseInfoForm="baseInfoForm" class="mb20"></SealTable>
+      <SealTable v-if="cardSealInfoForm.contract.length" :items="cardSealInfoForm.contract" class="mb20"></SealTable>
       <AgreementInfo :items="cardSealInfoForm.agreenments" class="mt20"></AgreementInfo>
     </div>
   </div>
@@ -22,9 +22,7 @@
   export default {
     name: 'file-info',
     props: {
-      cardSealInfoForm: Object,
-      disabled: Boolean,
-      baseInfoForm: Object
+      cardSealInfoForm: Object
     },
     computed: {
       ...mapState(['pageStatus']),
@@ -34,9 +32,6 @@
     },
     methods: {
       valid () {
-        if (!this.baseInfoForm.templateId) {
-          return true
-        }
         let errorCount = 0
         const form = this.cardSealInfoForm
         if (!this.$refs.form.valid()) {

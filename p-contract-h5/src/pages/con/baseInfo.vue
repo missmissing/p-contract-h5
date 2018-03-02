@@ -48,7 +48,7 @@
       <el-row>
         <el-col :span="8">
           <el-form-item label="文本类型">
-            <el-select v-if="!disabled" class="wp100" v-model="baseInfoForm.contractTextType" placeholder="请选择合同文本类型" @change="handleContractTextTypeChange">
+            <el-select v-if="!disabled" class="wp100" v-model="baseInfoForm.contractTextType" placeholder="请选择合同文本类型" @change="textTypeChange">
               <el-option v-for="item in contractTextTypeOptions" :key="item.id" :label="item.name" :value="item.id"></el-option>
             </el-select>
             <el-input v-else :readonly="true" v-model="contractTextTypeName" :class="{wp100:true,disabledInput:true}"></el-input>
@@ -96,6 +96,8 @@
 
 <script>
   import {mapState} from 'vuex'
+
+  import {TEXTTYPE} from '../../store/modules/con/consts'
 
   import bus from '../../core/bus'
   import Api from '../../api/manageContract/index'
@@ -186,7 +188,7 @@
         })
       },
       // 文本类型选择
-      handleContractTextTypeChange () {
+      textTypeChange () {
         const {contractBusinessTypeThird, contractTextType} = this.baseInfoForm
         // 更新合同模板列表
         Api.getTemplateByBizTypeId({
@@ -194,6 +196,10 @@
         }).then((res) => {
           this.baseInfoForm.templateId = null
           this.templateOptions = res.data.dataMap || []
+        })
+
+        this.$store.commit(`con/${TEXTTYPE}`, {
+          data: contractTextType
         })
       },
       // 合同模板选择
@@ -228,7 +234,7 @@
     },
     created () {
       if (!this.disabled) {
-        this.handleContractTextTypeChange()
+        this.textTypeChange()
       }
     },
     filters: {

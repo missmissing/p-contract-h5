@@ -40,21 +40,21 @@
             <span slot="label" class="title">合同财务信息
               <i v-if="cardFinanceInfoForm.errorCount" class="errorCount">{{cardFinanceInfoForm.errorCount}}</i>
             </span>
-            <FincanceInfo :cardFinanceInfoForm="cardFinanceInfoForm" :baseInfoForm="baseInfoForm" ref="cardFinanceInfoForm"></FincanceInfo>
+            <FincanceInfo :cardFinanceInfoForm="cardFinanceInfoForm" ref="cardFinanceInfoForm"></FincanceInfo>
           </el-tab-pane>
           <el-tab-pane v-if="ifCheckInfo">
             <span slot="label" class="title">
               <i v-if="cardContCheckInfoForm.errorCount" class="errorCount">{{cardContCheckInfoForm.errorCount}}</i>
               合同验收与样品信息
             </span>
-            <CheckInfo :cardContCheckInfoForm="cardContCheckInfoForm" :baseInfoForm="baseInfoForm" :cardContentInfoForm="cardContentInfoForm" ref="cardContCheckInfoForm"></CheckInfo>
+            <CheckInfo :cardContCheckInfoForm="cardContCheckInfoForm" ref="cardContCheckInfoForm"></CheckInfo>
           </el-tab-pane>
           <el-tab-pane v-if="showSealInfo">
             <span slot="label" class="title">
               <i v-if="cardSealInfoForm.errorCount" class="errorCount">{{cardSealInfoForm.errorCount}}</i>
               合同附件
             </span>
-            <FileInfo :cardSealInfoForm="cardSealInfoForm" :baseInfoForm="baseInfoForm" ref="cardSealInfoForm"></FileInfo>
+            <FileInfo :cardSealInfoForm="cardSealInfoForm" ref="cardSealInfoForm"></FileInfo>
           </el-tab-pane>
           <el-tab-pane label="盖章附件" v-if="showSealFile">
             <span slot="label" class="title">盖章附件</span>
@@ -71,7 +71,7 @@
             </el-form>
           </el-tab-pane>
           <el-tab-pane label="相关数据" v-if="showRelate">
-            <RelateInfo :suppliers="cardContentInfoForm.tableSupplierInfo"></RelateInfo>
+            <RelateInfo :supplierCode="supplierCode"></RelateInfo>
           </el-tab-pane>
           <el-tab-pane label="其他" v-if="showOther">
             <OtherTables :baseInfoForm="baseInfoForm"></OtherTables>
@@ -90,12 +90,12 @@
   </div>
 </template>
 <script>
-  import {mapState, mapGetters} from 'vuex'
   import _ from 'lodash'
+  import {mapState, mapGetters} from 'vuex'
 
   import {PROCESSCREATORID} from '../../store/consts'
-  import {PRFLAG, CONTRACTTYPE, CONTRACTBUSINESSTYPE} from '../../store/modules/con/consts'
-  import Api from '../../api/manageContract/index'
+  import {PRFLAG, CONTRACTTYPE, CONTRACTBUSINESSTYPE, SERVICEFLAG, TEXTTYPE} from '../../store/modules/con/consts'
+  import Api from '../../api/manageContract'
   import comLoading from '../../mixins/comLoading'
   import {formatDate} from '../../filters/moment'
   import {routerNames} from '../../core/consts'
@@ -228,6 +228,14 @@
       showSubmitBtn () {
         return [1, 2].indexOf(this.pageStatus) > -1
       },
+      // 根据合同供应商code获取相关数据
+      supplierCode () {
+        const items = this.cardContentInfoForm.tableSupplierInfo
+        if (items.length) {
+          return items[0].code
+        }
+        return null
+      },
       disabled () {
         return this.pageStatus !== 1
       }
@@ -358,7 +366,7 @@
       },
       // vuex commit
       commitState () {
-        const {prFlag, contractType, contractBusinessTypeFirst, contractBusinessTypeSecond, contractBusinessTypeThird} = this.baseInfoForm
+        const {prFlag, contractType, contractBusinessTypeFirst, contractBusinessTypeSecond, contractBusinessTypeThird, contractTextType} = this.baseInfoForm
         this.$store.commit(`con/${PRFLAG}`, {
           data: prFlag
         })
@@ -372,6 +380,15 @@
             third: contractBusinessTypeThird
           }
         })
+
+        const exist = this.cardContentInfoForm.conStandard.some(item => !!item.materialCode)
+        this.$store.commit(`con/${SERVICEFLAG}`, {
+          data: !exist && this.baseInfoForm.contractBusinessTypeFirst === 2
+        })
+
+        this.$store.commit(`con/${TEXTTYPE}`, {
+          data: contractTextType
+        })
       },
 
       // 获取预览数据
@@ -384,7 +401,7 @@
         this.handlePreviewValid().then(() => {
           this.getPreviewData()
         }).catch(() => {
-          this.$message.error('请填写完合同信息再预览！')
+          this.$message.error('合同信息不完整！')
         })
       },
       // 获取责任人信息
@@ -646,10 +663,6 @@
         })
       },
 
-      // 删除
-      handleRemove (index, rows) {
-        rows.splice(index, 1)
-      },
       // 获取全部数据
       getResult () {
         const baseInfoForm = getStructure(baseInfoStructure, this.baseInfoForm)

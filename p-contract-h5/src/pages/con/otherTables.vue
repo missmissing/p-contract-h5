@@ -10,6 +10,8 @@
 </template>
 
 <script>
+  import {mapState} from 'vuex'
+
   import PriceTable from './priceTable'
   import ContractTable from './contractTable'
   import OrderTable from './orderTable'
@@ -35,6 +37,7 @@
       }
     },
     computed: {
+      ...mapState('con', ['prFlag']),
       tabs () {
         let type
         switch (this.condition) {
@@ -54,7 +57,7 @@
       }
     },
     watch: {
-      'baseInfoForm.prNo': function (val) {
+      prFlag (val) {
         if (val) {
           const exist = this.conditionOptions.some(item => item.value === 2)
           if (exist) {
@@ -64,6 +67,8 @@
             value: 2,
             label: '比价单信息'
           })
+        } else {
+          this.conditionOptions = this.conditionOptions.filter(item => item.value !== 2)
         }
       }
     },

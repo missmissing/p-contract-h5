@@ -9,7 +9,9 @@ export default {
       first: null,
       second: null,
       third: null
-    } // 业务类型
+    }, // 业务类型
+    serviceFlag: false, // 是否为服务类
+    textType: null // 文本类型
   },
   mutations: {
     [types.PRFLAG] (state, payload) {
@@ -20,6 +22,12 @@ export default {
     },
     [types.CONTRACTBUSINESSTYPE] (state, payload) {
       state.contractBusinessType = payload.data
+    },
+    [types.SERVICEFLAG] (state, payload) {
+      state.serviceFlag = payload.data
+    },
+    [types.TEXTTYPE] (state, payload) {
+      state.textType = payload.data
     }
   }
 }

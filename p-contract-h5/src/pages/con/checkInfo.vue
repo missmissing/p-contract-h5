@@ -1,8 +1,8 @@
 <template>
   <div>
-    <CheckConditionForm :cardContCheckInfoForm="cardContCheckInfoForm" :cardContentInfoForm="cardContentInfoForm" :baseInfoForm="baseInfoForm" ref="form"></CheckConditionForm>
+    <CheckConditionForm :cardContCheckInfoForm="cardContCheckInfoForm" ref="form"></CheckConditionForm>
     <UnionCheckInfo :items="cardContCheckInfoForm.unionCheckPersons"></UnionCheckInfo>
-    <template v-if="ifServiceCheck">
+    <template v-if="serviceFlag">
       <ServiceCheckInfo :items="cardContCheckInfoForm.serviceMatters"></ServiceCheckInfo>
     </template>
     <template v-else>
@@ -12,6 +12,7 @@
 </template>
 
 <script>
+  import {mapState} from 'vuex'
   import CheckConditionForm from './checkConditionForm.vue'
   import UnionCheckInfo from './unionCheckInfo.vue'
   import MaterialCheckInfo from './materialCheckInfo.vue'
@@ -20,19 +21,13 @@
   export default {
     name: 'check-info',
     props: {
-      cardContCheckInfoForm: Object,
-      baseInfoForm: Object,
-      cardContentInfoForm: Object
+      cardContCheckInfoForm: Object
     },
     data () {
       return {}
     },
     computed: {
-      // 是否显示服务类验收方式，服务类验收事项
-      ifServiceCheck () {
-        const exist = this.cardContentInfoForm.conStandard.some(item => !!item.materialCode)
-        return !exist && this.baseInfoForm.contractBusinessTypeFirst === 2
-      }
+      ...mapState('con', ['serviceFlag'])
     },
     methods: {
       valid () {
@@ -42,7 +37,7 @@
         if (!this.$refs.form.valid()) {
           errorCount++
         }
-        if (this.ifServiceCheck) {
+        if (this.serviceFlag) {
           if (!serviceMatters.length) {
             errorCount++
           }
