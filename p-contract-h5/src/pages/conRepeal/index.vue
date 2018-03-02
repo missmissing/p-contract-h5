@@ -38,7 +38,7 @@
                 :disabled="disabled"
                 v-model="contractCode"
                 @keyup.enter.native="search">
-                <i slot="suffix" class="el-icon-search" @click="search"></i>
+                <i v-show="!disabled" slot="suffix" class="el-icon-search" @click="search"></i>
               </el-input>
             </el-form-item>
           </el-col>
@@ -302,16 +302,17 @@
       },
       setData (data) {
         const {
-          baseInfoForm, cardContentInfoForm, contSuspend, cardSealInfoForm
+          baseInfoForm, cardContentInfoForm, contSuspend, contractAttachAndSeal
         } = data
-        const {contractNo, id} = baseInfoForm
+        const {contractNo, id, approvalDate, contractStatusName} = baseInfoForm
         const {suspendReason, suspendTime, suspendRemark} = contSuspend || {}
         const {startTime, endTime} = cardContentInfoForm
-        const {sealAttachments} = cardSealInfoForm
         this.contractCode = contractNo
         this.startTime = startTime
         this.endTime = endTime
         this.id = id
+        this.approvalDate = approvalDate
+        this.contractStatusName = contractStatusName
 
         Object.assign(this.form, {
           suspendReason,
@@ -319,7 +320,7 @@
           suspendRemark
         })
 
-        const result = getStructure(sealInfoStructure, sealAttachments)
+        const result = getStructure(sealInfoStructure, contractAttachAndSeal)
         Object.assign(this.cardSealInfoForm, result)
 
         this.toDetail.query.contractNo = contractNo
@@ -343,12 +344,14 @@
       },
       // 印章保管人，采购合同上传，盖章信息修改
       modifyAddNewFiles () {
-        const sealAttachments = this.cardSealInfoForm.sealAttaches.filter(item => !item.id)
+        const fileIds = []
+        this.cardSealInfoForm.sealAttaches.forEach((item) => {
+          if (!item.id) {
+            fileIds.push(item.fileId)
+          }
+        })
         return Api.uploadSealAttachments({
-          id: this.baseInfoForm.id,
-          type: 1,
-          uploadPerson: true,
-          sealAttachments
+          id: this.baseInfoForm.id, type: 1, uploadPerson: true, fileIds
         })
       },
       // 初始化流程数据

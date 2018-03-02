@@ -4,20 +4,20 @@
       <el-button size="small" type="primary">上传</el-button>
     </el-upload>
     <el-table :data="items">
-      <el-table-column label="文件名" prop="sealFileName">
+      <el-table-column label="文件名" prop="fileName">
         <template slot-scope="scope">
-          <a class="router-link" :href="scope.row.sealFileUrl" target="_blank">{{scope.row.sealFileName}}</a>
+          <a class="router-link" :href="scope.row.fileUrl" target="_blank">{{scope.row.fileName}}</a>
         </template>
       </el-table-column>
-      <el-table-column label="上传人" prop="sealFileCreatorName" width="130"></el-table-column>
-      <el-table-column label="上传时间" prop="sealFileCreateTime" width="130">
+      <el-table-column label="上传人" prop="operatorName" width="130"></el-table-column>
+      <el-table-column label="上传时间" prop="createTime" width="130">
         <template slot-scope="scope">
-          {{scope.row.sealFileCreateTime | formatDate}}
+          {{scope.row.createTime | formatDate}}
         </template>
       </el-table-column>
       <el-table-column label="操作" width="100" v-if="!ifuploadSealFile">
         <template slot-scope="scope">
-          <el-button v-if="scope.row.addNew" type="danger" size="small" @click="handleRemove(scope.$index, scope.row.filesSealed)">
+          <el-button v-if="!scope.row.id" type="danger" size="small" @click="handleRemove(scope.$index, items)">
             移除
           </el-button>
         </template>
@@ -28,7 +28,7 @@
 
 <script>
   import {mapGetters} from 'vuex'
-  import {uploadUrl} from '../../api/consts'
+  import {uploadUrl, downloadUrl} from '../../api/consts'
   import {formatDate} from '../../filters/moment'
 
   export default {
@@ -38,7 +38,8 @@
     },
     data () {
       return {
-        uploadUrl
+        uploadUrl,
+        downloadUrl
       }
     },
     computed: {
@@ -68,14 +69,13 @@
           userId,
           createTime
         } = dataMap
-        this.cardSealInfoForm.filesSealed.push({
-          sealFileId: fileId,
-          sealFileName: fileName,
-          sealFileUrl: `${this.downloadUrl}${fileId}`,
-          sealFileCreatorName: userName,
-          sealFileCreatorId: userId,
-          sealFileCreateTime: formatDate(createTime),
-          addNew: true
+        this.items.push({
+          fileId: fileId,
+          fileName: fileName,
+          fileUrl: `${this.downloadUrl}${fileId}`,
+          operatorName: userName,
+          operatorId: userId,
+          createTime
         })
         this.$message.success('文件上传成功')
       }

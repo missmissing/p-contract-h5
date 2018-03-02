@@ -49,8 +49,7 @@
   export default {
     name: 'subject-info',
     props: {
-      items: Array,
-      contractType: Number
+      items: Array
     },
     data () {
       return {
@@ -69,6 +68,7 @@
     },
     computed: {
       ...mapState(['pageStatus']),
+      ...mapState('con', ['contractType']),
       disabled () {
         return this.pageStatus !== 1
       },

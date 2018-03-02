@@ -60,7 +60,7 @@
 <script>
   import {mapState, mapGetters} from 'vuex'
   import bus from '../../core/bus'
-  import {payTypes} from '../../core/consts'
+  import {payTypes, paymentTimePeriods} from '../../core/consts'
 
   export default {
     name: 'finance-form',
@@ -84,23 +84,7 @@
         }, {
           value: 2, label: '增值税普通发票'
         }],
-        paymentTimePeriods: [{
-          id: 'Z015', name: '到票日后15天付款'
-        }, {
-          id: 'Z020', name: '到票日后20天付款'
-        }, {
-          id: 'Z025', name: '到票日后25天付款'
-        }, {
-          id: 'Z030', name: '到票日后30天付款'
-        }, {
-          id: 'Z035', name: '到票日后35天付款'
-        }, {
-          id: 'Z040', name: '到票日后40天付款'
-        }, {
-          id: 'Z045', name: '到票日后45天付款'
-        }, {
-          id: 'Z000', name: '立即付款'
-        }],
+        paymentTimePeriods,
         rules: {
           totalAmount: [{required: true, message: '请输入合同总金额'}, {type: 'number', message: '合同总金额必须为数字值'}],
           payTime: [{required: true, message: '请输入付款时间'}],

@@ -1,14 +1,16 @@
 <template>
   <div>
     <SupplierInfo :items="cardContentInfoForm.tableSupplierInfo" class="mb20"></SupplierInfo>
-    <SubjectInfo class="mb20" :items="cardContentInfoForm.conSubjctName" :contractType="baseInfoForm.contractType"></SubjectInfo>
+    <SubjectInfo class="mb20" :items="cardContentInfoForm.conSubjctName"></SubjectInfo>
     <ThirdPartyInfo :items="cardContentInfoForm.thirdPartyInfo" class="mb20" v-if="ifThirdInfo"></ThirdPartyInfo>
-    <StandardInfo :cardContentInfoForm="cardContentInfoForm" :baseInfoForm="baseInfoForm" class="mb20" v-if="ifStandardInfo"></StandardInfo>
+    <StandardInfo :cardContentInfoForm="cardContentInfoForm" class="mb20" v-if="ifStandardInfo"></StandardInfo>
     <EffectiveConditionForm :cardContentInfoForm="cardContentInfoForm" ref="form"></EffectiveConditionForm>
   </div>
 </template>
 
 <script>
+  import {mapState} from 'vuex'
+
   import SupplierInfo from './supplierInfo.vue'
   import SubjectInfo from './subjectInfo.vue'
   import ThirdPartyInfo from './thirdPartyInfo.vue'
@@ -18,20 +20,20 @@
   export default {
     name: 'content-info',
     props: {
-      cardContentInfoForm: Object,
-      baseInfoForm: Object
+      cardContentInfoForm: Object
     },
     data () {
       return {}
     },
     computed: {
+      ...mapState('con', ['contractType', 'contractBusinessType']),
       // 当合同模式不是固定格式合同时，显示第三方信息
       ifThirdInfo () {
-        return this.baseInfoForm.contractType !== 2
+        return this.contractType !== 2
       },
       // 当合同模式不是框架意向合同时，显示合同标的信息
       ifStandardInfo () {
-        return this.baseInfoForm.contractType !== 4
+        return this.contractType !== 4
       }
     },
     methods: {

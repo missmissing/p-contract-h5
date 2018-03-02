@@ -269,12 +269,14 @@
       },
       // 印章保管人，采购合同上传，盖章信息修改
       modifyAddNewFiles () {
-        const sealAttachments = this.cardSealInfoForm.sealAttaches.filter(item => !item.id)
+        const fileIds = []
+        this.cardSealInfoForm.sealAttaches.forEach((item) => {
+          if (!item.id) {
+            fileIds.push(item.fileId)
+          }
+        })
         return Api.uploadSealAttachments({
-          id: this.baseInfoForm.id,
-          type: 1,
-          uploadPerson: true,
-          sealAttachments
+          id: this.baseInfoForm.id, type: 1, uploadPerson: true, fileIds
         })
       },
 

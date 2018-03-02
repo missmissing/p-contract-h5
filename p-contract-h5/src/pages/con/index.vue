@@ -30,7 +30,7 @@
         <el-tabs>
           <el-tab-pane>
             <span slot="label" class="title"><i v-if="cardContentInfoForm.errorCount" class="errorCount">{{cardContentInfoForm.errorCount}}</i>合同内容信息</span>
-            <ContentInfo :cardContentInfoForm="cardContentInfoForm" :baseInfoForm="baseInfoForm" ref="cardContentInfoForm"></ContentInfo>
+            <ContentInfo :cardContentInfoForm="cardContentInfoForm" ref="cardContentInfoForm"></ContentInfo>
           </el-tab-pane>
           <el-tab-pane v-if="showCustomLabel">
             <span slot="label" class="title"><i v-if="customLabelForm.errorCount" class="errorCount">{{customLabelForm.errorCount}}</i>自定义标签</span>
@@ -94,6 +94,7 @@
   import _ from 'lodash'
 
   import {PROCESSCREATORID} from '../../store/consts'
+  import {PRFLAG, CONTRACTTYPE, CONTRACTBUSINESSTYPE} from '../../store/modules/con/consts'
   import Api from '../../api/manageContract/index'
   import comLoading from '../../mixins/comLoading'
   import {formatDate} from '../../filters/moment'
@@ -146,7 +147,7 @@
           others: [],
           agreenments: [],
           errorCount: 0
-        }, // 附件信息
+        }, // 合同附件,盖章附件
         cardRemarkInfoForm: {
           otherInstruction: null,
           errorCount: 0,
@@ -240,15 +241,139 @@
       this.bindEvents()
       if (this.pageStatus === 1) {
         this.getCreateInfo()
-      }
-      if (this.pageStatus === 3) {
+      } else if (this.pageStatus === 3) {
         this.getData()
-      }
-      if (this.pageStatus === 4) {
+      } else if (this.pageStatus === 4) {
         this.getProcessData()
       }
     },
     methods: {
+      // 获取创建初始数据
+      getCreateInfo () {
+        const {query} = this.$route
+        const {currentFolio, curConTypeId, curConModelId, curConTypeName} = query
+        const contractType = +curConModelId
+        const types = curConTypeId.split('-')
+        const names = curConTypeName.split('-')
+        Object.assign(this.baseInfoForm, {
+          contractBusinessTypeFirst: +types[0],
+          contractBusinessTypeSecond: +types[1],
+          contractBusinessTypeThird: +types[2],
+          contractBusinessTypeFirstName: names[0],
+          contractBusinessTypeSecondName: names[1],
+          contractBusinessTypeThirdName: names[2],
+          prNo: currentFolio,
+          prFlag: currentFolio ? 1 : null,
+          contractType
+        })
+
+        if (contractType === 4) {
+          this.cardFinanceInfoForm.moneyInvolved = false
+        }
+
+        const params = {
+          folio: currentFolio,
+          contractType,
+          contractBusinessTypeFirst: types[0],
+          contractBusinessTypeSecond: types[1],
+          contractBusinessTypeThird: types[2]
+        }
+        Api.getContractBaseInfo(params).then((res) => {
+          const data = res.data.dataMap
+          if (data) {
+            const {tableSupplierInfo, conSubjctName, conStandard, totalAmount, jiaBillingInfo, yiBillingInfo} = data
+
+            if (conSubjctName && conSubjctName.length) {
+              this.cardContentInfoForm.conSubjctName = conSubjctName
+            }
+            if (tableSupplierInfo && tableSupplierInfo.length) {
+              this.cardContentInfoForm.tableSupplierInfo = tableSupplierInfo
+            }
+            const materialMatters = []
+            let exist = false
+            conStandard.forEach((item) => {
+              const {materialCode, materialName, taxCode} = item
+              if (materialCode) {
+                materialMatters.push({
+                  sampleCode: materialCode, sampleDesc: materialName
+                })
+              }
+              if (taxCode !== 'J0') {
+                exist = true
+              }
+            })
+            if (materialMatters.length) {
+              this.cardContCheckInfoForm.materialMatters = materialMatters
+            }
+            if (exist) {
+              this.cardFinanceInfoForm.invoiceType = 1 // 增值税专用发票
+            }
+
+            Object.assign(this.cardFinanceInfoForm, {
+              totalAmount, jiaBillingInfo, yiBillingInfo
+            })
+          }
+        })
+
+        this.commitState()
+      },
+      // 查看获取数据
+      getData () {
+        const {query} = this.$route
+        this.comLoading()
+        Api.getContractDetailByNo({
+          contractNo: query.contractNo
+        }).then((res) => {
+          const data = res.data.dataMap
+          if (data) {
+            this.initData(data)
+          }
+        }).finally(() => {
+          this.comLoading(false)
+        })
+      },
+      // 流程查看获取数据
+      getProcessData () {
+        const {query} = this.$route
+        this.processData = JSON.parse(query.processData)
+        this.procCode = this.processData.procCode
+        this.procInstId = this.processData.procInstId
+        this.procTitle = this.processData.procTitle
+
+        this.comLoading()
+        Api.getContractDetailById({
+          id: query.contractId, operate: 'PROCESS'
+        }).then((res) => {
+          const data = res.data.dataMap
+          if (data) {
+            this.initData(data)
+            // 流程发起人id
+            this.$store.commit(PROCESSCREATORID, {
+              data: data.baseInfoForm.creatorId
+            })
+          }
+        }).finally(() => {
+          this.comLoading(false)
+        })
+      },
+      // vuex commit
+      commitState () {
+        const {prFlag, contractType, contractBusinessTypeFirst, contractBusinessTypeSecond, contractBusinessTypeThird} = this.baseInfoForm
+        this.$store.commit(`con/${PRFLAG}`, {
+          data: prFlag
+        })
+        this.$store.commit(`con/${CONTRACTTYPE}`, {
+          data: contractType
+        })
+        this.$store.commit(`con/${CONTRACTBUSINESSTYPE}`, {
+          data: {
+            first: contractBusinessTypeFirst,
+            second: contractBusinessTypeSecond,
+            third: contractBusinessTypeThird
+          }
+        })
+      },
+
       // 获取预览数据
       getPreviewData () {
         this.previewData = this.getResult()
@@ -351,113 +476,6 @@
         }
       },
 
-      // 获取创建初始数据
-      getCreateInfo () {
-        const {query} = this.$route
-        const {currentFolio, curConTypeId, curConModelId, curConTypeName} = query
-        const contractType = +curConModelId
-        const types = curConTypeId.split('-')
-        const names = curConTypeName.split('-')
-        Object.assign(this.baseInfoForm, {
-          contractBusinessTypeFirst: +types[0],
-          contractBusinessTypeSecond: types[1],
-          contractBusinessTypeThird: types[2],
-          contractBusinessTypeFirstName: names[0],
-          contractBusinessTypeSecondName: names[1],
-          contractBusinessTypeThirdName: names[2],
-          prNo: currentFolio,
-          prFlag: currentFolio ? 1 : null,
-          contractType
-        })
-
-        if (contractType === 4) {
-          this.cardFinanceInfoForm.moneyInvolved = false
-        }
-
-        const params = {
-          folio: currentFolio,
-          contractType,
-          contractBusinessTypeFirst: types[0],
-          contractBusinessTypeSecond: types[1],
-          contractBusinessTypeThird: types[2]
-        }
-        Api.getContractBaseInfo(params).then((res) => {
-          const data = res.data.dataMap
-          if (data) {
-            const {tableSupplierInfo, conSubjctName, conStandard, totalAmount, jiaBillingInfo, yiBillingInfo} = data
-
-            if (conSubjctName && conSubjctName.length) {
-              this.cardContentInfoForm.conSubjctName = conSubjctName
-            }
-            if (tableSupplierInfo && tableSupplierInfo.length) {
-              this.cardContentInfoForm.tableSupplierInfo = tableSupplierInfo
-            }
-            const materialMatters = []
-            let exist = false
-            conStandard.forEach((item) => {
-              const {materialCode, materialName, taxCode} = item
-              if (materialCode) {
-                materialMatters.push({
-                  sampleCode: materialCode, sampleDesc: materialName
-                })
-              }
-              if (taxCode !== 'J0') {
-                exist = true
-              }
-            })
-            if (materialMatters.length) {
-              this.cardContCheckInfoForm.materialMatters = materialMatters
-            }
-            if (exist) {
-              this.cardFinanceInfoForm.invoiceType = 1 // 增值税专用发票
-            }
-
-            Object.assign(this.cardFinanceInfoForm, {
-              totalAmount, jiaBillingInfo, yiBillingInfo
-            })
-          }
-        })
-      },
-      // 查看获取数据
-      getData () {
-        const {query} = this.$route
-        this.comLoading()
-        Api.getContractDetailByNo({
-          contractNo: query.contractNo
-        }).then((res) => {
-          const data = res.data.dataMap
-          if (data) {
-            this.initData(data)
-          }
-        }).finally(() => {
-          this.comLoading(false)
-        })
-      },
-      // 流程查看获取数据
-      getProcessData () {
-        const {query} = this.$route
-        this.processData = JSON.parse(query.processData)
-        this.procCode = this.processData.procCode
-        this.procInstId = this.processData.procInstId
-        this.procTitle = this.processData.procTitle
-
-        this.comLoading()
-        Api.getContractDetailById({
-          id: query.contractId, operate: 'PROCESS'
-        }).then((res) => {
-          const data = res.data.dataMap
-          if (data) {
-            this.initData(data)
-            // 流程发起人id
-            this.$store.commit(PROCESSCREATORID, {
-              data: data.baseInfoForm.creatorId
-            })
-          }
-        }).finally(() => {
-          this.comLoading(false)
-        })
-      },
-
       // 回填数据
       initData (data) {
         const {baseInfoForm, cardContentInfoForm, contractLabels, cardFinanceInfoForm, cardContCheckInfoForm, contractAttachAndSeal, cardRemarkInfoForm, simpleContract} = data
@@ -472,6 +490,8 @@
         if (this.pageStatus === 3) {
           this.historyDatas = simpleContract
         }
+
+        this.commitState()
       },
       initBaseInfo (baseInfoForm) {
         const result = getStructure(baseInfoStructure, baseInfoForm)
@@ -727,9 +747,14 @@
       },
       // 印章保管人，采购合同上传，盖章信息修改
       modifyAddNewFiles () {
-        const sealAttachments = this.cardSealInfoForm.sealAttaches.filter(item => !item.id)
+        const fileIds = []
+        this.cardSealInfoForm.sealAttaches.forEach((item) => {
+          if (!item.id) {
+            fileIds.push(item.fileId)
+          }
+        })
         return Api.uploadSealAttachments({
-          id: this.baseInfoForm.id, type: 1, uploadPerson: true, sealAttachments
+          id: this.baseInfoForm.id, type: 1, uploadPerson: true, fileIds
         })
       },
       // 待办流程财务信息修改

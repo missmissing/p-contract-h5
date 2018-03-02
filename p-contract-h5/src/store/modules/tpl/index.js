@@ -1,6 +1,7 @@
-import * as types from '../consts'
+import * as types from './consts'
 
 export default {
+  namespaced: true,
   state: {
     busiType: [],
     modules: []
