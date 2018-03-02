@@ -293,10 +293,9 @@
       getInfo (id) {
         this.comLoading()
         Api.getContractDetailById({id, operate: 'PROCESS'}).then((res) => {
-          this.comLoading(false)
           const data = res.data.dataMap
           this.setData(data)
-        }, () => {
+        }).finally(() => {
           this.comLoading(false)
         })
       },
@@ -305,7 +304,7 @@
           baseInfoForm, cardContentInfoForm, contSuspend, contractAttachAndSeal
         } = data
         const {contractNo, id, approvalDate, contractStatusName} = baseInfoForm
-        const {suspendReason, suspendTime, suspendRemark} = contSuspend || {}
+        const {suspendTime, suspendRemark} = contSuspend || {}
         const {startTime, endTime} = cardContentInfoForm
         this.contractCode = contractNo
         this.startTime = startTime
@@ -315,7 +314,6 @@
         this.contractStatusName = contractStatusName
 
         Object.assign(this.form, {
-          suspendReason,
           suspendTime,
           suspendRemark
         })

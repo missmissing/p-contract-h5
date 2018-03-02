@@ -36,7 +36,6 @@
 
 <script>
   import Api from '../../../../api/performance/index';
-  import Header from '../../components/header.vue';
   import ActionSumit from '../../components/actionSubmit.vue';
   import Comments from '../../components/comments.vue';
   import {formatDate} from '../../../../filters/moment';
@@ -123,7 +122,6 @@
       handleResult
     },
     components: {
-      Header,
       ActionSumit,
       Comments
     }

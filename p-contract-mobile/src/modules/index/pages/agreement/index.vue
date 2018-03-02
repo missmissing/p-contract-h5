@@ -27,7 +27,7 @@
       <mt-navbar v-model="selected" class="mt20 mb20">
         <mt-tab-item :id="1">审批意见</mt-tab-item>
         <mt-tab-item :id="2">合同附件</mt-tab-item>
-        <mt-tab-item :id="3">盖章信息</mt-tab-item>
+        <mt-tab-item :id="3">盖章附件</mt-tab-item>
         <mt-tab-item :id="4">补充信息</mt-tab-item>
         <mt-tab-item :id="5" v-if="cardRelatedInfoForm.contractList.length">相关数据</mt-tab-item>
       </mt-navbar>
@@ -63,7 +63,6 @@
 <script>
   import Api from '../../../../api/manageContract';
   import printOpts from '../../../../filters/printOpts';
-  import Header from '../../components/header.vue';
   import ActionSumit from '../../components/actionSubmit.vue';
   import SealInfo from './sealInfo.vue';
   import SealFile from '../../components/sealFile.vue';
@@ -95,20 +94,19 @@
     methods: {
       getInfo() {
         const id = this.$store.state.id;
-        Api.getAgreenmentDetail(id)
-          .then((res) => {
-            const data = res.data.dataMap;
-            console.log(data);
-            const {protocolNo, code, baseInfoForm, cardSealInfoForm, cardRemarkInfoForm, cardRelatedInfoForm} = data;
-            this.protocolNo = protocolNo;
-            this.code = code;
-            this.baseInfoForm = baseInfoForm;
-            this.cardSealInfoForm = cardSealInfoForm;
-            this.cardRemarkInfoForm = cardRemarkInfoForm;
-            if (cardRelatedInfoForm) {
-              this.cardRelatedInfoForm = cardRelatedInfoForm;
-            }
-          });
+        Api.getAgreenmentDetail(id).then((res) => {
+          const data = res.data.dataMap;
+          console.log(data);
+          const {protocolNo, code, baseInfoForm, cardSealInfoForm, cardRemarkInfoForm, cardRelatedInfoForm} = data;
+          this.protocolNo = protocolNo;
+          this.code = code;
+          this.baseInfoForm = baseInfoForm;
+          this.cardSealInfoForm = cardSealInfoForm;
+          this.cardRemarkInfoForm = cardRemarkInfoForm;
+          if (cardRelatedInfoForm) {
+            this.cardRelatedInfoForm = cardRelatedInfoForm;
+          }
+        });
       },
     },
     created() {
@@ -121,7 +119,6 @@
       printOpts
     },
     components: {
-      Header,
       SealInfo,
       SealFile,
       ActionSumit,

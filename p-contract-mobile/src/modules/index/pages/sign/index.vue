@@ -166,7 +166,6 @@
 
 <script>
   import Api from '../../../../api/sign/index';
-  import Header from '../../components/header.vue';
   import ActionSumit from '../../components/actionSubmit.vue';
   import Comments from '../../components/comments.vue';
   import {formatDate} from '../../../../filters/moment';
@@ -254,7 +253,6 @@
       formatDate
     },
     components: {
-      Header,
       ActionSumit,
       Comments
     }

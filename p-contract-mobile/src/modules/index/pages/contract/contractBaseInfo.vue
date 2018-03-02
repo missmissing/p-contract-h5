@@ -16,7 +16,7 @@
     <mt-cell title="盖章次序" :value="info.sealOrder | printOpts"></mt-cell>
     <mt-cell
       v-if="info.sealOrder===0"
-      title="废除原因"
+      title="原因"
       :value="info.ourSealOpinion">
     </mt-cell>
     <Preview :visible.sync="visible" :info="moreData"></Preview>

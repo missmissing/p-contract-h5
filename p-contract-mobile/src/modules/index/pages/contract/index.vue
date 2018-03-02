@@ -9,7 +9,7 @@
         <mt-tab-item :id="3">合同财务信息</mt-tab-item>
         <mt-tab-item :id="4" v-if="ifCheckInfo">合同验收与样品信息</mt-tab-item>
         <mt-tab-item :id="5">合同附件</mt-tab-item>
-        <mt-tab-item :id="6">盖章信息</mt-tab-item>
+        <mt-tab-item :id="6">盖章附件</mt-tab-item>
         <mt-tab-item :id="7">备注</mt-tab-item>
         <mt-tab-item :id="8">相关数据</mt-tab-item>
         <mt-tab-item :id="9">其他</mt-tab-item>
@@ -55,7 +55,6 @@
 
 <script>
   import Api from '../../../../api/manageContract';
-  import Header from '../../components/header.vue';
   import ContractBaseInfo from './contractBaseInfo.vue';
   import ContractContentInfo from './contractContentInfo.vue';
   import CustomLabelInfo from './customLabelInfo.vue';
@@ -123,7 +122,6 @@
       window._____processCenterPageAction('pageloaded');
     },
     components: {
-      Header,
       ContractBaseInfo,
       ContractContentInfo,
       CustomLabelInfo,

@@ -25,7 +25,6 @@
 
 <script>
   import Api from '../../../../api/support/index';
-  import Header from '../../components/header.vue';
   import TplBase from './tplBase.vue';
   import TplContent from './tplContent.vue';
   import Comments from '../../components/comments.vue';
@@ -55,7 +54,6 @@
       window._____processCenterPageAction('pageloaded');
     },
     components: {
-      Header,
       TplBase,
       TplContent,
       Comments,
