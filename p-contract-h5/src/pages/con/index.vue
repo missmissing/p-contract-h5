@@ -21,6 +21,10 @@
 </style>
 <template>
   <div class="createCon">
+    <div class="mb10 clearfix" v-if="procInstId">
+      <div class="fl fb">{{procTitle}}</div>
+      <div class="fr mr20">流程编号 {{procInstId}}</div>
+    </div>
     <el-card v-if="showUpdateForm">
       <UpdateInfo ref="updateForm" :updateForm="updateForm" :visible.sync="updateVisible"></UpdateInfo>
     </el-card>
@@ -33,7 +37,7 @@
             <ContentInfo :cardContentInfoForm="cardContentInfoForm" ref="cardContentInfoForm"></ContentInfo>
           </el-tab-pane>
           <el-tab-pane v-if="showCustomLabel">
-            <span slot="label" class="title"><i v-if="customLabelForm.errorCount" class="errorCount">{{customLabelForm.errorCount}}</i>自定义标签</span>
+            <span slot="label" class="title"><i v-if="customLabelForm.errorCount" class="errorCount">{{customLabelForm.errorCount}}</i>合同内容信息（补充）</span>
             <CustomLabelInfo :items="customLabelForm.contractLabels" ref="customLabelForm"></CustomLabelInfo>
           </el-tab-pane>
           <el-tab-pane>
@@ -177,7 +181,10 @@
         customLabelForm: {
           contractLabels: [], // 自定义标签
           errorCount: 0
-        } // 自定义标签信息
+        }, // 自定义标签信息,
+        processData: {}, // 流程展示数据
+        procTitle: null,
+        procInstId: null
       }
     },
     computed: {
@@ -297,6 +304,9 @@
             if (tableSupplierInfo && tableSupplierInfo.length) {
               this.cardContentInfoForm.tableSupplierInfo = tableSupplierInfo
             }
+            if (conStandard && conStandard.length) {
+              this.cardContentInfoForm.conStandard = conStandard
+            }
             const materialMatters = []
             let exist = false
             conStandard.forEach((item) => {
@@ -344,7 +354,6 @@
       getProcessData () {
         const {query} = this.$route
         this.processData = JSON.parse(query.processData)
-        this.procCode = this.processData.procCode
         this.procInstId = this.processData.procInstId
         this.procTitle = this.processData.procTitle
 

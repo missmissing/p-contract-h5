@@ -32,6 +32,10 @@
       .footer {
         margin-top: 20px;
       }
+      .files-content {
+        white-space: pre-wrap;
+        margin-top: 20px;
+      }
     }
   }
 </style>
@@ -100,7 +104,8 @@
               <div class="title">合同</div>
               <div v-html="header" class="header"></div>
               <div v-html="previewContent" class="content"></div>
-              <div v-html="footer" class="footer"></div>
+              <div v-html="footer" class="footer clearfix"></div>
+              <div v-html="filesContent" class="files-content"></div>
             </div>
           </el-col>
         </el-row>
@@ -303,9 +308,9 @@
         const currentEditor = this.$refs[`editor-${this.editableTabsValue}`][0]
         currentEditor.editor.cmd.do('insertHTML', item.source.labelKey)
       },
-      getTemplateLabels () {
+      getTemplateLabels (templateId) {
         Api.getTemplateLabels({
-          templateId: ''
+          templateId
         }).then((res) => {
           const data = res.data.dataMap
           const staticLabels = []
@@ -342,7 +347,7 @@
         if (!Object.keys(tplInfo).length) {
           return
         }
-        const {content, contentModule, templateFileContents} = tplInfo
+        const {content, contentModule, templateFileContents, id} = tplInfo
         this.contentModule = contentModule.map(item => item.id)
         this.content = content
         this.editableTabs[0].content = content
@@ -354,7 +359,7 @@
           }))
           this.editableTabs = this.editableTabs.concat(contents)
         }
-        this.getTemplateLabels()
+        this.getTemplateLabels(id)
       },
       contentModule (val) {
         const modulesData = this.modulesData
@@ -381,7 +386,10 @@
         return [routerNames.con_tpl_see, routerNames.con_tpl_abolish].indexOf(this.$route.name) > -1
       },
       previewContent () {
-        return this.editableTabs.map(item => item.content).join('')
+        return this.editableTabs[0].content
+      },
+      filesContent () {
+        return this.editableTabs.slice(1).map(item => item.content).join('')
       }
     },
     filters: {

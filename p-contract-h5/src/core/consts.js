@@ -136,10 +136,10 @@ export const templateStatus = {
 }
 
 export const payTypes = {
-  1: '定金',
-  2: '预付款',
-  3: '进度款',
-  4: '尾款',
+  1: '预付款',
+  2: '进度款',
+  3: '尾款',
+  4: '定金',
   5: '保证金'
 }
 

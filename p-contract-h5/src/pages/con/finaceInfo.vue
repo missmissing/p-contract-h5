@@ -13,7 +13,7 @@
           </el-dropdown-menu>
         </el-dropdown>
         <template v-for="(item,index) in cardFinanceInfoForm.paymentMethods">
-          <Payment :items="[item]" :totalAmount="cardFinanceInfoForm.totalAmount" :show-header="index===0"></Payment>
+          <Payment :items="[item]" :totalAmount="cardFinanceInfoForm.totalAmount" :show-header="showHeader(item,index)"></Payment>
         </template>
       </div>
     </el-card>
@@ -114,6 +114,20 @@
           return false
         }
         return true
+      },
+      // 判断是否显示表格头部
+      showHeader (target, index) {
+        if (target.visible) {
+          const items = this.cardFinanceInfoForm.paymentMethods.slice(0, index)
+          const exist = items.some((item, i) => {
+            if (item.visible && i < index) {
+              return true
+            }
+            return false
+          })
+          return !exist
+        }
+        return false
       },
       valid () {
         let errorCount = 0

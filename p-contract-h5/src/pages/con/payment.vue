@@ -132,7 +132,7 @@
       payTimesDisabled () { // 是否多次付款
         const item = this.items[0]
         const {payType} = item
-        if ([1, 5].indexOf(payType) > -1) { // 定金或保证金
+        if ([4, 5].indexOf(payType) > -1) { // 定金或保证金
           return true
         }
         if (this.backLogFARole) {

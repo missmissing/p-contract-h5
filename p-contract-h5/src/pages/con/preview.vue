@@ -172,7 +172,7 @@
             </div>
             <div class="mt20" v-if="paymentRemark">
               <div>付款方式备注：</div>
-              <div>{{paymentRemark}}</div>
+              <div v-html="paymentRemark"></div>
             </div>
             <p>合同含税总金额为{{totalAmount | numToChinese}} （CNY {{totalAmount}}元）</p>
             <!--<div class="mt20 mb20">
@@ -304,16 +304,16 @@
             const {seriousPayments, payType} = item
             switch (payType) {
               case 1:
-                name = '定金'
-                break
-              case 2:
                 name = '预付款'
                 break
-              case 3:
+              case 2:
                 name = ''
                 break
-              case 4:
+              case 3:
                 name = '尾款'
+                break
+              case 4:
+                name = '定金'
                 break
               case 5:
                 name = '保证金'

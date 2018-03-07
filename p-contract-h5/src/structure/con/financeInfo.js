@@ -11,11 +11,17 @@ const payment = {
   financeMores: []
 }
 
-const paymentMethods = Object.keys(payTypes).map((key) => {
-  return {
+const paymentMethods = []
+Object.keys(payTypes).forEach((key) => {
+  const item = {
     payType: +key,
     type: payTypes[key],
     ..._.cloneDeep(payment)
+  }
+  if (item.payType === 4) {
+    paymentMethods.unshift(item)
+  } else {
+    paymentMethods.push(item)
   }
 })
 
