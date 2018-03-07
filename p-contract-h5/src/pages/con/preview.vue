@@ -32,7 +32,7 @@
     @close="ok">
     <div>
       <form action="/api-contract/contract-web/contract/download/pdf" method="post" id="pdf-form">
-        <input type="hidden" name="contents" value="" id="pdf-content"/>
+        <input type="hidden" name="content" value="" id="pdf-content"/>
         <input type="hidden" name="supplierName" :value="supplierName"/>
         <input type="hidden" v-if="title" name="title" :value="title"/>
         <input type="hidden" name="contractNo" :value="contractNo"/>
