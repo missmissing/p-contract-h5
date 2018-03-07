@@ -31,11 +31,7 @@
     width="90%"
     @close="ok">
     <div>
-      <form action="/api-contract/contract-web/contract/download/pdf" method="post" id="pdf-form">
-        <input type="hidden" name="content" value="" id="pdf-content"/>
-        <input type="hidden" name="supplierName" :value="supplierName"/>
-        <input type="hidden" v-if="title" name="title" :value="title"/>
-        <input type="hidden" name="contractNo" :value="contractNo"/>
+      <div>
         <el-row class="previewTitle">
           <el-button style="float:right" native-type="submit" @click.prevent="toPdf" type="primary"
                      size="small">导出pdf
@@ -52,7 +48,7 @@
             <span v-if="contractNo">{{contractNo}}</span>
           </el-col>
         </el-row>
-      </form>
+      </div>
       <div id="pdf-wrap">
         <div>
           <div style="text-align: center;font-size:18px;font-weight:bold;padding-bottom: 10px;" class="mb20 f18 fb">
@@ -245,6 +241,7 @@
           </table>
         </div>
       </div>
+      <div class="mb20" v-html="filesContent"></div>
     </div>
     <div slot="footer">
       <el-button type="primary" @click="ok">确 定</el-button>
@@ -253,7 +250,7 @@
 </template>
 
 <script>
-  import Api from '../../api/manageContract/index'
+  import Api from '../../api/manageContract'
   import numToChinese from '../../util/numToChinese'
   import paymentTimePeriods from '../../filters/paymentTimePeriods'
 
@@ -288,8 +285,10 @@
         moneyInvolved: false,
         oneOffPay: false,
         currentTpl: null,
+        filesContent: null,
         corporeRemark: '',
-        paymentRemark: ''
+        paymentRemark: '',
+        contents: null
       }
     },
     methods: {
@@ -348,15 +347,25 @@
       },
       getTplData () {
         Api.getTplContent(this.datas).then((res) => {
-          this.currentTpl = res.data.dataMap
+          const data = res.data.dataMap
+          this.contents = data
+          this.currentTpl = data[0]
+          this.filesContent = data.slice(1).join('')
         })
       },
       ok () {
         this.$emit('update:visible', false)
       },
       toPdf () {
-        document.getElementById('pdf-content').value = document.getElementById('pdf-wrap').innerHTML
-        document.getElementById('pdf-form').submit()
+        const data = document.getElementById('pdf-wrap').innerHTML
+        const value = this.contents.slice(0)
+        value.splice(0, 1, data)
+        Api.getPdf({
+          contents: value,
+          supplierName: this.supplierName,
+          title: this.title,
+          contractNo: this.contractNo
+        })
       }
     },
     watch: {

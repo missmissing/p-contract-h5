@@ -114,5 +114,9 @@ export default {
 
   getTplContent (params) {
     return Http.post(`${contract}/contract-web/contract/getTemplateContent`, params)
+  },
+
+  getPdf (params) {
+    return Http.post(`${contract}/contract-web/contract/download/pdf`, params)
   }
 }

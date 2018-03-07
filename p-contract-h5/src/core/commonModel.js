@@ -2,6 +2,7 @@
  * Created by bizhou.liu on 2017/6/9.
  */
 import axios from 'axios'
+import qs from 'qs'
 import LocalStore from 'store'
 import bus from './bus'
 import Consts from './consts'
@@ -86,6 +87,15 @@ export default class Http {
       params: {
         randomTime: new Date().getTime() // 防止缓存
       }
+    }
+    return Http.send(config)
+  }
+
+  static form (url, params = {}) {
+    const config = {
+      method: 'post',
+      url,
+      data: qs.stringify(params)
     }
     return Http.send(config)
   }
