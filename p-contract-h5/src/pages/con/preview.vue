@@ -371,7 +371,7 @@
         const data = document.getElementById('pdf-wrap').innerHTML
         const value = this.contents.slice(0)
         value.splice(0, 1, data)
-        document.getElementById('pdf-content').value = value.join('````')
+        document.getElementById('pdf-content').value = value.join('~~~~')
         document.getElementById('pdf-form').submit()
       }
     },

@@ -12,7 +12,7 @@ module.exports = (conf) => {
   const env = args[i + 1];
 
   config.plugins.push(new AssetJsToHtml({
-    paths: [['prd', 'stg'].indexOf(env) > -1 ? 'https://mapproval.oa.chinaredstar.com/public/moa/static/crossdomainpage.min.js' : 'http://10.11.25.157:8000/public/moa/static/crossdomainpage.min.js']
+    paths: [['prd', 'stg'].indexOf(env) > -1 ? 'https://mapproval.oa.chinaredstar.com/public/moa/static/crossdomainpage.min.js' : 'http://oamapproval.dev.rs.com/public/moa/static/crossdomainpage.min.js']
   }));
 
   const contract = 'http://cm.dev.rs.com';

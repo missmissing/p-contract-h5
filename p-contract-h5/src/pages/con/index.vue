@@ -532,7 +532,7 @@
         financeInfoStructure.paymentMethods.forEach((originItem) => {
           const exist = cardFinanceInfoForm.paymentMethods.some((item) => {
             if (originItem.payType === item.payType && item.paymentAmount) {
-              paymentMethods.push(Object.assign(item, {visible: true}))
+              paymentMethods.push(Object.assign(item, {visible: true, type: originItem.type}))
               return true
             }
             return false
@@ -706,7 +706,13 @@
           this.btnSubmitStatus = true
           const result = this.getResult()
           this.comLoading()
-          Api.submit(result).then(() => {
+          let promise = null
+          if (this.pageStatus === 1) {
+            promise = Api.submit(result)
+          } else {
+            promise = Api.updatedSubmit(result)
+          }
+          promise.then(() => {
             this.$message.success('提交成功！')
             this.$router.push({name: routerNames.con_index})
           }).finally(() => {
