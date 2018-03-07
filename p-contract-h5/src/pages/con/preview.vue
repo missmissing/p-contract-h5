@@ -31,7 +31,11 @@
     width="90%"
     @close="ok">
     <div>
-      <div>
+      <form action="/api-contract/contract-web/contract/download/pdf" method="post" id="pdf-form">
+        <input type="hidden" name="contents" value="" id="pdf-content"/>
+        <input type="hidden" name="supplierName" :value="supplierName"/>
+        <input type="hidden" v-if="title" name="title" :value="title"/>
+        <input type="hidden" name="contractNo" :value="contractNo"/>
         <el-row class="previewTitle">
           <el-button style="float:right" native-type="submit" @click.prevent="toPdf" type="primary"
                      size="small">导出pdf
@@ -48,7 +52,7 @@
             <span v-if="contractNo">{{contractNo}}</span>
           </el-col>
         </el-row>
-      </div>
+      </form>
       <div id="pdf-wrap">
         <div>
           <div style="text-align: center;font-size:18px;font-weight:bold;padding-bottom: 10px;" class="mb20 f18 fb">
@@ -360,12 +364,8 @@
         const data = document.getElementById('pdf-wrap').innerHTML
         const value = this.contents.slice(0)
         value.splice(0, 1, data)
-        Api.getPdf({
-          contents: value,
-          supplierName: this.supplierName,
-          title: this.title,
-          contractNo: this.contractNo
-        })
+        document.getElementById('pdf-content').value = value.join('````')
+        document.getElementById('pdf-form').submit()
       }
     },
     watch: {

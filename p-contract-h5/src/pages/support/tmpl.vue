@@ -310,7 +310,7 @@
       },
       getTemplateLabels (templateId) {
         Api.getTemplateLabels({
-          templateId
+          templateId: templateId || ''
         }).then((res) => {
           const data = res.data.dataMap
           const staticLabels = []

@@ -150,7 +150,7 @@
             </div>
             <div class="mt20" v-if="paymentRemark">
               <div>付款方式备注：</div>
-              <div>{{paymentRemark}}</div>
+              <div v-html="paymentRemark"></div>
             </div>
             <div>合同含税总金额为{{totalAmount | numToChinese}} （CNY {{totalAmount}}元）</div>
           </div>
