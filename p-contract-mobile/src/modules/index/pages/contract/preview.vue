@@ -19,6 +19,10 @@
         }
       }
     }
+
+    .pre {
+      white-space: pre-wrap;
+    }
   }
 </style>
 
@@ -150,11 +154,11 @@
             </div>
             <div class="mt20" v-if="paymentRemark">
               <div>付款方式备注：</div>
-              <div v-html="paymentRemark"></div>
+              <div v-html="paymentRemark" class="pre"></div>
             </div>
             <div>合同含税总金额为{{totalAmount | numToChinese}} （CNY {{totalAmount}}元）</div>
           </div>
-          <div class="mt20 mb20" v-html="currentTpl"></div>
+          <div class="pre mt20 mb20" v-html="currentTpl"></div>
           <div class="mb20" v-if="effectiveCondition===1">
             <span>合同起止日期：{{startTime | formatDate}} ~ {{endTime | formatDate}}</span>
           </div>
