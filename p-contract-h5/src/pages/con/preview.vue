@@ -22,6 +22,12 @@
   .preViewTitle input {
     border: 0
   }
+
+  .preview-container {
+    .pre {
+      white-space: pre-wrap;
+    }
+  }
 </style>
 
 <template>
@@ -30,7 +36,7 @@
     :visible.sync="visible"
     width="90%"
     @close="ok">
-    <div>
+    <div class="preview-container">
       <form action="/api-contract/contract-web/contract/download/pdf" method="post" id="pdf-form">
         <input type="hidden" name="content" value="" id="pdf-content"/>
         <input type="hidden" name="supplierName" :value="supplierName"/>
@@ -172,7 +178,7 @@
             </div>
             <div class="mt20" v-if="paymentRemark">
               <div>付款方式备注：</div>
-              <div v-html="paymentRemark"></div>
+              <div v-html="paymentRemark" class="pre"></div>
             </div>
             <p>合同含税总金额为{{totalAmount | numToChinese}} （CNY {{totalAmount}}元）</p>
             <!--<div class="mt20 mb20">
@@ -207,10 +213,10 @@
           <!--<span v-if="effectiveCondition===2">附条件生效</span>-->
           <!--<span v-if="effectiveCondition===3">签订生效</span>-->
           <!--</el-row>-->
-          <div class="mb20" v-html="currentTpl"></div>
+          <div class="pre mb20" v-html="currentTpl"></div>
           <el-row class="mt20" v-if="effectiveCondition===1">
-            <el-col :span="5">合同生效日期：{{startTime}}</el-col>
-            <el-col :span="5">合同终止日期：{{endTime}}</el-col>
+            <el-col :span="5">合同生效日期：{{startTime | formatDate}}</el-col>
+            <el-col :span="5">合同终止日期：{{endTime | formatDate}}</el-col>
           </el-row>
           <el-row class="mt20" v-if="effectiveCondition===2">
             <el-col :span="3">生效备注：</el-col>
@@ -257,6 +263,7 @@
   import Api from '../../api/manageContract'
   import numToChinese from '../../util/numToChinese'
   import paymentTimePeriods from '../../filters/paymentTimePeriods'
+  import {formatDate} from '../../filters/moment'
 
   export default {
     props: {
@@ -435,7 +442,8 @@
       }
     },
     filters: {
-      numToChinese
+      numToChinese,
+      formatDate
     }
   }
 </script>
