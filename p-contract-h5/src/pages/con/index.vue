@@ -714,7 +714,11 @@
           if (this.pageStatus === 1) {
             promise = Api.submit(result)
           } else {
-            promise = Api.updatedSubmit(result)
+            const updateResult = {
+              alterRemark: this.updateForm.remark,
+              contractVo: result
+            }
+            promise = Api.updatedSubmit(updateResult)
           }
           promise.then(() => {
             this.$message.success('提交成功！')

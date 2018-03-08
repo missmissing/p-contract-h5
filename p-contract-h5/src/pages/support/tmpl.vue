@@ -94,6 +94,7 @@
                 </el-tab-pane>
               </el-tabs>
             </div>
+            <el-button class="mt20" type="primary" @click="save">返 回</el-button>
           </el-col>
           <el-col :span="12">
             <div class="mb20 pre-title">预览</div>
@@ -108,7 +109,6 @@
         </el-row>
       </div>
     </el-card>
-    <el-button class="mt20 ml20" type="primary" @click="save">返 回</el-button>
     <el-dialog
       title="添加自定义标签"
       :visible.sync="dialogVisible">
