@@ -501,6 +501,15 @@
           contract, agreements
         }
       },
+      // 过滤财务付款信息
+      getPaymentMethods (items) {
+        return items.filter((item) => {
+          if (item.visible && item.paymentAmount) {
+            return true
+          }
+          return false
+        })
+      },
 
       // 回填数据
       initData (data) {
@@ -677,12 +686,7 @@
         const baseInfoForm = getStructure(baseInfoStructure, this.baseInfoForm)
         const cardContentInfoForm = getStructure(contentInfoStructure, this.cardContentInfoForm)
 
-        const paymentMethods = this.cardFinanceInfoForm.paymentMethods.filter((item) => {
-          if (item.visible && item.paymentAmount) {
-            return true
-          }
-          return false
-        })
+        const paymentMethods = this.getPaymentMethods(this.cardFinanceInfoForm.paymentMethods)
         const cardFinanceInfoForm = Object.assign({}, getStructure(financeInfoStructure, this.cardFinanceInfoForm), {paymentMethods})
 
         const cardContCheckInfoForm = getStructure(checkInfoStructure, this.cardContCheckInfoForm)
@@ -792,13 +796,14 @@
           return Promise.reject(new Error('合同财务信息不完整'))
         }
         const {currency, invoiceType, paymentTimePeriod, paymentMethods} = this.cardFinanceInfoForm
+        const finances = this.getPaymentMethods(paymentMethods)
 
         return Api.updateFinanceByContractId({
           contractId: this.$route.query.contractId,
           currency,
           invoiceType,
           paymentTimePeriod,
-          finances: paymentMethods
+          finances
         })
       },
       // 待办流程发起人附件信息修改
