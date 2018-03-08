@@ -30,6 +30,7 @@
     "lodash-webpack-plugin": "^0.11.4",
     "mint-ui": "^2.2.13",
     "rstool": "^0.2.17",
-    "vue-template-compiler": "^2.5.13"
+    "vue-template-compiler": "^2.5.13",
+    "webpack": "^3.11.0"
   }
 }
