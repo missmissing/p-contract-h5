@@ -17,7 +17,8 @@
       </el-table-column>
       <el-table-column prop="fileName" label="文件名称" width="200px">
         <template slot-scope="scope">
-          <a class="router-link" :href="scope.row.fileUrl" target="_blank">{{scope.row.fileName}}</a>
+          <span v-if="ifClick(scope.row)">{{scope.row.fileName}}</span>
+          <a class="router-link" :href="scope.row.fileUrl" target="_blank" v-else>{{scope.row.fileName}}</a>
         </template>
       </el-table-column>
       <el-table-column prop="haveSeal" label="是否盖章" width="150px">
@@ -93,6 +94,13 @@
           return false
         }
         return true
+      },
+      // 创建且类型为合同不能点击
+      ifClick (row) {
+        if (this.pageStatus === 1 && row.attachType === 3) {
+          return true
+        }
+        return false
       },
       ifUploadFile (row) {
         const {attachType, id} = row
