@@ -22,12 +22,6 @@
   .preViewTitle input {
     border: 0
   }
-
-  .preview-container {
-    .pre {
-      white-space: pre-wrap;
-    }
-  }
 </style>
 
 <template>
@@ -213,7 +207,7 @@
           <!--<span v-if="effectiveCondition===2">附条件生效</span>-->
           <!--<span v-if="effectiveCondition===3">签订生效</span>-->
           <!--</el-row>-->
-          <div class="pre mb20" v-html="currentTpl"></div>
+          <div class="mb20" v-html="currentTpl"></div>
           <el-row class="mt20" v-if="effectiveCondition===1">
             <el-col :span="5">合同生效日期：{{startTime | formatDate}}</el-col>
             <el-col :span="5">合同终止日期：{{endTime | formatDate}}</el-col>
