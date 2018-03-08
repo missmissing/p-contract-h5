@@ -5,7 +5,7 @@
       <mt-navbar v-model="selected" class="mt20 mb20">
         <mt-tab-item :id="0">审批意见</mt-tab-item>
         <mt-tab-item :id="1">合同内容信息</mt-tab-item>
-        <mt-tab-item :id="2" v-if="showCustomLabel">自定义标签</mt-tab-item>
+        <mt-tab-item :id="2" v-if="showCustomLabel">合同内容信息（补充）</mt-tab-item>
         <mt-tab-item :id="3">合同财务信息</mt-tab-item>
         <mt-tab-item :id="4" v-if="ifCheckInfo">合同验收与样品信息</mt-tab-item>
         <mt-tab-item :id="5">合同附件</mt-tab-item>

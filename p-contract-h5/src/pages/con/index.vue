@@ -478,7 +478,7 @@
             this.customLabelForm.contractLabels = templateLabels.map((item) => {
               item.value = null
               return item
-            })
+            }).reverse()
           }
         })
       },

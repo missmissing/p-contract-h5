@@ -26,14 +26,11 @@
           display: table;
         }
       }
-      .content {
-        white-space: pre-wrap;
-      }
+      .content {}
       .footer {
         margin-top: 20px;
       }
       .files-content {
-        white-space: pre-wrap;
         margin-top: 20px;
       }
     }
@@ -240,7 +237,7 @@
       save () {
         if (!this.disabled) {
           const templateFileContents = this.editableTabs.map((item) => {
-            const content = item.content.replace(/\s/g, '&nbsp;')
+            const content = item.content
             return {
               content
             }
