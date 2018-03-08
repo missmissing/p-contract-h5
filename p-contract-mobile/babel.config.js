@@ -11,6 +11,8 @@ module.exports = (config) => {
       }
     ]
   ], 'lodash', 'syntax-dynamic-import');
+
+  config.presets[0][1].targets.browsers.push('iOS >= 7', 'Android >= 4.1');
   return config;
 };
 
