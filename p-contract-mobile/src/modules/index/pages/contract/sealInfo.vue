@@ -15,7 +15,7 @@
     </SealTable>
     <el-table v-if="agreenments.length" :data="agreenments" class="mt20">
       <el-table-column prop="attachType" label="附件类型" min-width="130px">
-        <template scope="scope">
+        <template slot-scope="scope">
           {{scope.row.attachType | attachmentType}}
         </template>
       </el-table-column>

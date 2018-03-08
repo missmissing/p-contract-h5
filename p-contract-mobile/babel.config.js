@@ -3,7 +3,7 @@ module.exports = (config) => {
     [
       {
         libraryName: 'element-ui',
-        styleLibraryName: 'theme-default'
+        styleLibraryName: 'theme-chalk'
       },
       {
         libraryName: 'mint-ui',

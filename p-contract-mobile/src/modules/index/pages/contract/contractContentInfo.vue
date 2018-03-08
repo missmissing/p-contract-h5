@@ -18,7 +18,7 @@
         <el-table-column prop="code" label="公司代码" width="100"></el-table-column>
         <el-table-column prop="name" label="公司名称" min-width="250"></el-table-column>
         <el-table-column prop="applyAll" label="全公司适用" min-width="130">
-          <template scope="scope">
+          <template slot-scope="scope">
             {{scope.row.applyAll | yesOrNo}}
           </template>
         </el-table-column>
@@ -44,7 +44,7 @@
                          width="100"></el-table-column>
         <el-table-column prop="price" label="价格" width="100"></el-table-column>
         <el-table-column prop="taxRate" label="税率" width="100">
-          <template scope="scope">
+          <template slot-scope="scope">
             {{scope.row.taxRate}}%
           </template>
         </el-table-column>

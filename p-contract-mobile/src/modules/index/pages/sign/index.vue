@@ -35,7 +35,7 @@
               prop="category"
               label="类型"
               width="100">
-              <template scope="scope">
+              <template slot-scope="scope">
                 {{scope.row.category | contractType}}
               </template>
             </el-table-column>
@@ -43,7 +43,7 @@
               prop="materialCode"
               label="物料编码"
               width="130">
-              <template scope="scope">
+              <template slot-scope="scope">
                 {{scope.row.materialCode | cutZero}}
               </template>
             </el-table-column>
@@ -66,7 +66,7 @@
               prop="taxRate"
               label="税率"
               width="80">
-              <template scope="scope">
+              <template slot-scope="scope">
                 {{scope.row.taxRate !== null ? `${scope.row.taxRate}%` : '0%'}}
               </template>
             </el-table-column>
@@ -74,7 +74,7 @@
               prop="deliveryTime"
               label="交货日期"
               width="120">
-              <template scope="scope">{{scope.row.deliveryTime | formatDate}}</template>
+              <template slot-scope="scope">{{scope.row.deliveryTime | formatDate}}</template>
             </el-table-column>
             <el-table-column
               prop="pr"
@@ -123,7 +123,7 @@
         <mt-tab-container-item :id="5">
           <el-table :data="receiveInfo" border class="wp100">
             <el-table-column type="expand">
-              <template scope="scope">
+              <template slot-scope="scope">
                 <el-table :data="scope.row.poReceiveBindVoList" v-if="scope.row.poReceiveBindVoList.length" border
                           class="wp100 mb20">
                   <el-table-column prop="itemNo" label="行项目号"></el-table-column>
@@ -149,12 +149,12 @@
             <el-table-column prop="totalAmount" label="收货总金额"></el-table-column>
             <el-table-column prop="initiator" label="发起人" width="130"></el-table-column>
             <el-table-column prop="epoCreateTime" label="凭证创建日期" width="130">
-              <template scope="scope">{{scope.row.epoCreateTime | formatDate}}</template>
+              <template slot-scope="scope">{{scope.row.epoCreateTime | formatDate}}</template>
             </el-table-column>
             <el-table-column prop="checkResult" label="验收结论"></el-table-column>
             <el-table-column prop="checkRemark" label="验收备注"></el-table-column>
             <el-table-column prop="checkDate" label="验收日期" width="130">
-              <template scope="scope">{{scope.row.checkDate | formatDate}}</template>
+              <template slot-scope="scope">{{scope.row.checkDate | formatDate}}</template>
             </el-table-column>
           </el-table>
         </mt-tab-container-item>

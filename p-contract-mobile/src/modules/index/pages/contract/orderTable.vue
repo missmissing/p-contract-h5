@@ -22,7 +22,7 @@
         prop="initiateTime"
         label="发起时间"
         min-width="100">
-        <template scope="scope">
+        <template slot-scope="scope">
           {{scope.row.initiateTime | formatDate}}
         </template>
       </el-table-column>
@@ -30,7 +30,7 @@
         prop="orderTime"
         label="下单时间"
         min-width="100">
-        <template scope="scope">
+        <template slot-scope="scope">
           {{scope.row.orderTime | formatDate}}
         </template>
       </el-table-column>

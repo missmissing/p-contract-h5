@@ -5,15 +5,15 @@
 <template>
   <el-table :show-header="showHeader" :data="items" class="wp100">
     <el-table-column type="expand" v-if="items.length&&items[0].seriousPayments">
-      <template scope="scope">
+      <template slot-scope="scope">
         <div v-if="items.length&&items[0].seriousPayments">
           <el-table :data="scope.row.financeMores">
             <el-table-column width="100" prop="name" label="名称">
-              <template scope="scope1">{{`${scope.row.type}${scope1.$index + 1}`}}</template>
+              <template slot-scope="scope1">{{`${scope.row.type}${scope1.$index + 1}`}}</template>
             </el-table-column>
             <el-table-column prop="paymentAmount" label="付款金额" width="150"></el-table-column>
             <el-table-column prop="paymentTimePeriod" label="付款条件" width="200">
-              <template scope="scope1">
+              <template slot-scope="scope1">
                 <el-select v-model="scope1.row.paymentTimePeriod" :disabled="disabled" placeholder="请选择付款条件">
                   <el-option v-for="item in paymentTimePeriods" :key="item.id" :value="item.id" :label="item.name">
                   </el-option>
@@ -23,12 +23,12 @@
             <el-table-column
               prop="remark"
               label="付款节点说明">
-              <template scope="scope1">
+              <template slot-scope="scope1">
                 <el-input type="textarea" :rows="2" :disabled="disabled" v-model="scope1.row.remark"></el-input>
               </template>
             </el-table-column>
             <el-table-column prop="ratio" label="占比" width="100">
-              <template scope="scope1">
+              <template slot-scope="scope1">
                 {{calcPercent(scope1.row, scope1.row.paymentAmount)}}
               </template>
             </el-table-column>
@@ -38,24 +38,24 @@
     </el-table-column>
     <el-table-column prop="type" label="类型" width="100"></el-table-column>
     <el-table-column prop="seriousPayments" label="多次付款" width="130">
-      <template scope="scope">
+      <template slot-scope="scope">
         <el-checkbox :disabled="true" :checked="scope.row.seriousPayments"></el-checkbox>
       </template>
     </el-table-column>
     <el-table-column prop="paymentAmount" label="付款金额" width="150">
-      <template scope="scope">
+      <template slot-scope="scope">
         <template v-if="!scope.row.seriousPayments">{{scope.row.paymentAmount}}</template>
         <template v-else>{{totalPaymentAmount}}</template>
       </template>
     </el-table-column>
     <el-table-column prop="paymentTimePeriod" label="付款条件" width="200px">
-      <template scope="scope">
+      <template slot-scope="scope">
         {{scope.row.paymentTimePeriod | paymentTimePeriods}}
       </template>
     </el-table-column>
     <el-table-column prop="remark" label="付款节点说明"></el-table-column>
     <el-table-column prop="ratio" label="占比" width="100">
-      <template scope="scope">
+      <template slot-scope="scope">
         {{calcPercent(scope.row, scope.row.paymentAmount)}}
       </template>
     </el-table-column>

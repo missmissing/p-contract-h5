@@ -29,7 +29,7 @@ export default {
         'head',
         'justify'
       ]
-      editor.customConfig.pasteFilterStyle = false
+      // editor.customConfig.pasteFilterStyle = false
       editor.customConfig.zIndex = 100
       editor.customConfig.onchangeTimeout = 1
       editor.customConfig.onchange = this.onChange

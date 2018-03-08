@@ -12,7 +12,7 @@
       <el-table-column prop="personName" label="联合验收人" min-width="130"></el-table-column>
       <el-table-column prop="personDept" label="联合验收人部门" min-width="150"></el-table-column>
       <el-table-column prop="required" label="是否必选" min-width="100">
-        <template scope="scope">
+        <template slot-scope="scope">
           {{scope.row.required | yesOrNo}}
         </template>
       </el-table-column>

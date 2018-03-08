@@ -5,18 +5,18 @@
 <template>
   <el-table :data="items">
     <el-table-column prop="attachType" label="附件类型" width="100px">
-      <template scope="scope">
+      <template slot-scope="scope">
         {{scope.row.attachType | attachmentType}}
       </template>
     </el-table-column>
     <el-table-column prop="fileName" label="文件名称" min-width="200px">
-      <template scope="scope">
+      <template slot-scope="scope">
         <a class="file-item" :download="scope.row.fileName"
            @click="openFile(scope.row.fileUrl)">{{scope.row.fileName}}</a>
       </template>
     </el-table-column>
     <el-table-column prop="haveSale" label="是否盖章" width="100px">
-      <template scope="scope">
+      <template slot-scope="scope">
         {{scope.row.haveSale | yesOrNo}}
       </template>
     </el-table-column>

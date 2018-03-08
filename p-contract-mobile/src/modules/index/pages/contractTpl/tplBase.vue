@@ -30,7 +30,7 @@
         prop="fileName"
         label="文件名"
         min-width="200">
-        <template scope="scope">
+        <template slot-scope="scope">
           <a class="router-link" :download="fileName" @click="openFile(scope.row.fileId)">{{scope.row.fileName}}</a>
         </template>
       </el-table-column>
@@ -43,7 +43,7 @@
         prop="createTime"
         width="130"
         label="上传时间">
-        <template scope="scope">
+        <template slot-scope="scope">
           {{scope.row.createTime | formatDate}}
         </template>
       </el-table-column>
