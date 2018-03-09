@@ -18,9 +18,8 @@
                 <el-form-item label="合同编号" prop="contractNo">
                   <el-input
                     v-model="basicForm.contractNo"
-                    icon="search"
-                    :on-icon-click="search"
                     @keyup.enter.native="search">
+                    <i class="el-icon-search" slot="suffix" @click="search"></i>
                   </el-input>
                 </el-form-item>
               </el-col>
@@ -104,8 +103,6 @@
               <el-input
                 type="textarea"
                 :maxlength="300"
-                :autosize="{ minRows: 2 }"
-                resize="none"
                 v-model="handleForm.violateReason">
               </el-input>
             </el-form-item>
@@ -113,9 +110,7 @@
               <el-input
                 type="textarea"
                 :maxlength="300"
-                :autosize="{ minRows: 2 }"
-                resize="none"
-                v-model="handleForm.treatmentScheme">
+                v-model.trim="handleForm.treatmentScheme">
               </el-input>
             </el-form-item>
             <el-form-item label="相关附件">
@@ -137,15 +132,15 @@
 </template>
 
 <script>
-  import Api from '../../api/performance';
-  import Upload from '../../components/upload.vue';
-  import {formatDate} from '../../filters/moment';
-  import {routerNames} from '../../core/consts';
-  import comLoading from '../../mixins/comLoading';
+  import Api from '../../api/performance'
+  import Upload from '../../components/upload.vue'
+  import {formatDate} from '../../filters/moment'
+  import {routerNames} from '../../core/consts'
+  import comLoading from '../../mixins/comLoading'
 
   export default {
     mixins: [comLoading],
-    data() {
+    data () {
       return {
         signTime: '',
         startTime: '',
@@ -182,39 +177,39 @@
             message: '长度不超过300个字符'
           }]
         }
-      };
+      }
     },
     methods: {
-      search() {
+      search () {
         if (!this.basicForm.contractNo) {
-          return;
+          return
         }
-        this.comLoading();
+        this.comLoading()
         Api.getContractViolateBaseByContractNo({contractNo: this.basicForm.contractNo}).then((res) => {
-          const data = res.data.dataMap;
-          this.info = data;
+          const data = res.data.dataMap
+          this.info = data
           const {
             startTime, endTime, businessOperator, businessDept, signTime
-          } = data;
-          this.startTime = startTime;
-          this.endTime = endTime;
-          this.signTime = signTime;
-          this.businessDept = businessDept;
-          this.businessOperator = businessOperator;
-          this.toDetail.query.contractNo = this.basicForm.contractNo;
-          this.comLoading(false);
+          } = data
+          this.startTime = startTime
+          this.endTime = endTime
+          this.signTime = signTime
+          this.businessDept = businessDept
+          this.businessOperator = businessOperator
+          this.toDetail.query.contractNo = this.basicForm.contractNo
+          this.comLoading(false)
         }, () => {
-          this.comLoading(false);
-        });
+          this.comLoading(false)
+        })
       },
-      getResult() {
-        const files = [];
+      getResult () {
+        const files = []
         this.fileList.forEach((file) => {
           if (file.status === 'success') {
-            files.push(file.fileId);
+            files.push(file.fileId)
           }
-        });
-        this.handleForm.files = files;
+        })
+        this.handleForm.files = files
         return {
           contractNo: this.info.contractNo,
           defaulter: this.defaulter,
@@ -222,40 +217,40 @@
           compensateType: this.compensateType,
           compensateMoney: this.compensateMoney,
           ...this.handleForm
-        };
+        }
       },
-      check() {
-        let flag = false;
+      check () {
+        let flag = false
         this.$refs.basicForm.validate((valid) => {
           if (valid) {
             this.$refs.handleForm.validate((valid1) => {
               if (valid1) {
-                flag = true;
+                flag = true
               }
-            });
+            })
           }
-        });
+        })
 
-        return flag;
+        return flag
       },
-      submit() {
-        const result = this.getResult();
-        console.log(result);
+      submit () {
+        const result = this.getResult()
+        console.log(result)
         if (!this.check()) {
-          this.$message.warning('表单信息不完整！');
-          return;
+          this.$message.warning('表单信息不完整！')
+          return
         }
         this.comLoading({
           text: '正在提交中'
-        });
+        })
         Api.contractViolateSave(result).then(() => {
-          this.comLoading(false);
+          this.comLoading(false)
           this.$router.push({
             name: routerNames.con_index
-          });
+          })
         }, () => {
-          this.comLoading(false);
-        });
+          this.comLoading(false)
+        })
       }
     },
     components: {
@@ -264,5 +259,5 @@
     filters: {
       formatDate
     }
-  };
+  }
 </script>

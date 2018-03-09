@@ -1,3 +1,3 @@
-import {compensateType} from '../core/consts';
+import {compensateType} from '../core/consts'
 
-export default type => compensateType[type];
+export default type => compensateType[type]

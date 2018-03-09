@@ -1,36 +1,36 @@
-import moment from 'moment';
+import moment from 'moment'
 
 export const formatTime = (value) => {
-  const m = moment(value || '');
+  const m = moment(value || '')
   if (m.isValid()) {
-    return m.format('YYYY-MM-DD HH:mm:ss');
+    return m.format('YYYY-MM-DD HH:mm:ss')
   }
-  return value;
-};
+  return value
+}
 
 export const formatDate = (value) => {
-  const m = moment(value || '');
+  const m = moment(value || '')
   if (m.isValid()) {
-    return m.format('YYYY-MM-DD');
+    return m.format('YYYY-MM-DD')
   }
-  return value;
-};
+  return value
+}
 
 export const formatTimeStamp = (value) => {
-  const m = moment(value || '');
+  const m = moment(value || '')
   if (m.isValid()) {
-    return m.valueOf();
+    return m.valueOf()
   }
-  return value;
-};
+  return value
+}
 
 export const formatToDate = (value) => {
-  const m = moment(value || '');
+  const m = moment(value || '')
   if (m.isValid()) {
-    return m.toDate();
+    return m.toDate()
   }
-  return value;
-};
+  return value
+}
 
 export const formatTimeText = (value) => {
   const timeTextMap = [
@@ -74,19 +74,19 @@ export const formatTimeText = (value) => {
       from: 23,
       to: 3
     }
-  ];
-  const m = value ? moment(value) : moment();
+  ]
+  const m = value ? moment(value) : moment()
   if (m.isValid()) {
-    const h = m.hours();
-    let text = '';
+    const h = m.hours()
+    let text = ''
     timeTextMap.some((item) => {
       if (h >= item.from && h < item.to) {
-        text = item.label;
-        return true;
+        text = item.label
+        return true
       }
-      return false;
-    });
-    return `${text}好！`;
+      return false
+    })
+    return `${text}好！`
   }
-  return value;
-};
+  return value
+}

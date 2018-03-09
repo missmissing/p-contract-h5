@@ -7,18 +7,18 @@
 </template>
 
 <script>
-  import Jump from '../../assets/js/jump';
+  import Jump from '../../assets/js/jump'
 
   export default {
-    data() {
-      return {};
+    data () {
+      return {}
     },
     methods: {},
-    created() {
-      const {name} = this.$route;
+    created () {
+      const {name} = this.$route
       const {
         procInstId, serialNumber, procCode, sn
-      } = this.$route.query;
+      } = this.$route.query
       const query = {
         procInstId,
         serialNumber: serialNumber || '',
@@ -26,15 +26,15 @@
         procCode,
         routeName: name,
         from: 'out'
-      };
-      new Jump(this.$router).init(query);
+      }
+      new Jump(this.$router).init(query)
     },
-    mounted() {
-      document.getElementById('header').style.display = 'none';
-      document.getElementById('main').style.top = '15px';
-      document.getElementById('left').style.display = 'none';
-      document.getElementById('right').style.left = '0px';
-      document.getElementById('breadcrumb').style.display = 'none';
+    mounted () {
+      document.getElementById('header').style.display = 'none'
+      document.getElementById('main').style.top = '15px'
+      document.getElementById('left').style.display = 'none'
+      document.getElementById('right').style.left = '0px'
+      document.getElementById('breadcrumb').style.display = 'none'
     }
-  };
+  }
 </script>

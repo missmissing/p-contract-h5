@@ -44,8 +44,6 @@
                       type="textarea"
                       v-model="form.busiTypeText"
                       @focus="visible = true"
-                      resize="none"
-                      :autosize="{maxRows:6}"
                       readonly>
                     </el-input>
                   </el-form-item>
@@ -130,9 +128,7 @@
               <el-form-item label="申请原因" prop="description">
                 <el-input
                   type="textarea"
-                  :autosize="{ minRows: 2 }"
-                  resize="none"
-                  v-model="form.description">
+                  v-model.trim="form.description">
                 </el-input>
               </el-form-item>
               <el-form-item label="附件上传">
@@ -155,7 +151,7 @@
       </div>
     </transition>
     <transition name="component-fade" mode="out-in">
-      <Tmpl v-show="showTmpl" :showTmpl.sync="showTmpl"></Tmpl>
+      <Tmpl v-show="showTmpl" :showTmpl.sync="showTmpl" @getData="getTmplData"/>
     </transition>
     <TreeModal
       nodeKey="id"
@@ -171,41 +167,41 @@
 </template>
 
 <script>
-  import Tmpl from './tmpl.vue';
-  import Upload from '../../components/upload.vue';
-  import TreeModal from '../../components/treeModal.vue';
-  import Api from '../../api/manageContract/index';
-  import supportModel from '../../api/support';
-  import getBusiType from '../../mixins/getBusiType';
-  import comLoading from '../../mixins/comLoading';
-  import createUpdate from '../../mixins/createUpdate';
-  import {formatTimeStamp} from '../../filters/moment';
-  import {contractPatternMap} from '../../core/consts';
-  import {nonNegative} from '../../util/reg';
+  import Api from '../../api/manageContract/index'
+  import supportModel from '../../api/support'
+  import getBusiType from '../../mixins/getBusiType'
+  import comLoading from '../../mixins/comLoading'
+  import createUpdate from '../../mixins/createUpdate'
+  import {formatTimeStamp} from '../../filters/moment'
+  import {contractPatternMap} from '../../core/consts'
+  import {nonNegative} from '../../util/reg'
+
+  import Tmpl from './tmpl.vue'
+  import Upload from '../../components/upload.vue'
+  import TreeModal from '../../components/treeModal.vue'
 
   export default {
     mixins: [getBusiType, comLoading, createUpdate],
-    data() {
-      const contractTypes = [];
+    data () {
+      const contractTypes = []
       Object.keys(contractPatternMap).forEach((item) => {
         if (item === '2') {
-          return;
+          return
         }
-        contractTypes.push({id: item, name: contractPatternMap[item]});
-      });
+        contractTypes.push({id: item, name: contractPatternMap[item]})
+      })
       const validatorNum = (rule, value, callback) => {
         if (!nonNegative(value)) {
-          callback(new Error('格式错误'));
+          callback(new Error('格式错误'))
         } else {
-          console.log(111);
-          callback();
+          callback()
         }
-      };
+      }
       return {
         form: {
           templateName: '',
           templateType: null,
-          startDate: '',
+          startDate: new Date(),
           description: '',
           bizTypes: [],
           busiTypeText: '',
@@ -216,6 +212,7 @@
           amount: null
         },
         fileList: [],
+        tmpl: {},
         endDate: '9999-12-31',
         defaultProps: {
           children: 'children',
@@ -238,48 +235,47 @@
           amount: [{required: true, message: '请输入金额'}, {validator: validatorNum}],
           contractType: [{required: true, message: '请选择合同类型'}]
         }
-      };
+      }
     },
     methods: {
-      setBusiType(value, tree) {
-        const bizTypes = [];
-        const busiTypeText = [];
-        const leafs = tree.getCheckedNodes(true);
+      setBusiType (value, tree) {
+        const bizTypes = []
+        const busiTypeText = []
+        const leafs = tree.getCheckedNodes(true)
         leafs.forEach((item) => {
-          bizTypes.push(item.id);
-          busiTypeText.push(item.businessName);
-        });
-        this.form.bizTypes = bizTypes;
-        this.form.busiTypeText = busiTypeText.join(',');
-        this.visible = false;
+          bizTypes.push(item.id)
+          busiTypeText.push(item.businessName)
+        })
+        this.form.bizTypes = bizTypes
+        this.form.busiTypeText = busiTypeText.join(',')
+        this.visible = false
       },
-      remoteMethod(query) {
+      remoteMethod (query) {
         if (query !== '') {
-          this.selectLoading = true;
+          this.selectLoading = true
           Api.getRemoteCreatePersonsByKeyWord({keyword: query}).then(res => {
-            this.selectLoading = false;
-            this.businessOperators = res.data.dataMap;
+            this.selectLoading = false
+            this.businessOperators = res.data.dataMap
           }, () => {
-            this.businessOperators = [];
-          });
+            this.businessOperators = []
+          })
         } else {
-          this.businessOperators = [];
+          this.businessOperators = []
         }
       },
-      selectChange(value) {
+      selectChange (value) {
         this.businessOperators.some((item) => {
           if (item.userId === value) {
-            this.form.businessOperatorName = item.userName;
-            return true;
+            this.form.businessOperatorName = item.userName
+            return true
           }
-          return false;
-        });
+          return false
+        })
       },
-      businessOperatorClear() {
-        this.form.businessOperatorName = null;
+      businessOperatorClear () {
+        this.form.businessOperatorName = null
       },
-      getResult() {
-        const {info} = this.$store.state.support.create;
+      getResult () {
         const {
           templateName,
           templateType,
@@ -289,9 +285,13 @@
           businessOperatorId,
           businessOperatorName,
           amount,
-          contractType
-        } = this.form;
-        const result = Object.assign({
+          contractType,
+          contentModule,
+          content,
+          templateFileContents,
+          labels
+        } = this.form
+        const result = {
           templateName,
           templateType,
           startDate: formatTimeStamp(startDate),
@@ -300,46 +300,50 @@
           businessOperatorId,
           businessOperatorName,
           amount,
-          contractType
-        }, info);
-        const files = [];
+          contractType,
+          contentModule,
+          content,
+          templateFileContents,
+          labels
+        }
+        const files = []
         this.fileList.forEach((file) => {
           if (file.status === 'success') {
-            files.push(file.fileId);
+            files.push(file.fileId)
           }
-        });
+        })
         Object.assign(result, {
           files
-        });
-        return result;
+        })
+        return result
       },
-      save(templateStatus) {
+      save (templateStatus) {
         this.$refs.form.validate((valid) => {
           if (valid) {
-            const result = this.getResult();
+            const result = this.getResult()
             if (!this.check(result)) {
-              return;
+              return
             }
-            result.templateStatus = templateStatus;
+            result.templateStatus = templateStatus
             this.comLoading({
               text: '正在提交中'
-            });
+            })
             supportModel.addTpl(result).then(() => {
-              this.comLoading(false);
+              this.comLoading(false)
               this.$message({
                 message: '提交成功',
                 type: 'success'
-              });
+              })
               if (templateStatus === 1) {
-                this.back();
+                this.back()
               }
             }, () => {
-              this.comLoading(false);
-            });
+              this.comLoading(false)
+            })
           } else {
-            console.log('error submit!!');
+            console.log('error submit!!')
           }
-        });
+        })
       }
     },
     components: {
@@ -348,9 +352,9 @@
       Upload
     },
     computed: {
-      showTpl() {
-        return this.form.templateType === 'TEMPLATE';
+      showTpl () {
+        return this.form.templateType === 'TEMPLATE'
       }
     }
-  };
+  }
 </script>

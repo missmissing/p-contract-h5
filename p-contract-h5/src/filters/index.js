@@ -1,8 +1,8 @@
-import _ from 'lodash';
+import _ from 'lodash'
 
 export const strToArr = (value) => {
   if (!_.isString(value)) {
-    return [];
+    return []
   }
-  return value.split(',');
-};
+  return value.split(',')
+}

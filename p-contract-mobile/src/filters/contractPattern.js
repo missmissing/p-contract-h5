@@ -1,3 +1,3 @@
-import {contractPatternMap} from '../core/consts';
+import {contractPatternMap} from '../core/consts'
 
-export default type => contractPatternMap[type];
+export default type => contractPatternMap[type]

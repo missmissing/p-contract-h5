@@ -63,14 +63,14 @@
                 prop="createTime"
                 label="创建时间"
                 width="150">
-                <template scope="scope">
+                <template slot-scope="scope">
                   {{scope.row.createTime | formatDate}}
                 </template>
               </el-table-column>
               <el-table-column
                 label="操作"
                 width="80">
-                <template scope="scope">
+                <template slot-scope="scope">
                   <el-button
                     @click.native.prevent="deleteRow(scope.$index, prData)"
                     type="danger"
@@ -125,7 +125,7 @@
                   prop="materialCode"
                   label="物料编码"
                   width="130">
-                  <template scope="scope">
+                  <template slot-scope="scope">
                     {{scope.row.materialCode | cutZero}}
                   </template>
                 </el-table-column>
@@ -143,7 +143,7 @@
                   prop="total"
                   label="数量"
                   width="120">
-                  <template scope="scope">
+                  <template slot-scope="scope">
                     <el-input v-model.trim="scope.row.total"></el-input>
                   </template>
                 </el-table-column>
@@ -156,7 +156,7 @@
                   prop="taxRate"
                   label="税率"
                   width="130">
-                  <template scope="scope">
+                  <template slot-scope="scope">
                     {{scope.row.taxRate ? `${scope.row.taxRate}%` : ''}}
                   </template>
                 </el-table-column>
@@ -164,7 +164,7 @@
                   prop="deliveryTime"
                   label="交货日期"
                   width="186">
-                  <template scope="scope">
+                  <template slot-scope="scope">
                     <div>
                       <el-date-picker
                         v-model="scope.row.deliveryTime"
@@ -191,7 +191,7 @@
                   label="操作"
                   fixed="right"
                   width="80">
-                  <template scope="scope">
+                  <template slot-scope="scope">
                     <el-button
                       @click.native.prevent="deleteRow(scope.$index, orderData)"
                       type="danger"
@@ -278,7 +278,7 @@
             prop="materialCode"
             label="物料编码"
             width="180">
-            <template scope="scope">
+            <template slot-scope="scope">
               {{scope.row.materialCode | cutZero}}
             </template>
           </el-table-column>
@@ -286,7 +286,7 @@
             prop="materialName"
             label="物料名称"
             min-width="200">
-            <template scope="scope">
+            <template slot-scope="scope">
               <template v-if="!scope.row.pr">
                 <el-radio
                   v-model="scope.row.checked"
@@ -324,7 +324,7 @@
             prop="startTime"
             label="开始时间"
             width="120">
-            <template scope="scope">
+            <template slot-scope="scope">
               {{scope.row.startTime | formatDate}}
             </template>
           </el-table-column>
@@ -332,7 +332,7 @@
             prop="endTime"
             label="截止时间"
             width="120">
-            <template scope="scope">
+            <template slot-scope="scope">
               {{scope.row.endTime | formatDate}}
             </template>
           </el-table-column>
@@ -345,7 +345,7 @@
             prop="taxRate"
             label="税率"
             width="80">
-            <template scope="scope">{{scope.row.taxRate ? `${scope.row.taxRate}%` : ''}}</template>
+            <template slot-scope="scope">{{scope.row.taxRate ? `${scope.row.taxRate}%` : ''}}</template>
           </el-table-column>
         </el-table>
       </div>
@@ -358,17 +358,17 @@
 </template>
 
 <script>
-  import signModel from '../../api/sign';
-  import {routerNames, prTypeMap, contractPatternMap} from '../../core/consts';
-  import {formatTime, formatDate} from '../../filters/moment';
-  import fillZero from '../../util/fillZero';
-  import cutZero from '../../util/cutZero';
-  import {greaterZero} from '../../util/reg';
-  import comLoading from '../../mixins/comLoading';
+  import signModel from '../../api/sign'
+  import {routerNames, prTypeMap, contractPatternMap} from '../../core/consts'
+  import {formatTime, formatDate} from '../../filters/moment'
+  import fillZero from '../../util/fillZero'
+  import cutZero from '../../util/cutZero'
+  import {greaterZero} from '../../util/reg'
+  import comLoading from '../../mixins/comLoading'
 
   export default {
     mixins: [comLoading],
-    data() {
+    data () {
       return {
         prCode: '',
         contractCode: '',
@@ -418,72 +418,72 @@
           }
         ],
         toDetail: {name: routerNames.con_Check, query: {contractNo: ''}}
-      };
+      }
     },
     methods: {
-      add() {
-        const prCode = this.prCode;
-        const prData = this.prData;
-        const exist = prData.some((item) => item.pr === fillZero(prCode, 10));
+      add () {
+        const prCode = this.prCode
+        const prData = this.prData
+        const exist = prData.some((item) => item.pr === fillZero(prCode, 10))
         if (exist) {
-          this.$message.warning('列表中已存在！');
-          return;
+          this.$message.warning('列表中已存在！')
+          return
         }
 
-        this.comLoading();
+        this.comLoading()
         signModel.getPr({
           pr: prCode
         }).then((res) => {
-          this.comLoading(false);
-          const data = res.data.dataMap;
+          this.comLoading(false)
+          const data = res.data.dataMap
           if (this.prData.length) {
             if (this.prData[0].companyCode !== data.companyCode) {
-              this.$message.warning('采购申请号所属公司编码不同!');
-              return;
+              this.$message.warning('采购申请号所属公司编码不同!')
+              return
             }
             if (this.prData[0].category !== data.category) {
-              this.$message.warning('采购申请号类型不同!');
-              return;
+              this.$message.warning('采购申请号类型不同!')
+              return
             }
           }
-          this.prData.push(data);
+          this.prData.push(data)
         }, () => {
-          this.comLoading(false);
-        });
+          this.comLoading(false)
+        })
       },
-      match() {
-        const prData = this.prData;
+      match () {
+        const prData = this.prData
         if (!prData.length) {
-          this.$message.warning('请输入采购申请号！');
-          return;
+          this.$message.warning('请输入采购申请号！')
+          return
         }
 
         if (this.prData[0].category === 2 && !this.contractCode) {
-          this.$message.warning('服务类必须输入合同编号！');
-          return;
+          this.$message.warning('服务类必须输入合同编号！')
+          return
         }
 
-        const pr = prData.map((item) => item.pr);
+        const pr = prData.map((item) => item.pr)
 
-        this.comLoading();
+        this.comLoading()
         signModel.getMatch({
           pr,
           contractNo: this.contractCode
         }).then((res) => {
-          this.comLoading(false);
-          const data = res.data.dataMap;
-          const {materialsMatchVoList} = data;
-          this.materialsMatchData = materialsMatchVoList;
-          this.matchData = this.getSource(materialsMatchVoList);
-          console.log(this.matchData);
-          this.dialogVisible = true;
+          this.comLoading(false)
+          const data = res.data.dataMap
+          const {materialsMatchVoList} = data
+          this.materialsMatchData = materialsMatchVoList
+          this.matchData = this.getSource(materialsMatchVoList)
+          console.log(this.matchData)
+          this.dialogVisible = true
         }, () => {
-          this.comLoading(false);
-        });
+          this.comLoading(false)
+        })
       },
-      getSource(data) {
-        const result = [];
-        const prList = data || [];
+      getSource (data) {
+        const result = []
+        const prList = data || []
         prList.forEach((item) => {
           const {
             pr,
@@ -491,14 +491,14 @@
             materialName,
             materialCode,
             contVos
-          } = item;
+          } = item
           if (contVos && contVos.length) {
             result.push({
               pr,
               prItemNo,
               materialCode,
               materialName
-            });
+            })
             contVos.forEach((cont) => {
               const newCont = {
                 ...cont,
@@ -506,65 +506,65 @@
                 checked: false,
                 disabled: false,
                 mapKey: prItemNo
-              };
-              result.push(newCont);
-            });
+              }
+              result.push(newCont)
+            })
           }
-        });
-        return result;
+        })
+        return result
       },
-      matchOk() {
-        const exist = this.matchData.some(item => item.checked === '');
+      matchOk () {
+        const exist = this.matchData.some(item => item.checked === '')
         if (!exist) {
-          this.$message.warning('请选择匹配项');
-          return;
+          this.$message.warning('请选择匹配项')
+          return
         }
 
-        this.dialogVisible = false;
+        this.dialogVisible = false
 
-        this.setContractData();
-        this.setOrderData();
-        this.setOrderForm();
+        this.setContractData()
+        this.setOrderData()
+        this.setOrderForm()
       },
-      setContractData() {
-        console.log(this.matchData);
+      setContractData () {
+        console.log(this.matchData)
         this.matchData.some((item) => {
           if (item.checked === '') {
-            this.contractForm = item;
-            return true;
+            this.contractForm = item
+            return true
           }
-          return false;
-        });
-        this.contractForm.contractType = contractPatternMap[this.contractForm.contractType];
-        this.toDetail.query.contractNo = this.contractForm.contractNo;
+          return false
+        })
+        this.contractForm.contractType = contractPatternMap[this.contractForm.contractType]
+        this.toDetail.query.contractNo = this.contractForm.contractNo
       },
-      setOrderForm() {
-        const {companyCode} = this.prData[0];
-        const {supplierName} = this.contractForm;
-        let type = '';
+      setOrderForm () {
+        const {companyCode} = this.prData[0]
+        const {supplierName} = this.contractForm
+        let type = ''
         if (this.orderData.length) {
           if ([1, 3].indexOf(this.orderData[0].category) > -1) {
-            type = prTypeMap[1];
+            type = prTypeMap[1]
           } else {
-            type = prTypeMap[2];
+            type = prTypeMap[2]
           }
         }
         this.orderForm = {
           companyCode,
           type,
           supplierName
-        };
-      },
-      setOrderData() {
-        const orderData = this.prData[0].category !== 2 ? this.getMaterialsOrderData() : this.getServerOrderData();
-        this.orderData = orderData.filter(item => item.availableTotal !== 0);
-        if (orderData.length !== this.orderData.length) {
-          this.$message.warning('可用数量为0的订单自动被移除');
         }
       },
-      getMaterialsOrderData() {
-        const {id} = this.contractForm;
-        const orderData = [];
+      setOrderData () {
+        const orderData = this.prData[0].category !== 2 ? this.getMaterialsOrderData() : this.getServerOrderData()
+        this.orderData = orderData.filter(item => item.availableTotal !== 0)
+        if (orderData.length !== this.orderData.length) {
+          this.$message.warning('可用数量为0的订单自动被移除')
+        }
+      },
+      getMaterialsOrderData () {
+        const {id} = this.contractForm
+        const orderData = []
         this.materialsMatchData.forEach((item) => {
           const {
             pr,
@@ -575,10 +575,10 @@
             materialCode,
             contVos,
             category
-          } = item;
+          } = item
           if (contVos && contVos.length) {
             contVos.forEach((cont) => {
-              const {itemNo} = cont;
+              const {itemNo} = cont
               if (cont.id === id) {
                 orderData.push({
                   pr,
@@ -592,15 +592,15 @@
                   availableTotal,
                   taxRate: cont.taxRate,
                   deliveryTime: ''
-                });
+                })
               }
-            });
+            })
           }
-        });
-        return orderData;
+        })
+        return orderData
       },
-      getServerOrderData() {
-        const orderData = [];
+      getServerOrderData () {
+        const orderData = []
         this.matchData.forEach((row) => {
           if (row.checked === '') {
             this.materialsMatchData.forEach((item) => {
@@ -612,13 +612,12 @@
                 availableTotal,
                 materialCode,
                 contVos,
-                category,
-                price
-              } = item;
+                category
+              } = item
               if (prItemNo === row.mapKey) {
                 if (contVos && contVos.length) {
                   contVos.forEach((cont) => {
-                    const {itemNo} = cont;
+                    const {itemNo} = cont
                     if (itemNo === row.itemNo) {
                       orderData.push({
                         pr,
@@ -632,91 +631,91 @@
                         availableTotal,
                         taxRate: cont.taxRate,
                         deliveryTime: ''
-                      });
+                      })
                     }
-                  });
+                  })
                 }
               }
-            });
+            })
           }
-        });
-        console.log(orderData);
-        return orderData;
+        })
+        console.log(orderData)
+        return orderData
       },
-      formatType(row, column, cellValue) {
-        return prTypeMap[cellValue];
+      formatType (row, column, cellValue) {
+        return prTypeMap[cellValue]
       },
-      formatDate(row, value) {
-        row.deliveryTime = formatDate(value);
+      formatDate (row, value) {
+        row.deliveryTime = formatDate(value)
       },
-      srChange(row) {
+      srChange (row) {
         if (this.prData[0].category !== 2) {
           this.matchData.forEach((item) => {
-            item.checked = item === row ? '' : false;
-          });
+            item.checked = item === row ? '' : false
+          })
         } else {
           this.matchData.forEach((item) => {
             if (item.mapKey === row.mapKey) {
-              item.checked = item === row ? '' : false;
+              item.checked = item === row ? '' : false
             } else {
-              item.disabled = item.itemNo === row.itemNo;
+              item.disabled = item.itemNo === row.itemNo
             }
-          });
+          })
         }
       },
-      deleteRow(index, rows) {
-        rows.splice(index, 1);
+      deleteRow (index, rows) {
+        rows.splice(index, 1)
       },
-      check(result) {
-        const {purOrderMaterials} = result;
+      check (result) {
+        const {purOrderMaterials} = result
         if (!purOrderMaterials.length) {
-          this.$message.warning('订单信息不能为空！');
-          return false;
+          this.$message.warning('订单信息不能为空！')
+          return false
         }
         const exist = purOrderMaterials.some((item) => {
           if (!item.total) {
-            this.$message.warning('请输入订单数量！');
-            return true;
+            this.$message.warning('请输入订单数量！')
+            return true
           } else if (!greaterZero(item.total)) {
-            this.$message.warning('数量格式错误，格式为数字且大于0！');
-            return true;
+            this.$message.warning('数量格式错误，格式为数字且大于0！')
+            return true
           } else if (item.total > item.availableTotal) {
-            this.$message.warning('订单数量不能大于可下单数量！');
-            return true;
+            this.$message.warning('订单数量不能大于可下单数量！')
+            return true
           } else if (!item.deliveryTime) {
-            this.$message.warning('请选择订单交货日期！');
-            return true;
+            this.$message.warning('请选择订单交货日期！')
+            return true
           }
-          return false;
-        });
+          return false
+        })
 
-        return !exist;
+        return !exist
       },
-      getResult() {
-        const {id, contractNo} = this.contractForm;
+      getResult () {
+        const {id, contractNo} = this.contractForm
 
         return {
           contractId: id,
           contractNo,
           purOrderMaterials: this.orderData
-        };
+        }
       },
-      submit() {
-        const result = this.getResult();
+      submit () {
+        const result = this.getResult()
         if (!this.check(result)) {
-          return;
+          return
         }
         this.comLoading({
           text: '正在提交中'
-        });
+        })
         signModel.submit(result).then(() => {
-          this.comLoading(false);
+          this.comLoading(false)
           this.$router.push({
             name: routerNames.con_index
-          });
+          })
         }, () => {
-          this.comLoading(false);
-        });
+          this.comLoading(false)
+        })
       }
     },
     filters: {
@@ -724,5 +723,5 @@
       formatDate,
       cutZero
     }
-  };
+  }
 </script>

@@ -50,12 +50,15 @@
 </template>
 
 <script>
-  import Api from '../../api/process';
-  import {routerNames, processListMap} from '../../core/consts';
-  import {formatDate} from '../../filters/moment';
-  import toPage from '../../assets/js/toPage';
+  import Api from '../../api/process'
+  import {routerNames, processListMap} from '../../core/consts'
+  import {formatDate} from '../../filters/moment'
+  import toPage from '../../assets/js/toPage'
+
+  import comLoading from '../../mixins/comLoading'
 
   export default {
+    mixins: [comLoading],
     props: {
       title: {
         default: ''
@@ -67,48 +70,48 @@
         default: processListMap[0]
       }
     },
-    data() {
+    data () {
       return {
         items: []
-      };
+      }
     },
     methods: {
-      getProcess() {
+      getProcess () {
         Api.getProcess({
           pageNumber: 1,
           pageSize: this.pageSize,
           dataType: this.dataType
         }).then((res) => {
-          const {procList} = res.data.dataMap;
-          this.items = procList || [];
-        });
+          const {procList} = res.data.dataMap
+          this.items = procList || []
+        })
       },
-      toDetailPage() {
-        let routerName = '';
+      toDetailPage () {
+        let routerName = ''
         switch (this.dataType) {
           case processListMap[0]:
-            routerName = routerNames.con_handing_process;
-            break;
+            routerName = routerNames.con_handing_process
+            break
           case processListMap[1]:
-            routerName = routerNames.con_create_process;
-            break;
+            routerName = routerNames.con_create_process
+            break
           case processListMap[2]:
-            routerName = routerNames.con_handle_process;
-            break;
+            routerName = routerNames.con_handle_process
+            break
           default:
-            break;
+            break
         }
-        this.$router.push({name: routerName});
+        this.$router.push({name: routerName})
       },
-      toPage(row) {
-        toPage.call(this, row);
+      toPage (row) {
+        toPage.call(this, row)
       }
     },
-    created() {
-      this.getProcess();
+    created () {
+      this.getProcess()
     },
     filters: {
       formatDate
     }
-  };
+  }
 </script>

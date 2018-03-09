@@ -97,16 +97,14 @@
     <div class="main" id="main">
       <div :class="leftClass" id="left">
         <div>
-          <el-menu :default-active="$route.path" unique-opened router>
+          <el-menu :default-active="$route.path" unique-opened>
             <template v-for="(item,index) in $router.options.routes" v-if="!item.meta.hidden">
               <el-submenu :index="item.name">
                 <template slot="title">
                   <span>{{item.name}}</span>
                 </template>
-                <template v-for="(child,childIndex) in item.children" v-if="!child.meta.hidden">
-                  <el-menu-item :index="child.path"><a :href="`#${child.path}`"
-                                                       style="color:inherit;">{{child.name}}</a>
-                  </el-menu-item>
+                <template v-for="(child) in item.children" v-if="!child.meta.hidden">
+                  <el-menu-item :index="child.path" @click="push(child)">{{child.name}}</el-menu-item>
                 </template>
               </el-submenu>
             </template>
@@ -129,98 +127,101 @@
 </template>
 
 <script>
-  import localStore from 'store';
-  import Api from '../../api';
-  import {formatTimeText} from '../../filters/moment';
+  import localStore from 'store'
+  import Api from '../../api'
+  import {formatTimeText} from '../../filters/moment'
+
+  import pageStatus from '../../mixins/pageStatus'
 
   export default {
-    data() {
+    mixins: [pageStatus],
+    data () {
       return {
         logo: require('../../assets/img/logo.png'),
         timeText: formatTimeText(),
         user: localStore.get('user') || {},
         isCollapse: false,
         routes: []
-      };
+      }
     },
     computed: {
-      leftClass() {
+      leftClass () {
         return {
           'left-part': true,
           collapse: this.isCollapse
-        };
+        }
       },
-      rightClass() {
+      rightClass () {
         return {
           'right-part': true,
           collapse: this.isCollapse
-        };
+        }
       },
-      collpaseTip() {
-        return this.isCollapse ? '显示菜单' : '隐藏菜单';
+      collpaseTip () {
+        return this.isCollapse ? '显示菜单' : '隐藏菜单'
       }
     },
     methods: {
-      collapse() {
-        this.isCollapse = !this.isCollapse;
+      collapse () {
+        this.isCollapse = !this.isCollapse
       },
-      logout() {
+      logout () {
         Api.logout().then((res) => {
-          const {dataMap} = res.data;
-          localStore.remove('user');
-          const currentUrl = encodeURIComponent(`${window.location.origin}/#/con/index`);
-          window.location.href = `${dataMap}${currentUrl}`;
-        });
+          const {dataMap} = res.data
+          localStore.remove('user')
+          const currentUrl = encodeURIComponent(`${window.location.origin}/#/con/index`)
+          window.location.href = `${dataMap}${currentUrl}`
+        })
       },
-      allRoutesHiddenTrue(items) {
+      push (route) {
+        this.$router.push(route)
+      },
+      allRoutesHiddenTrue (items) {
         items.forEach((item) => {
           if (!item.meta.public) {
-            item.meta.hidden = true;
-            const {children} = item;
+            item.meta.hidden = true
+            const {children} = item
             if (children && children.length) {
-              this.allRoutesHiddenTrue(children);
+              this.allRoutesHiddenTrue(children)
             }
           }
-        });
+        })
       },
-      filterRoutes(items) {
+      filterRoutes (items) {
         items.forEach((item) => {
-          const {name, children} = item;
-          this.showRoute(name);
+          const {name, children} = item
+          this.showRoute(name)
           if (children && children.length) {
-            this.filterRoutes(children);
+            this.filterRoutes(children)
           }
-        });
+        })
       },
-      findRoute(routeNmae, items) {
+      findRoute (routeNmae, items) {
         items.some((item) => {
-          const {name, children} = item;
+          const {name, children} = item
           if (name === routeNmae) {
-            item.meta.hidden = false;
-            return true;
+            item.meta.hidden = false
+            return true
           }
           if (children && children.length) {
-            this.findRoute(routeNmae, children);
+            this.findRoute(routeNmae, children)
           }
-          return false;
-        });
+          return false
+        })
       },
-      showRoute(routeName) {
-        const defaultRoutes = this.$router.options.routes;
-        this.findRoute(routeName, defaultRoutes);
-      },
-      noDirect() {
-        return false;
+      showRoute (routeName) {
+        const defaultRoutes = this.$router.options.routes
+        this.findRoute(routeName, defaultRoutes)
       }
     },
-    created() {
-      const powerSwitch = localStore.get('powerSwitch');
+    created () {
+      const powerSwitch = localStore.get('powerSwitch')
       if (powerSwitch) {
-        const powers = localStore.get('powers') || [];
-        const defaultRoutes = this.$router.options.routes;
-        this.allRoutesHiddenTrue(defaultRoutes);
-        this.filterRoutes(powers);
+        const powers = localStore.get('powers') || []
+        const defaultRoutes = this.$router.options.routes
+        this.allRoutesHiddenTrue(defaultRoutes)
+        this.filterRoutes(powers)
       }
     }
-  };
+  }
 </script>

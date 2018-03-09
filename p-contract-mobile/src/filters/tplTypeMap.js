@@ -1,3 +1,3 @@
-import {tplTypeMap} from '../core/consts';
+import {tplTypeMap} from '../core/consts'
 
-export default type => tplTypeMap[type];
+export default type => tplTypeMap[type]

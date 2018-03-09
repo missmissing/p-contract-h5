@@ -17,7 +17,6 @@
                   <el-form-item label="模板编号" prop="templateCode">
                     <el-autocomplete
                       class="wp100"
-                      icon="search"
                       :fetch-suggestions="querySearch"
                       @select="search"
                       v-model="form.templateCode">
@@ -50,9 +49,7 @@
                     <el-input
                       disabled
                       type="textarea"
-                      v-model="form.busiTypeText"
-                      resize="none"
-                      :autosize="{maxRows:6}">
+                      v-model.trim="form.busiTypeText">
                     </el-input>
                   </el-form-item>
                 </el-col>
@@ -108,8 +105,6 @@
                   disabled
                   type="textarea"
                   :maxlength="300"
-                  :autosize="{ minRows: 2 }"
-                  resize="none"
                   v-model="form.description">
                 </el-input>
               </el-form-item>
@@ -122,7 +117,7 @@
                   <el-table-column
                     prop="fileName"
                     label="文件名">
-                    <template scope="scope">
+                    <template slot-scope="scope">
                       <a class="router-link" :href="`${download}${scope.row.fileId}`" target="_blank">{{scope.row.fileName}}</a>
                     </template>
                   </el-table-column>
@@ -135,7 +130,7 @@
                     prop="createTime"
                     width="150"
                     label="上传时间">
-                    <template scope="scope">
+                    <template slot-scope="scope">
                       {{scope.row.createTime | formatDate}}
                     </template>
                   </el-table-column>
@@ -160,8 +155,6 @@
                   <el-form-item label="停用原因" prop="abolishReason">
                     <el-input
                       type="textarea"
-                      :autosize="{ minRows: 2 }"
-                      resize="none"
                       v-model="form.abolishReason">
                     </el-input>
                   </el-form-item>
@@ -182,14 +175,14 @@
 </template>
 
 <script>
-  import _ from 'lodash';
-  import Tmpl from './tmpl.vue';
-  import Upload from '../../components/upload.vue';
-  import comLoading from '../../mixins/comLoading';
-  import supportModel from '../../api/support';
-  import {formatDate, formatTimeStamp, formatToDate} from '../../filters/moment';
-  import {tplTypeMap} from '../../core/consts';
-  import {downloadUrl} from '../../api/consts';
+  import _ from 'lodash'
+  import Tmpl from './tmpl.vue'
+  import Upload from '../../components/upload.vue'
+  import comLoading from '../../mixins/comLoading'
+  import supportModel from '../../api/support'
+  import {formatDate, formatTimeStamp, formatToDate} from '../../filters/moment'
+  import {tplTypeMap} from '../../core/consts'
+  import {downloadUrl} from '../../api/consts'
 
   const defaultData = {
     form: {
@@ -208,11 +201,11 @@
     },
     tplInfo: {},
     fileList: []
-  };
+  }
 
   export default {
     mixins: [comLoading],
-    data() {
+    data () {
       return Object.assign({
         endDate: '9999-12-31',
         showTmpl: false,
@@ -226,41 +219,41 @@
           }]
         },
         download: downloadUrl
-      }, _.cloneDeep(defaultData));
+      }, _.cloneDeep(defaultData))
     },
     methods: {
-      createFilter(result) {
-        return result.map((item) => ({value: item}));
+      createFilter (result) {
+        return result.map((item) => ({value: item}))
       },
-      querySearch(queryString, cb) {
+      querySearch (queryString, cb) {
         if (!queryString) {
-          return cb([]);
+          return cb([])
         }
         return supportModel.selectTemplateCode({
           templateCode: queryString,
           type: 2
         }).then((res) => {
-          const result = res.data.dataMap || [];
-          cb(this.createFilter(result));
+          const result = res.data.dataMap || []
+          cb(this.createFilter(result))
         }, () => {
-          cb([]);
-        });
+          cb([])
+        })
       },
-      search() {
-        this.comLoading();
+      search () {
+        this.comLoading()
         supportModel.getCurrentTemplateByCode({
           templateCode: this.form.templateCode
         }).then((res) => {
-          console.log(res);
-          this.comLoading(false);
-          this.resetForm();
-          const tplInfo = res.data.dataMap;
-          this.setData(tplInfo);
+          console.log(res)
+          this.comLoading(false)
+          this.resetForm()
+          const tplInfo = res.data.dataMap
+          this.setData(tplInfo)
         }, () => {
-          this.comLoading(false);
-        });
+          this.comLoading(false)
+        })
       },
-      setData(tplInfo) {
+      setData (tplInfo) {
         const {
           templateName,
           templateType,
@@ -271,62 +264,62 @@
           creatorName,
           description,
           files
-        } = tplInfo;
-        this.tplInfo = tplInfo;
-        this.form.templateName = templateName;
-        this.form.templateType = tplTypeMap[templateType];
-        this.form.busiTypeText = bizTypes.map(item => item.businessName).join(',');
-        this.form.startDate = formatToDate(startDate);
-        this.form.version = `V${version}`;
-        this.form.operatorName = operatorName;
-        this.form.creatorName = creatorName;
-        this.form.description = description;
-        this.fileList = files;
+        } = tplInfo
+        this.tplInfo = tplInfo
+        this.form.templateName = templateName
+        this.form.templateType = tplTypeMap[templateType]
+        this.form.busiTypeText = bizTypes.map(item => item.businessName).join(',')
+        this.form.startDate = formatToDate(startDate)
+        this.form.version = `V${version}`
+        this.form.operatorName = operatorName
+        this.form.creatorName = creatorName
+        this.form.description = description
+        this.fileList = files
       },
-      resetForm() {
-        const {id} = this.tplInfo;
+      resetForm () {
+        const {id} = this.tplInfo
         if (id) {
-          const templateCode = this.form.templateCode;
-          this.$refs.form.resetFields();
-          this.form.templateCode = templateCode;
-          this.fileList = [];
-          this.tplInfo = {};
+          const templateCode = this.form.templateCode
+          this.$refs.form.resetFields()
+          this.form.templateCode = templateCode
+          this.fileList = []
+          this.tplInfo = {}
         }
       },
-      getResult() {
-        const {id} = this.tplInfo;
-        const {abolishDate, abolishReason} = this.form;
+      getResult () {
+        const {id} = this.tplInfo
+        const {abolishDate, abolishReason} = this.form
         return {
           templateId: id,
           endDate: formatTimeStamp(abolishDate),
           abolishReason
-        };
+        }
       },
-      back() { // 返回列表页
-        this.$router.push('/contemplate/list');
+      back () { // 返回列表页
+        this.$router.push('/contemplate/list')
       },
-      save() {
+      save () {
         this.$refs.form.validate((valid) => {
           if (valid) {
             this.comLoading({
               text: '正在提交中'
-            });
-            const result = this.getResult();
+            })
+            const result = this.getResult()
             supportModel.setTemplateAbolish(result).then((res) => {
-              console.log(res);
-              this.comLoading(false);
+              console.log(res)
+              this.comLoading(false)
               this.$message({
                 message: '废除提交成功',
                 type: 'success'
-              });
-              this.back();
+              })
+              this.back()
             }, () => {
-              this.comLoading(false);
-            });
+              this.comLoading(false)
+            })
           } else {
-            console.log('error submit!!');
+            console.log('error submit!!')
           }
-        });
+        })
       }
     },
     components: {
@@ -334,12 +327,12 @@
       Upload
     },
     computed: {
-      showTpl() {
-        return this.tplInfo.templateType === 'TEMPLATE';
+      showTpl () {
+        return this.tplInfo.templateType === 'TEMPLATE'
       }
     },
     filters: {
       formatDate
     }
-  };
+  }
 </script>

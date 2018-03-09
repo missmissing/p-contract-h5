@@ -125,7 +125,7 @@
             </div>
           </div>
           <div v-if="moneyInvolved" class="mb20">
-            <div v-if="!oneOffPay">
+            <div v-if="!oneOffPay&&priceTable.length">
               <p>付款方式：</p>
               <table>
                 <thead>
@@ -150,7 +150,7 @@
             </div>
             <div class="mt20" v-if="paymentRemark">
               <div>付款方式备注：</div>
-              <div>{{paymentRemark}}</div>
+              <div v-html="paymentRemark" class="pre"></div>
             </div>
             <div>合同含税总金额为{{totalAmount | numToChinese}} （CNY {{totalAmount}}元）</div>
           </div>
@@ -201,10 +201,10 @@
 </template>
 
 <script>
-  import Api from '../../../../api/support';
-  import numToChinese from '../../../../filters/numToChinese';
-  import {formatDate} from '../../../../filters/moment';
-  import paymentTimePeriods from '../../../../filters/paymentTimePeriods';
+  import Api from '../../../../api/manageContract'
+  import numToChinese from '../../../../filters/numToChinese'
+  import {formatDate} from '../../../../filters/moment'
+  import paymentTimePeriods from '../../../../filters/paymentTimePeriods'
 
   export default {
     props: {
@@ -214,12 +214,12 @@
       },
       info: {
         type: Object,
-        default() {
-          return {};
+        default () {
+          return {}
         }
       }
     },
-    data() {
+    data () {
       return {
         contractNo: '',
         title: '',
@@ -241,104 +241,123 @@
         corporeRemark: '',
         paymentRemark: '',
         tplData: {}
-      };
+      }
     },
     methods: {
-      back() {
+      back () {
         this.$emit('update:visible', false)
       },
-      transformData(data, name) {
-        const priceTable = [];
+      transformData (data) {
+        const priceTable = []
+        let name = ''
         if (data.length) {
           data.forEach((item) => {
-            const {seriousPayments} = item;
+            if (!item.paymentAmount) {
+              return
+            }
+            const {seriousPayments, payType} = item
+            switch (payType) {
+              case 1:
+                name = '定金'
+                break
+              case 2:
+                name = '预付款'
+                break
+              case 3:
+                name = ''
+                break
+              case 4:
+                name = '尾款'
+                break
+              case 5:
+                name = '保证金'
+                break
+            }
             if (seriousPayments) {
-              const {subItem} = item;
-              subItem.forEach((item1, index1) => {
+              const {financeMores} = item
+              financeMores.forEach((item1, index1) => {
                 const {
                   paymentAmount, paymentTimePeriod, remark, ratio
-                } = item1;
-                const type = `${name}${index1 + 1}`;
+                } = item1
+                const type = `${name}${index1 + 1}`
                 priceTable.push({
                   type,
                   paymentAmount,
                   paymentTimePeriod: paymentTimePeriods(paymentTimePeriod),
                   remark,
                   ratio: `${ratio}%`
-                });
-              });
-              return;
+                })
+              })
+              return
             }
             priceTable.push({
               ...item,
-              type: item.type === '进度款' ? '' : item.type,
+              type: name,
               paymentTimePeriod: paymentTimePeriods(item.paymentTimePeriod),
               ratio: `${item.ratio}%`
-            });
-          });
+            })
+          })
         }
-        return priceTable;
+        return priceTable
       },
-      getTplData(templateId) {
-        const tplData = this.tplData[templateId];
+      getTplData (templateId) {
+        const tplData = this.tplData[templateId]
         if (tplData) {
-          const {content} = tplData;
-          this.currentTpl = content;
-          return;
+          const {content} = tplData
+          this.currentTpl = content
+          return
         }
         if (!templateId) {
-          return;
+          return
         }
-        Api.getTplData({templateId}).then((res) => {
-          const data = res.data.dataMap;
-          const {content} = data;
-          this.currentTpl = content;
-          this.tplData[templateId] = data;
-        });
+        Api.getTplContent(this.info.datas).then((res) => {
+          const data = res.data.dataMap
+          this.currentTpl = data
+          this.tplData[templateId] = data
+        })
       }
     },
     watch: {
-      info(val) {
+      info (val) {
         const {
           baseInfoForm,
           cardContentInfoForm,
           cardFinanceInfoForm
-        } = val.datas;
-        const {contractNo, templateId, contractType, contractBusinessTypeFirst, contractBusinessTypeThirdName} = baseInfoForm;
-        const {startTime, endTime, conStandard, effectiveCondition, conditionDesc, corporeRemark} = cardContentInfoForm;
-        const {paymentMethods, paymentRemark, jiaBillingInfo, yiBillingInfo, moneyInvolved, totalAmount, oneOffPay} = cardFinanceInfoForm;
-        const {earnest, advance, progress, _final, deposit} = paymentMethods;
-        this.contractType = contractType;
-        this.contractBusinessTypeFirst = contractBusinessTypeFirst;
-        this.materialTable = conStandard;
-        this.startTime = startTime;
-        this.endTime = endTime;
-        this.conditionDesc = conditionDesc;
-        this.effectiveCondition = effectiveCondition;
-        this.contractNo = contractNo;
-        this.corporeRemark = corporeRemark;
-        this.paymentRemark = paymentRemark;
-        this.title = contractBusinessTypeThirdName;
-        this.partAName = jiaBillingInfo.map((item) => item.company);
-        this.partBName = yiBillingInfo.length > 0 ? [yiBillingInfo[0].company] : [];
-        this.supplierName = yiBillingInfo.length > 0 ? yiBillingInfo[0].company : '';
+        } = val.datas
+        const {contractNo, templateId, contractType, contractBusinessTypeFirst, contractBusinessTypeThirdName} = baseInfoForm
+        const {startTime, endTime, conStandard, effectiveCondition, conditionDesc, corporeRemark} = cardContentInfoForm
+        const {paymentMethods, paymentRemark, jiaBillingInfo, yiBillingInfo, moneyInvolved, totalAmount, oneOffPay} = cardFinanceInfoForm
+        this.contractType = contractType
+        this.contractBusinessTypeFirst = contractBusinessTypeFirst
+        this.materialTable = conStandard
+        this.startTime = startTime
+        this.endTime = endTime
+        this.conditionDesc = conditionDesc
+        this.effectiveCondition = effectiveCondition
+        this.contractNo = contractNo
+        this.corporeRemark = corporeRemark
+        this.paymentRemark = paymentRemark
+        this.title = contractBusinessTypeThirdName
+        this.partAName = jiaBillingInfo.map((item) => item.company)
+        this.partBName = yiBillingInfo.length > 0 ? [yiBillingInfo[0].company] : []
+        this.supplierName = yiBillingInfo.length > 0 ? yiBillingInfo[0].company : ''
         if (moneyInvolved) {
-          this.moneyInvolved = moneyInvolved;
-          this.totalAmount = totalAmount;
+          this.moneyInvolved = moneyInvolved
+          this.totalAmount = totalAmount
 
           if (oneOffPay) {
-            this.oneOffPay = true;
+            this.oneOffPay = true
           } else {
-            this.priceTable = [...this.transformData(earnest, '定金'), ...this.transformData(advance, '预付款'), ...this.transformData(progress, ''), ...this.transformData(_final, '尾款'), ...this.transformData(deposit, '保证金')];
+            this.priceTable = this.transformData(paymentMethods)
           }
         }
 
-        this.getTplData(templateId);
+        this.getTplData(templateId)
       }
     },
     filters: {
       numToChinese,
       formatDate
     }
-  };
+  }
 </script>

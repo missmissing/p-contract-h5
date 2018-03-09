@@ -37,15 +37,15 @@
 </template>
 
 <script>
-  import {uploadUrl, downloadUrl} from '../api/consts';
+  import {uploadUrl, downloadUrl} from '../api/consts'
 
   export default {
-    data() {
+    data () {
       return {
         action: uploadUrl,
         download: downloadUrl,
         uploadFiles: []
-      };
+      }
     },
     props: {
       name: {
@@ -62,63 +62,63 @@
       disabled: Boolean
     },
     methods: {
-      onChange(file, fileList) {
+      onChange (file, fileList) {
         if (file.status !== 'ready') {
-          return;
+          return
         }
-        this.uploadFiles = fileList;
+        this.uploadFiles = fileList
       },
-      onProgress(ev, rawFile) {
-        const file = this.getFile(rawFile);
-        file.status = 'uploading';
-        file.percentage = ev.percent || 0;
+      onProgress (ev, rawFile) {
+        const file = this.getFile(rawFile)
+        file.status = 'uploading'
+        file.percentage = ev.percent || 0
       },
-      onSuccess(response, file, fileList) {
-        console.log(response, file, fileList);
-        const {code, dataMap} = response;
+      onSuccess (response, file, fileList) {
+        console.log(response, file, fileList)
+        const {code, dataMap} = response
         if (code !== '200') {
-          this.$message.error(dataMap.message);
-          fileList.splice(-1);
-          this.$emit('update:fileList', fileList);
-          return;
+          this.$message.error(dataMap.message)
+          fileList.splice(-1)
+          this.$emit('update:fileList', fileList)
+          return
         }
-        const {fileId} = dataMap;
-        file.url = this.download ? `${this.download}${fileId}` : '';
-        file.fileId = fileId;
-        this.$emit('update:fileList', fileList);
+        const {fileId} = dataMap
+        file.url = this.download ? `${this.download}${fileId}` : ''
+        file.fileId = fileId
+        this.$emit('update:fileList', fileList)
       },
-      onError(err, file, fileList) {
+      onError (err, file, fileList) {
         if (err) {
-          console.log(err);
+          console.log(err)
         }
-        this.$emit('update:fileList', fileList);
+        this.$emit('update:fileList', fileList)
       },
-      onRemove(index) {
-        this.uploadFiles.splice(index, 1);
-        this.$emit('update:fileList', this.uploadFiles);
+      onRemove (index) {
+        this.uploadFiles.splice(index, 1)
+        this.$emit('update:fileList', this.uploadFiles)
       },
-      parsePercentage(val) {
-        return parseInt(val, 10);
+      parsePercentage (val) {
+        return parseInt(val, 10)
       },
-      getFile(rawFile) {
-        const fileList = this.uploadFiles;
-        let target;
+      getFile (rawFile) {
+        const fileList = this.uploadFiles
+        let target
         fileList.every(item => {
-          target = rawFile.uid === item.uid ? item : null;
-          return !target;
-        });
-        return target;
+          target = rawFile.uid === item.uid ? item : null
+          return !target
+        })
+        return target
       }
     },
-    created() {
+    created () {
       if (this.fileList.length) {
         this.fileList = this.fileList.map((item) => ({
           name: item.fileName,
           url: `${this.download}${item.fileId}`,
           status: 'success'
-        }));
+        }))
       }
-      this.uploadFiles = this.fileList;
+      this.uploadFiles = this.fileList
     }
-  };
+  }
 </script>

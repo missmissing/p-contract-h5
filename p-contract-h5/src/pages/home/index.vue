@@ -21,11 +21,11 @@
 </template>
 
 <script>
-  import { processListMap } from '../../core/consts';
-  import List from './list.vue';
+  import {processListMap} from '../../core/consts'
+  import List from './list.vue'
 
   export default {
-    data() {
+    data () {
       return {
         doingList: [],
         todoList: [],
@@ -42,14 +42,14 @@
           pageSize: 5,
           dataType: processListMap[1]
         }
-      };
+      }
     },
     methods: {},
-    created() {
+    created () {
 
     },
     components: {
       List
     }
-  };
+  }
 </script>

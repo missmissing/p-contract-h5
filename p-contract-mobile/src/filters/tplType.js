@@ -1,3 +1,3 @@
-import {tplType} from '../core/consts';
+import {tplType} from '../core/consts'
 
-export default type => tplType[type];
+export default type => tplType[type]

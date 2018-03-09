@@ -22,7 +22,7 @@
         prop="startTime"
         label="发起时间"
         min-width="120">
-        <template scope="scope">
+        <template slot-scope="scope">
           {{scope.row.startTime | formatDate}}
         </template>
       </el-table-column>
@@ -30,7 +30,7 @@
         prop="finishTime"
         label="结束时间"
         min-width="120">
-        <template scope="scope">
+        <template slot-scope="scope">
           {{scope.row.finishTime | formatDate}}
         </template>
       </el-table-column>
@@ -39,36 +39,36 @@
 </template>
 
 <script>
-  import Api from '../../../../api/manageContract/index';
-  import {formatDate} from '../../../../filters/moment';
+  import Api from '../../../../api/manageContract/index'
+  import {formatDate} from '../../../../filters/moment'
 
   export default {
     props: {
       info: {
         type: Object,
-        default() {
-          return {};
+        default () {
+          return {}
         }
       }
     },
-    data() {
+    data () {
       return {
         tableData: []
-      };
+      }
     },
     filters: {
       formatDate
     },
     methods: {
-      getData() {
+      getData () {
         Api.getQrDetail({folio: this.info.prNo}).then((res) => {
-          const data = res.data.dataMap;
-          this.tableData = [data];
-        });
+          const data = res.data.dataMap
+          this.tableData = [data]
+        })
       }
     },
-    created() {
-      this.getData();
+    created () {
+      this.getData()
     }
-  };
+  }
 </script>

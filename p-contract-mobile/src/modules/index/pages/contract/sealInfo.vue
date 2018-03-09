@@ -4,19 +4,18 @@
 
 <template>
   <div>
+    <mt-cell title="用章次数" :value="info.sealNumber"></mt-cell>
+    <mt-cell title="打印份数" :value="info.printNumber"></mt-cell>
+    <mt-cell title="留存份数" :value="info.remainNumber"></mt-cell>
+    <mt-cell title="选择用章" :value="info.sealUsedInfo | printChapter"></mt-cell>
     <SealTable
       v-if="contract.length"
       :items="contract"
-      :show-header="true"
       class="mb20">
     </SealTable>
-    <template v-if="others.length"
-              v-for="(item,index) in others">
-      <SealTable :items="item" :show-header="index===0" v-if="item&&item.length"></SealTable>
-    </template>
     <el-table v-if="agreenments.length" :data="agreenments" class="mt20">
       <el-table-column prop="attachType" label="附件类型" min-width="130px">
-        <template scope="scope">
+        <template slot-scope="scope">
           {{scope.row.attachType | attachmentType}}
         </template>
       </el-table-column>
@@ -26,58 +25,50 @@
 </template>
 
 <script>
-  import attachmentType from '../../../../filters/attachmentType';
-  import SealTable from '../../components/sealTable.vue';
+  import printChapter from '../../../../filters/printChapter'
+  import attachmentType from '../../../../filters/attachmentType'
+
+  import SealTable from '../../components/sealTable.vue'
 
   export default {
     props: {
       info: {
         type: Object,
-        default() {
-          return {};
-        }
-      },
-      moreData: {
-        type: Object,
-        default() {
-          return {};
+        default () {
+          return {}
         }
       }
     },
-    data() {
+    data () {
       return {
         contract: [],
-        others: [],
         agreenments: []
-      };
+      }
     },
     watch: {
-      info(val) {
-        if (val.sealAttachments) {
-          let contract = [];
-          const others = [];
-          const agreenments = [];
-          val.sealAttachments.forEach((item) => {
-            const attachType = item[0].attachType;
-            if (attachType === 3) {
-              contract = item;
-            } else if (attachType === 1) {
-              others.push(item);
-            } else if (attachType === 2) {
-              agreenments.push(item[0]);
+      info (val) {
+        if (val.attaches) {
+          const contract = []
+          const agreenments = []
+          val.attaches.forEach((item) => {
+            const attachType = item.attachType
+            if (attachType === 2) {
+              agreenments.push(item)
+            } else {
+              contract.push(item)
             }
-          });
-          this.contract = contract;
-          this.others = others;
-          this.agreenments = agreenments;
+          })
+          this.contract = contract
+          this.agreenments = agreenments
         }
       }
     },
     filters: {
-      attachmentType
+      attachmentType,
+      printChapter
     },
     components: {
       SealTable
     }
-  };
+  }
 </script>

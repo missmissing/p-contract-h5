@@ -1,20 +1,20 @@
-import Vue from 'vue';
-import Router from 'vue-router';
-import nprogress from 'nprogress';
-import 'nprogress/nprogress.css';
-import store from '../store/index';
-import * as types from '../store/consts';
-import {routerNames} from '../core/consts';
-import getEnv from '../util/getEnv';
+import Vue from 'vue'
+import Router from 'vue-router'
+import nprogress from 'nprogress'
+import 'nprogress/nprogress.css'
+import store from '../store/index'
+import * as types from '../store/consts'
+import {routerNames} from '../core/consts'
+import getEnv from '../util/getEnv'
 
-Vue.use(Router);
+Vue.use(Router)
 
 const router = new Router({
   routes: [
     {
       path: '/404',
-      component(resolve) {
-        require(['../components/404.vue'], resolve);
+      component (resolve) {
+        require(['../components/404.vue'], resolve)
       },
       name: routerNames.error404,
       meta: {
@@ -24,8 +24,8 @@ const router = new Router({
     },
     {
       path: '/',
-      component(resolve) {
-        require(['../pages/home/home.vue'], resolve);
+      component (resolve) {
+        require(['../pages/home/home.vue'], resolve)
       },
       name: routerNames.home,
       meta: {
@@ -36,8 +36,8 @@ const router = new Router({
     },
     {
       path: '/',
-      component(resolve) {
-        require(['../pages/home/home.vue'], resolve);
+      component (resolve) {
+        require(['../pages/home/home.vue'], resolve)
       },
       name: routerNames.home,
       meta: {
@@ -50,22 +50,22 @@ const router = new Router({
         meta: {
           auth: true
         },
-        component(resolve) {
-          require(['../pages/home/index.vue'], resolve);
+        component (resolve) {
+          require(['../pages/home/index.vue'], resolve)
         }
       }]
     },
     {
       path: '/',
-      component(resolve) {
-        require(['../pages/home/home.vue'], resolve);
+      component (resolve) {
+        require(['../pages/home/home.vue'], resolve)
       },
       name: routerNames.con_support,
       children: [
         {
           path: '/contemplate/see',
-          component(resolve) {
-            require(['../pages/support/see.vue'], resolve);
+          component (resolve) {
+            require(['../pages/support/see.vue'], resolve)
           },
           meta: {
             hidden: true,
@@ -75,8 +75,8 @@ const router = new Router({
         },
         {
           path: '/contemplate/create',
-          component(resolve) {
-            require(['../pages/support/create.vue'], resolve);
+          component (resolve) {
+            require(['../pages/support/create.vue'], resolve)
           },
           meta: {
             auth: true,
@@ -86,8 +86,8 @@ const router = new Router({
         },
         {
           path: '/contemplate/update',
-          component(resolve) {
-            require(['../pages/support/update.vue'], resolve);
+          component (resolve) {
+            require(['../pages/support/update.vue'], resolve)
           },
           meta: {
             auth: true,
@@ -97,8 +97,8 @@ const router = new Router({
         },
         {
           path: '/contemplate/abolish',
-          component(resolve) {
-            require(['../pages/support/abolish.vue'], resolve);
+          component (resolve) {
+            require(['../pages/support/abolish.vue'], resolve)
           },
           meta: {
             auth: true
@@ -112,8 +112,8 @@ const router = new Router({
     },
     {
       path: '/',
-      component(resolve) {
-        require(['../pages/home/home.vue'], resolve);
+      component (resolve) {
+        require(['../pages/home/home.vue'], resolve)
       },
       name: routerNames.con_create,
       meta: {
@@ -125,19 +125,102 @@ const router = new Router({
           meta: {
             auth: true
           },
-          component(resolve) {
-            require(['../pages/create/create.vue'], resolve);
+          component (resolve) {
+            require(['../pages/create/create.vue'], resolve)
           },
           name: routerNames.con_createIndex
+        },
+        {
+          path: '/contract/create', // 合同创建
+          meta: {
+            auth: true,
+            hidden: true
+          },
+          component (resolve) {
+            require(['../pages/con/index.vue'], resolve)
+          },
+          query: {pageStatus: 1},
+          name: routerNames.con_contract_create
+        },
+        {
+          path: '/conperf/conupdate',
+          component (resolve) {
+            require(['../pages/con/index.vue'], resolve)
+          },
+          query: {pageStatus: 2},
+          name: routerNames.con_update,
+          meta: {
+            auth: true
+          }
+        },
+        {
+          path: '/ConCreate/conCheck', // 查看合同
+          component (resolve) {
+            require(['../pages/con/index.vue'], resolve)
+          },
+          query: {pageStatus: 3},
+          name: routerNames.con_Check,
+          meta: {
+            auth: true,
+            hidden: true
+          }
+        },
+        {
+          path: '/ConCreate/processCon', // 合同流程
+          component (resolve) {
+            require(['../pages/con/index.vue'], resolve)
+          },
+          query: {pageStatus: 4},
+          name: routerNames.con_proc_see,
+          meta: {
+            auth: true,
+            hidden: true
+          }
+        },
+        {
+          path: '/conperf/conrepeal',
+          component (resolve) {
+            require(['../pages/conRepeal/index.vue'], resolve)
+          },
+          name: routerNames.con_stop,
+          query: {pageStatus: 1},
+          meta: {
+            auth: true
+          }
+        },
+        {
+          path: '/conperf/conrepeal/see',
+          component (resolve) {
+            require(['../pages/conRepeal/index.vue'], resolve)
+          },
+          name: routerNames.con_stop_see,
+          query: {pageStatus: 3},
+          meta: {
+            auth: true,
+            hidden: true
+          }
+        },
+        {
+          path: '/conperf/conrepeal/process',
+          component (resolve) {
+            require(['../pages/conRepeal/index.vue'], resolve)
+          },
+          name: routerNames.con_stop_process,
+          query: {pageStatus: 4},
+          meta: {
+            auth: true,
+            hidden: true
+          }
         },
         {
           path: '/ConCreate/createSlaveProtocol',
           meta: {
             auth: true
           },
-          component(resolve) {
-            require(['../pages/create/createSlaveProtocol.vue'], resolve);
+          component (resolve) {
+            require(['../pages/slaveProtocol/index.vue'], resolve)
           },
+          query: {pageStatus: 1},
           name: routerNames.con_createSlaveProtocol
         },
         {
@@ -146,103 +229,30 @@ const router = new Router({
             auth: true,
             hidden: true
           },
-          component(resolve) {
-            require(['../pages/create/createSlaveProtocol.vue'], resolve);
+          component (resolve) {
+            require(['../pages/slaveProtocol/index.vue'], resolve)
           },
+          query: {pageStatus: 3},
           name: routerNames.con_querySlaveProtocol
         },
         {
-          path: '/conperf/conupdate',
-          component(resolve) {
-            require(['../pages/create/createCon.vue'], resolve);
-          },
-          name: routerNames.con_update,
-          meta: {
-            auth: true
-          }
-        },
-        {
-          path: '/conperf/conrepeal',
-          component(resolve) {
-            require(['../pages/performance/conRepeal.vue'], resolve);
-          },
-          name: routerNames.con_stop,
-          meta: {
-            auth: true
-          }
-        },
-        {
-          path: '/conperf/conrepeal/see',
-          component(resolve) {
-            require(['../pages/performance/conRepealSee.vue'], resolve);
-          },
-          name: routerNames.con_stop_see,
-          meta: {
-            auth: true,
-            hidden: true
-          }
-        },
-        {
-          path: '/ConCreate/CreateFrameContract', // 创建框架协议
+          path: '/ConCreate/slaveProtocol/process',
           meta: {
             auth: true,
             hidden: true
           },
-          component(resolve) {
-            require(['../pages/create/createCon.vue'], resolve);
+          component (resolve) {
+            require(['../pages/slaveProtocol/index.vue'], resolve)
           },
-          name: routerNames.con_createFrameContract
-        },
-        {
-          path: '/ConCreate/CreateIntentionContract', // 创建框架意向合同
-          meta: {
-            auth: true,
-            hidden: true
-          },
-          component(resolve) {
-            require(['../pages/create/createCon.vue'], resolve);
-          },
-          name: routerNames.con_createIntentionContract
-        },
-        {
-          path: '/ConCreate/CreateSingleContract', // 创建单一合同
-          meta: {
-            auth: true,
-            hidden: true
-          },
-          component(resolve) {
-            require(['../pages/create/createCon.vue'], resolve);
-          },
-          name: routerNames.con_createSingleContract
-        },
-        {
-          path: '/ConCreate/CreateSimpleContract', // 创建固定格式合同
-          meta: {
-            auth: true,
-            hidden: true
-          },
-          component(resolve) {
-            require(['../pages/create/createCon.vue'], resolve);
-          },
-          name: routerNames.con_createSimpleContract
-        },
-        {
-          path: '/ConCreate/conCheck', // 查看合同
-          component(resolve) {
-            require(['../pages/create/createCon.vue'], resolve);
-          },
-          name: routerNames.con_Check,
-          meta: {
-            auth: true,
-            hidden: true
-          }
+          query: {pageStatus: 4},
+          name: routerNames.con_slaveProtocol_process
         }
       ]
     },
     {
       path: '/',
-      component(resolve) {
-        require(['../pages/home/home.vue'], resolve);
+      component (resolve) {
+        require(['../pages/home/home.vue'], resolve)
       },
       name: routerNames.con_sign,
       children: [{
@@ -250,8 +260,8 @@ const router = new Router({
         meta: {
           auth: true
         },
-        component(resolve) {
-          require(['../pages/sign/createPO.vue'], resolve);
+        component (resolve) {
+          require(['../pages/sign/createPO.vue'], resolve)
         },
         name: routerNames.con_purchase_order
       }, {
@@ -260,8 +270,8 @@ const router = new Router({
           auth: true,
           hidden: true
         },
-        component(resolve) {
-          require(['../pages/sign/see.vue'], resolve);
+        component (resolve) {
+          require(['../pages/sign/see.vue'], resolve)
         },
         name: routerNames.con_purchase_see
       }, {
@@ -270,14 +280,14 @@ const router = new Router({
           auth: true,
           hidden: true
         },
-        component(resolve) {
-          require(['../pages/sign/sendLog.vue'], resolve);
+        component (resolve) {
+          require(['../pages/sign/sendLog.vue'], resolve)
         },
         name: routerNames.con_order_log_list
       }, {
         path: '/conperf/inspectionreject',
-        component(resolve) {
-          require(['../pages/performance/inspectionReject.vue'], resolve);
+        component (resolve) {
+          require(['../pages/performance/inspectionReject.vue'], resolve)
         },
         name: routerNames.con_check_reject,
         meta: {
@@ -285,8 +295,8 @@ const router = new Router({
         }
       }, {
         path: '/conperf/inspectionreject/see',
-        component(resolve) {
-          require(['../pages/performance/inspectionRejectSee.vue'], resolve);
+        component (resolve) {
+          require(['../pages/performance/inspectionRejectSee.vue'], resolve)
         },
         name: routerNames.con_check_reject_see,
         meta: {
@@ -295,8 +305,8 @@ const router = new Router({
         }
       }, {
         path: '/conperf/compensate',
-        component(resolve) {
-          require(['../pages/performance/compensate.vue'], resolve);
+        component (resolve) {
+          require(['../pages/performance/compensate.vue'], resolve)
         },
         name: routerNames.con_compensate,
         meta: {
@@ -304,8 +314,8 @@ const router = new Router({
         }
       }, {
         path: '/conperf/compensate/see',
-        component(resolve) {
-          require(['../pages/performance/compensateSee.vue'], resolve);
+        component (resolve) {
+          require(['../pages/performance/compensateSee.vue'], resolve)
         },
         name: routerNames.con_compensate_see,
         meta: {
@@ -318,19 +328,19 @@ const router = new Router({
         meta: {
           auth: true
         },
-        component(resolve) {
-          require(['../pages/performance/goodsReceipt'], resolve);
+        component (resolve) {
+          require(['../pages/performance/goodsReceipt'], resolve)
         },
         beforeEnter: () => {
-          nprogress.done();
+          nprogress.done()
           const target = {
             dev: 'http://192.168.122.218:1001/purchase/receivepo.html',
             prd: 'http://fp.oa.chinaredstar.com/purchase/receivepo.html'
-          };
+          }
           if (getEnv() === 'prd') {
-            window.open(target.prd);
+            window.open(target.prd)
           } else {
-            window.open(target.dev);
+            window.open(target.dev)
           }
         }
       }, {
@@ -339,19 +349,19 @@ const router = new Router({
         meta: {
           auth: true
         },
-        component(resolve) {
-          require(['../pages/performance/servicesReceipt'], resolve);
+        component (resolve) {
+          require(['../pages/performance/servicesReceipt'], resolve)
         },
         beforeEnter: () => {
-          nprogress.done();
+          nprogress.done()
           const target = {
             prd: 'http://172.16.9.151:8081/Purchase/FWLCGSHQR/Start.aspx',
             dev: 'http://192.168.122.214:8081/Purchase/FWLCGSHQR/Start.aspx'
-          };
+          }
           if (getEnv() === 'prd') {
-            window.open(target.prd);
+            window.open(target.prd)
           } else {
-            window.open(target.dev);
+            window.open(target.dev)
           }
         }
       }],
@@ -361,8 +371,8 @@ const router = new Router({
     },
     {
       path: '/',
-      component(resolve) {
-        require(['../pages/home/home.vue'], resolve);
+      component (resolve) {
+        require(['../pages/home/home.vue'], resolve)
       },
       name: routerNames.con_process,
       meta: {
@@ -374,8 +384,8 @@ const router = new Router({
         meta: {
           auth: true
         },
-        component(resolve) {
-          require(['../pages/process/handingProcess.vue'], resolve);
+        component (resolve) {
+          require(['../pages/process/handingProcess.vue'], resolve)
         },
         name: routerNames.con_handing_process
       }, {
@@ -383,8 +393,8 @@ const router = new Router({
         meta: {
           auth: true
         },
-        component(resolve) {
-          require(['../pages/process/createProcess.vue'], resolve);
+        component (resolve) {
+          require(['../pages/process/createProcess.vue'], resolve)
         },
         name: routerNames.con_create_process
       }, {
@@ -392,8 +402,8 @@ const router = new Router({
         meta: {
           auth: true
         },
-        component(resolve) {
-          require(['../pages/process/handleProcess.vue'], resolve);
+        component (resolve) {
+          require(['../pages/process/handleProcess.vue'], resolve)
         },
         name: routerNames.con_handle_process
       }, {
@@ -402,8 +412,8 @@ const router = new Router({
           auth: true,
           hidden: true
         },
-        component(resolve) {
-          require(['../pages/process/toPage.vue'], resolve);
+        component (resolve) {
+          require(['../pages/process/toPage.vue'], resolve)
         },
         name: routerNames.con_process_see
       }, {
@@ -412,23 +422,23 @@ const router = new Router({
           auth: true,
           hidden: true
         },
-        component(resolve) {
-          require(['../pages/process/toPage.vue'], resolve);
+        component (resolve) {
+          require(['../pages/process/toPage.vue'], resolve)
         },
         name: routerNames.con_process_approve
       }]
     },
     {
       path: '/',
-      component(resolve) {
-        require(['../pages/home/home.vue'], resolve);
+      component (resolve) {
+        require(['../pages/home/home.vue'], resolve)
       },
       name: routerNames.con_search,
       children: [
         {
           path: '/conperf/conlist',
-          component(resolve) {
-            require(['../pages/create/conLIst.vue'], resolve);
+          component (resolve) {
+            require(['../pages/list/conLIst.vue'], resolve)
           },
           name: routerNames.con_query,
           meta: {
@@ -437,8 +447,8 @@ const router = new Router({
         },
         {
           path: '/contract/agreementList',
-          component(resolve) {
-            require(['../pages/create/agreementList.vue'], resolve);
+          component (resolve) {
+            require(['../pages/list/agreementList.vue'], resolve)
           },
           name: routerNames.con_agreementList,
           meta: {
@@ -447,8 +457,8 @@ const router = new Router({
         },
         {
           path: '/contemplate/list',
-          component(resolve) {
-            require(['../pages/support/list.vue'], resolve);
+          component (resolve) {
+            require(['../pages/list/tplList.vue'], resolve)
           },
           meta: {
             auth: true
@@ -457,8 +467,8 @@ const router = new Router({
         },
         {
           path: '/contemplate/orderList',
-          component(resolve) {
-            require(['../pages/sign/list.vue'], resolve);
+          component (resolve) {
+            require(['../pages/list/signList.vue'], resolve)
           },
           meta: {
             auth: true
@@ -482,20 +492,20 @@ const router = new Router({
       }
     }
   ]
-});
+})
 
 router.beforeEach((to, from, next) => {
-  nprogress.start();
-  window.document.title = to.name;
-  next();
+  nprogress.start()
+  window.document.title = to.name
+  next()
   store.commit(types.ROUTE, {
     data: {to, from}
-  });
-});
+  })
+})
 
 router.afterEach(() => {
-  nprogress.done();
-  window.scrollTo(0, 0);
-});
+  nprogress.done()
+  window.scrollTo(0, 0)
+})
 
-export default router;
+export default router

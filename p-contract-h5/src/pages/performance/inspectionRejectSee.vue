@@ -128,9 +128,7 @@
                 disabled
                 type="textarea"
                 :maxlength="300"
-                :autosize="{ minRows: 2 }"
-                resize="none"
-                v-model="unqualifiedReason">
+                v-model.trim="unqualifiedReason">
               </el-input>
             </el-form-item>
             <el-form-item label="处理方案" prop="treatmentScheme">
@@ -138,9 +136,7 @@
                 disabled
                 type="textarea"
                 :maxlength="300"
-                :autosize="{ minRows: 2 }"
-                resize="none"
-                v-model="treatmentScheme">
+                v-model.trim="treatmentScheme">
               </el-input>
             </el-form-item>
             <el-form-item label="相关附件">
@@ -152,7 +148,7 @@
                 <el-table-column
                   prop="fileName"
                   label="文件名">
-                  <template scope="scope">
+                  <template slot-scope="scope">
                     <a class="router-link" :href="`${download}${scope.row.fileId}`" target="_blank">{{scope.row.fileName}}</a>
                   </template>
                 </el-table-column>
@@ -165,7 +161,7 @@
                   prop="createTime"
                   width="150"
                   label="上传时间">
-                  <template scope="scope">
+                  <template slot-scope="scope">
                     {{scope.row.createTime | formatDate}}
                   </template>
                 </el-table-column>
@@ -180,17 +176,17 @@
 </template>
 
 <script>
-  import Api from '../../api/performance';
-  import Upload from '../../components/upload.vue';
-  import { routerNames, contractTextTypeMap, contractPatternMap } from '../../core/consts';
-  import comLoading from '../../mixins/comLoading';
-  import { formatDate } from '../../filters/moment';
-  import Process from '../../components/process.vue';
-  import { downloadUrl } from '../../api/consts';
+  import Api from '../../api/performance'
+  import Upload from '../../components/upload.vue'
+  import {routerNames, contractTextTypeMap, contractPatternMap} from '../../core/consts'
+  import comLoading from '../../mixins/comLoading'
+  import {formatDate} from '../../filters/moment'
+  import Process from '../../components/process.vue'
+  import {downloadUrl} from '../../api/consts'
 
   export default {
     mixins: [comLoading],
-    data() {
+    data () {
       return {
         procTitle: '',
         procInstId: '',
@@ -213,28 +209,28 @@
         unqualifiedReason: '',
         treatmentScheme: '',
         fileList: [],
-        toDetail: { name: routerNames.con_Check, query: { id: '' } },
+        toDetail: {name: routerNames.con_Check, query: {id: ''}},
         download: downloadUrl
-      };
+      }
     },
     methods: {
-      getInfo(procInstId) {
-        this.comLoading();
-        Api.getUnqualifiedByProcInstId({ procInstId }).then((res) => {
-          this.comLoading(false);
-          const data = res.data.dataMap;
-          console.log(data);
-          this.setData(data);
-        });
+      getInfo (procInstId) {
+        this.comLoading()
+        Api.getUnqualifiedByProcInstId({procInstId}).then((res) => {
+          this.comLoading(false)
+          const data = res.data.dataMap
+          console.log(data)
+          this.setData(data)
+        })
       },
-      setData(data) {
-        const { unqualifiedBasic, contUnqualified } = data;
+      setData (data) {
+        const {unqualifiedBasic, contUnqualified} = data
         const {
           businessOperatorName, businessDeptName, responsibleName, belongProject, startTime, endTime, contractTextType, contractType, contractNo
-        } = unqualifiedBasic;
+        } = unqualifiedBasic
         const {
           orderNo, contractCheckDate, checkItems, unqualifiedReason, treatmentScheme, schemeType, files
-        } = contUnqualified;
+        } = contUnqualified
         Object.assign(this.basicForm, {
           businessOperatorName,
           businessDeptName,
@@ -245,24 +241,24 @@
           contractTextType: contractTextTypeMap[contractTextType],
           contractType: contractPatternMap[contractType],
           contractNo
-        });
-        this.orderNo = orderNo;
-        this.checkItems = checkItems;
-        this.contractCheckDate = contractCheckDate;
-        this.unqualifiedReason = unqualifiedReason;
-        this.treatmentScheme = treatmentScheme;
-        this.schemeType = schemeType;
-        this.fileList = files || [];
+        })
+        this.orderNo = orderNo
+        this.checkItems = checkItems
+        this.contractCheckDate = contractCheckDate
+        this.unqualifiedReason = unqualifiedReason
+        this.treatmentScheme = treatmentScheme
+        this.schemeType = schemeType
+        this.fileList = files || []
       }
     },
-    created() {
-      const { id, processData } = this.$route.query;
-      this.getInfo(id);
+    created () {
+      const {id, processData} = this.$route.query
+      this.getInfo(id)
       if (processData) {
-        const data = JSON.parse(processData);
-        const { procTitle, procInstId } = data;
-        this.procInstId = procInstId;
-        this.procTitle = procTitle;
+        const data = JSON.parse(processData)
+        const {procTitle, procInstId} = data
+        this.procInstId = procInstId
+        this.procTitle = procTitle
       }
     },
     components: {
@@ -272,5 +268,5 @@
     filters: {
       formatDate
     }
-  };
+  }
 </script>

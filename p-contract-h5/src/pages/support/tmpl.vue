@@ -1,4 +1,4 @@
-<style type="text/scss" lang="scss" scope>
+<style type="text/scss" lang="scss" scoped>
   .tmpl-container {
     .pre-title {
       height: 36px;
@@ -8,7 +8,7 @@
     }
 
     .preview {
-      padding: 15px;
+      padding: 10px;
       border: 1px solid #ddd;
       min-height: 630px;
       word-wrap: break-word;
@@ -27,21 +27,16 @@
         }
       }
       .content {
-        white-space: pre-wrap;
-        .ql-align-right {
-          text-align: right;
-        }
-        .ql-align-justify {
-          text-align: justify;
-          text-align-last: justify;
-        }
-        .ql-align-center {
-          text-align: center;
-        }
       }
       .footer {
         margin-top: 20px;
       }
+      .files-content {
+        margin-top: 20px;
+      }
+    }
+    .back-btn {
+      margin-top: -10px;
     }
   }
 </style>
@@ -51,13 +46,14 @@
     <el-card>
       <div slot="header">
         <span class="common-title">模板信息</span>
+        <el-button class="back-btn fr" type="primary" @click="save">返 回</el-button>
       </div>
       <div>
-        <el-row>
-          <el-col :span="11">
-            <div class="mb20">
+        <el-row type="flex" :gutter="20">
+          <el-col :span="24" v-show="!disabled">
+            <el-row v-if="!disabled">
               <el-select
-                :disabled="disabled"
+                class="mr10"
                 v-model="tplType"
                 placeholder="请选择">
                 <el-option
@@ -67,75 +63,122 @@
                   :value="item.id">
                 </el-option>
               </el-select>
-            </div>
+              <Dropdown class="mr10" :datas="staticLabels" :prop="dropdownProp" @command="chooseLabel">
+                <el-button type="primary">
+                  固定标签<i class="el-icon-arrow-down ml10"></i>
+                </el-button>
+              </Dropdown>
+              <Dropdown disabled splitButton type="primary" :datas="customLabels" @click="dialogVisible=true"
+                        :prop="dropdownProp" @command="chooseLabel">
+                <i class="el-icon-plus mr10"></i>自定义标签
+              </Dropdown>
+            </el-row>
             <div class="mb20">
               <!--<el-transfer
                 :titles="['可选模块', '已选模块']"
-                v-model="form.contentModule"
+                v-model="contentModule"
                 :props="{key: 'id',label: 'moduleName'}"
                 :data="modulesData | setItemDisabled(this)">
               </el-transfer>-->
             </div>
             <div>
-              <quill-editor
-                :disabled="disabled"
-                :content="form.content"
-                @change="onEditorChange"
-                ref="myQuillEditor"
-                :options="editorOption">
-              </quill-editor>
+              <el-tabs v-model="editableTabsValue" type="card" :addable="!disabled" @edit="handleTabsEdit">
+                <el-tab-pane
+                  :key="index"
+                  v-for="(item, index) in editableTabs"
+                  :label="item.title"
+                  :name="item.name"
+                  :closable="index!==0&&!disabled"
+                >
+                  <span class="drag-elements" slot="label" v-if="index!==0">{{item.title}}</span>
+                  <Editor v-model="item.content"
+                          :editorId="item.name"
+                          @onChange="onEditorChange"
+                          :ref="`editor-${item.name}`"
+                          :disabled="disabled"></Editor>
+                </el-tab-pane>
+              </el-tabs>
             </div>
           </el-col>
-          <el-col :span="12" :offset="1">
+          <el-col :span="24">
             <div class="mb20 pre-title">预览</div>
             <div class="preview">
               <div class="title">合同</div>
               <div v-html="header" class="header"></div>
-              <div v-html="form.content" class="content"></div>
-              <div v-html="footer" class="footer"></div>
+              <div v-html="previewContent" class="content"></div>
+              <div v-html="footer" class="footer clearfix"></div>
+              <div v-html="filesContent" class="files-content"></div>
             </div>
           </el-col>
         </el-row>
       </div>
     </el-card>
-    <el-button class="mt20 ml20" type="primary" @click="save">返 回</el-button>
+    <el-dialog
+      title="添加自定义标签"
+      :visible.sync="dialogVisible">
+      <el-form :model="customLabelForm" :rules="customLabelRules" ref="customLabelForm" label-width="100px">
+        <el-form-item label="标签名称" prop="name">
+          <el-input v-model="customLabelForm.name"></el-input>
+        </el-form-item>
+        <el-form-item label="标签描述" prop="description">
+          <el-input type="textarea" v-model="customLabelForm.description"></el-input>
+        </el-form-item>
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="dialogVisible = false">取 消</el-button>
+        <el-button type="primary" @click="addCustomLabel">确 定</el-button>
+      </div>
+    </el-dialog>
   </div>
 </template>
 
 <script>
-  import _ from 'lodash';
-  import {mapMutations} from 'vuex';
-  import {quillEditor} from 'vue-quill-editor';
-  import {routerNames} from '../../core/consts';
-  import * as types from '../../store/consts';
-  import getModules from '../../mixins/getModules';
-  import Api from '../../api/support';
+  import _ from 'lodash'
+  import Sortable from 'sortablejs'
+  import {routerNames} from '../../core/consts'
+  import getModules from '../../mixins/getModules'
+  import Api from '../../api/support'
+
+  import Editor from '../../components/editor.vue'
+  import Dropdown from '../../components/dropdown.vue'
 
   export default {
+    components: {
+      Editor,
+      Dropdown
+    },
     mixins: [getModules],
-    data() {
+    data () {
       return {
-        form: {
-          contentModule: [],
-          content: ''
-        },
+        contentModule: [],
         header: '',
         footer: '',
         tplType: '',
         options: [],
-        editorOption: {
-          placeholder: '请输入内容...',
-          modules: {
-            toolbar: [
-              [
-                {header: [1, 2, 3, 4, 5, 6, false]},
-                {align: ['', 'right', 'center']}
-              ]
-            ]
+        editableTabsValue: '0',
+        editableTabs: [
+          {
+            title: '正文',
+            name: '0',
+            content: ''
           }
+        ],
+        Sortable: null,
+        dialogVisible: false,
+        staticLabels: [],
+        customLabels: [],
+        customLabelForm: {
+          name: '',
+          description: ''
         },
-        previewContent: ''
-      };
+        customLabelRules: {
+          name: [{required: true, message: '请填写标签名称'}]
+        },
+        dropdownProp: {
+          label: 'labelName',
+          value: 'id'
+        }
+      }
     },
     props: {
       showTmpl: {
@@ -144,95 +187,233 @@
       tplInfo: Object
     },
     methods: {
-      getTmplTypes() {
+      getTmplTypes () {
         Api.getTmplTypes({}).then((res) => {
-          this.options = res.data.dataMap;
-        });
+          this.options = res.data.dataMap
+        })
       },
-      onEditorChange({html}) {
-        console.log(html);
-        this.form.content = html;
+      onEditorChange (html, editor) {
+        const id = editor.$textContainerElem[0].id
+        const index = id.split('-')[1]
+        this.editableTabs.some((item, i) => {
+          if (i === +index) {
+            const obj = Object.assign({}, item)
+            obj.content = html
+            this.editableTabs.splice(i, 1, obj)
+            return true
+          }
+          return false
+        })
       },
-      save() {
-        if (!this.disabled) {
-          console.log(this.form.content);
-          const form = {...this.form, content: this.form.content.replace(/\s/g, '&nbsp;')};
-          this[types.SET_INFO]({
-            info: form
-          });
+      handleTabsEdit (targetName, action) {
+        if (action === 'add') {
+          const len = `${this.editableTabs.length}`
+          this.editableTabs.push({
+            title: '附件',
+            name: len,
+            content: ''
+          })
+          this.editableTabsValue = len
         }
-        this.back();
+        if (action === 'remove') {
+          const tabs = this.editableTabs
+          let activeName = this.editableTabsValue
+          if (activeName === targetName) {
+            tabs.some((tab, index) => {
+              if (tab.name === targetName) {
+                const nextTab = tabs[index + 1] || tabs[index - 1]
+                if (nextTab) {
+                  activeName = nextTab.name
+                }
+                return true
+              }
+              return false
+            })
+          }
+
+          this.editableTabsValue = activeName
+          this.editableTabs = tabs.filter(tab => tab.name !== targetName)
+        }
+        this.$nextTick(() => {
+          this.sortInit()
+        })
       },
-      back() {
-        this.$emit('update:showTmpl', false);
+      save () {
+        if (!this.disabled) {
+          const templateFileContents = this.editableTabs.map((item) => {
+            const content = item.content
+            return {
+              content
+            }
+          })
+          const result = {
+            contentModule: this.contentModule,
+            content: templateFileContents[0].content,
+            templateFileContents: templateFileContents.slice(1),
+            labels: this.customLabels
+          }
+          this.$emit('getData', result)
+        }
+        this.back()
       },
-      ...mapMutations([
-        types.SET_INFO
-      ])
+      back () {
+        this.$emit('update:showTmpl', false)
+      },
+      sortInit () {
+        const t = this
+        if (this.Sortable) {
+          this.Sortable.destroy()
+        }
+        const container = document.querySelector('.el-tabs__nav')
+        const ignoreElem = container.firstChild
+        this.Sortable = Sortable.create(container, {
+          handle: '.drag-elements',
+          onEnd (evt) {
+            const {newIndex, oldIndex} = evt
+            if (newIndex !== oldIndex) {
+              const editableTabs = t.editableTabs.slice(0)
+              const item = editableTabs.splice(oldIndex, 1)
+              editableTabs.splice(newIndex, 0, item[0])
+              t.editableTabs = editableTabs
+            }
+          },
+          onMove (evt) {
+            return ignoreElem !== evt.related
+          }
+        })
+      },
+      addCustomLabel () {
+        const form = this.$refs.customLabelForm
+        form.validate((valid) => {
+          if (!valid) {
+            return
+          }
+          const {name, description} = this.customLabelForm
+          const customLabels = this.customLabels
+          const exist = customLabels.some(item => item.labelName === name)
+          if (exist) {
+            this.$message.warning('自定义标签已存在！')
+            return
+          }
+          customLabels.unshift({
+            labelName: name,
+            labelKey: `\`\`${this.customLabelForm.name}\`\``,
+            labelDesc: description
+          })
+          form.resetFields()
+          this.dialogVisible = false
+        })
+      },
+      chooseLabel (item) {
+        console.log('选中标签', item)
+        const currentEditor = this.$refs[`editor-${this.editableTabsValue}`][0]
+        currentEditor.editor.cmd.do('insertHTML', item.source.labelKey)
+      },
+      getTemplateLabels (templateId) {
+        Api.getTemplateLabels({
+          templateId: templateId || ''
+        }).then((res) => {
+          const data = res.data.dataMap
+          const staticLabels = []
+          const customLabels = []
+          data.forEach((item) => {
+            if (item.labelType === 'FIXED') {
+              staticLabels.push(item)
+              return
+            }
+            customLabels.push(item)
+          })
+          this.staticLabels = staticLabels
+          this.customLabels = customLabels
+        })
+      }
     },
     watch: {
-      modulesData() {
-        this.getTmplTypes();
+      modulesData () {
+        this.getTmplTypes()
       },
-      options() {
-        this.tplType = this.options[0].id;
+      options () {
+        this.tplType = this.options[0].id
       },
-      tplType() {
-        const options = this.options;
+      tplType () {
+        const options = this.options
         if (!options.length) {
-          return;
+          return
         }
-        const option = _.find(options, (o) => o.id === this.tplType);
-        this.form.contentModule = option.moduleIds;
+        const option = _.find(options, (o) => o.id === this.tplType)
+        this.contentModule = option.moduleIds
       },
-      tplInfo() {
-        const tplInfo = this.tplInfo;
-        if (!tplInfo) {
-          return;
+      tplInfo () {
+        const tplInfo = this.tplInfo
+        if (!Object.keys(tplInfo).length) {
+          return
         }
-        this.form.contentModule = tplInfo.contentModule.map(item => item.id);
-        this.form.content = tplInfo.content;
+        const {content, contentModule, templateFileContents, id} = tplInfo
+        this.contentModule = contentModule.map(item => item.id)
+        this.content = content
+        this.editableTabs[0].content = content
+        if (templateFileContents && templateFileContents.length) {
+          const contents = templateFileContents.map((item, index) => ({
+            name: `${index + 1}`,
+            title: '附件',
+            content: item.content
+          }))
+          this.editableTabs = this.editableTabs.concat(contents)
+        }
+        this.getTemplateLabels(id)
       },
-      'form.contentModule': function () {
-        const value = this.form.contentModule;
-        const modulesData = this.modulesData;
-        if (!value.length || !modulesData.length) {
-          return;
+      contentModule (val) {
+        const modulesData = this.modulesData
+        if (!val.length || !modulesData.length) {
+          return
         }
-        const header = [];
-        const footer = [];
-        value.forEach((key) => {
-          const module = _.find(modulesData, (o) => o.id === key);
-          const content = module.moduleContent;
+        const header = []
+        const footer = []
+        val.forEach((key) => {
+          const module = _.find(modulesData, (o) => o.id === key)
+          const content = module.moduleContent
           if (module.moduleType === 1) {
-            header.push(content);
+            header.push(content)
           } else if (module.moduleType === 2) {
-            footer.push(content);
+            footer.push(content)
           }
-        });
-        this.header = header.join('');
-        this.footer = footer.join('');
+        })
+        this.header = header.join('')
+        this.footer = footer.join('')
       }
     },
     computed: {
-      disabled() {
-        return [routerNames.con_tpl_see, routerNames.con_tpl_abolish].indexOf(this.$route.name) > -1;
+      disabled () {
+        return [routerNames.con_tpl_see, routerNames.con_tpl_abolish].indexOf(this.$route.name) > -1
+      },
+      previewContent () {
+        return this.editableTabs[0].content
+      },
+      filesContent () {
+        return this.editableTabs.slice(1).map(item => item.content).join('')
       }
-    },
-    components: {
-      quillEditor
     },
     filters: {
-      setItemDisabled(items, self) {
+      setItemDisabled (items, self) {
         if (self.disabled) {
           return items.map((item) => {
-            const newItem = Object.assign({}, item);
-            newItem.disabled = true;
-            return newItem;
-          });
+            const newItem = Object.assign({}, item)
+            newItem.disabled = true
+            return newItem
+          })
         }
-        return items;
+        return items
       }
+    },
+    created () {
+      if (routerNames.con_tpl_create === this.$route.name) {
+        this.getTemplateLabels()
+      }
+    },
+    mounted () {
+      this.$nextTick(() => {
+        !this.disabled && this.sortInit()
+      })
     }
-  };
+  }
 </script>

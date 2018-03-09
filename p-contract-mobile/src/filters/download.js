@@ -1,3 +1,3 @@
-import {downloadUrl} from '../api/consts';
+import {downloadUrl} from '../api/consts'
 
-export default fileId => `${downloadUrl}${fileId}`;
+export default fileId => `${downloadUrl}${fileId}`

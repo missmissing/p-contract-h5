@@ -71,13 +71,13 @@
 </template>
 
 <script>
-  import {Toast, Indicator, MessageBox} from 'mint-ui';
-  import Api from '../../../api/process';
-  import Actions from '../components/actions.vue';
-  import SelectPerson from '../components/selectPerson.vue';
+  import {Toast, Indicator, MessageBox} from 'mint-ui'
+  import Api from '../../../api/process'
+  import Actions from '../components/actions.vue'
+  import SelectPerson from '../components/selectPerson.vue'
 
   export default {
-    data() {
+    data () {
       return {
         disabled: false,
         actionName: '',
@@ -88,51 +88,51 @@
         redirectApproverId: '',
         approveRemark: '',
         popupVisible: false
-      };
+      }
     },
     methods: {
-      getInfo() {
-        const {actions = [], sign} = this.$store.state.processData;
+      getInfo () {
+        const {actions = [], sign} = this.$store.state.processData
         if (sign === 1) {
-          this.commonBtns = [];
+          this.commonBtns = []
         }
-        this.allBtns = [...actions, ...this.commonBtns];
+        this.allBtns = [...actions, ...this.commonBtns]
         if (this.allBtns.length > 4) {
-          this.btns = this.allBtns.slice(0, 2).push('其它');
+          this.btns = this.allBtns.slice(0, 2).push('其它')
         } else {
-          this.btns = this.allBtns;
+          this.btns = this.allBtns
         }
       },
-      back() {
-        window._____processCenterPageAction('setheaderdisplay', {show: true});
-        this.popupVisible = false;
+      back () {
+        window._____processCenterPageAction('setheaderdisplay', {show: true})
+        this.popupVisible = false
       },
-      actionChange() {
-        window._____processCenterPageAction('setheaderdisplay', {show: false});
-        this.popupVisible = true;
+      actionChange () {
+        window._____processCenterPageAction('setheaderdisplay', {show: false})
+        this.popupVisible = true
       },
-      clickBtn(btn) {
-        this.actionName = btn;
+      clickBtn (btn) {
+        this.actionName = btn
         if ([...this.commonBtns, '其它'].indexOf(btn) > -1) {
-          this.actionChange();
-          return;
+          this.actionChange()
+          return
         }
-        this.submit();
+        this.submit()
       },
-      check(result) {
+      check (result) {
         if (result.actionName === '拒绝') {
           if (!result.approveRemark) {
             Toast({
               message: '请输入审批意见！',
               duration: 1500
-            });
-            return false;
+            })
+            return false
           }
         }
-        return true;
+        return true
       },
-      submit() {
-        const {procInstId, procCode, serialNumber} = this.$store.state.processData;
+      submit () {
+        const {procInstId, procCode, serialNumber} = this.$store.state.processData
         const result = {
           procInstId,
           procCode,
@@ -141,51 +141,51 @@
           actionName: this.actionName,
           redirectApproverId: this.redirectApproverId,
           approveRemark: this.approveRemark,
-          source:'Mobile'
-        };
-        if (!this.check(result)) {
-          return;
+          fromType: 'Mobile'
         }
-        document.activeElement.blur();
-        this.disabled = true;
+        if (!this.check(result)) {
+          return
+        }
+        document.activeElement.blur()
+        this.disabled = true
         Indicator.open({
           text: '提交中',
           spinnerType: 'triple-bounce'
-        });
+        })
         Api.submitProcess(result).then(() => {
-          Indicator.close();
+          Indicator.close()
           MessageBox.alert('操作成功').then(() => {
-            window._____processCenterPageAction('pagebackrefresh');
-          });
+            window._____processCenterPageAction('pagebackrefresh')
+          })
         }).catch(() => {
-          Indicator.close();
-          this.disabled = false;
-        });
+          Indicator.close()
+          this.disabled = false
+        })
       }
     },
     computed: {
-      show() {
-        return this.$store.state.processData.type === '1';
+      show () {
+        return this.$store.state.processData.type === '1'
       },
-      visible() {
-        return this.commonBtns.indexOf(this.actionName) > -1;
+      visible () {
+        return this.commonBtns.indexOf(this.actionName) > -1
       },
-      pcApprove() {
-        return ['印章保管人', '采购合同上传'].indexOf(this.$store.state.processData.roleName) > -1;
+      pcApprove () {
+        return ['印章保管人', '采购合同上传'].indexOf(this.$store.state.processData.roleName) > -1
       }
     },
-    created() {
-      this.getInfo();
+    created () {
+      this.getInfo()
     },
     filters: {
-      type(btn) {
+      type (btn) {
         switch (btn) {
           case '同意':
-            return 'primary';
+            return 'primary'
           case '拒绝':
-            return 'danger';
+            return 'danger'
           default:
-            return 'default';
+            return 'default'
         }
       }
     },
@@ -193,5 +193,5 @@
       Actions,
       SelectPerson
     }
-  };
+  }
 </script>

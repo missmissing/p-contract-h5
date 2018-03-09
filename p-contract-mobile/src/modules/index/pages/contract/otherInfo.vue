@@ -18,16 +18,16 @@
     props: {
       info: {
         type: Object,
-        default() {
-          return {};
+        default () {
+          return {}
         }
       }
     },
-    data() {
-      const t = this;
+    data () {
+      const t = this
       const change = function (item) {
-        t.condition = item.value;
-      };
+        t.condition = item.value
+      }
       return {
         actions: [
           {
@@ -48,36 +48,36 @@
         ],
         sheetVisible: false,
         condition: 4
-      };
+      }
     },
     computed: {
-      tabs() {
-        let type;
+      tabs () {
+        let type
         switch (this.condition) {
           case 1:
-            type = 'PrTable';
-            break;
+            type = 'PrTable'
+            break
           case 2:
-            type = 'PriceTable';
-            break;
+            type = 'PriceTable'
+            break
           case 3:
-            type = 'ContractTable';
-            break;
+            type = 'ContractTable'
+            break
           case 4:
-            type = 'OrderTable';
-            break;
+            type = 'OrderTable'
+            break
           default:
-            type = '';
+            type = ''
         }
-        return type;
+        return type
       }
     },
     watch: {
-      sheetVisible(val) {
+      sheetVisible (val) {
         if (val) {
-          document.querySelector('#action-submit-container').style.display = 'none';
+          document.querySelector('#action-submit-container').style.display = 'none'
         } else {
-          document.querySelector('#action-submit-container').style.display = 'block';
+          document.querySelector('#action-submit-container').style.display = 'block'
         }
       }
     },
@@ -86,5 +86,5 @@
       ContractTable: () => import('./contractTable.vue'),
       OrderTable: () => import('./orderTable.vue')
     }
-  };
+  }
 </script>

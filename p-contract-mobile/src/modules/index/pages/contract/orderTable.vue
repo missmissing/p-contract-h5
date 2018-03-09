@@ -22,7 +22,7 @@
         prop="initiateTime"
         label="发起时间"
         min-width="100">
-        <template scope="scope">
+        <template slot-scope="scope">
           {{scope.row.initiateTime | formatDate}}
         </template>
       </el-table-column>
@@ -30,7 +30,7 @@
         prop="orderTime"
         label="下单时间"
         min-width="100">
-        <template scope="scope">
+        <template slot-scope="scope">
           {{scope.row.orderTime | formatDate}}
         </template>
       </el-table-column>
@@ -39,48 +39,48 @@
 </template>
 
 <script>
-  import Api from '../../../../api/manageContract';
-  import {formatDate} from '../../../../filters/moment';
+  import Api from '../../../../api/manageContract'
+  import {formatDate} from '../../../../filters/moment'
 
   export default {
     props: {
       info: {
         type: Object,
-        default() {
-          return {};
+        default () {
+          return {}
         }
       }
     },
-    data() {
+    data () {
       return {
         tableData: [],
         pageNo: 1,
         pageSize: 100
-      };
+      }
     },
     filters: {
       formatDate
     },
     methods: {
-      getData() {
+      getData () {
         Api.getOrderTableData({contractNo: this.info.contractNo, pageNo: this.pageNo, pageSize: this.pageSize})
           .then((res) => {
-            const data = res.data.dataMap;
-            this.tableData = data.data;
-          });
+            const data = res.data.dataMap
+            this.tableData = data.data
+          })
       }
     },
     watch: {
-      info(val) {
+      info (val) {
         if (val.contractNo) {
-          this.getData();
+          this.getData()
         }
       }
     },
-    created() {
+    created () {
       if (this.info.contractNo) {
-        this.getData();
+        this.getData()
       }
     }
-  };
+  }
 </script>

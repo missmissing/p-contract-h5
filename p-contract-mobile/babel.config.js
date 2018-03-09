@@ -3,14 +3,13 @@ module.exports = (config) => {
     [
       {
         libraryName: 'element-ui',
-        styleLibraryName: 'theme-default'
+        styleLibraryName: 'theme-chalk'
       },
       {
         libraryName: 'mint-ui',
         style: true
       }
     ]
-  ], 'lodash', 'syntax-dynamic-import');
-  return config;
-};
-
+  ])
+  return config
+}

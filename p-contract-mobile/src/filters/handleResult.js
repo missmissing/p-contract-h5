@@ -1,3 +1,3 @@
-import {handleResult} from '../core/consts';
+import {handleResult} from '../core/consts'
 
-export default type => handleResult[type];
+export default type => handleResult[type]

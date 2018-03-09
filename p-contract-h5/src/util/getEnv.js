@@ -1,15 +1,15 @@
 export default () => {
-  const origin = window.location.origin;
+  const origin = window.location.origin
 
-  let env = 'dev';
+  let env = 'dev'
 
   if (origin.indexOf('uat1.rs') > -1) {
-    env = 'uat1';
+    env = 'uat1'
   } else if (origin.indexOf('mklmall') > -1) {
-    env = 'stg';
+    env = 'stg'
   } else if (origin.indexOf('chinaredstar') > -1) {
-    env = 'prd';
+    env = 'prd'
   }
 
-  return env;
-};
+  return env
+}

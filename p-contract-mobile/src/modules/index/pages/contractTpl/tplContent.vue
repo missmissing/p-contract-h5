@@ -51,39 +51,39 @@
     props: {
       info: {
         type: Object,
-        default() {
-          return {};
+        default () {
+          return {}
         }
       }
     },
-    data() {
+    data () {
       return {
         header: '',
         content: '',
         footer: ''
-      };
+      }
     },
     methods: {
-      setData() {
-        const {contentModule, content} = this.info;
-        this.content = content;
-        const header = [];
-        const footer = [];
+      setData () {
+        const {contentModule, content} = this.info
+        this.content = content
+        const header = []
+        const footer = []
         contentModule.forEach((module) => {
           if (module.moduleType === 'HEAD') {
-            header.push(module.moduleContent);
+            header.push(module.moduleContent)
           } else if (module.moduleType === 'TAIL') {
-            footer.push(module.moduleContent);
+            footer.push(module.moduleContent)
           }
-        });
-        this.header = header.join('');
-        this.footer = footer.join('');
+        })
+        this.header = header.join('')
+        this.footer = footer.join('')
       }
     },
     watch: {
-      info() {
-        this.setData();
+      info () {
+        this.setData()
       }
     }
-  };
+  }
 </script>

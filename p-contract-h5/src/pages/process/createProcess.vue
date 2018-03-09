@@ -12,7 +12,7 @@
       <el-table-column
         prop="procName"
         label="流程名称">
-        <template scope="scope">
+        <template slot-scope="scope">
           <el-button type="text" @click.native.prevent="toPage(scope.row)">{{scope.row.procName}}</el-button>
         </template>
       </el-table-column>
@@ -35,7 +35,7 @@
       <el-table-column
         prop="startTime"
         label="创建时间">
-        <template scope="scope">
+        <template slot-scope="scope">
           {{ scope.row.startTime | formatTime }}
         </template>
       </el-table-column>
@@ -56,56 +56,54 @@
 </template>
 
 <script>
-  import {processListMap} from '../../core/consts';
-  import Api from '../../api/process';
-  import {formatTime} from '../../filters/moment';
-  import comLoading from '../../mixins/comLoading';
-  import toPage from '../../assets/js/toPage';
+  import {processListMap} from '../../core/consts'
+  import Api from '../../api/process'
+  import {formatTime} from '../../filters/moment'
+  import comLoading from '../../mixins/comLoading'
+  import toPage from '../../assets/js/toPage'
 
   export default {
     mixins: [comLoading],
-    data() {
+    data () {
       return {
         tableData: [],
         pageNumber: 1,
         pageSize: 10,
         totalPage: 0,
         dataType: processListMap[1]
-      };
+      }
     },
     methods: {
-      getProcess() {
-        this.comLoading();
+      getProcess () {
+        this.comLoading()
         Api.getProcess({
           pageNumber: this.pageNumber,
           pageSize: this.pageSize,
           dataType: this.dataType
         }).then((res) => {
-          this.comLoading(false);
-          const {procList, totalPage} = res.data.dataMap;
-          this.tableData = procList;
-          this.totalPage = totalPage;
-        });
+          this.comLoading(false)
+          const {procList, totalPage} = res.data.dataMap
+          this.tableData = procList
+          this.totalPage = totalPage
+        })
       },
-      handleSizeChange(val) {
-        console.log(`每页 ${val} 条`);
-        this.pageSize = val;
-        this.getProcess();
+      handleSizeChange (val) {
+        this.pageSize = val
+        this.getProcess()
       },
-      handleCurrentChange(val) {
-        console.log(`当前页: ${val}`);
-        this.pageNumber = val;
-        this.getProcess();
+      handleCurrentChange (val) {
+        this.pageNumber = val
+        this.getProcess()
       },
-      toPage(row) {
-        toPage.call(this, row);
+      toPage (row) {
+        toPage.call(this, row)
       }
     },
-    created() {
-      this.getProcess();
+    created () {
+      this.getProcess()
     },
     filters: {
       formatTime
     }
-  };
+  }
 </script>

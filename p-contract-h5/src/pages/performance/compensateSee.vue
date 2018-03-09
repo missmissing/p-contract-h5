@@ -108,8 +108,6 @@
               <el-input
                 type="textarea"
                 :maxlength="300"
-                :autosize="{ minRows: 2 }"
-                resize="none"
                 v-model="handleForm.violateReason"
                 disabled>
               </el-input>
@@ -118,9 +116,7 @@
               <el-input
                 type="textarea"
                 :maxlength="300"
-                :autosize="{ minRows: 2 }"
-                resize="none"
-                v-model="handleForm.treatmentScheme"
+                v-model.trim="handleForm.treatmentScheme"
                 disabled>
               </el-input>
             </el-form-item>
@@ -133,7 +129,7 @@
                 <el-table-column
                   prop="fileName"
                   label="文件名">
-                  <template scope="scope">
+                  <template slot-scope="scope">
                     <a class="router-link" :href="`${download}${scope.row.fileId}`" target="_blank">{{scope.row.fileName}}</a>
                   </template>
                 </el-table-column>
@@ -146,7 +142,7 @@
                   prop="createTime"
                   width="150"
                   label="上传时间">
-                  <template scope="scope">
+                  <template slot-scope="scope">
                     {{scope.row.createTime | formatDate}}
                   </template>
                 </el-table-column>
@@ -161,17 +157,17 @@
 </template>
 
 <script>
-  import Api from '../../api/performance';
-  import Upload from '../../components/upload.vue';
-  import { formatDate } from '../../filters/moment';
-  import { routerNames } from '../../core/consts';
-  import comLoading from '../../mixins/comLoading';
-  import Process from '../../components/process.vue';
-  import { downloadUrl } from '../../api/consts';
+  import Api from '../../api/performance'
+  import Upload from '../../components/upload.vue'
+  import {formatDate} from '../../filters/moment'
+  import {routerNames} from '../../core/consts'
+  import comLoading from '../../mixins/comLoading'
+  import Process from '../../components/process.vue'
+  import {downloadUrl} from '../../api/consts'
 
   export default {
     mixins: [comLoading],
-    data() {
+    data () {
       return {
         procTitle: '',
         procInstId: '',
@@ -185,8 +181,8 @@
         compensateType: null,
         compensateMoney: '',
         fileList: [],
-        options: [{ label: '供应商向我方赔付', value: 'PARTNER_GIVE_US' }, { label: '我方向供应商赔付', value: 'US_GIVE_PARTNER' }],
-        toDetail: { name: routerNames.con_Check, query: { contractId: '' } },
+        options: [{label: '供应商向我方赔付', value: 'PARTNER_GIVE_US'}, {label: '我方向供应商赔付', value: 'US_GIVE_PARTNER'}],
+        toDetail: {name: routerNames.con_Check, query: {contractId: ''}},
         basicForm: {
           contractNo: ''
         },
@@ -196,55 +192,55 @@
           treatmentScheme: ''
         },
         download: downloadUrl
-      };
+      }
     },
     methods: {
-      getInfo(id) {
-        this.comLoading();
-        Api.getViolateByProcInstId({ procInstId: id }).then((res) => {
-          this.comLoading(false);
-          const data = res.data.dataMap;
-          console.log(data);
-          this.setData(data);
+      getInfo (id) {
+        this.comLoading()
+        Api.getViolateByProcInstId({procInstId: id}).then((res) => {
+          this.comLoading(false)
+          const data = res.data.dataMap
+          console.log(data)
+          this.setData(data)
         }, () => {
-          this.comLoading(false);
-        });
+          this.comLoading(false)
+        })
       },
-      setData(data) {
-        const { contractBasic, violateDispose } = data;
+      setData (data) {
+        const {contractBasic, violateDispose} = data
         const {
           startTime, endTime, businessOperator, businessDept, signTime, contractNo
-        } = contractBasic;
+        } = contractBasic
         const {
           files, schemeType, defaulter, compensateType, compensateStatus, compensateMoney, treatmentScheme, violateReason
-        } = violateDispose;
-        this.basicForm.contractNo = contractNo;
-        this.fileList = files || [];
-        this.startTime = startTime;
-        this.endTime = endTime;
-        this.signTime = signTime;
-        this.businessDept = businessDept;
-        this.businessOperator = businessOperator;
-        this.defaulter = defaulter;
-        this.compensateType = compensateType;
-        this.compensateStatus = compensateStatus;
-        this.compensateMoney = compensateMoney;
+        } = violateDispose
+        this.basicForm.contractNo = contractNo
+        this.fileList = files || []
+        this.startTime = startTime
+        this.endTime = endTime
+        this.signTime = signTime
+        this.businessDept = businessDept
+        this.businessOperator = businessOperator
+        this.defaulter = defaulter
+        this.compensateType = compensateType
+        this.compensateStatus = compensateStatus
+        this.compensateMoney = compensateMoney
         Object.assign(this.handleForm, {
           schemeType,
           violateReason,
           treatmentScheme
-        });
-        this.toDetail.query.contractNo = contractNo;
+        })
+        this.toDetail.query.contractNo = contractNo
       }
     },
-    created() {
-      const { id, processData } = this.$route.query;
-      this.getInfo(id);
+    created () {
+      const {id, processData} = this.$route.query
+      this.getInfo(id)
       if (processData) {
-        const data = JSON.parse(processData);
-        const { procTitle, procInstId } = data;
-        this.procInstId = procInstId;
-        this.procTitle = procTitle;
+        const data = JSON.parse(processData)
+        const {procTitle, procInstId} = data
+        this.procInstId = procInstId
+        this.procTitle = procTitle
       }
     },
     components: {
@@ -254,5 +250,5 @@
     filters: {
       formatDate
     }
-  };
+  }
 </script>

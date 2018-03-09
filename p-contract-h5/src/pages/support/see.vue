@@ -61,7 +61,7 @@
               </el-col>
               <el-col :span="8">
                 <el-form-item label="合同类型">
-                  {{form.contractType}}
+                  {{form.contractType | contractType}}
                 </el-form-item>
               </el-col>
             </el-row>
@@ -117,7 +117,7 @@
                 <el-table-column
                   prop="fileName"
                   label="文件名">
-                  <template scope="scope">
+                  <template slot-scope="scope">
                     <a class="router-link" :href="`${download}${scope.row.fileId}`" target="_blank">{{scope.row.fileName}}</a>
                   </template>
                 </el-table-column>
@@ -130,7 +130,7 @@
                   prop="createTime"
                   width="150"
                   label="上传时间">
-                  <template scope="scope">
+                  <template slot-scope="scope">
                     {{scope.row.createTime | formatDate}}
                   </template>
                 </el-table-column>
@@ -159,19 +159,20 @@
 </template>
 
 <script>
-  import Tmpl from './tmpl.vue';
-  import Upload from '../../components/upload.vue';
-  import Process from '../../components/process.vue';
-  import supportModel from '../../api/support';
-  import comLoading from '../../mixins/comLoading';
-  import {formatDate} from '../../filters/moment';
-  import tplStatus from '../../filters/tplStatus';
-  import {tplMap} from '../../core/consts';
-  import {downloadUrl} from '../../api/consts';
+  import Tmpl from './tmpl.vue'
+  import Upload from '../../components/upload.vue'
+  import Process from '../../components/process.vue'
+  import supportModel from '../../api/support'
+  import comLoading from '../../mixins/comLoading'
+  import contractType from '../../filters/contractType'
+  import {formatDate} from '../../filters/moment'
+  import tplStatus from '../../filters/tplStatus'
+  import {tplMap} from '../../core/consts'
+  import {downloadUrl} from '../../api/consts'
 
   export default {
     mixins: [comLoading],
-    data() {
+    data () {
       return {
         processData: {},
         procTitle: '',
@@ -200,10 +201,10 @@
         showTmpl: false,
         templateId: this.$route.query.id,
         download: downloadUrl
-      };
+      }
     },
     methods: {
-      setData(tplInfo) {
+      setData (tplInfo) {
         const {
           templateCode,
           templateName,
@@ -222,49 +223,49 @@
           amount,
           businessOperatorName,
           contractType
-        } = tplInfo;
-        this.tplInfo = tplInfo;
-        this.form.templateCode = templateCode;
-        this.form.templateName = templateName;
-        this.form.templateType = templateType;
-        this.form.templateStatus = templateStatus;
-        this.form.busiTypeText = bizTypes.map(item => item.businessName).join(',');
-        this.form.startDate = formatDate(startDate);
-        this.form.endDate = formatDate(endDate);
-        this.form.updateTime = formatDate(updateTime);
-        this.form.abolishReason = abolishReason;
-        this.form.version = `V${version}`;
-        this.form.operatorName = operatorName;
-        this.form.creatorName = creatorName;
-        this.form.description = description;
-        this.form.amount = amount;
-        this.form.businessOperatorName = businessOperatorName;
-        this.form.contractType = contractType;
-        this.fileList = files || [];
+        } = tplInfo
+        this.tplInfo = tplInfo
+        this.form.templateCode = templateCode
+        this.form.templateName = templateName
+        this.form.templateType = templateType
+        this.form.templateStatus = templateStatus
+        this.form.busiTypeText = bizTypes.map(item => item.businessName).join(',')
+        this.form.startDate = formatDate(startDate)
+        this.form.endDate = formatDate(endDate)
+        this.form.updateTime = formatDate(updateTime)
+        this.form.abolishReason = abolishReason
+        this.form.version = `V${version}`
+        this.form.operatorName = operatorName
+        this.form.creatorName = creatorName
+        this.form.description = description
+        this.form.amount = amount
+        this.form.businessOperatorName = businessOperatorName
+        this.form.contractType = contractType
+        this.fileList = files || []
       },
-      getTplData(id) {
-        this.comLoading();
+      getTplData (id) {
+        this.comLoading()
         supportModel.getTplData({
           templateId: id
         }).then((res) => {
-          console.log(res);
-          const tplInfo = res.data.dataMap;
-          this.setData(tplInfo);
-          this.comLoading(false);
+          console.log(res)
+          const tplInfo = res.data.dataMap
+          this.setData(tplInfo)
+          this.comLoading(false)
         }).catch(() => {
-          this.comLoading(false);
-        });
+          this.comLoading(false)
+        })
       },
-      getAllVersions() {
-        const {templateCode} = this.form;
+      getAllVersions () {
+        const {templateCode} = this.form
         supportModel.getAllTemplateByCode({templateCode}).then((res) => {
-          this.versions = res.data.dataMap;
+          this.versions = res.data.dataMap
         }).catch(() => {
-          this.comLoading(false);
-        });
+          this.comLoading(false)
+        })
       },
-      changeVersion(val) {
-        this.getTplData(val);
+      changeVersion (val) {
+        this.getTplData(val)
       }
     },
     components: {
@@ -272,39 +273,40 @@
       Upload,
       Process
     },
-    created() {
-      const {id, processData} = this.$route.query;
-      this.getTplData(id);
+    created () {
+      const {id, processData} = this.$route.query
+      this.getTplData(id)
       if (processData) {
-        this.processData = JSON.parse(processData);
-        const {procCode, procInstId, procTitle} = this.processData;
-        this.procInstId = procInstId;
-        this.procTitle = procTitle;
+        this.processData = JSON.parse(processData)
+        const {procInstId, procTitle} = this.processData
+        this.procInstId = procInstId
+        this.procTitle = procTitle
       }
     },
     filters: {
       formatDate,
-      tplStatus
+      tplStatus,
+      contractType
     },
     computed: {
-      tplTypeShow() {
-        return this.form.templateType === 'TEXT';
+      tplTypeShow () {
+        return this.form.templateType === 'TEXT'
       },
-      showAbolish() {
-        return this.processData.procCode === tplMap[2];
+      showAbolish () {
+        return this.processData.procCode === tplMap[2]
       },
-      showText() {
-        return this.form.templateType === 'TEXT' && this.processData.procCode === tplMap[0];
+      showText () {
+        return this.form.templateType === 'TEXT' && this.processData.procCode === tplMap[0]
       }
     },
     watch: {
       'form.templateCode': function () {
-        this.getAllVersions();
+        this.getAllVersions()
       },
-      versions() {
-        const {id} = this.$route.query;
-        this.templateId = id;
+      versions () {
+        const {id} = this.$route.query
+        this.templateId = id
       }
     }
-  };
+  }
 </script>

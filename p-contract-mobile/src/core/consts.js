@@ -23,51 +23,51 @@ export default {
     },
     NET_REQUEST_TIMEOUT: 'NET_REQUEST_TIMEOUT'
   }
-};
+}
 
-export const tplMap = ['CRS_Contract_CreateTemplate', 'CRS_Contract_UpdateTemplate', 'CRS_Contract_DeleteTemplate'];
+export const tplMap = ['CRS_Contract_CreateTemplate', 'CRS_Contract_UpdateTemplate', 'CRS_Contract_DeleteTemplate']
 
-export const contractMap = ['CRS_Contract_Create', 'CRS_Contract_Update', 'CRS_Contract_Delete'];
+export const contractMap = ['CRS_Contract_Create', 'CRS_Contract_Update', 'CRS_Contract_Delete']
 
-export const prMap = ['CRS_Contract_CreatePO'];
+export const prMap = ['CRS_Contract_CreatePO']
 
-export const compensateMap = ['CRS_Contract_CompensateManage'];
+export const compensateMap = ['CRS_Contract_CompensateManage']
 
-export const inspectRejectMap = ['CRS_Contract_POCheckUnqualified'];
+export const inspectRejectMap = ['CRS_Contract_POCheckUnqualified']
 
-export const protocolMap = ['CRS_Contract_CreateProtocol'];
+export const protocolMap = ['CRS_Contract_CreateProtocol']
 
-export const processListMap = ['BACKLOG', 'STARTED', 'FINISHED'];
+export const processListMap = ['BACKLOG', 'STARTED', 'FINISHED']
 
 export const tplTypeMap = {
   TEMPLATE: '合同模板',
   TEXT: '合同文本'
-};
+}
 
 export const tplType = {
   1: '合同模板',
   2: '合同文本'
-};
+}
 
 export const contractTextTypeMap = {
   1: '模板合同',
   2: '非模板合同'
-};
+}
 
 export const prTypeMap = {
   1: '一般物资',
   2: '服务',
   3: '固定资产'
-};
+}
 
 export const contractPatternMap = {
   1: '单一合同',
   2: '固定格式合同',
   3: '框架协议',
   4: '框架意向合同'
-};
+}
 
-export const procTitles = ['采购合同模板创建流程', '采购合同模板变更流程', '采购合同模板废除流程', '采购合同创建流程', '采购合同变更流程', '采购合同终止流程', '采购合同从协议创建流程', '采购订单创建流程', '合同违约处理流程', '合同验收不合格处理流程'];
+export const procTitles = ['采购合同模板创建流程', '采购合同模板变更流程', '采购合同模板废除流程', '采购合同创建流程', '采购合同变更流程', '采购合同终止流程', '采购合同从协议创建流程', '采购订单创建流程', '合同违约处理流程', '合同验收不合格处理流程']
 
 export const templateStatus = {
   DRAFT: '草稿',
@@ -80,25 +80,25 @@ export const templateStatus = {
   WAIT_ABOLISH: '废除审核通过',
   ABNORMAL: '异常',
   ALTER_AUDIT: '变更审核通过'
-};
+}
 
 export const handleResult = {
   CONTINUE_TO_PERFORM: '继续履行',
   UPDATED_CONTRACT: '变更合同',
   PERFORM_WITH_CHECK_RESULT: '按验收实际结果履行合同',
   BREACH: '转合同违约处理'
-};
+}
 
 export const defaultParty = {
   US: '我方',
   PARTNER: '对方',
   BOTH: '双方'
-};
+}
 
 export const compensateType = {
   PARTNER_GIVE_US: '供应商向我方赔付',
   US_GIVE_PARTNER: '我方向供应商赔付'
-};
+}
 
 export const paymentType = {
   1: '定金',
@@ -106,7 +106,7 @@ export const paymentType = {
   3: '进度款',
   4: '尾款',
   5: '保证金'
-};
+}
 
 export const paymentTimePeriods = [
   {
@@ -141,4 +141,4 @@ export const paymentTimePeriods = [
     id: 'Z000',
     name: '立即付款'
   }
-];
+]

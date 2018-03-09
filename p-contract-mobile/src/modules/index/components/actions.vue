@@ -35,33 +35,33 @@
     props: {
       value: {
         type: Object,
-        default() {
-          return '';
+        default () {
+          return ''
         }
       },
       btns: {
         type: Array,
-        default() {
-          return [];
+        default () {
+          return []
         }
       }
     },
-    data() {
+    data () {
       return {
         selected: null
-      };
+      }
     },
     methods: {
-      clickBtn(val) {
-        this.selected = val;
-        this.$emit('input', val);
-        this.$emit('change', val);
+      clickBtn (val) {
+        this.selected = val
+        this.$emit('input', val)
+        this.$emit('change', val)
       }
     },
     watch: {
-      value(val) {
-        this.selected = val;
+      value (val) {
+        this.selected = val
       }
     }
-  };
+  }
 </script>
