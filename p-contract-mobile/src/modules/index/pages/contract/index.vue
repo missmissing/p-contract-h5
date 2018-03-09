@@ -54,21 +54,21 @@
 </template>
 
 <script>
-  import Api from '../../../../api/manageContract';
-  import ContractBaseInfo from './contractBaseInfo.vue';
-  import ContractContentInfo from './contractContentInfo.vue';
-  import CustomLabelInfo from './customLabelInfo.vue';
-  import CardFinanceInfo from './cardFinanceInfo.vue';
-  import CardContCheckInfo from './cardContCheckInfo.vue';
-  import SealInfo from './sealInfo.vue';
-  import SealFile from '../../components/sealFile.vue';
-  import CardRelatedInfo from './cardRelatedInfo.vue';
-  import OtherInfo from './otherInfo.vue';
-  import Comments from '../../components/comments.vue';
-  import ActionSumit from '../../components/actionSubmit.vue';
+  import Api from '../../../../api/manageContract'
+  import ContractBaseInfo from './contractBaseInfo.vue'
+  import ContractContentInfo from './contractContentInfo.vue'
+  import CustomLabelInfo from './customLabelInfo.vue'
+  import CardFinanceInfo from './cardFinanceInfo.vue'
+  import CardContCheckInfo from './cardContCheckInfo.vue'
+  import SealInfo from './sealInfo.vue'
+  import SealFile from '../../components/sealFile.vue'
+  import CardRelatedInfo from './cardRelatedInfo.vue'
+  import OtherInfo from './otherInfo.vue'
+  import Comments from '../../components/comments.vue'
+  import ActionSumit from '../../components/actionSubmit.vue'
 
   export default {
-    data() {
+    data () {
       return {
         selected: 0,
         datas: {},
@@ -79,11 +79,11 @@
         cardSealInfoForm: {},
         cardRemarkInfoForm: {},
         contractLabels: []
-      };
+      }
     },
     computed: {
       // 当合同模式为单一合同和框架协议合同时,显示合同验收与样品信息
-      ifCheckInfo() {
+      ifCheckInfo () {
         return [1, 3].indexOf(this.baseInfoForm.contractType) > -1
       },
       showCustomLabel () {
@@ -94,32 +94,32 @@
       }
     },
     methods: {
-      getInfo() {
+      getInfo () {
         const params = {
           id: this.$store.state.id,
           operate: 'PROCESS'
-        };
+        }
         Api.getContractDetailByContractId(params).then((res) => {
-          const data = res.data.dataMap;
-          this.initData(data);
-        });
+          const data = res.data.dataMap
+          this.initData(data)
+        })
       },
-      initData(data) {
-        const {baseInfoForm, cardContentInfoForm, contractLabels, cardFinanceInfoForm, cardContCheckInfoForm, contractAttachAndSeal} = data;
-        this.datas = data;
-        this.baseInfoForm = baseInfoForm;
-        this.cardContentInfoForm = cardContentInfoForm;
-        this.contractLabels = contractLabels;
-        this.cardFinanceInfoForm = cardFinanceInfoForm;
-        this.cardContCheckInfoForm = cardContCheckInfoForm;
-        this.cardSealInfoForm = contractAttachAndSeal;
+      initData (data) {
+        const {baseInfoForm, cardContentInfoForm, contractLabels, cardFinanceInfoForm, cardContCheckInfoForm, contractAttachAndSeal} = data
+        this.datas = data
+        this.baseInfoForm = baseInfoForm
+        this.cardContentInfoForm = cardContentInfoForm
+        this.contractLabels = contractLabels
+        this.cardFinanceInfoForm = cardFinanceInfoForm
+        this.cardContCheckInfoForm = cardContCheckInfoForm
+        this.cardSealInfoForm = contractAttachAndSeal
       }
     },
-    created() {
-      this.getInfo();
+    created () {
+      this.getInfo()
     },
-    mounted() {
-      window._____processCenterPageAction('pageloaded');
+    mounted () {
+      window._____processCenterPageAction('pageloaded')
     },
     components: {
       ContractBaseInfo,
@@ -134,5 +134,5 @@
       Comments,
       ActionSumit
     }
-  };
+  }
 </script>

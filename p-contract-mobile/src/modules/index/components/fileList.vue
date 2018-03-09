@@ -13,28 +13,28 @@
 </template>
 
 <script>
-  import download from '../../../filters/download';
+  import download from '../../../filters/download'
 
   export default {
     props: {
       fileList: {
         type: Array,
-        default() {
-          return [];
+        default () {
+          return []
         }
       }
     },
-    data() {
-      return {};
+    data () {
+      return {}
     },
     methods: {
-      openFile(id) {
-        const path = download(id);
-        window._____processCenterPageAction('opennewwindow', {path});
+      openFile (id) {
+        const path = download(id)
+        window._____processCenterPageAction('opennewwindow', {path})
       }
     },
     filters: {
       download
     }
-  };
+  }
 </script>

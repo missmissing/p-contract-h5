@@ -25,29 +25,29 @@
 </template>
 
 <script>
-  import {formatDate} from '../../../filters/moment';
-  import attachmentType from '../../../filters/attachmentType';
-  import printChapter from '../../../filters/printChapter';
-  import yesOrNo from '../../../filters/yesOrNo';
+  import {formatDate} from '../../../filters/moment'
+  import attachmentType from '../../../filters/attachmentType'
+  import printChapter from '../../../filters/printChapter'
+  import yesOrNo from '../../../filters/yesOrNo'
 
   export default {
     props: {
       items: {
         type: Array,
-        default() {
-          return [];
+        default () {
+          return []
         }
       }
     },
-    data() {
-      return {};
+    data () {
+      return {}
     },
     methods: {
-      openFile(path, id) {
+      openFile (path, id) {
         if (!id) {
-          return;
+          return
         }
-        window._____processCenterPageAction('opennewwindow', {path});
+        window._____processCenterPageAction('opennewwindow', {path})
       }
     },
     filters: {
@@ -56,5 +56,5 @@
       printChapter,
       yesOrNo
     }
-  };
+  }
 </script>

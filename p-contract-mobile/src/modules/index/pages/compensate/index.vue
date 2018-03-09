@@ -35,18 +35,18 @@
 </template>
 
 <script>
-  import Api from '../../../../api/performance/index';
-  import ActionSumit from '../../components/actionSubmit.vue';
-  import Comments from '../../components/comments.vue';
-  import {formatDate} from '../../../../filters/moment';
-  import defaultParty from '../../../../filters/defaultParty';
-  import sateType from '../../../../filters/compensateType';
-  import yesOrNo from '../../../../filters/yesOrNo';
-  import handleResult from '../../../../filters/handleResult';
-  import routerNames from '../../router/consts';
+  import Api from '../../../../api/performance/index'
+  import ActionSumit from '../../components/actionSubmit.vue'
+  import Comments from '../../components/comments.vue'
+  import {formatDate} from '../../../../filters/moment'
+  import defaultParty from '../../../../filters/defaultParty'
+  import sateType from '../../../../filters/compensateType'
+  import yesOrNo from '../../../../filters/yesOrNo'
+  import handleResult from '../../../../filters/handleResult'
+  import routerNames from '../../router/consts'
 
   export default {
-    data() {
+    data () {
       return {
         procTitle: '',
         procInstId: '',
@@ -70,49 +70,49 @@
           violateReason: '',
           treatmentScheme: ''
         }
-      };
+      }
     },
     methods: {
-      getInfo() {
-        const id = this.$store.state.id;
+      getInfo () {
+        const id = this.$store.state.id
         Api.getViolateByProcInstId({procInstId: id}).then((res) => {
-          const data = res.data.dataMap;
-          console.log(data);
-          this.setData(data);
-        });
+          const data = res.data.dataMap
+          console.log(data)
+          this.setData(data)
+        })
       },
-      setData(data) {
-        const {contractBasic, violateDispose} = data;
+      setData (data) {
+        const {contractBasic, violateDispose} = data
         const {
           startTime, endTime, businessOperator, businessDept, signTime, contractNo
-        } = contractBasic;
+        } = contractBasic
         const {
           files, schemeType, defaulter, compensateType, compensateStatus, compensateMoney, treatmentScheme, violateReason
-        } = violateDispose;
-        this.basicForm.contractNo = contractNo;
-        this.fileList = files || [];
-        this.startTime = startTime;
-        this.endTime = endTime;
-        this.signTime = signTime;
-        this.businessDept = businessDept;
-        this.businessOperator = businessOperator;
-        this.defaulter = defaulter;
-        this.compensateType = compensateType;
-        this.compensateStatus = compensateStatus;
-        this.compensateMoney = compensateMoney;
+        } = violateDispose
+        this.basicForm.contractNo = contractNo
+        this.fileList = files || []
+        this.startTime = startTime
+        this.endTime = endTime
+        this.signTime = signTime
+        this.businessDept = businessDept
+        this.businessOperator = businessOperator
+        this.defaulter = defaulter
+        this.compensateType = compensateType
+        this.compensateStatus = compensateStatus
+        this.compensateMoney = compensateMoney
         Object.assign(this.handleForm, {
           schemeType,
           violateReason,
           treatmentScheme
-        });
-        this.toDetail.query.contractNo = contractNo;
+        })
+        this.toDetail.query.contractNo = contractNo
       }
     },
-    created() {
-      this.getInfo();
+    created () {
+      this.getInfo()
     },
-    mounted() {
-      window._____processCenterPageAction('pageloaded');
+    mounted () {
+      window._____processCenterPageAction('pageloaded')
     },
     filters: {
       formatDate,
@@ -125,5 +125,5 @@
       ActionSumit,
       Comments
     }
-  };
+  }
 </script>

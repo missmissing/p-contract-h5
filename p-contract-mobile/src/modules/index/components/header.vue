@@ -12,13 +12,13 @@
         default: ''
       }
     },
-    data() {
-      return {};
+    data () {
+      return {}
     },
     methods: {
-      back() {
-        window._____processCenterPageAction('pageback'); //依赖crossdomainpage.min.js
+      back () {
+        window._____processCenterPageAction('pageback') // 依赖crossdomainpage.min.js
       }
     }
-  };
+  }
 </script>

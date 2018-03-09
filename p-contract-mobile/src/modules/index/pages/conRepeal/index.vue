@@ -33,14 +33,14 @@
   import Api from '../../../../api/manageContract'
   import {formatDate} from '../../../../filters/moment'
 
-  import ActionSumit from '../../components/actionSubmit.vue';
-  import SealInfo from './sealInfo.vue';
-  import SealFile from '../../components/sealFile.vue';
-  import Comments from '../../components/comments.vue';
+  import ActionSumit from '../../components/actionSubmit.vue'
+  import SealInfo from './sealInfo.vue'
+  import SealFile from '../../components/sealFile.vue'
+  import Comments from '../../components/comments.vue'
 
   export default {
     name: 'con-repeal',
-    data() {
+    data () {
       return {
         contractCode: null,
         startTime: null,
@@ -53,36 +53,36 @@
         cardSealInfoForm: {}
       }
     },
-    created() {
+    created () {
       this.getInfo()
     },
     methods: {
-      getInfo() {
-        const id = this.$store.state.id;
+      getInfo () {
+        const id = this.$store.state.id
         Api.getContractDetailByContractId({id, operate: 'PROCESS'}).then((res) => {
-          const data = res.data.dataMap;
+          const data = res.data.dataMap
           this.setData(data)
         })
       },
-      setData(data) {
+      setData (data) {
         const {
           baseInfoForm, cardContentInfoForm, contSuspend, contractAttachAndSeal
-        } = data;
-        const {contractNo, approvalDate, contractStatusName} = baseInfoForm;
-        const {suspendTime, suspendRemark} = contSuspend || {};
-        const {startTime, endTime} = cardContentInfoForm;
-        this.contractCode = contractNo;
-        this.startTime = startTime;
-        this.endTime = endTime;
-        this.approvalDate = approvalDate;
-        this.contractStatusName = contractStatusName;
-        this.suspendTime = suspendTime;
-        this.suspendRemark = suspendRemark;
-        this.cardSealInfoForm = contractAttachAndSeal;
+        } = data
+        const {contractNo, approvalDate, contractStatusName} = baseInfoForm
+        const {suspendTime, suspendRemark} = contSuspend || {}
+        const {startTime, endTime} = cardContentInfoForm
+        this.contractCode = contractNo
+        this.startTime = startTime
+        this.endTime = endTime
+        this.approvalDate = approvalDate
+        this.contractStatusName = contractStatusName
+        this.suspendTime = suspendTime
+        this.suspendRemark = suspendRemark
+        this.cardSealInfoForm = contractAttachAndSeal
       }
     },
-    mounted() {
-      window._____processCenterPageAction('pageloaded');
+    mounted () {
+      window._____processCenterPageAction('pageloaded')
     },
     filters: {
       formatDate
@@ -93,7 +93,7 @@
       SealFile,
       Comments
     }
-  };
+  }
 </script>
 
 <style type="text/scss" lang="scss" scoped>

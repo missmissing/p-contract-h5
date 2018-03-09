@@ -24,34 +24,34 @@
 </template>
 
 <script>
-  import Api from '../../../../api/support/index';
-  import TplBase from './tplBase.vue';
-  import TplContent from './tplContent.vue';
-  import Comments from '../../components/comments.vue';
-  import ActionSumit from '../../components/actionSubmit.vue';
+  import Api from '../../../../api/support/index'
+  import TplBase from './tplBase.vue'
+  import TplContent from './tplContent.vue'
+  import Comments from '../../components/comments.vue'
+  import ActionSumit from '../../components/actionSubmit.vue'
 
   export default {
-    data() {
+    data () {
       return {
         selected: 1,
         info: {}
       }
     },
     methods: {
-      getInfo() {
-        const id = this.$store.state.id;
+      getInfo () {
+        const id = this.$store.state.id
         Api.getTplData({
           templateId: id
         }).then((res) => {
-          this.info = res.data.dataMap;
-        });
+          this.info = res.data.dataMap
+        })
       }
     },
-    created() {
-      this.getInfo();
+    created () {
+      this.getInfo()
     },
-    mounted() {
-      window._____processCenterPageAction('pageloaded');
+    mounted () {
+      window._____processCenterPageAction('pageloaded')
     },
     components: {
       TplBase,
@@ -59,5 +59,5 @@
       Comments,
       ActionSumit
     }
-  };
+  }
 </script>

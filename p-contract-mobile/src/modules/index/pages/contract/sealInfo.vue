@@ -26,40 +26,40 @@
 
 <script>
   import printChapter from '../../../../filters/printChapter'
-  import attachmentType from '../../../../filters/attachmentType';
+  import attachmentType from '../../../../filters/attachmentType'
 
-  import SealTable from '../../components/sealTable.vue';
+  import SealTable from '../../components/sealTable.vue'
 
   export default {
     props: {
       info: {
         type: Object,
-        default() {
-          return {};
+        default () {
+          return {}
         }
       }
     },
-    data() {
+    data () {
       return {
         contract: [],
         agreenments: []
-      };
+      }
     },
     watch: {
-      info(val) {
+      info (val) {
         if (val.attaches) {
-          const contract = [];
-          const agreenments = [];
+          const contract = []
+          const agreenments = []
           val.attaches.forEach((item) => {
-            const attachType = item.attachType;
+            const attachType = item.attachType
             if (attachType === 2) {
-              agreenments.push(item);
+              agreenments.push(item)
             } else {
               contract.push(item)
             }
-          });
-          this.contract = contract;
-          this.agreenments = agreenments;
+          })
+          this.contract = contract
+          this.agreenments = agreenments
         }
       }
     },
@@ -70,5 +70,5 @@
     components: {
       SealTable
     }
-  };
+  }
 </script>

@@ -26,13 +26,17 @@
           display: table;
         }
       }
-      .content {}
+      .content {
+      }
       .footer {
         margin-top: 20px;
       }
       .files-content {
         margin-top: 20px;
       }
+    }
+    .back-btn {
+      margin-top: -10px;
     }
   }
 </style>
@@ -42,10 +46,11 @@
     <el-card>
       <div slot="header">
         <span class="common-title">模板信息</span>
+        <el-button class="back-btn fr" type="primary" @click="save">返 回</el-button>
       </div>
       <div>
-        <el-row :gutter="20">
-          <el-col :span="12">
+        <el-row type="flex" :gutter="20">
+          <el-col :span="24" v-show="!disabled">
             <el-row v-if="!disabled">
               <el-select
                 class="mr10"
@@ -94,9 +99,8 @@
                 </el-tab-pane>
               </el-tabs>
             </div>
-            <el-button class="mt20" type="primary" @click="save">返 回</el-button>
           </el-col>
-          <el-col :span="12">
+          <el-col :span="24">
             <div class="mb20 pre-title">预览</div>
             <div class="preview">
               <div class="title">合同</div>

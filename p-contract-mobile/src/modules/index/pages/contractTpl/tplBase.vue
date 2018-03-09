@@ -56,24 +56,24 @@
 </template>
 
 <script>
-  import supportModel from '../../../../api/support/index';
-  import {formatDate} from '../../../../filters/moment';
-  import tplStatus from '../../../../filters/tplStatus';
-  import tplType from '../../../../filters/tplTypeMap';
-  import {tplMap} from '../../../../core/consts';
-  import download from '../../../../filters/download';
-  import contractPattern from '../../../../filters/contractPattern';
+  import supportModel from '../../../../api/support/index'
+  import {formatDate} from '../../../../filters/moment'
+  import tplStatus from '../../../../filters/tplStatus'
+  import tplType from '../../../../filters/tplTypeMap'
+  import {tplMap} from '../../../../core/consts'
+  import download from '../../../../filters/download'
+  import contractPattern from '../../../../filters/contractPattern'
 
   export default {
     props: {
       info: {
         type: Object,
-        default() {
-          return {};
+        default () {
+          return {}
         }
       }
     },
-    data() {
+    data () {
       return {
         templateId: this.$store.state.id,
         showAbolish: false,
@@ -100,21 +100,21 @@
       }
     },
     computed: {
-      showText() {
-        const processData = this.$store.state.processData;
+      showText () {
+        const processData = this.$store.state.processData
         return this.form.templateType === 'TEXT' && processData.procCode === tplMap[0]
       }
     },
     watch: {
-      info() {
-        this.setData();
+      info () {
+        this.setData()
       },
       'form.templateCode': function () {
-        //this.getAllVersions();
+        // this.getAllVersions();
       }
     },
     methods: {
-      setData() {
+      setData () {
         const {
           templateCode,
           templateName,
@@ -133,46 +133,46 @@
           amount,
           contractType,
           businessOperatorName
-        } = this.info;
-        this.form.templateCode = templateCode;
-        this.form.templateName = templateName;
-        this.form.templateType = templateType;
-        this.form.templateStatus = templateStatus;
-        this.form.busiTypeText = bizTypes.map(item => item.businessName).join(',');
-        this.form.startDate = formatDate(startDate);
-        this.form.endDate = formatDate(endDate);
-        this.form.updateTime = formatDate(updateTime);
-        this.form.abolishReason = abolishReason;
-        this.form.version = `V${version}`;
-        this.form.operatorName = operatorName;
-        this.form.creatorName = creatorName;
-        this.form.description = description;
+        } = this.info
+        this.form.templateCode = templateCode
+        this.form.templateName = templateName
+        this.form.templateType = templateType
+        this.form.templateStatus = templateStatus
+        this.form.busiTypeText = bizTypes.map(item => item.businessName).join(',')
+        this.form.startDate = formatDate(startDate)
+        this.form.endDate = formatDate(endDate)
+        this.form.updateTime = formatDate(updateTime)
+        this.form.abolishReason = abolishReason
+        this.form.version = `V${version}`
+        this.form.operatorName = operatorName
+        this.form.creatorName = creatorName
+        this.form.description = description
         this.form.amount = amount
         this.form.contractType = contractType
         this.form.businessOperatorName = businessOperatorName
-        this.fileList = files || [];
+        this.fileList = files || []
       },
-      getAllVersions() {
-        const {templateCode} = this.form;
+      getAllVersions () {
+        const {templateCode} = this.form
         supportModel.getAllTemplateByCode({templateCode}).then((res) => {
-          this.versions = res.data.dataMap;
-        });
+          this.versions = res.data.dataMap
+        })
       },
-      changeVersion(val) {
-        this.$emit('changeVersion', val);
+      changeVersion (val) {
+        this.$emit('changeVersion', val)
       },
-      openFile(id) {
-        const path = download(id);
-        window._____processCenterPageAction('opennewwindow', {path});
+      openFile (id) {
+        const path = download(id)
+        window._____processCenterPageAction('opennewwindow', {path})
       }
     },
-    created() {
-      const processData = this.$store.state.processData;
+    created () {
+      const processData = this.$store.state.processData
       if (!Object.keys(processData).length) {
-        return;
+        return
       }
-      const {procCode} = processData;
-      this.showAbolish = procCode === tplMap[2];
+      const {procCode} = processData
+      this.showAbolish = procCode === tplMap[2]
     },
     filters: {
       formatDate,
@@ -180,5 +180,5 @@
       tplType,
       contractPattern
     }
-  };
+  }
 </script>

@@ -47,60 +47,60 @@
 </template>
 
 <script>
-  import _ from 'lodash';
-  import Api from '../../../api/manageContract';
+  import _ from 'lodash'
+  import Api from '../../../api/manageContract'
 
   export default {
     props: {
       value: {
         type: Object,
-        default() {
-          return {};
+        default () {
+          return {}
         }
       }
     },
-    data() {
+    data () {
       return {
         username: '',
         visible: false,
         key: '',
         result: []
-      };
+      }
     },
     methods: {
-      show() {
-        this.visible = true;
+      show () {
+        this.visible = true
       },
-      back() {
-        this.visible = false;
-        document.activeElement.blur();
+      back () {
+        this.visible = false
+        document.activeElement.blur()
       },
-      select(item) {
-        this.visible = false;
-        this.username = item.userName;
-        this.$emit('input', item.userId);
+      select (item) {
+        this.visible = false
+        this.username = item.userName
+        this.$emit('input', item.userId)
       },
-      getResult(keyword) {
+      getResult (keyword) {
         Api.getRemoteCreatePersonsByKeyWord({keyword}).then(res => {
-          console.log(res);
-          this.result = res.data.dataMap;
-        });
+          console.log(res)
+          this.result = res.data.dataMap
+        })
       }
     },
     watch: {
-      value(val) {
+      value (val) {
         if (!val) {
-          this.username = '';
+          this.username = ''
         }
       },
       key: _.debounce(function (val) {
-          if (!val) {
-            this.result = [];
-            return;
-          }
-          this.getResult(val);
-        }, 500
+        if (!val) {
+          this.result = []
+          return
+        }
+        this.getResult(val)
+      }, 500
       )
     }
-  };
+  }
 </script>

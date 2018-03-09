@@ -36,35 +36,35 @@
 </template>
 
 <script>
-  import Api from '../../../api/process';
-  import {formatTime} from '../../../filters/moment';
+  import Api from '../../../api/process'
+  import {formatTime} from '../../../filters/moment'
 
   export default {
-    data() {
+    data () {
       return {
         lists: []
-      };
+      }
     },
     methods: {
-      getLists() {
-        const {procCode, procInstId} = this.$store.state.processData;
+      getLists () {
+        const {procCode, procInstId} = this.$store.state.processData
         Api.getStartedProcNodes({
           procInstId,
           procCode
         }).then((res) => {
-          this.lists = res.data.dataMap.nodes;
-        });
+          this.lists = res.data.dataMap.nodes
+        })
       }
     },
-    created() {
-      const processData = this.$store.state.processData;
+    created () {
+      const processData = this.$store.state.processData
       if (!Object.keys(processData).length) {
-        return;
+        return
       }
-      this.getLists();
+      this.getLists()
     },
     filters: {
       formatTime
     }
-  };
+  }
 </script>

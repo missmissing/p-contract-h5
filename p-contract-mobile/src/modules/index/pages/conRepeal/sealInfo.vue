@@ -18,28 +18,28 @@
 </template>
 
 <script>
-  import printChapter from '../../../../filters/printChapter';
-  import attachmentType from '../../../../filters/attachmentType';
-  import SealTable from '../../components/sealTable.vue';
+  import printChapter from '../../../../filters/printChapter'
+  import attachmentType from '../../../../filters/attachmentType'
+  import SealTable from '../../components/sealTable.vue'
 
   export default {
     props: {
       info: {
         type: Object,
-        default() {
-          return {};
+        default () {
+          return {}
         }
       }
     },
-    data() {
+    data () {
       return {
         files: []
-      };
+      }
     },
     watch: {
-      info(val) {
+      info (val) {
         if (val.attaches && val.attaches.length) {
-          this.files = val.attaches;
+          this.files = val.attaches
         }
       }
     },
@@ -50,5 +50,5 @@
     components: {
       SealTable
     }
-  };
+  }
 </script>

@@ -1,4 +1,4 @@
-import routerNames from './consts';
+import routerNames from './consts'
 
 export default (Router) => {
   const routes = new Router({
@@ -54,7 +54,7 @@ export default (Router) => {
         name: routerNames.con_protocol_create
       }
     ]
-  });
+  })
 
-  return routes;
-};
+  return routes
+}

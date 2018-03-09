@@ -24,42 +24,42 @@
 </template>
 
 <script>
-  import contractPattern from '../../../../filters/contractPattern';
-  import tplType from '../../../../filters/tplType';
-  import printOpts from '../../../../filters/printOpts';
-  import Preview from './preview.vue';
+  import contractPattern from '../../../../filters/contractPattern'
+  import tplType from '../../../../filters/tplType'
+  import printOpts from '../../../../filters/printOpts'
+  import Preview from './preview.vue'
 
   export default {
     props: {
       info: {
         type: Object,
-        default() {
-          return {};
+        default () {
+          return {}
         }
       },
       moreData: {
         type: Object,
-        default() {
-          return {};
+        default () {
+          return {}
         }
       }
     },
-    data() {
+    data () {
       return {
         visible: false
-      };
+      }
     },
     watch: {
-      visible(val) {
+      visible (val) {
         if (val) {
-          window._____processCenterPageAction('setheaderdisplay', {show: false});
+          window._____processCenterPageAction('setheaderdisplay', {show: false})
         } else {
-          window._____processCenterPageAction('setheaderdisplay', {show: true});
+          window._____processCenterPageAction('setheaderdisplay', {show: true})
         }
       }
     },
     methods: {
-      preview() {
+      preview () {
         this.visible = true
       }
     },
@@ -71,5 +71,5 @@
       tplType,
       printOpts
     }
-  };
+  }
 </script>

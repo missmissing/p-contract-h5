@@ -1,3 +1,3 @@
-import {defaultParty} from '../core/consts';
+import {defaultParty} from '../core/consts'
 
-export default type => defaultParty[type];
+export default type => defaultParty[type]

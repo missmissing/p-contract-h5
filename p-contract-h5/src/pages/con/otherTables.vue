@@ -23,17 +23,7 @@
     },
     data () {
       return {
-        condition: 4,
-        conditionOptions: [
-          {
-            value: 3,
-            label: '合同信息'
-          },
-          {
-            value: 4,
-            label: '订单信息'
-          }
-        ]
+        condition: 4
       }
     },
     computed: {
@@ -54,22 +44,25 @@
             type = ''
         }
         return type
-      }
-    },
-    watch: {
-      prFlag (val) {
-        if (val) {
-          const exist = this.conditionOptions.some(item => item.value === 2)
-          if (exist) {
-            return
+      },
+      conditionOptions () {
+        const opts = [
+          {
+            value: 3,
+            label: '合同信息'
+          },
+          {
+            value: 4,
+            label: '订单信息'
           }
-          this.conditionOptions.unshift({
+        ]
+        if (this.prFlag) {
+          opts.unshift({
             value: 2,
             label: '比价单信息'
           })
-        } else {
-          this.conditionOptions = this.conditionOptions.filter(item => item.value !== 2)
         }
+        return opts
       }
     },
     components: {

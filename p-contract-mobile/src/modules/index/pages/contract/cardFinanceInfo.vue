@@ -23,51 +23,51 @@
 </template>
 
 <script>
-  import Payment from './payment.vue';
-  import BothInfo from './bothInfo.vue';
-  import yesOrNo from '../../../../filters/yesOrNo';
-  import invoiceType from '../../../../filters/invoiceType';
-  import currency from '../../../../filters/currency';
-  import paymentTimePeriods from '../../../../filters/paymentTimePeriods';
+  import Payment from './payment.vue'
+  import BothInfo from './bothInfo.vue'
+  import yesOrNo from '../../../../filters/yesOrNo'
+  import invoiceType from '../../../../filters/invoiceType'
+  import currency from '../../../../filters/currency'
+  import paymentTimePeriods from '../../../../filters/paymentTimePeriods'
 
   export default {
     props: {
       info: {
         type: Object,
-        default() {
-          return {};
+        default () {
+          return {}
         }
       }
     },
-    data() {
+    data () {
       return {
         paymentMethods: []
-      };
+      }
     },
     watch: {
-      info(val) {
-        const {paymentMethods} = val;
+      info (val) {
+        const {paymentMethods} = val
         const items = paymentMethods.map((item) => {
-          const {payType} = item;
+          const {payType} = item
           switch (payType) {
             case 1:
-              item.type = '定金';
-              break;
+              item.type = '定金'
+              break
             case 2:
-              item.type = '预付款';
-              break;
+              item.type = '预付款'
+              break
             case 3:
-              item.type = '进度款';
-              break;
+              item.type = '进度款'
+              break
             case 4:
-              item.type = '尾款';
-              break;
+              item.type = '尾款'
+              break
             case 5:
-              item.type = '保证金';
-              break;
+              item.type = '保证金'
+              break
           }
           return item
-        });
+        })
         this.paymentMethods = items
       }
     },
@@ -81,5 +81,5 @@
       Payment,
       BothInfo
     }
-  };
+  }
 </script>

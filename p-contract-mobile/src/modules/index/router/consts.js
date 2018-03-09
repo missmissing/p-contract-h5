@@ -12,4 +12,4 @@ export default {
   con_create: '合同新建',
   con_update: '合同变更',
   con_delete: '合同废除'
-};
+}

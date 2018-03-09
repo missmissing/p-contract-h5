@@ -61,19 +61,19 @@
 </template>
 
 <script>
-  import Api from '../../../../api/manageContract';
-  import printOpts from '../../../../filters/printOpts';
-  import ActionSumit from '../../components/actionSubmit.vue';
-  import SealInfo from './sealInfo.vue';
-  import SealFile from '../../components/sealFile.vue';
-  import Comments from '../../components/comments.vue';
+  import Api from '../../../../api/manageContract'
+  import printOpts from '../../../../filters/printOpts'
+  import ActionSumit from '../../components/actionSubmit.vue'
+  import SealInfo from './sealInfo.vue'
+  import SealFile from '../../components/sealFile.vue'
+  import Comments from '../../components/comments.vue'
 
   export default {
-    data() {
+    data () {
       return {
         selected: 1,
         protocolNo: null, // 从协议编号
-        code: null, //合同编号
+        code: null, // 合同编号
         baseInfoForm: {
           tableSupplierInfo: [],
           conSubjctName: [],
@@ -89,31 +89,31 @@
         cardRelatedInfoForm: {
           contractList: []
         }
-      };
+      }
     },
     methods: {
-      getInfo() {
-        const id = this.$store.state.id;
+      getInfo () {
+        const id = this.$store.state.id
         Api.getAgreenmentDetail(id).then((res) => {
-          const data = res.data.dataMap;
-          console.log(data);
-          const {protocolNo, code, baseInfoForm, cardSealInfoForm, cardRemarkInfoForm, cardRelatedInfoForm} = data;
-          this.protocolNo = protocolNo;
-          this.code = code;
-          this.baseInfoForm = baseInfoForm;
-          this.cardSealInfoForm = cardSealInfoForm;
-          this.cardRemarkInfoForm = cardRemarkInfoForm;
+          const data = res.data.dataMap
+          console.log(data)
+          const {protocolNo, code, baseInfoForm, cardSealInfoForm, cardRemarkInfoForm, cardRelatedInfoForm} = data
+          this.protocolNo = protocolNo
+          this.code = code
+          this.baseInfoForm = baseInfoForm
+          this.cardSealInfoForm = cardSealInfoForm
+          this.cardRemarkInfoForm = cardRemarkInfoForm
           if (cardRelatedInfoForm) {
-            this.cardRelatedInfoForm = cardRelatedInfoForm;
+            this.cardRelatedInfoForm = cardRelatedInfoForm
           }
-        });
-      },
+        })
+      }
     },
-    created() {
-      this.getInfo();
+    created () {
+      this.getInfo()
     },
-    mounted() {
-      window._____processCenterPageAction('pageloaded');
+    mounted () {
+      window._____processCenterPageAction('pageloaded')
     },
     filters: {
       printOpts
@@ -124,5 +124,5 @@
       ActionSumit,
       Comments
     }
-  };
+  }
 </script>

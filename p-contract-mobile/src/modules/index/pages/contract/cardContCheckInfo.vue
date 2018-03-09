@@ -39,28 +39,28 @@
 </template>
 
 <script>
-  import yesOrNo from '../../../../filters/yesOrNo';
+  import yesOrNo from '../../../../filters/yesOrNo'
 
   export default {
     props: {
       info: {
         type: Object,
-        default() {
-          return {};
+        default () {
+          return {}
         }
       },
       moreData: {
         type: Object,
-        default() {
-          return {};
+        default () {
+          return {}
         }
       }
     },
-    data() {
-      return {};
+    data () {
+      return {}
     },
     filters: {
       yesOrNo
     }
-  };
+  }
 </script>

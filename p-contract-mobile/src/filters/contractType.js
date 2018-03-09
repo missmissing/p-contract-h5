@@ -1,3 +1,3 @@
-import {prTypeMap} from '../core/consts';
+import {prTypeMap} from '../core/consts'
 
-export default type => prTypeMap[type];
+export default type => prTypeMap[type]

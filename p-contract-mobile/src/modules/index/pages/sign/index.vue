@@ -165,16 +165,16 @@
 </template>
 
 <script>
-  import Api from '../../../../api/sign/index';
-  import ActionSumit from '../../components/actionSubmit.vue';
-  import Comments from '../../components/comments.vue';
-  import {formatDate} from '../../../../filters/moment';
-  import contractType from '../../../../filters/contractType';
-  import {prTypeMap, contractPatternMap} from '../../../../core/consts';
-  import cutZero from '../../../../util/cutZero';
+  import Api from '../../../../api/sign/index'
+  import ActionSumit from '../../components/actionSubmit.vue'
+  import Comments from '../../components/comments.vue'
+  import {formatDate} from '../../../../filters/moment'
+  import contractType from '../../../../filters/contractType'
+  import {prTypeMap, contractPatternMap} from '../../../../core/consts'
+  import cutZero from '../../../../util/cutZero'
 
   export default {
-    data() {
+    data () {
       return {
         selected: 1,
         procTitle: '',
@@ -188,21 +188,21 @@
       }
     },
     methods: {
-      getInfo() {
-        const id = this.$store.state.id;
+      getInfo () {
+        const id = this.$store.state.id
         Api.detailByPoId({id}).then((res) => {
-          console.log(res);
-          this.info = res.data.dataMap;
-          this.setOrderData();
-          this.setServerData();
-          this.setReceiveData();
-          this.setContractForm();
+          console.log(res)
+          this.info = res.data.dataMap
+          this.setOrderData()
+          this.setServerData()
+          this.setReceiveData()
+          this.setContractForm()
         })
       },
-      setContractForm() {
+      setContractForm () {
         const {
           contractNo, contractBusinessTypeThirdName, contractType, belongProject, startTime, endTime
-        } = this.info;
+        } = this.info
         this.contractForm = {
           contractNo,
           contractBusinessTypeThirdName,
@@ -210,51 +210,52 @@
           belongProject,
           startTime,
           endTime
-        };
+        }
       },
-      setOrderData() {
+      setOrderData () {
         const {
           purOrderMaterials, supplierName, companyCode, companyName, supplierCode, purchaseOrderNo
-        } = this.info;
-        let type = '';
+        } = this.info
+        let type = ''
         if (purOrderMaterials.length) {
           if ([1, 3].indexOf(purOrderMaterials[0].category) > -1) {
-            type = prTypeMap[1];
+            type = prTypeMap[1]
           } else {
-            type = prTypeMap[2];
+            type = prTypeMap[2]
           }
         }
-        this.orderData = purOrderMaterials;
+        this.orderData = purOrderMaterials
         this.orderForm = {
           supplierName,
           type,
           companyCode: `${companyCode} ${companyName}`,
           supplierCode,
           purchaseOrderNo
-        };
+        }
       },
-      setServerData() {
-        const {orderCheckItems} = this.info;
-        this.serverData = orderCheckItems;
+      setServerData () {
+        const {orderCheckItems} = this.info
+        this.serverData = orderCheckItems
       },
-      setReceiveData() {
-        const {poReceiveInfo} = this.info;
-        this.receiveInfo = poReceiveInfo || [];
-      },
+      setReceiveData () {
+        const {poReceiveInfo} = this.info
+        this.receiveInfo = poReceiveInfo || []
+      }
     },
-    created() {
-      this.getInfo();
+    created () {
+      this.getInfo()
     },
-    mounted() {
-      window._____processCenterPageAction('pageloaded');
+    mounted () {
+      window._____processCenterPageAction('pageloaded')
     },
     filters: {
       contractType,
-      formatDate
+      formatDate,
+      cutZero
     },
     components: {
       ActionSumit,
       Comments
     }
-  };
+  }
 </script>

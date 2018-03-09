@@ -40,24 +40,24 @@
 </template>
 
 <script>
-  import {formatDate} from '../../../../filters/moment';
+  import {formatDate} from '../../../../filters/moment'
 
   export default {
     props: {
       info: {
         type: Object,
-        default() {
-          return {};
+        default () {
+          return {}
         }
       }
     },
-    data() {
+    data () {
       return {
         tableData: []
-      };
+      }
     },
     filters: {
       formatDate
     }
-  };
+  }
 </script>

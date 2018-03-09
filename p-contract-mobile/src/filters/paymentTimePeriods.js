@@ -1,13 +1,13 @@
-import {paymentTimePeriods} from '../core/consts';
+import {paymentTimePeriods} from '../core/consts'
 
 export default (id) => {
-  let name = '';
+  let name = ''
   paymentTimePeriods.some((item) => {
     if (item.id === id) {
-      name = item.name;
-      return true;
+      name = item.name
+      return true
     }
-    return false;
-  });
-  return name;
-};
+    return false
+  })
+  return name
+}

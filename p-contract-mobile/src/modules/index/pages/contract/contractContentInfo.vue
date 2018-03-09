@@ -64,32 +64,32 @@
 </template>
 
 <script>
-  import yesOrNo from '../../../../filters/yesOrNo';
-  import effectiveCondition from '../../../../filters/effectiveCondition';
-  import {formatDate} from '../../../../filters/moment';
+  import yesOrNo from '../../../../filters/yesOrNo'
+  import effectiveCondition from '../../../../filters/effectiveCondition'
+  import {formatDate} from '../../../../filters/moment'
 
   export default {
     props: {
       info: {
         type: Object,
-        default() {
-          return {};
+        default () {
+          return {}
         }
       },
       moreData: {
         type: Object,
-        default() {
-          return {};
+        default () {
+          return {}
         }
       }
     },
-    data() {
-      return {};
+    data () {
+      return {}
     },
     filters: {
       yesOrNo,
       formatDate,
       effectiveCondition
     }
-  };
+  }
 </script>

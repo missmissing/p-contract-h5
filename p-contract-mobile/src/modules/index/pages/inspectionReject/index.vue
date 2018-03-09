@@ -45,16 +45,16 @@
 </template>
 
 <script>
-  import Api from '../../../../api/performance/index';
-  import ActionSumit from '../../components/actionSubmit.vue';
-  import Comments from '../../components/comments.vue';
-  import {contractTextTypeMap, contractPatternMap} from '../../../../core/consts';
-  import routerNames from '../../router/consts';
-  import handleResult from '../../../../filters/handleResult';
-  import {formatDate} from '../../../../filters/moment';
+  import Api from '../../../../api/performance/index'
+  import ActionSumit from '../../components/actionSubmit.vue'
+  import Comments from '../../components/comments.vue'
+  import {contractTextTypeMap, contractPatternMap} from '../../../../core/consts'
+  import routerNames from '../../router/consts'
+  import handleResult from '../../../../filters/handleResult'
+  import {formatDate} from '../../../../filters/moment'
 
   export default {
-    data() {
+    data () {
       return {
         procTitle: '',
         procInstId: '',
@@ -79,24 +79,24 @@
         treatmentScheme: '',
         fileList: [],
         toDetail: {name: routerNames.con_Check, query: {id: ''}}
-      };
+      }
     },
     methods: {
-      getInfo() {
-        const procInstId = this.$store.state.id;
+      getInfo () {
+        const procInstId = this.$store.state.id
         Api.getUnqualifiedByProcInstId({procInstId}).then((res) => {
-          const data = res.data.dataMap;
-          this.setData(data);
-        });
+          const data = res.data.dataMap
+          this.setData(data)
+        })
       },
-      setData(data) {
-        const {unqualifiedBasic, contUnqualified} = data;
+      setData (data) {
+        const {unqualifiedBasic, contUnqualified} = data
         const {
           businessOperatorName, businessDeptName, responsibleName, belongProject, startTime, endTime, contractTextType, contractType, contractNo
-        } = unqualifiedBasic;
+        } = unqualifiedBasic
         const {
           orderNo, contractCheckDate, checkItems, unqualifiedReason, treatmentScheme, schemeType, files
-        } = contUnqualified;
+        } = contUnqualified
         this.basicForm = Object.assign({}, this.basicForm, {
           businessOperatorName,
           businessDeptName,
@@ -107,21 +107,21 @@
           contractTextType: contractTextTypeMap[contractTextType],
           contractType: contractPatternMap[contractType],
           contractNo
-        });
-        this.orderNo = orderNo;
-        this.checkItems = checkItems;
-        this.contractCheckDate = contractCheckDate;
-        this.unqualifiedReason = unqualifiedReason;
-        this.treatmentScheme = treatmentScheme;
-        this.schemeType = schemeType;
-        this.fileList = files || [];
+        })
+        this.orderNo = orderNo
+        this.checkItems = checkItems
+        this.contractCheckDate = contractCheckDate
+        this.unqualifiedReason = unqualifiedReason
+        this.treatmentScheme = treatmentScheme
+        this.schemeType = schemeType
+        this.fileList = files || []
       }
     },
-    created() {
-      this.getInfo();
+    created () {
+      this.getInfo()
     },
-    mounted() {
-      window._____processCenterPageAction('pageloaded');
+    mounted () {
+      window._____processCenterPageAction('pageloaded')
     },
     filters: {
       formatDate,
@@ -131,5 +131,5 @@
       ActionSumit,
       Comments
     }
-  };
+  }
 </script>

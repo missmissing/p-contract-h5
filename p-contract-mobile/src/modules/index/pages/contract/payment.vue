@@ -63,7 +63,7 @@
 </template>
 
 <script>
-  import paymentTimePeriods from '../../../../filters/paymentTimePeriods';
+  import paymentTimePeriods from '../../../../filters/paymentTimePeriods'
 
   import numCalc from '../../../../util/numCalc'
 
@@ -73,7 +73,7 @@
       items: Array,
       totalAmount: Number
     },
-    data() {
+    data () {
       return {
         paymentTimePeriods: [{
           id: 'Z015', name: '到票日后15天付款'
@@ -95,22 +95,22 @@
       }
     },
     computed: {
-      totalPaymentAmount() {
-        let total = 0;
+      totalPaymentAmount () {
+        let total = 0
         if (this.items.length) {
           this.items[0].financeMores.forEach((item) => {
             if (item.paymentAmount) {
               total = numCalc.add(total, item.paymentAmount)
             }
-          });
+          })
           this.items[0].paymentAmount = total
         }
         return total
       }
     },
     methods: {
-      calcPercent(item, val) {
-        let result = 0;
+      calcPercent (item, val) {
+        let result = 0
         if (val) {
           if (this.totalAmount) {
             result = ((val / this.totalAmount) * 100).toFixed(2)

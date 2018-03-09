@@ -201,10 +201,10 @@
 </template>
 
 <script>
-  import Api from '../../../../api/manageContract';
-  import numToChinese from '../../../../filters/numToChinese';
-  import {formatDate} from '../../../../filters/moment';
-  import paymentTimePeriods from '../../../../filters/paymentTimePeriods';
+  import Api from '../../../../api/manageContract'
+  import numToChinese from '../../../../filters/numToChinese'
+  import {formatDate} from '../../../../filters/moment'
+  import paymentTimePeriods from '../../../../filters/paymentTimePeriods'
 
   export default {
     props: {
@@ -214,12 +214,12 @@
       },
       info: {
         type: Object,
-        default() {
-          return {};
+        default () {
+          return {}
         }
       }
     },
-    data() {
+    data () {
       return {
         contractNo: '',
         title: '',
@@ -241,45 +241,45 @@
         corporeRemark: '',
         paymentRemark: '',
         tplData: {}
-      };
+      }
     },
     methods: {
-      back() {
+      back () {
         this.$emit('update:visible', false)
       },
-      transformData(data) {
-        const priceTable = [];
-        let name = '';
+      transformData (data) {
+        const priceTable = []
+        let name = ''
         if (data.length) {
           data.forEach((item) => {
             if (!item.paymentAmount) {
               return
             }
-            const {seriousPayments, payType} = item;
+            const {seriousPayments, payType} = item
             switch (payType) {
               case 1:
-                name = '定金';
-                break;
+                name = '定金'
+                break
               case 2:
-                name = '预付款';
-                break;
+                name = '预付款'
+                break
               case 3:
-                name = '';
-                break;
+                name = ''
+                break
               case 4:
-                name = '尾款';
-                break;
+                name = '尾款'
+                break
               case 5:
-                name = '保证金';
+                name = '保证金'
                 break
             }
             if (seriousPayments) {
-              const {financeMores} = item;
+              const {financeMores} = item
               financeMores.forEach((item1, index1) => {
                 const {
                   paymentAmount, paymentTimePeriod, remark, ratio
-                } = item1;
-                const type = `${name}${index1 + 1}`;
+                } = item1
+                const type = `${name}${index1 + 1}`
                 priceTable.push({
                   type,
                   paymentAmount,
@@ -287,7 +287,7 @@
                   remark,
                   ratio: `${ratio}%`
                 })
-              });
+              })
               return
             }
             priceTable.push({
@@ -300,64 +300,64 @@
         }
         return priceTable
       },
-      getTplData(templateId) {
-        const tplData = this.tplData[templateId];
+      getTplData (templateId) {
+        const tplData = this.tplData[templateId]
         if (tplData) {
-          const {content} = tplData;
-          this.currentTpl = content;
-          return;
+          const {content} = tplData
+          this.currentTpl = content
+          return
         }
         if (!templateId) {
-          return;
+          return
         }
         Api.getTplContent(this.info.datas).then((res) => {
-          const data = res.data.dataMap;
-          this.currentTpl = data;
-          this.tplData[templateId] = data;
-        });
+          const data = res.data.dataMap
+          this.currentTpl = data
+          this.tplData[templateId] = data
+        })
       }
     },
     watch: {
-      info(val) {
+      info (val) {
         const {
           baseInfoForm,
           cardContentInfoForm,
           cardFinanceInfoForm
-        } = val.datas;
-        const {contractNo, templateId, contractType, contractBusinessTypeFirst, contractBusinessTypeThirdName} = baseInfoForm;
-        const {startTime, endTime, conStandard, effectiveCondition, conditionDesc, corporeRemark} = cardContentInfoForm;
-        const {paymentMethods, paymentRemark, jiaBillingInfo, yiBillingInfo, moneyInvolved, totalAmount, oneOffPay} = cardFinanceInfoForm;
-        this.contractType = contractType;
-        this.contractBusinessTypeFirst = contractBusinessTypeFirst;
-        this.materialTable = conStandard;
-        this.startTime = startTime;
-        this.endTime = endTime;
-        this.conditionDesc = conditionDesc;
-        this.effectiveCondition = effectiveCondition;
-        this.contractNo = contractNo;
-        this.corporeRemark = corporeRemark;
-        this.paymentRemark = paymentRemark;
-        this.title = contractBusinessTypeThirdName;
-        this.partAName = jiaBillingInfo.map((item) => item.company);
-        this.partBName = yiBillingInfo.length > 0 ? [yiBillingInfo[0].company] : [];
-        this.supplierName = yiBillingInfo.length > 0 ? yiBillingInfo[0].company : '';
+        } = val.datas
+        const {contractNo, templateId, contractType, contractBusinessTypeFirst, contractBusinessTypeThirdName} = baseInfoForm
+        const {startTime, endTime, conStandard, effectiveCondition, conditionDesc, corporeRemark} = cardContentInfoForm
+        const {paymentMethods, paymentRemark, jiaBillingInfo, yiBillingInfo, moneyInvolved, totalAmount, oneOffPay} = cardFinanceInfoForm
+        this.contractType = contractType
+        this.contractBusinessTypeFirst = contractBusinessTypeFirst
+        this.materialTable = conStandard
+        this.startTime = startTime
+        this.endTime = endTime
+        this.conditionDesc = conditionDesc
+        this.effectiveCondition = effectiveCondition
+        this.contractNo = contractNo
+        this.corporeRemark = corporeRemark
+        this.paymentRemark = paymentRemark
+        this.title = contractBusinessTypeThirdName
+        this.partAName = jiaBillingInfo.map((item) => item.company)
+        this.partBName = yiBillingInfo.length > 0 ? [yiBillingInfo[0].company] : []
+        this.supplierName = yiBillingInfo.length > 0 ? yiBillingInfo[0].company : ''
         if (moneyInvolved) {
-          this.moneyInvolved = moneyInvolved;
-          this.totalAmount = totalAmount;
+          this.moneyInvolved = moneyInvolved
+          this.totalAmount = totalAmount
 
           if (oneOffPay) {
-            this.oneOffPay = true;
+            this.oneOffPay = true
           } else {
-            this.priceTable = this.transformData(paymentMethods);
+            this.priceTable = this.transformData(paymentMethods)
           }
         }
 
-        this.getTplData(templateId);
+        this.getTplData(templateId)
       }
     },
     filters: {
       numToChinese,
       formatDate
     }
-  };
+  }
 </script>
