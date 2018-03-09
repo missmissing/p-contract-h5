@@ -8,7 +8,7 @@
 <script>
   import E from 'wangeditor'
 
-export default {
+  export default {
     name: 'editor',
     props: {
       editorId: [String, Number],
@@ -26,8 +26,18 @@ export default {
       const id = `#editor-${this.editorId}`
       const editor = new E(toolbarId, id)
       editor.customConfig.menus = [
-        'head',
-        'justify'
+        'head', // 标题
+        'bold', // 粗体
+        'fontSize', // 字号
+        'fontName', // 字体
+        'italic', // 斜体
+        'underline', // 下划线
+        'strikeThrough', // 删除线
+        'list', // 列表
+        'justify', // 对齐方式
+        'table', // 表格
+        'undo', // 撤销
+        'redo' // 重复
       ]
       // editor.customConfig.pasteFilterStyle = false
       editor.customConfig.zIndex = 100
